@@ -1,36 +1,27 @@
 #include "mpi/agafeev_s_max_of_vector_elements/include/ops_mpi.hpp"
 
-#include <limits>
+namespace agafeev_s_max_of_vector_elements_mpi {
 
-#include "boost/mpi/operations.hpp"
-// #include "seq/agafeev_s_max_of_vector_elements/include/ops_seq.hpp"
-/*
 template <typename T>
-std::vector<T> agafeev_s_max_of_vector_elements_mpi::create_RandomMatrix(int row_size, int column_size) {
-  auto rand_gen = std::mt19937(1337);
-  std::vector<T> matrix(row_size * column_size);
-  for (unsigned int i = 0; i < matrix.size(); i++) matrix[i] = rand_gen() % 100;
-
-  return matrix;
-}
-
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::pre_processing() {
+bool MaxMatrixSeq<T>::pre_processing() {
   internal_order_test();
 
   // Init value
-  auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto* temp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
   input_.insert(input_.begin(), temp_ptr, temp_ptr + taskData->inputs_count[0]);
 
   return true;
 }
 
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::validation() {
+template <typename T>
+bool MaxMatrixSeq<T>::validation() {
   internal_order_test();
 
-  return taskData->outputs_count[0] == 1;
+  return (taskData->outputs_count[0] == 1 && (taskData->inputs_count[0] > 0));
 }
 
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::run() {
+template <typename T>
+bool MaxMatrixSeq<T>::run() {
   internal_order_test();
 
   maxres_ = get_MaxValue(input_);
@@ -38,20 +29,20 @@ bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::run() {
   return true;
 }
 
-bool agafeev_s_max_of_vector_elements_mpi::MaxMatrixSeq::post_processing() {
+template <typename T>
+bool MaxMatrixSeq<T>::post_processing() {
   internal_order_test();
 
-  reinterpret_cast<int*>(taskData->outputs[0])[0] = maxres_;
+  reinterpret_cast<T*>(taskData->outputs[0])[0] = maxres_;
 
   return true;
 }
-*/
-// Parallel
-namespace agafeev_s_max_of_vector_elements_mpi {
 
+// Parallel
 template <typename T>
 bool MaxMatrixMpi<T>::pre_processing() {
   internal_order_test();
+
   maxres_ = std::numeric_limits<T>::min();
 
   return true;
@@ -61,7 +52,7 @@ template <typename T>
 bool MaxMatrixMpi<T>::validation() {
   internal_order_test();
 
-  if (world.rank() == 0) return (taskData->outputs_count[0] == 1 && !(taskData->inputs.empty()));
+  if (world.rank() == 0) return (taskData->outputs_count[0] == 1 && (taskData->inputs_count[0] > 0));
 
   return true;
 }
@@ -84,23 +75,29 @@ bool MaxMatrixMpi<T>::run() {
 
   unsigned int task_size = data_size / world_size;
   unsigned int over_size = data_size % world_size;
+  lv_size = task_size;
 
   std::vector<int> sizes(world_size, task_size);
   std::vector<int> displs(world_size, 0);
+
+  if (world_rank < (data_size % world_size)) {
+    lv_size++;
+  }
 
   if (world_rank == 0) {
     for (unsigned int i = 0; i < over_size; ++i) sizes[i]++;
     for (unsigned int i = 1; i < world_size; ++i) displs[i] = displs[i - 1] + sizes[i - 1];
   }
 
-  local_vector.resize(sizes[world_rank]);
+  local_vector.resize(lv_size);
 
-  if (world_rank == 0)
-    boost::mpi::scatterv(world, input_.data(), sizes, displs, local_vector.data(), sizes[world_rank], 0);
-  else
-    boost::mpi::scatterv(world, local_vector.data(), local_vector.size(), 0);
+  if (world_rank == 0) {
+    boost::mpi::scatterv(world, input_, sizes, displs, local_vector.data(), lv_size, 0);
+  } else {
+    boost::mpi::scatterv(world, local_vector.data(), lv_size, 0);
+  }
 
-  T res = agafeev_s_max_of_vector_elements_mpi::get_MaxValue<T>(local_vector);
+  T res = get_MaxValue<T>(local_vector);
   boost::mpi::reduce(world, res, maxres_, boost::mpi::maximum<T>(), 0);
 
   return true;
@@ -116,4 +113,7 @@ bool MaxMatrixMpi<T>::post_processing() {
 }
 
 template class MaxMatrixMpi<int>;
+template class MaxMatrixMpi<double>;
+template class MaxMatrixSeq<int>;
+template class MaxMatrixSeq<double>;
 }  // namespace agafeev_s_max_of_vector_elements_mpi
