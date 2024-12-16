@@ -65,6 +65,7 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
   std::vector<InOutType> local_container = input;
   int rank = wrld.rank();
   int size = wrld.size();
+  local_container.resize(sizes[rank]);
   int parentNode;
   int leftNode;
   int rightNode;
@@ -89,7 +90,7 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
     size_t leftNodeSize;
     wrld.recv(leftNode, 0, &leftNodeSize, 1);
     std::vector<InOutType> leftChild(leftNodeSize);
-    wrld.recv(leftNode, 0, leftChild.data(), leftChild.size());
+    wrld.recv(leftNode, 1, leftChild.data(), leftChild.size());
     local_container.insert(local_container.end(), leftChild.begin(), leftChild.begin() + sizes[leftNode]);
     if (leftChild.size() > static_cast<size_t>(sizes[leftNode])) {
       childTemp.insert(childTemp.end(), leftChild.begin() + sizes[leftNode], leftChild.end());
@@ -99,7 +100,7 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
     size_t rightNodeSize;
     wrld.recv(rightNode, 0, &rightNodeSize, 1);
     std::vector<InOutType> rightChild(rightNodeSize);
-    wrld.recv(rightNode, 0, rightChild.data(), rightChild.size());
+    wrld.recv(rightNode, 1, rightChild.data(), rightChild.size());
     local_container.insert(local_container.end(), rightChild.begin(), rightChild.begin() + sizes[rightNode]);
     if (rightChild.size() > static_cast<size_t>(sizes[rightNode])) {
       childTemp.insert(childTemp.end(), rightChild.begin() + sizes[rightNode], rightChild.end());
@@ -111,7 +112,7 @@ void leontev_n_mat_vec_mpi::MPIMatVecParallel::my_gather(const boost::mpi::commu
   if (rank != root) {
     size_t localContainerSize = local_container.size();
     wrld.send(parentNode, 0, &localContainerSize, 1);
-    wrld.send(parentNode, 0, local_container.data(), localContainerSize);
+    wrld.send(parentNode, 1, local_container.data(), localContainerSize);
   } else {
     std::copy(local_container.begin(), local_container.end(), output);
   }
@@ -136,7 +137,6 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::pre_processing() {
     for (size_t i = 0; i < taskData->inputs_count[1]; i++) {
       vec_[i] = vec_ptr2[i];
     }
-    res = std::vector<int>(vec_.size(), 0);
   }
   return true;
 }
@@ -160,46 +160,46 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::validation() {
 
 bool leontev_n_mat_vec_mpi::MPIMatVecParallel::run() {
   internal_order_test();
+  if (world.rank() == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, mat_);
+      world.send(proc, 1, vec_);
+    }
+  }
+  if (world.rank() != 0) {
+    world.recv(0, 0, mat_);
+    world.recv(0, 1, vec_);
+  }
+  res = std::vector<int>(vec_.size(), 0);
   div_t divres;
   if (world.rank() == 0) {
     divres = std::div(taskData->inputs_count[1], world.size());
   }
-  std::vector<int> local_input(mat_.size());
   broadcast(world, divres.quot, 0);
   broadcast(world, divres.rem, 0);
-  std::vector<int> local_tmp(divres.quot + divres.rem, 0);
-  std::vector<int> sizes(world.size(), divres.quot * res.size());
-  sizes[0] += divres.rem * res.size();
-  if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      int curpos = std::accumulate(sizes.begin(), sizes.begin() + proc, 0);
-      world.send(proc, 0, mat_.data() + curpos, divres.quot);
-    }
-  }
-  if (world.rank() != 0) {
-    world.recv(0, 0, local_input.data(), divres.quot);
-  }
-  // boost::mpi::scatterv(world, mat_, sizes, local_input.data(), 0);
+  std::vector<int> local_input_((divres.quot + divres.rem) * res.size());
+  local_tmp_ = std::vector<int>(divres.quot + divres.rem, 0);
+  std::vector<int> sizes_(world.size(), divres.quot * res.size());
+  sizes_[0] += divres.rem * res.size();
+  std::vector<int> sizes_out(world.size(), divres.quot);
+  sizes_out[0] += divres.rem;
+  boost::mpi::scatterv(world, mat_, sizes_, local_input_.data(), 0);
   if (world.rank() == 0) {
     for (int i = 0; i < divres.quot + divres.rem; i++) {
       for (size_t j = 0; j < res.size(); j++) {
-        local_tmp[i] += mat_[i * res.size() + j] * vec_[j];
+        local_tmp_[i] += mat_[i * res.size() + j] * vec_[j];
       }
     }
-  } else {
+  }
+  if (world.rank() != 0) {
     for (int i = 0; i < divres.quot; i++) {
       for (size_t j = 0; j < res.size(); j++) {
-        local_tmp[i] += local_input[i * res.size() + j] * vec_[j];
+        local_tmp_[i] += local_input_[i * res.size() + j] * vec_[j];
       }
     }
   }
-  // my_gather(world, local_tmp, res.data(), sizes, 0);
-  boost::mpi::gatherv(world, local_tmp, res.data(), sizes, 0);
-  for (size_t i = 0; i < res.size(); i++) {
-    std::cerr << res[i] << ' ';
-  }
-  std::cerr << std::endl;
-  // debug
+  my_gather(world, local_tmp_, res.data(), sizes_out, 0);
+  // boost::mpi::gatherv(world, local_tmp_.data(), sizes_out[world.rank()], res.data(), sizes_out, 0);
   return true;
 }
 

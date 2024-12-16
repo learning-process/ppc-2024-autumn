@@ -43,6 +43,7 @@ class MPIMatVecParallel : public ppc::core::Task {
   std::vector<int> vec_;
   std::vector<int> mat_;
   std::vector<int> res;
+  std::vector<int> local_tmp_;
   std::string ops;
   boost::mpi::communicator world;
 };
