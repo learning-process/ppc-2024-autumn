@@ -36,7 +36,7 @@ struct Point {
     ar & y;
     // UNUSED needed here to supress -Wunused-parameter
     // version arg can't be removed due to requrements of boost for Point struct to be serializable
-    UNUSED(x);
+    UNUSED(version);
   }
 };
 
