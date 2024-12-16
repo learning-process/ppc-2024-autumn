@@ -9,55 +9,99 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> kolokolova_d_max_of_row_matrix_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> dist(-100, 99);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+void kolokolova_d_radix_integer_merge_sort_mpi::counting_sort_radix(std::vector<int>& array, int exp) {
+  int size_vector = array.size();
+  std::vector<int> func_res(size_vector);
+  std::vector<int> nums_of_digits(20, 0);
+
+  for (int i = 0; i < size_vector; i++) {
+    int index = (array[i] / exp) % 10;
+    if (array[i] < 0) {
+      index += 10;
+    }
+    nums_of_digits[index]++;
   }
-  return vec;
+
+  for (int i = 1; i < 20; i++) {
+    nums_of_digits[i] += nums_of_digits[i - 1];
+  }
+
+  for (int i = size_vector - 1; i >= 0; i--) {
+    int index = (array[i] / exp) % 10;
+    if (array[i] < 0) {
+      index += 10;
+    }
+    func_res[nums_of_digits[index] - 1] = array[i];
+    nums_of_digits[index]--;
+  }
+
+  for (int i = 0; i < size_vector; i++) {
+    array[i] = func_res[i];
+  }
 }
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::pre_processing() {
+
+std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::merge_and_sort(const std::vector<int>& vec1,
+                                                                           const std::vector<int>& vec2) {
+  std::vector<int> sort_vector(vec1);
+  sort_vector.insert(sort_vector.end(), vec2.begin(), vec2.end());
+  sort_vector = radix_sort(sort_vector);
+  for (int i = 0; i < sort_vector.size(); i++) {
+  }
+  return sort_vector;
+}
+
+std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::radix_sort(std::vector<int>& array) {
+  int max_num = *max_element(array.begin(), array.end());
+  int min_num = *min_element(array.begin(), array.end());
+
+  for (int exp = 1; max_num / exp > 0 || min_num / exp < 0; exp *= 10) {
+    counting_sort_radix(array, exp);
+  }
+
+  std::vector<int> sorted_array;
+  std::vector<int> negatives;
+  std::vector<int> positives;
+
+  for (int num : array) {
+    if (num < 0) {
+      negatives.push_back(num);
+    } else {
+      positives.push_back(num);
+    }
+  }
+
+  sort(negatives.begin(), negatives.end());
+  sorted_array.insert(sorted_array.end(), negatives.begin(), negatives.end());
+  sorted_array.insert(sorted_array.end(), positives.begin(), positives.end());
+
+  return sorted_array;
+}
+
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  auto row_count = static_cast<size_t>(*taskData->inputs[1]);
-  size_t col_count = taskData->inputs_count[0] / row_count;
-
-  input_.resize(row_count, std::vector<int>(col_count));
-
-  int* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (size_t i = 0; i < row_count; ++i) {
-    for (size_t j = 0; j < col_count; ++j) {
-      input_[i][j] = input_ptr[i * col_count + j];
-    }
+  input_vector = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr_input = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    input_vector[i] = tmp_ptr_input[i];
   }
-  res.resize(row_count);
+  res.resize(int(input_vector.size()));
   return true;
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::validation() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return *taskData->inputs[1] == taskData->outputs_count[0];
+  return (taskData->inputs_count[0] != 0 && taskData->outputs_count[0] != 0);
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::run() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (size_t i = 0; i < input_.size(); ++i) {
-    int max_value = input_[i][0];
-    for (size_t j = 1; j < input_[i].size(); ++j) {
-      if (input_[i][j] > max_value) {
-        max_value = input_[i][j];
-      }
-    }
-    res[i] = max_value;
-  }
+  res = radix_sort(input_vector);
   return true;
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::post_processing() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   int* output_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
   for (size_t i = 0; i < res.size(); ++i) {
@@ -66,69 +110,107 @@ bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskSequential::post_processing(
   return true;
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::pre_processing() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
-
-  int proc_rank = world.rank();
-
-  if (proc_rank == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-  }
-
-  if (proc_rank == 0) {
-    // Init vectors
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  if (world.rank() == 0) {
+    input_vector = std::vector<int>(taskData->inputs_count[0]);
+    size_input_vector = taskData->inputs_count[0];
+    auto* tmp_ptr_input = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+      input_vector[i] = tmp_ptr_input[i];
     }
   }
-  // Init value for output
-  res.resize(world.size());
   return true;
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::validation() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output and input
-    if (taskData->outputs_count[0] == 0 || taskData->inputs_count[0] == 0) return false;
+    return (taskData->inputs_count[0] != 0 && taskData->outputs_count[0] != 0);
   }
   return true;
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::run() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
   int proc_rank = world.rank();
+  int proc_size = world.size();
 
-  broadcast(world, delta, 0);
+  broadcast(world, size_input_vector, 0);
+  local_size = size_input_vector / proc_size;
+  local_vector = std::vector<int>(local_size);
+  merge_vec = std::vector<int>(local_size);
+  remainder = size_input_vector % proc_size;
+  if (remainder == 0)
+    res.resize(size_input_vector);
+  else
+    res.resize(proc_size * local_size);
 
+  // Send parts of vector for each proc
   if (proc_rank == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
+      world.send(proc, 0, input_vector.data() + proc * local_size, local_size);
+    }
+    if (remainder != 0) {
+      std::copy(input_vector.begin() + proc_size * local_size, input_vector.end(), std::back_inserter(remaind_vector));
     }
   }
 
-  local_input_ = std::vector<int>(delta);
-
   if (proc_rank == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta);
+    local_vector = std::vector<int>(input_vector.begin(), input_vector.begin() + local_size);
   } else {
-    world.recv(0, 0, local_input_.data(), delta);
+    world.recv(0, 0, local_vector.data(), local_size);
   }
-  int local_res = 0;
-  for (int i = 0; i < int(local_input_.size()); i++) {
-    if (local_res < local_input_[i]) local_res = local_input_[i];
+
+  local_vector = radix_sort(local_vector);
+
+  // Odd even merge sort
+  for (int i = 0; i < proc_size; i++) {
+    if (i % 2 == 0) {
+      if (proc_rank % 2 == 0 && proc_rank + 1 < proc_size) {
+        world.send(proc_rank + 1, proc_rank, local_vector.data(), local_size);
+      } else if (proc_rank % 2 != 0) {
+        world.recv(proc_rank - 1, proc_rank - 1, merge_vec.data(), local_size);
+        std::vector<int> sort_vector = merge_and_sort(local_vector, merge_vec);
+        std::copy(sort_vector.begin() + local_size, sort_vector.end(), local_vector.begin());
+        world.send(proc_rank - 1, proc_rank, sort_vector.data(), local_size);
+      }
+      if (proc_rank % 2 == 0 && proc_rank + 1 < proc_size) {
+        world.recv(proc_rank + 1, proc_rank + 1, local_vector.data(), local_size);
+      }
+    }
+    if (i % 2 != 0) {
+      if (proc_rank % 2 != 0 && proc_rank + 1 < proc_size) {
+        world.send(proc_rank + 1, proc_rank, local_vector.data(), local_size);
+      } else if (proc_rank % 2 == 0 && proc_rank > 0) {
+        world.recv(proc_rank - 1, proc_rank - 1, merge_vec.data(), local_size);
+        std::vector<int> sort_vector = merge_and_sort(local_vector, merge_vec);
+        std::copy(sort_vector.begin() + local_size, sort_vector.end(), local_vector.begin());
+        world.send(proc_rank - 1, proc_rank, sort_vector.data(), local_size);
+      }
+      if (proc_rank % 2 != 0 && proc_rank + 1 < proc_size) {
+        world.recv(proc_rank + 1, proc_rank + 1, local_vector.data(), local_size);
+      }
+    }
   }
-  gather(world, local_res, res, 0);
+
+  gather(world, local_vector.data(), local_size, res, 0);
+
+  if (proc_rank == 0 && remainder != 0) {
+    res = merge_and_sort(res, remaind_vector);
+  }
+
   return true;
 }
 
-bool kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel::post_processing() {
+bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (int i = 0; i < world.size(); i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
+    int* output_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
+    for (size_t i = 0; i < res.size(); ++i) {
+      output_ptr[i] = res[i];
     }
   }
   return true;

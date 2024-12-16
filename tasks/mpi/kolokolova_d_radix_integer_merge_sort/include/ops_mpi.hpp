@@ -12,9 +12,12 @@
 
 #include "core/task/include/task.hpp"
 
-namespace kolokolova_d_max_of_row_matrix_mpi {
+namespace kolokolova_d_radix_integer_merge_sort_mpi {
 
 std::vector<int> getRandomVector(int sz);
+std::vector<int> radix_sort(std::vector<int>& array);
+void counting_sort_radix(std::vector<int>& array, int exp);
+std::vector<int> merge_and_sort(const std::vector<int>& vec1, const std::vector<int>& vec2);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -25,7 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> input_;
+  std::vector<int> input_vector;
   std::vector<int> res;
 };
 
@@ -38,10 +41,14 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  std::vector<int> res;
+  std::vector<int> input_vector, local_vector;
+  std::vector<int> res, merge_vec;
+  std::vector<int> remaind_vector;
   boost::mpi::communicator world;
   unsigned int delta = 0;
+  int size_input_vector = 0;
+  int local_size = 0;
+  int remainder = 0;
 };
 
 }  // namespace kolokolova_d_max_of_row_matrix_mpi

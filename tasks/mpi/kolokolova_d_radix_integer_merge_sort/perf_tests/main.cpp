@@ -1,30 +1,48 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/timer.hpp>
+#include <functional>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/kolokolova_d_radix_integer_merge_sort/include/ops_mpi.hpp"
 
-TEST(kolokolova_d_max_of_row_matrix_mpi, test_pipeline_run) {
+using namespace kolokolova_d_radix_integer_merge_sort_mpi;
+
+std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  std::uniform_int_distribution<int> dist(-100, 100);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
+TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_matrix;
-  std::vector<int32_t> global_max(world.size(), 0);
-  int count_rows = world.size();
+  int size_vector = world.size() * 1000;
+  std::vector<int> unsorted_vector(size_vector);
+  std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
+  std::vector<int32_t> result(size_vector);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const int count_size_vector = count_rows * 2000000;
+
   if (world.rank() == 0) {
-    global_matrix = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
+    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
+    taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));
+    taskDataPar->outputs_count.emplace_back(sorted_vector.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -44,28 +62,30 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_max[0]);
+    ASSERT_EQ(size_vector, int(sorted_vector.size()));
   }
 }
 
-TEST(kolokolova_d_max_of_row_matrix_mpi, test_task_run) {
+TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> global_matrix;
-  std::vector<int32_t> global_max(world.size(), 0);
-  int count_rows = world.size();
+  int size_vector = world.size() * 1000;
+  std::vector<int> unsorted_vector(size_vector);
+  std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
+  std::vector<int32_t> result(size_vector);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  const int count_size_vector = count_rows * 8500000;
+
   if (world.rank() == 0) {
-    global_matrix = std::vector<int>(count_size_vector, 1);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
-    taskDataPar->outputs_count.emplace_back(global_max.size());
+    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
+    taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));
+    taskDataPar->outputs_count.emplace_back(sorted_vector.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<kolokolova_d_max_of_row_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -84,6 +104,6 @@ TEST(kolokolova_d_max_of_row_matrix_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_max[0]);
+    ASSERT_EQ(size_vector, int(sorted_vector.size()));
   }
 }
