@@ -19,7 +19,7 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   boost::mpi::communicator world;
   // Credate Data
   std::vector<int> in_matrix(n);
-  bool res = false;
+  std::vector<int> out(1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -27,8 +27,8 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
     in_matrix = create_RandomVector<int>(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
     taskData->inputs_count.emplace_back(in_matrix.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
-    taskData->outputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskData->outputs_count.emplace_back(out.size());
   }
 
   auto testTaskMpi = std::make_shared<agafeev_s_linear_topology::LinearTopology<int>>(taskData);
@@ -47,7 +47,7 @@ TEST(agafeev_s_max_of_vector_elements, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_TRUE(res);
+    ASSERT_TRUE(out[0]);
   }
 }
 
@@ -56,7 +56,7 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   boost::mpi::communicator world;
   // Credate Data
   std::vector<int> in_matrix(n);
-  bool res = false;
+  std::vector<int> out(1, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -64,8 +64,8 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
     in_matrix = create_RandomVector<int>(n);
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
     taskData->inputs_count.emplace_back(in_matrix.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&res));
-    taskData->outputs_count.emplace_back(1);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskData->outputs_count.emplace_back(out.size());
   }
 
   auto testTaskMpi = std::make_shared<agafeev_s_linear_topology::LinearTopology<int>>(taskData);
@@ -84,6 +84,6 @@ TEST(agafeev_s_max_of_vector_elements, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_TRUE(res);
+    ASSERT_TRUE(out[0]);
   }
 }
