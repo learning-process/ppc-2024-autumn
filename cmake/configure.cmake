@@ -59,7 +59,7 @@ MACRO(CPPCHECK_TEST ProjectId ALL_SOURCE_FILES)
             endif ()
         endforeach ()
         if (NOT APPLE)
-            find_program(CPPCHECK_EXEC /usr/bin/cppcheck)
+            find_program(CPPCHECK_EXEC cppcheck)
             add_custom_target(
                     "${ProjectId}_cppcheck" ALL
                     COMMAND ${CPPCHECK_EXEC}
@@ -74,5 +74,5 @@ MACRO(CPPCHECK_TEST ProjectId ALL_SOURCE_FILES)
                     ${ALL_SOURCE_FILES}
             )
         ENDIF ()
-    endif( UNIX )
+    endif( UNIX AND USE_CPPCHECK)
 ENDMACRO()
