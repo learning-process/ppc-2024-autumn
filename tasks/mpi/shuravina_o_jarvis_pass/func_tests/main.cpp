@@ -27,7 +27,6 @@ TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
     }
   }
 }
-
 TEST(shuravina_o_jarvis_pass, Test_Minimal_Points) {
   boost::mpi::communicator world;
   std::vector<Point> global_points = {Point(0, 0), Point(1, 1), Point(0, 2)};
