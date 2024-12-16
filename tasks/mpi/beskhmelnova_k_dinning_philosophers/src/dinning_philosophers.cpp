@@ -5,6 +5,7 @@
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::pre_processing() {
+  internal_order_test();
   left_neighbor = (world.rank() + world.size() - 1) % world.size();
   right_neighbor = (world.rank() + 1) % world.size();
   state = THINKING;
@@ -15,12 +16,14 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::pre_pr
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::validation() {
+  internal_order_test();
   int num_philosophers = taskData->inputs_count[0];
   return world.size() >= 2 && num_philosophers >= 2;
 }
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() {
+  internal_order_test();
   while (!check_for_termination()) {
     think();
     request_forks();
@@ -33,6 +36,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() 
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::post_processing() {
+  internal_order_test();
   world.barrier();
   while (world.iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG)) {
     State leftover_message;
