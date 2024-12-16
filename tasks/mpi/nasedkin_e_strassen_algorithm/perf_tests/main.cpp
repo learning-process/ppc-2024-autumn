@@ -10,7 +10,7 @@ TEST(nasedkin_e_strassen_algorithm_mpi, test_pipeline_run) {
     auto taskData = std::make_shared<ppc::core::TaskData>();
     taskData->inputs_count.push_back(8);
 
-    auto strassenTask = std::make_shared<nasedkin_e_strassen_algorithm_mpi::StrassenAlgorithmMPI>(taskData);
+    auto strassenTask = std::make_shared<nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI>(taskData);
 
     ASSERT_TRUE(strassenTask->validation()) << "Validation failed for valid input";
 
@@ -35,7 +35,7 @@ TEST(nasedkin_e_strassen_algorithm_mpi, test_task_run) {
     auto taskData = std::make_shared<ppc::core::TaskData>();
     taskData->inputs_count.push_back(8);
 
-    auto strassenTask = std::make_shared<nasedkin_e_strassen_algorithm_mpi::StrassenAlgorithmMPI>(taskData);
+    auto strassenTask = std::make_shared<nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI>(taskData);
 
     ASSERT_TRUE(strassenTask->validation()) << "Validation failed for valid input";
 

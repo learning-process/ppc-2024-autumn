@@ -8,7 +8,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace nasedkin_e_strassen_algorithm_mpi {
+namespace nasedkin_e_strassen_algorithm {
 
     class StrassenAlgorithmMPI : public ppc::core::Task {
     public:
@@ -20,25 +20,24 @@ namespace nasedkin_e_strassen_algorithm_mpi {
         bool post_processing() override;
 
         void set_matrices(const std::vector<std::vector<double>>& matrixA, const std::vector<std::vector<double>>& matrixB);
-        void set_matrices(const std::vector<double>& flatA, const std::vector<double>& flatB, int size);
         static void generate_random_matrix(int size, std::vector<std::vector<double>>& matrix);
-        const std::vector<std::vector<double>>& get_result() const { return C; }
+        const std::vector<std::vector<double>>& get_result() const { return result; }
 
     private:
         boost::mpi::communicator world;
         std::vector<std::vector<double>> A;
         std::vector<std::vector<double>> B;
-        std::vector<std::vector<double>> C;
+        std::vector<std::vector<double>> result;
         int n;
 
-        void strassen_recursive(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
-        static void add_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
-        static void subtract_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
-        static void split_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& top_left, std::vector<std::vector<double>>& top_right, std::vector<std::vector<double>>& bottom_left, std::vector<std::vector<double>>& bottom_right, int size);
-        static void combine_matrices(std::vector<std::vector<double>>& matrix, const std::vector<std::vector<double>>& top_left, const std::vector<std::vector<double>>& top_right, const std::vector<std::vector<double>>& bottom_left, const std::vector<std::vector<double>>& bottom_right, int size);
+        void strassen_multiply(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
+        void add_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
+        void subtract_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size);
+        void split_matrix(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& A11, std::vector<std::vector<double>>& A12, std::vector<std::vector<double>>& A21, std::vector<std::vector<double>>& A22, int size);
+        void join_matrices(const std::vector<std::vector<double>>& C11, const std::vector<std::vector<double>>& C12, const std::vector<std::vector<double>>& C21, const std::vector<std::vector<double>>& C22, std::vector<std::vector<double>>& C, int size);
 
-        static void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat);
-        static void unflatten_matrix(const std::vector<double>& flat, std::vector<std::vector<double>>& matrix, int n);
+        void distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& local_matrix);
+        void gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& result);
     };
 
-}  // namespace nasedkin_e_strassen_algorithm_mpi
+}  // namespace nasedkin_e_strassen_algorithm
