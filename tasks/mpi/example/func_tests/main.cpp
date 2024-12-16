@@ -181,6 +181,10 @@ TEST(Parallel_Operations_MPI, Test_Max) {
 
     ASSERT_EQ(reference_max[0], global_max[0]);
   }
+
+  if (world.size() > 1 && world.rank() != 0) {
+    world.send(world.rank() - 1, 42);
+  }
 }
 
 TEST(Parallel_Operations_MPI, Test_Max_2) {
@@ -235,5 +239,19 @@ int main(int argc, char** argv) {
   if (world.rank() != 0) {
     delete listeners.Release(listeners.default_result_printer());
   }
+  struct BufferGarbageDetector : public ::testing::EmptyTestEventListener {
+    void OnTestEnd(const ::testing::TestInfo& test_info) override {
+      world.barrier();
+      if (const auto status = world.iprobe(boost::mpi::any_source, boost::mpi::any_tag)) {
+        fprintf(stderr, "[  PROCESS %d  ] %s.%s: MPI buffer is cluttered, unread message tag is %d\n", world.rank(),
+                test_info.test_suite_name(), test_info.name(), status->tag());
+        exit(2);
+      }
+      world.barrier();
+    }
+
+    boost::mpi::communicator world;
+  };
+  listeners.Append(new BufferGarbageDetector);
   return RUN_ALL_TESTS();
 }
