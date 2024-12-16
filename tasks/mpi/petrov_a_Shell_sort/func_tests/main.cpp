@@ -47,13 +47,21 @@ void template_test(const std::vector<int>& input_data) {
   }
 }
 
-TEST(petrov_a_Shell_sort_mpi, test_sorted_ascending_mpi) { template_test({1, 2, 3, 4, 5, 6, 7, 8}); }
+TEST(petrov_a_Shell_sort_mpi, test_sorted_ascending_mpi) {
+    template_test({1, 2, 3, 4, 5, 6, 7, 8});
+}
 
-TEST(petrov_a_Shell_sort_mpi, test_almost_sorted_random_mpi) { template_test({9, 7, 5, 3, 1, 2, 4, 6}); }
+TEST(petrov_a_Shell_sort_mpi, test_almost_sorted_random_mpi) {
+    template_test({9, 7, 5, 3, 1, 2, 4, 6});
+}
 
-TEST(petrov_a_Shell_sort_mpi, test_sorted_descending_mpi) { template_test({8, 7, 6, 5, 4, 3, 2, 1}); }
+TEST(petrov_a_Shell_sort_mpi, test_sorted_descending_mpi) {
+    template_test({8, 7, 6, 5, 4, 3, 2, 1});
+}
 
-TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements_mpi) { template_test({5, 5, 5, 5, 5, 5, 5, 5}); }
+TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements_mpi) {
+    template_test({5, 5, 5, 5, 5, 5, 5, 5});
+}
 
 TEST(petrov_a_Shell_sort_mpi, test_random_vector_mpi) {
   auto random_vec = generate_random_vector(1000, -1000, 1000);
