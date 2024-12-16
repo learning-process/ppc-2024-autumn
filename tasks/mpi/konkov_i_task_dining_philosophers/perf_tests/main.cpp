@@ -7,7 +7,8 @@
 #include "mpi/konkov_i_task_dining_philosophers/include/ops_mpi.hpp"
 
 TEST(konkov_i_DiningPhilosophersPerformance, RunPipelinePerformance) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -47,7 +48,8 @@ TEST(konkov_i_DiningPhilosophersPerformance, RunPipelinePerformance) {
 }
 
 TEST(konkov_i_DiningPhilosophersPerformance, RunTaskPerformance) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 

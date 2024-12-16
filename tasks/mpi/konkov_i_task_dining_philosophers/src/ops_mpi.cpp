@@ -13,7 +13,7 @@ DiningPhilosophers::DiningPhilosophers(int num_philosophers)
   MPI_Comm_size(MPI_COMM_WORLD, &size_);
 }
 
-bool DiningPhilosophers::validation() { return num_philosophers_ > 1; }
+bool DiningPhilosophers::validation() const { return num_philosophers_ > 1; }
 
 bool DiningPhilosophers::pre_processing() {
   if (rank_ == 0) {

@@ -14,7 +14,8 @@ TEST(konkov_i_DiningPhilosophersTest, ValidNumberOfPhilosophers) {
 }
 
 TEST(konkov_i_DiningPhilosophersTest, DeadlockFreeExecution) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 

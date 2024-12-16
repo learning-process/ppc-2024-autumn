@@ -10,7 +10,7 @@ namespace konkov_i_dining_philosophers {
 class DiningPhilosophers {
  public:
   explicit DiningPhilosophers(int num_philosophers);
-  bool validation();
+  bool validation() const;
   bool pre_processing();
   bool run();
   bool post_processing();
