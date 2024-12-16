@@ -36,7 +36,7 @@ namespace nasedkin_e_strassen_algorithm {
         static void split_matrix(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& A11, std::vector<std::vector<double>>& A12, std::vector<std::vector<double>>& A21, std::vector<std::vector<double>>& A22, int size);
         static void join_matrices(const std::vector<std::vector<double>>& C11, const std::vector<std::vector<double>>& C12, const std::vector<std::vector<double>>& C21, const std::vector<std::vector<double>>& C22, std::vector<std::vector<double>>& C, int size);
         void distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& distributed_matrix);
-        void gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& result);
+        void gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& gathered_result);
         static void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix);
         static void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols);
     };
