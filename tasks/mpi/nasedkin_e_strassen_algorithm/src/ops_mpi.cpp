@@ -12,7 +12,7 @@ namespace nasedkin_e_strassen_algorithm {
         }
 
         result.resize(n, std::vector<double>(n, 0.0));
-        
+
         std::vector<std::vector<double>> local_A;
         std::vector<std::vector<double>> local_B;
         distribute_matrix(A, local_A);
