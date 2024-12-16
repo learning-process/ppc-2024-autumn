@@ -1,10 +1,10 @@
 #include "mpi/shulpin_i_simpson_method/include/simpson_method.hpp"
 
 #include <algorithm>
-#include <cmath>
-#include <functional>
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
+#include <cmath>
+#include <functional>
 
 double shulpin_simpson_method::f_x_plus_y(double x, double y) { return x + y; }
 double shulpin_simpson_method::f_x_mul_y(double x, double y) { return x * y; }
@@ -42,7 +42,7 @@ double shulpin_simpson_method::seq_simpson(double a, double b, double c, double 
   double seq_sum = 0.0;
 
   for (int i = 0; i <= N; ++i) {
-    seq_sum += calculate_row_sum(i, N ,dx, dy, a, c, func_seq);
+      seq_sum += calculate_row_sum(i, N ,dx, dy, a, c, func_seq);
   }
 
   return (dx * dy / 9.0) * seq_sum;
@@ -66,7 +66,7 @@ double shulpin_simpson_method::mpi_simpson(double a, double b, double c, double 
 
   int local_start = rank * chunk_size + std::min(rank, extra_rows);
   int local_end = local_start + chunk_size - 1;
-  
+
   if (rank < extra_rows) {
     ++local_end;
   } else if (rank == num_procs - 1) {
@@ -158,7 +158,6 @@ bool shulpin_simpson_method::SimpsonMethodMPI::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-
     return ((taskData->inputs.size() == 5) &&
             (*reinterpret_cast<double*>(taskData->inputs[0]) < *reinterpret_cast<double*>(taskData->inputs[1])) &&
             (*reinterpret_cast<double*>(taskData->inputs[2]) < *reinterpret_cast<double*>(taskData->inputs[3])));

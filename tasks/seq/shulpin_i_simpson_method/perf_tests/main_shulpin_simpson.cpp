@@ -21,7 +21,7 @@ TEST(shulpin_simpson_method, pipeline_run) {
   double ref_integral = 0.386;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
   taskDataSeq->inputs_count.emplace_back(1);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));

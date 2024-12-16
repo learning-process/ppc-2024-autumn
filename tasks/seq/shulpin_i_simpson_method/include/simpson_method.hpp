@@ -1,6 +1,7 @@
 #pragma once
 
 #include <gtest/gtest.h>
+
 #include <memory>
 #include <numeric>
 #include <utility>
@@ -21,7 +22,7 @@ double calculate_row_sum(int i, int num_steps, double dx, double dy, double a, d
 
 class SimpsonMethodSeq : public ppc::core::Task {
  public:
-  explicit SimpsonMethodSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
+  explicit SimpsonMethodSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

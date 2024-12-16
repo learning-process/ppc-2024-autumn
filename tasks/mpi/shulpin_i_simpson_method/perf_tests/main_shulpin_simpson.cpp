@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-
 #include "mpi/shulpin_i_simpson_method/include/simpson_method.hpp"
 
 constexpr double ESTIMATE = 1e-2;

@@ -32,7 +32,7 @@ TEST(shulpin_simpson_method, x_plus_y_2n) {
   taskDataSeq->inputs_count.emplace_back(1);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_integral));
   taskDataSeq->outputs_count.emplace_back(1);
-    
+
   shulpin_simpson_method::SimpsonMethodSeq seqIntegral(taskDataSeq);
   seqIntegral.set_seq(shulpin_simpson_method::f_x_plus_y);
   ASSERT_EQ(seqIntegral.validation(), true);
@@ -377,6 +377,6 @@ TEST(shulpin_simpson_method, invalid_data_2) {
   taskDataSeq->outputs_count.emplace_back(1);
 
   shulpin_simpson_method::SimpsonMethodSeq IntegralSeq(taskDataSeq);
-  
+
   ASSERT_FALSE(IntegralSeq.validation());
 }
