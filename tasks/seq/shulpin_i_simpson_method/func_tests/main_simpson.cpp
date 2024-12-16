@@ -380,3 +380,33 @@ TEST(shulpin_simpson_method, invalid_data_2) {
 
   ASSERT_FALSE(IntegralSeq.validation());
 }
+
+TEST(shulpin_simpson_method, invalid_data_3) {
+  double a = 0.0;
+  double b = 3.0;
+  double c = 0.0;
+  double d = 1.0;
+
+  int N = -101;
+
+  double global_integral = 0.0;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&c));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&d));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_integral));
+  taskDataSeq->outputs_count.emplace_back(1);
+
+  shulpin_simpson_method::SimpsonMethodSeq IntegralSeq(taskDataSeq);
+
+  ASSERT_FALSE(IntegralSeq.validation());
+}

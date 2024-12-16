@@ -616,3 +616,38 @@ TEST(shulpin_simpson_method, invalid_data_2) {
     ASSERT_FALSE(IntegralMPI.validation());
   }
 }
+
+TEST(shulpin_simpson_method, invalid_data_3) {
+  boost::mpi::communicator world;
+
+  double a = 0.0;
+  double b = 3.0;
+  double c = 0.0;
+  double d = 1.0;
+
+  int N = -101;
+
+  double global_integral = 0.0;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&c));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&d));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_integral));
+    taskDataPar->outputs_count.emplace_back(1);
+  }
+
+  shulpin_simpson_method::SimpsonMethodMPI IntegralMPI(taskDataPar);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(IntegralMPI.validation());
+  }
+}

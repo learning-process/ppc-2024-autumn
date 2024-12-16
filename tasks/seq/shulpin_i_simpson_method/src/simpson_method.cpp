@@ -67,7 +67,7 @@ bool shulpin_simpson_method::SimpsonMethodSeq::pre_processing() {
 bool shulpin_simpson_method::SimpsonMethodSeq::validation() {
   internal_order_test();
 
-  return ((taskData->inputs.size() == 5) &&
+  return ((taskData->inputs.size() == 5) && (*reinterpret_cast<int*>(taskData->inputs[4]) > 0) &&
           (*reinterpret_cast<double*>(taskData->inputs[0]) < *reinterpret_cast<double*>(taskData->inputs[1])) &&
           (*reinterpret_cast<double*>(taskData->inputs[2]) < *reinterpret_cast<double*>(taskData->inputs[3])));
 }
