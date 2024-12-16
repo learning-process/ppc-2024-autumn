@@ -1,6 +1,7 @@
 #include "mpi/agafeev_s_linear_topology/include/lintop_mpi.hpp"
 
 #include <algorithm>
+#include <chrono>
 #include <iostream>
 
 namespace agafeev_s_linear_topology {
@@ -67,6 +68,11 @@ bool LinearTopology<T>::run() {
   if (w_rank == w_size - 1) {
     bool corr_order = std::is_sorted(ranks_vec_.begin(), ranks_vec_.end()) && ranks_vec_.size() == w_size;
     result_ = corr_order;
+    world.send(0, 4, result_);
+  }
+
+  if (w_rank == 0) {
+    world.recv(w_size - 1, 4, result_);
   }
 
   return true;

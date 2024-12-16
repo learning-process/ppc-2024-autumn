@@ -2,6 +2,7 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <iostream>
 #include <random>
 #include <vector>
 

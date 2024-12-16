@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <vector>
+#include <iostream>
 
 #include "boost/mpi/communicator.hpp"
 #include "core/task/include/task.hpp"
@@ -81,8 +81,9 @@ TEST(agafeev_s_linear_topology, test_find_in_3x3_matrix) {
   ASSERT_EQ(isValid, true);
   testTask->pre_processing();
   testTask->run();
+  std::cout << "After run: " << out[0] << std::endl;
   testTask->post_processing();
-
+  std::cout << "Post proc " << out[0] << std::endl;
   if (world.rank() == 0) {
     ASSERT_TRUE(out[0]);
   }
