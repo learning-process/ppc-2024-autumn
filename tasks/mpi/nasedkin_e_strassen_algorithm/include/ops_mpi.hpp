@@ -38,8 +38,8 @@ namespace nasedkin_e_strassen_algorithm {
 
         void distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& local_matrix);
         void gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& result);
-        void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix);
-        void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols);
+        static void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix);
+        static void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols);
     };
 
 }  // namespace nasedkin_e_strassen_algorithm
