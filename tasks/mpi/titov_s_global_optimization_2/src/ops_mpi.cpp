@@ -411,13 +411,12 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::split_search_area
   process_upper_bound_y_ = bounds[3];
   std::cout << "Process " << world.rank() << ": Bounds -> X: [" << process_lower_bound_x_ << ", "
             << process_upper_bound_x_ << "], Y: [" << process_lower_bound_y_ << ", " << process_upper_bound_y_ << "]\n";
-
 }
 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::post_processing() {
   internal_order_test();
 
-  if (world.rank() == 0){
+  if (world.rank() == 0) {
     reinterpret_cast<Point*>(taskData->outputs[0])[0] = {result_.x, result_.y};
     std::cout << "Global minimum value: " << min_value_ << "\n";
     std::cout << "At point: (" << result_.x << ", " << result_.y << ")\n";
