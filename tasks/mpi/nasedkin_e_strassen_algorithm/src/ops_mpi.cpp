@@ -12,7 +12,7 @@ namespace nasedkin_e_strassen_algorithm {
         }
 
         result.resize(n, std::vector<double>(n, 0.0));
-
+        
         std::vector<std::vector<double>> local_A;
         std::vector<std::vector<double>> local_B;
         distribute_matrix(A, local_A);
@@ -41,30 +41,12 @@ namespace nasedkin_e_strassen_algorithm {
         std::vector<std::vector<double>> local_result(n / world.size(), std::vector<double>(n, 0.0));
         strassen_multiply(A, B, local_result, n / world.size());
 
-        // Сбор результатов с процессов
         gather_result(local_result, result);
 
         return true;
     }
 
     bool StrassenAlgorithmMPI::post_processing() { return true; }
-
-    void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix) {
-        flat_matrix.clear();
-        for (const auto& row : matrix) {
-            flat_matrix.insert(flat_matrix.end(), row.begin(), row.end());
-        }
-    }
-
-    void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols) {
-        matrix.clear();
-        matrix.resize(rows, std::vector<double>(cols, 0.0));
-        for (int i = 0; i < rows; ++i) {
-            for (int j = 0; j < cols; ++j) {
-                matrix[i][j] = flat_matrix[i * cols + j];
-            }
-        }
-    }
 
     void StrassenAlgorithmMPI::strassen_multiply(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
         if (size <= 64) {
@@ -200,7 +182,7 @@ namespace nasedkin_e_strassen_algorithm {
         flatten_matrix(matrix, flat_matrix);
 
         std::vector<double> local_flat_matrix(local_size * n);
-        boost::mpi::scatter(world, flat_matrix, local_flat_matrix, 0);
+        boost::mpi::scatter(world, flat_matrix.data(), local_flat_matrix.data(), local_size * n, 0);
 
         unflatten_matrix(local_flat_matrix, local_matrix, local_size, n);
     }
@@ -213,9 +195,26 @@ namespace nasedkin_e_strassen_algorithm {
         flatten_matrix(local_result, local_flat_result);
 
         std::vector<double> flat_result(n * n);
-        boost::mpi::gather(world, local_flat_result, flat_result, 0);
+        boost::mpi::gather(world, local_flat_result.data(), local_size * n, flat_result.data(), 0);
 
         unflatten_matrix(flat_result, result, n, n);
+    }
+
+    void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix) {
+        flat_matrix.clear();
+        for (const auto& row : matrix) {
+            flat_matrix.insert(flat_matrix.end(), row.begin(), row.end());
+        }
+    }
+
+    void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols) {
+        matrix.clear();
+        matrix.resize(rows, std::vector<double>(cols, 0.0));
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                matrix[i][j] = flat_matrix[i * cols + j];
+            }
+        }
     }
 
 }  // namespace nasedkin_e_strassen_algorithm
