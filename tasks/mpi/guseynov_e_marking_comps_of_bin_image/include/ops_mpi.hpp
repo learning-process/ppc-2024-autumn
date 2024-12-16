@@ -22,7 +22,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> image_;
-  std::vector < int labeled_image;
+  std::vector <int> labeled_image;
   int rows, columns;
 };
 
@@ -33,6 +33,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+  
  private:
   std::vector<int> image_, local_image_;
   std::vector<int> labeled_image;
