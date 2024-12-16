@@ -20,7 +20,6 @@ static std::vector<Point> getRandomPoints(int count, int min_coord, int max_coor
   }
   return points;
 }
-
 TEST(shuravina_o_jarvis_pass, Test_10_Points) {
   boost::mpi::communicator world;
   const int count_points = 10;
