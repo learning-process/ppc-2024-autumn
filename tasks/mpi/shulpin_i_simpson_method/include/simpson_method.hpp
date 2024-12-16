@@ -26,7 +26,7 @@ double mpi_simpson(double a, double b, double c, double d, int N, const func &f)
 
 class SimpsonMethodSeq : public ppc::core::Task {
  public:
-  explicit SimpsonMethodSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
+  explicit SimpsonMethodSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -45,7 +45,7 @@ class SimpsonMethodSeq : public ppc::core::Task {
 
 class SimpsonMethodMPI : public ppc::core::Task {
  public:
-  explicit SimpsonMethodMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){};
+  explicit SimpsonMethodMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {};
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
