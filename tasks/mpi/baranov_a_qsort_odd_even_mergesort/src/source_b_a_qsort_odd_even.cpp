@@ -58,7 +58,6 @@ bool baranov_a_odd_even_merge_sort<iotype>::run() {
   bool sz_is_even = (sz % 2 == 0);
 
   for (int i = 0; i != sz; ++i) {
-    world.barrier();
     int low_edge = 0;
     int high_edge = sz;
     if (i % 2 == 0)  // odd iteration
