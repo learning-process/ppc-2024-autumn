@@ -8,10 +8,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/petrov_a_Shell_sort/include/ops_seq.hpp"
 
-namespace petrov_a_Shell_sort_seq {
-
 TEST(petrov_a_Shell_sort_seq, pipeline_run) {
-  int vector_size = 5000;
+  int vector_size = 10000;
   std::vector<int> data(vector_size);
   int current = vector_size;
   std::generate(data.begin(), data.end(), [&current]() { return current--; });
@@ -71,5 +69,3 @@ TEST(petrov_a_Shell_sort_seq, pipeline_run_random_data) {
   std::sort(data.begin(), data.end());
   EXPECT_EQ(data, result_data);
 }
-
-}  // namespace petrov_a_Shell_sort_seq

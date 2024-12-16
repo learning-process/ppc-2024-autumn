@@ -12,7 +12,7 @@ TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int rows = 5000;
+  int rows = 10000;
   int cols = 50;
 
   std::vector<int> global_matrix;
