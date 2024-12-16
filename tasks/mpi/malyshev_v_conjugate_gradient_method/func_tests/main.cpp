@@ -30,7 +30,7 @@ std::vector<std::vector<double>> getRandomSPDMatrix(uint32_t size) {
 
   // Делаем матрицу положительно определённой, добавляя к диагонали
   for (uint32_t i = 0; i < size; i++) {
-    matrix[i][i] += size; // Добавляем размер матрицы к диагональным элементам
+    matrix[i][i] += size;
   }
 
   return matrix;
