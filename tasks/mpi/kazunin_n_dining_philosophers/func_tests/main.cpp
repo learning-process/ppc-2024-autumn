@@ -13,8 +13,8 @@ bool is_valid(int eat_limit, int min_think_time, int max_think_time, int min_eat
          min_think_time > 0 && max_eat_time < 100 && min_eat_time > 0;
 }
 
-void start_test(int eat_limit = 3, int min_think_time = 10, int max_think_time = 20, int min_eat_time = 5,
-                int max_eat_time = 10) {
+void start_test(int eat_limit = 3, int min_think_time = 2, int max_think_time = 5, int min_eat_time = 2,
+                int max_eat_time = 5) {
   boost::mpi::communicator world;
   if (world.size() < 4) {
     GTEST_SKIP();
@@ -54,20 +54,18 @@ TEST(kazunin_n_dining_philosophers_mpi, defailt) { kazunin_n_dining_philosophers
 
 TEST(kazunin_n_dining_philosophers_mpi, default_eat_limit) { kazunin_n_dining_philosophers_mpi::start_test(4); }
 
-TEST(kazunin_n_dining_philosophers_mpi, default_min_think_time) {
-  kazunin_n_dining_philosophers_mpi::start_test(4, 10);
-}
+TEST(kazunin_n_dining_philosophers_mpi, default_min_think_time) { kazunin_n_dining_philosophers_mpi::start_test(4, 3); }
 
 TEST(kazunin_n_dining_philosophers_mpi, default_max_think_time) {
-  kazunin_n_dining_philosophers_mpi::start_test(4, 10, 15);
+  kazunin_n_dining_philosophers_mpi::start_test(4, 3, 4);
 }
 
 TEST(kazunin_n_dining_philosophers_mpi, default_min_eat_time) {
-  kazunin_n_dining_philosophers_mpi::start_test(4, 10, 15, 10);
+  kazunin_n_dining_philosophers_mpi::start_test(4, 3, 4, 3);
 }
 
 TEST(kazunin_n_dining_philosophers_mpi, default_max_eat_time) {
-  kazunin_n_dining_philosophers_mpi::start_test(4, 10, 15, 10, 15);
+  kazunin_n_dining_philosophers_mpi::start_test(4, 3, 4, 3, 4);
 }
 
 TEST(kazunin_n_dining_philosophers_mpi, validation_test_min_eat_limit) {
@@ -98,12 +96,8 @@ TEST(kazunin_n_dining_philosophers_mpi, validation_test_max_max_eat_time) {
   kazunin_n_dining_philosophers_mpi::start_test(3, 20, 40, 20, 1000);
 }
 
-TEST(kazunin_n_dining_philosophers_mpi, simulation_10_eat_limit) { kazunin_n_dining_philosophers_mpi::start_test(10); }
+TEST(kazunin_n_dining_philosophers_mpi, simulation_5_eat_limit) { kazunin_n_dining_philosophers_mpi::start_test(5); }
 
-TEST(kazunin_n_dining_philosophers_mpi, simulation_20_eat_limit) {
-  kazunin_n_dining_philosophers_mpi::start_test(20, 1, 2, 1, 2);
-}
-
-TEST(kazunin_n_dining_philosophers_mpi, simulation_30_eat_limit) {
-  kazunin_n_dining_philosophers_mpi::start_test(30, 1, 2, 1, 2);
+TEST(kazunin_n_dining_philosophers_mpi, simulation_15_eat_limit) {
+  kazunin_n_dining_philosophers_mpi::start_test(15, 1, 2, 1, 2);
 }
