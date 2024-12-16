@@ -50,7 +50,7 @@ class Jarvis : public ppc::core::Task {
     internal_order_test();
 
     if (world.rank() == 0 && taskData->inputs_count[0] < 3) {
-      convex_hull == set;
+      convex_hull = set;
       return true;
     }
 
