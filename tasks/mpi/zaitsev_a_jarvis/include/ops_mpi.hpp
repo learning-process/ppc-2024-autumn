@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
@@ -24,13 +23,12 @@ template <typename T>
 class Jarvis : public ppc::core::Task {
  public:
   explicit Jarvis(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+
   bool validation() override {
     internal_order_test();
 
-    return world.rank() != root || (world.size() > 0 && taskData->inputs_count[0] > 0 &&
-                                    taskData->outputs_count[0] == taskData->inputs_count[0]);
-
-    return true;
+    return world.rank() != root ||
+           (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == taskData->inputs_count[0]);
   };
 
   bool pre_processing() override {
@@ -52,7 +50,7 @@ class Jarvis : public ppc::core::Task {
     internal_order_test();
 
     if (world.rank() == 0 && taskData->inputs_count[0] < 3) {
-      convex_hull = set;
+      convex_hull == set;
       return true;
     }
 
