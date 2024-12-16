@@ -3,6 +3,8 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi/packed_iarchive.hpp>
+#include <boost/mpi/packed_oarchive.hpp>
 #include <cmath>
 #include <iostream>
 
@@ -37,27 +39,24 @@ namespace nasedkin_e_strassen_algorithm_mpi {
     bool StrassenAlgorithmMPI::run() {
         int rank = world.rank();
         int size = world.size();
-
-        std::vector<double> flat_A, flat_B, flat_C;
+        
+        boost::mpi::packed_skeleton_oarchive oa(world);
+        boost::mpi::packed_skeleton_iarchive ia(world);
 
         if (rank == 0) {
-            flatten_matrix(A, flat_A);
-            flatten_matrix(B, flat_B);
+            oa << A << B;
         }
 
-        boost::mpi::broadcast(world, flat_A, 0);
-        boost::mpi::broadcast(world, flat_B, 0);
+        boost::mpi::broadcast(world, oa, 0);
 
-        std::vector<std::vector<double>> local_A, local_B;
-        unflatten_matrix(flat_A, local_A, n);
-        unflatten_matrix(flat_B, local_B, n);
+        if (rank != 0) {
+            ia >> A >> B;
+        }
+
         std::vector<std::vector<double>> local_C(n / size, std::vector<double>(n, 0.0));
-        strassen_recursive(local_A, local_B, local_C, n / size);
+        strassen_recursive(A, B, local_C, n / size);
 
-        std::vector<double> flat_local_C;
-        flatten_matrix(local_C, flat_local_C);
-        boost::mpi::all_reduce(world, flat_local_C, flat_C, std::plus<>());
-        unflatten_matrix(flat_C, C, n);
+        boost::mpi::all_reduce(world, local_C, C, std::plus<>());
 
         return true;
     }
@@ -68,12 +67,6 @@ namespace nasedkin_e_strassen_algorithm_mpi {
         A = matrixA;
         B = matrixB;
         n = static_cast<int>(matrixA.size());
-    }
-
-    void StrassenAlgorithmMPI::set_matrices(const std::vector<double>& flatA, const std::vector<double>& flatB, int size) {
-        unflatten_matrix(flatA, A, size);
-        unflatten_matrix(flatB, B, size);
-        n = size;
     }
 
     void StrassenAlgorithmMPI::generate_random_matrix(int size, std::vector<std::vector<double>>& matrix) {
@@ -202,23 +195,6 @@ namespace nasedkin_e_strassen_algorithm_mpi {
                 matrix[i][j + size] = top_right[i][j];
                 matrix[i + size][j] = bottom_left[i][j];
                 matrix[i + size][j + size] = bottom_right[i][j];
-            }
-        }
-    }
-
-    void StrassenAlgorithmMPI::flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat) {
-        flat.clear();
-        for (const auto& row : matrix) {
-            flat.insert(flat.end(), row.begin(), row.end());
-        }
-    }
-
-    void StrassenAlgorithmMPI::unflatten_matrix(const std::vector<double>& flat, std::vector<std::vector<double>>& matrix, int n) {
-        matrix.clear();
-        matrix.resize(n, std::vector<double>(n));
-        for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < n; ++j) {
-                matrix[i][j] = flat[i * n + j];
             }
         }
     }
