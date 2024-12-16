@@ -35,7 +35,11 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   if (size == 1) {
     // Single process, copy sendbuf to recvbuf directly
-    memcpy(recvbuf, sendbuf, recvcount * datatype_size);
+    if (sendbuf != nullptr) {
+      memcpy(recvbuf, sendbuf, recvcount * datatype_size);
+    } else {
+      return MPI_ERR_BUFFER;
+    }
   } else {
     if (rank == root) {
       const char* send_ptr = static_cast<const char*>(sendbuf);
@@ -65,12 +69,7 @@ bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::pre_processing
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] % taskData->outputs_count[0] != 0) {
-    // std::cerr << "Error: Input count is not divisible by output count." << std::endl;
-    return false;
-  }
-  // std::cout << "Parallel validation completed." << std::endl;
-  return true;
+  return taskData->inputs_count[0] % taskData->outputs_count[0] == 0;
 }
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::run() {

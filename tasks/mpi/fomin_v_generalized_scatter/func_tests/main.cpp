@@ -7,14 +7,15 @@
 #include "mpi/fomin_v_generalized_scatter/include/ops_mpi.hpp"
 
 TEST(fomin_v_generalized_scatter, ScatterIntegers) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   int root = 0;
   const int data_size = size * 10;
   int* sendbuf = nullptr;
-  int* recvbuf = new int[10];
+  auto recvbuf = new int[10];
 
   if (rank == root) {
     sendbuf = new int[data_size];
@@ -40,14 +41,15 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
 }
 
 TEST(fomin_v_generalized_scatter, ScatterFloats) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   int root = 0;
   const int data_size = size * 10;
   float* sendbuf = nullptr;
-  float* recvbuf = new float[10];
+  auto recvbuf = new float[10];
 
   if (rank == root) {
     sendbuf = new float[data_size];
@@ -73,14 +75,15 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
 }
 
 TEST(fomin_v_generalized_scatter, ScatterDoubles) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   int root = 0;
   const int data_size = size * 10;
   double* sendbuf = nullptr;
-  double* recvbuf = new double[10];
+  auto recvbuf = new double[10];
 
   if (rank == root) {
     sendbuf = new double[data_size];
@@ -105,49 +108,17 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
   delete[] recvbuf;
 }
 
-/*TEST(fomin_v_generalized_scatter, SingleProcessScatter) {
-  int rank, size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
-
-  int root = 0;
-  const int data_size = 10;
-  int* sendbuf = nullptr;
-  int* recvbuf = new int[10];
-
-  if (rank == root) {
-    sendbuf = new int[data_size];
-    for (int i = 0; i < data_size; ++i) {
-      sendbuf[i] = i;
-    }
-  }
-
-  std::fill(recvbuf, recvbuf + 10, 0);
-
-  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 10, MPI_INT, root,
-                                                   MPI_COMM_WORLD);
-
-  MPI_Barrier(MPI_COMM_WORLD);  // Ensure synchronization
-
-  if (rank == root) {
-    for (int i = 0; i < 10; ++i) {
-      EXPECT_EQ(recvbuf[i], sendbuf[i]);
-    }
-  }
-
-  delete[] sendbuf;
-  delete[] recvbuf;
-}*/
-
 TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
-  int rank, size;
+  // Сheck function when the number of processes is not a power of two
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   int root = 0;
   const int data_size = size * 10;
   int* sendbuf = nullptr;
-  int* recvbuf = new int[10];
+  auto recvbuf = new int[10];
 
   if (rank == root) {
     sendbuf = new int[data_size];
@@ -173,7 +144,8 @@ TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
 }
 
 TEST(fomin_v_generalized_scatter, ZeroElementsScatter) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
