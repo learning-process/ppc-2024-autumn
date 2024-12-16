@@ -263,8 +263,7 @@ TEST(titov_s_global_optimization_2_mpi, Test_5_constraits_non_linear) {
       };
 
   auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 5.0 - p.x - p.y; };
-  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y * p.y * p.y - p.x;
-  };
+  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y * p.y * p.y - p.x; };
   auto constraint3 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x; };
   auto constraint4 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y; };
   auto constraint5 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x * p.x - p.y; };
