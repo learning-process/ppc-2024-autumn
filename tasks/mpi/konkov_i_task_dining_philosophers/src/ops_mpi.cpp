@@ -1,64 +1,70 @@
 #include "mpi/konkov_i_task_dining_philosophers/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
-#include <condition_variable>
-#include <functional>
-#include <mutex>
-#include <string>
 #include <vector>
 
-using namespace std::chrono_literals;
+namespace konkov_i_dining_philosophers {
 
-bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::pre_processing() {
-  internal_order_test();
-  return true;
+DiningPhilosophers::DiningPhilosophers(int num_philosophers)
+    : num_philosophers_(num_philosophers), fork_states_(num_philosophers, 0), philosopher_states_(num_philosophers, 0) {
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
+  MPI_Comm_size(MPI_COMM_WORLD, &size_);
 }
 
-bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    return taskData->outputs_count[0] == 1;
+bool DiningPhilosophers::validation() { return num_philosophers_ > 1; }
+
+bool DiningPhilosophers::pre_processing() {
+  if (rank_ == 0) {
+    init_philosophers();
   }
+  MPI_Barrier(MPI_COMM_WORLD);
   return true;
 }
 
-bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::run() {
-  internal_order_test();
-
-  unsigned int delta = 0;
-
-  if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size();
-    input_ = std::vector<int>(taskData->inputs_count[0]);
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-      input_[i] = tmp_ptr[i];
+bool DiningPhilosophers::run() {
+  for (int i = 0; i < num_philosophers_; ++i) {
+    if (rank_ == i) {
+      philosopher_actions(i);
     }
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
-  }
-  broadcast(world, delta, 0);
-
-  local_input_ = std::vector<int>(delta);
-  if (world.rank() == 0) {
-    std::copy(input_.begin(), input_.begin() + delta, local_input_.begin());
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-
-  res = std::accumulate(local_input_.begin(), local_input_.end(), 0);
-
-  int local_res = res;
-  reduce(world, local_res, res, std::plus(), 0);
-
-  return true;
-}
-
-bool konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
+    MPI_Barrier(MPI_COMM_WORLD);
   }
   return true;
 }
+
+bool DiningPhilosophers::post_processing() { return !is_deadlock(); }
+
+bool DiningPhilosophers::check_deadlock() { return is_deadlock(); }
+
+bool DiningPhilosophers::check_all_think() {
+  return std::all_of(philosopher_states_.begin(), philosopher_states_.end(), [](int state) { return state == 0; });
+}
+
+void DiningPhilosophers::init_philosophers() {
+  std::fill(fork_states_.begin(), fork_states_.end(), 0);
+  std::fill(philosopher_states_.begin(), philosopher_states_.end(), 0);
+}
+
+void DiningPhilosophers::philosopher_actions(int id) {
+  int left_fork = id;
+  int right_fork = (id + 1) % num_philosophers_;
+
+  // Attempt to pick up forks
+  if (fork_states_[left_fork] == 0 && fork_states_[right_fork] == 0) {
+    fork_states_[left_fork] = 1;
+    fork_states_[right_fork] = 1;
+    philosopher_states_[id] = 1;  // Eating
+  }
+
+  // Release forks
+  fork_states_[left_fork] = 0;
+  fork_states_[right_fork] = 0;
+  philosopher_states_[id] = 0;  // Thinking
+}
+
+bool DiningPhilosophers::is_deadlock() {
+  return std::all_of(philosopher_states_.begin(), philosopher_states_.end(), [](int state) { return state == 1; });
+}
+
+}  // namespace konkov_i_dining_philosophers

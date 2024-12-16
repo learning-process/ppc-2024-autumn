@@ -1,33 +1,34 @@
-#pragma once
+#ifndef MODULES_TASK_2_KONKOV_I_DINING_PHILOSOPHERS_OPS_MPI_HPP_
+#define MODULES_TASK_2_KONKOV_I_DINING_PHILOSOPHERS_OPS_MPI_HPP_
 
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
-#include <condition_variable>
-#include <memory>
-#include <mutex>
-#include <numeric>
-#include <string>
-#include <utility>
+#include <mpi.h>
+
 #include <vector>
 
-#include "core/task/include/task.hpp"
+namespace konkov_i_dining_philosophers {
 
-namespace konkov_i_task_dining_philosophers {
-
-class DiningPhilosophersMPITaskParallel : public ppc::core::Task {
+class DiningPhilosophers {
  public:
-  explicit DiningPhilosophersMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
+  explicit DiningPhilosophers(int num_philosophers);
+  bool validation();
+  bool pre_processing();
+  bool run();
+  bool post_processing();
+  bool check_deadlock();
+  bool check_all_think();
 
  private:
-  boost::mpi::communicator world;
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::vector<int> getRandomVector(int sz);
+  int num_philosophers_;
+  int rank_;
+  int size_;
+  std::vector<int> fork_states_;
+  std::vector<int> philosopher_states_;
+
+  void init_philosophers();
+  void philosopher_actions(int id);
+  bool is_deadlock();
 };
 
-}  // namespace konkov_i_task_dining_philosophers
+}  // namespace konkov_i_dining_philosophers
+
+#endif  // MODULES_TASK_2_KONKOV_I_DINING_PHILOSOPHERS_OPS_MPI_HPP_

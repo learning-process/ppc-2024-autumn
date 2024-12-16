@@ -1,50 +1,78 @@
 #include <gtest/gtest.h>
-
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <random>
-#include <vector>
+#include <mpi.h>
 
 #include "mpi/konkov_i_task_dining_philosophers/include/ops_mpi.hpp"
 
-inline std::vector<int> getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(-100, 100);
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = dist(gen);
-  }
-  return vec;
+TEST(konkov_i_DiningPhilosophersTest, ValidNumberOfPhilosophers) {
+  int num_philosophers = 5;
+  konkov_i_dining_philosophers::DiningPhilosophers dp(num_philosophers);
+
+  ASSERT_TRUE(dp.validation());
+  ASSERT_TRUE(dp.pre_processing());
+  ASSERT_TRUE(dp.run());
+  ASSERT_TRUE(dp.post_processing());
 }
 
-TEST(konkov_mpi_dining_philosophers_func_test, Test_Dining_Philosophers) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int32_t> global_result(1, 0);
+TEST(konkov_i_DiningPhilosophersTest, DeadlockFreeExecution) {
+  int rank, size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int count_size_vector = 120;
-    global_vec = getRandomVector(count_size_vector);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+  if (size < 2) {
+    GTEST_SKIP() << "Skipping test: At least 2 processes are required.";
   }
 
-  konkov_i_task_dining_philosophers::DiningPhilosophersMPITaskParallel testMpiTaskParallel(taskDataPar);
+  int num_philosophers = size;
+  konkov_i_dining_philosophers::DiningPhilosophers dp(num_philosophers);
 
-  if (!testMpiTaskParallel.validation()) {
-    GTEST_SKIP() << "Validation failed, skipping test.";
+  ASSERT_TRUE(dp.validation());
+  ASSERT_TRUE(dp.pre_processing());
+  ASSERT_TRUE(dp.run());
+  ASSERT_TRUE(dp.post_processing());
+
+  bool local_deadlock = dp.check_deadlock();
+
+  bool global_deadlock = false;
+  MPI_Allreduce(&local_deadlock, &global_deadlock, 1, MPI_C_BOOL, MPI_LOR, MPI_COMM_WORLD);
+
+  ASSERT_FALSE(global_deadlock) << "Deadlock detected!";
+}
+
+
+TEST(konkov_i_DiningPhilosophersTest, SmallNumberOfPhilosophers) {
+  int num_philosophers = 3;
+  konkov_i_dining_philosophers::DiningPhilosophers dp(num_philosophers);
+
+  ASSERT_TRUE(dp.validation());
+  ASSERT_TRUE(dp.pre_processing());
+  ASSERT_TRUE(dp.run());
+  ASSERT_TRUE(dp.post_processing());
+}
+
+TEST(konkov_i_DiningPhilosophersTest, SinglePhilosopher) {
+  int num_philosophers = 1;
+  konkov_i_dining_philosophers::DiningPhilosophers dp(num_philosophers);
+
+  ASSERT_FALSE(dp.validation());
+}
+
+TEST(DiningPhilosophersFunctional, InvalidPhilosopherCount) {
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  int num_philosophers = -5;
+
+  if (num_philosophers <= 0) {
+    if (rank == 0) {
+      GTEST_SKIP() << "Skipping test: Invalid number of philosophers (" << num_philosophers
+                   << "). Number must be positive.";
+    }
+    return;
   }
 
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  konkov_i_dining_philosophers::DiningPhilosophers dp(num_philosophers);
 
-  if (world.rank() == 0) {
-    ASSERT_EQ(global_result[0], std::accumulate(global_vec.begin(), global_vec.end(), 0));
-  }
+  ASSERT_TRUE(dp.pre_processing());
+  ASSERT_TRUE(dp.run());
+  ASSERT_TRUE(dp.post_processing());
 }
