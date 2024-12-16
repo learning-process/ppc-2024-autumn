@@ -35,9 +35,7 @@ void JarvisPassMPI::run() {
 
 std::vector<Point> JarvisPassMPI::get_hull() const { return hull_; }
 
-bool JarvisPassMPI::validation() const {
-  return points_.size() >= 3;
-}
+bool JarvisPassMPI::validation() const { return points_.size() >= 3; }
 
 std::vector<Point> jarvis_march(const std::vector<Point>& points) {
   int n = points.size();

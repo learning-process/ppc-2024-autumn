@@ -2,11 +2,11 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <core/task/include/task.hpp>
 #include <random>
 #include <vector>
 
 #include "mpi/shuravina_o_jarvis_pass/include/ops_mpi.hpp"
-#include <core/task/include/task.hpp>
 
 using namespace shuravina_o_jarvis_pass;
 
