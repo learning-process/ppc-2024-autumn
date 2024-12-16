@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -28,7 +27,7 @@ static void generateRandomCRSMatrix(int rows, int cols, double sparsity, std::ve
   }
 }
 
-TEST(MPI_CRS_Matrix_Perf_Test, Test_Pipeline_Run) {
+TEST(borisov_s_crs_mpi_test, Test_Pipeline_Run) {
   boost::mpi::communicator world;
 
   std::vector<double> A_values;
@@ -90,7 +89,7 @@ TEST(MPI_CRS_Matrix_Perf_Test, Test_Pipeline_Run) {
   }
 }
 
-TEST(MPI_CRS_Matrix_Perf_Test, Test_Task_Run) {
+TEST(borisov_s_crs_mpi_test, Test_Task_Run) {
   boost::mpi::communicator world;
 
   std::vector<double> A_values;

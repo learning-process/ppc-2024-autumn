@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <random>
@@ -36,7 +35,7 @@ static void generate_dense_matrix(int M, int N, double density, std::vector<doub
   }
 }
 
-TEST(CrsMatrixMulTaskTest, SuccessfulCase) {
+TEST(borisov_s_crs_seq_test, SuccessfulCase) {
   int M = 2;
   int N = 2;
   int K = 2;
@@ -93,7 +92,7 @@ TEST(CrsMatrixMulTaskTest, SuccessfulCase) {
   EXPECT_EQ(C_row_ptr, expected_C_row_ptr);
 }
 
-TEST(CrsMatrixMulTaskTest, InvalidInputSizes) {
+TEST(borisov_s_crs_seq_test, InvalidInputSizes) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
   std::vector<double> A_values = {1.0, 2.0};
@@ -117,11 +116,149 @@ TEST(CrsMatrixMulTaskTest, InvalidInputSizes) {
   ASSERT_FALSE(task.validation());
 }
 
-TEST(CrsMatrixMulTaskTest, LargeRandomMatrix) {
+TEST(borisov_s_crs_seq_test, LargeRandomMatrix) {
   int M = 1000;
   int N = 1000;
   int K = 1000;
   double density = 0.001;
+
+  std::vector<double> A_dense;
+  std::vector<double> B_dense;
+  generate_dense_matrix(M, N, density, A_dense);
+  generate_dense_matrix(N, K, density, B_dense);
+
+  std::vector<double> A_values;
+  std::vector<double> B_values;
+  std::vector<int> A_col_index;
+  std::vector<int> A_row_ptr;
+  std::vector<int> B_col_index;
+  std::vector<int> B_row_ptr;
+
+  dense_to_crs(A_dense, M, N, A_values, A_col_index, A_row_ptr);
+  dense_to_crs(B_dense, N, K, B_values, B_col_index, B_row_ptr);
+
+  std::vector<double> C_values(M * K, 0.0);
+  std::vector<int> C_col_index(M * K, 0);
+  std::vector<int> C_row_ptr(M + 1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs = {reinterpret_cast<uint8_t*>(A_values.data()),    reinterpret_cast<uint8_t*>(A_col_index.data()),
+                      reinterpret_cast<uint8_t*>(A_row_ptr.data()),   reinterpret_cast<uint8_t*>(B_values.data()),
+                      reinterpret_cast<uint8_t*>(B_col_index.data()), reinterpret_cast<uint8_t*>(B_row_ptr.data())};
+  taskData->inputs_count = {
+      static_cast<unsigned int>(A_values.size()),    static_cast<unsigned int>(A_col_index.size()),
+      static_cast<unsigned int>(A_row_ptr.size()),   static_cast<unsigned int>(B_values.size()),
+      static_cast<unsigned int>(B_col_index.size()), static_cast<unsigned int>(B_row_ptr.size())};
+  taskData->outputs = {reinterpret_cast<uint8_t*>(C_values.data()), reinterpret_cast<uint8_t*>(C_col_index.data()),
+                       reinterpret_cast<uint8_t*>(C_row_ptr.data())};
+  taskData->outputs_count = {static_cast<unsigned int>(C_values.size()), static_cast<unsigned int>(C_col_index.size()),
+                             static_cast<unsigned int>(C_row_ptr.size())};
+
+  borisov_s_crs_mul::CrsMatrixMulTask task(taskData);
+
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+}
+
+TEST(borisov_s_crs_seq_test, LargeRandomMatrix2) {
+  int M = 1024;
+  int N = 1024;
+  int K = 1024;
+  double density = 0.02;
+
+  std::vector<double> A_dense;
+  std::vector<double> B_dense;
+  generate_dense_matrix(M, N, density, A_dense);
+  generate_dense_matrix(N, K, density, B_dense);
+
+  std::vector<double> A_values;
+  std::vector<double> B_values;
+  std::vector<int> A_col_index;
+  std::vector<int> A_row_ptr;
+  std::vector<int> B_col_index;
+  std::vector<int> B_row_ptr;
+
+  dense_to_crs(A_dense, M, N, A_values, A_col_index, A_row_ptr);
+  dense_to_crs(B_dense, N, K, B_values, B_col_index, B_row_ptr);
+
+  std::vector<double> C_values(M * K, 0.0);
+  std::vector<int> C_col_index(M * K, 0);
+  std::vector<int> C_row_ptr(M + 1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs = {reinterpret_cast<uint8_t*>(A_values.data()),    reinterpret_cast<uint8_t*>(A_col_index.data()),
+                      reinterpret_cast<uint8_t*>(A_row_ptr.data()),   reinterpret_cast<uint8_t*>(B_values.data()),
+                      reinterpret_cast<uint8_t*>(B_col_index.data()), reinterpret_cast<uint8_t*>(B_row_ptr.data())};
+  taskData->inputs_count = {
+      static_cast<unsigned int>(A_values.size()),    static_cast<unsigned int>(A_col_index.size()),
+      static_cast<unsigned int>(A_row_ptr.size()),   static_cast<unsigned int>(B_values.size()),
+      static_cast<unsigned int>(B_col_index.size()), static_cast<unsigned int>(B_row_ptr.size())};
+  taskData->outputs = {reinterpret_cast<uint8_t*>(C_values.data()), reinterpret_cast<uint8_t*>(C_col_index.data()),
+                       reinterpret_cast<uint8_t*>(C_row_ptr.data())};
+  taskData->outputs_count = {static_cast<unsigned int>(C_values.size()), static_cast<unsigned int>(C_col_index.size()),
+                             static_cast<unsigned int>(C_row_ptr.size())};
+
+  borisov_s_crs_mul::CrsMatrixMulTask task(taskData);
+
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+}
+
+TEST(borisov_s_crs_seq_test, LargeRandomMatrix3) {
+  int M = 100;
+  int N = 100;
+  int K = 100;
+  double density = 0.5;
+
+  std::vector<double> A_dense;
+  std::vector<double> B_dense;
+  generate_dense_matrix(M, N, density, A_dense);
+  generate_dense_matrix(N, K, density, B_dense);
+
+  std::vector<double> A_values;
+  std::vector<double> B_values;
+  std::vector<int> A_col_index;
+  std::vector<int> A_row_ptr;
+  std::vector<int> B_col_index;
+  std::vector<int> B_row_ptr;
+
+  dense_to_crs(A_dense, M, N, A_values, A_col_index, A_row_ptr);
+  dense_to_crs(B_dense, N, K, B_values, B_col_index, B_row_ptr);
+
+  std::vector<double> C_values(M * K, 0.0);
+  std::vector<int> C_col_index(M * K, 0);
+  std::vector<int> C_row_ptr(M + 1, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs = {reinterpret_cast<uint8_t*>(A_values.data()),    reinterpret_cast<uint8_t*>(A_col_index.data()),
+                      reinterpret_cast<uint8_t*>(A_row_ptr.data()),   reinterpret_cast<uint8_t*>(B_values.data()),
+                      reinterpret_cast<uint8_t*>(B_col_index.data()), reinterpret_cast<uint8_t*>(B_row_ptr.data())};
+  taskData->inputs_count = {
+      static_cast<unsigned int>(A_values.size()),    static_cast<unsigned int>(A_col_index.size()),
+      static_cast<unsigned int>(A_row_ptr.size()),   static_cast<unsigned int>(B_values.size()),
+      static_cast<unsigned int>(B_col_index.size()), static_cast<unsigned int>(B_row_ptr.size())};
+  taskData->outputs = {reinterpret_cast<uint8_t*>(C_values.data()), reinterpret_cast<uint8_t*>(C_col_index.data()),
+                       reinterpret_cast<uint8_t*>(C_row_ptr.data())};
+  taskData->outputs_count = {static_cast<unsigned int>(C_values.size()), static_cast<unsigned int>(C_col_index.size()),
+                             static_cast<unsigned int>(C_row_ptr.size())};
+
+  borisov_s_crs_mul::CrsMatrixMulTask task(taskData);
+
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+}
+
+TEST(borisov_s_crs_seq_test, LargeRandomMatrix4) {
+  int M = 100;
+  int N = 100;
+  int K = 50;
+  double density = 0.1;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;

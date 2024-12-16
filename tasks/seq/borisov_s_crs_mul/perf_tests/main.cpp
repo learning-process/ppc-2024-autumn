@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <random>
@@ -37,11 +36,11 @@ static void dense_to_crs(const std::vector<double>& dense, int M, int N, std::ve
   }
 }
 
-TEST(Sequential_CRS_Matrix_Perf_Test, Test_Pipeline_Run) {
+TEST(borisov_s_crs_seq_test, Test_Pipeline_Run) {
   const int M = 1000;
   const int N = 1000;
   const int K = 1000;
-  const double density = 0.001;
+  const double density = 0.01;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;
@@ -94,11 +93,11 @@ TEST(Sequential_CRS_Matrix_Perf_Test, Test_Pipeline_Run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
-TEST(Sequential_CRS_Matrix_Perf_Test, Test_Task_Run) {
+TEST(borisov_s_crs_seq_test, Test_Task_Run) {
   const int M = 1000;
   const int N = 1000;
   const int K = 1000;
-  const double density = 0.001;
+  const double density = 0.01;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;

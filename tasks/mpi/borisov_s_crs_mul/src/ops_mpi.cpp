@@ -1,12 +1,8 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/borisov_s_crs_mul/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;

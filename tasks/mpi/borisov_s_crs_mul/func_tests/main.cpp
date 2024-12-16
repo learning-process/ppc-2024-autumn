@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -45,7 +44,7 @@ static std::vector<std::vector<double>> generateRandomDenseMatrix(int rows, int 
   return matrix;
 }
 
-TEST(MPI_CRS_Matrix_Multiplication, Test_3x3_Matrices) {
+TEST(borisov_s_crs_mpi_test, Test_3x3_Matrices) {
   boost::mpi::communicator world;
 
   const std::vector<std::vector<double>> A_dense = {{1.0, 0.0, 2.0}, {0.0, 3.0, 0.0}, {4.0, 0.0, 5.0}};
@@ -113,7 +112,7 @@ TEST(MPI_CRS_Matrix_Multiplication, Test_3x3_Matrices) {
   }
 }
 
-TEST(MPI_CRS_Matrix_Multiplication, Validation_Failure_InputSizeMismatch) {
+TEST(borisov_s_crs_mpi_test, Validation_Failure_InputSizeMismatch) {
   boost::mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -131,7 +130,7 @@ TEST(MPI_CRS_Matrix_Multiplication, Validation_Failure_InputSizeMismatch) {
   }
 }
 
-TEST(MPI_CRS_Matrix_Multiplication, Validation_Failure_DimensionMismatch) {
+TEST(borisov_s_crs_mpi_test, Validation_Failure_DimensionMismatch) {
   boost::mpi::communicator world;
 
   const std::vector<std::vector<double>> A_dense = {{1.0, 0.0}, {0.0, 2.0}};
@@ -168,7 +167,7 @@ TEST(MPI_CRS_Matrix_Multiplication, Validation_Failure_DimensionMismatch) {
   }
 }
 
-TEST(MPI_CRS_Matrix_Multiplication, Large_Random_Matrices) {
+TEST(borisov_s_crs_mpi_test, Large_Random_Matrices) {
   boost::mpi::communicator world;
 
   auto A_dense = generateRandomDenseMatrix(1000, 1000, 0.01);
@@ -201,6 +200,106 @@ TEST(MPI_CRS_Matrix_Multiplication, Large_Random_Matrices) {
     std::vector<double> C_values(1000 * 1000, 0.0);
     std::vector<int> C_col_index(1000 * 1000, 0);
     std::vector<int> C_row_ptr(1001, 0);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_values.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_col_index.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_row_ptr.data()));
+
+    taskDataPar->outputs_count = {static_cast<unsigned int>(C_values.size()),
+                                  static_cast<unsigned int>(C_col_index.size()),
+                                  static_cast<unsigned int>(C_row_ptr.size())};
+  }
+
+  borisov_s_crs_mul_mpi::CrsMatrixMulTaskMPI mpiTask(taskDataPar);
+  ASSERT_TRUE(mpiTask.validation());
+  mpiTask.pre_processing();
+  mpiTask.run();
+  mpiTask.post_processing();
+}
+
+TEST(borisov_s_crs_mpi_test, Large_Random_Matrices2) {
+  boost::mpi::communicator world;
+
+  auto A_dense = generateRandomDenseMatrix(1024, 1024, 0.03);
+  auto B_dense = generateRandomDenseMatrix(1024, 1024, 0.03);
+
+  std::vector<double> A_values;
+  std::vector<double> B_values;
+  std::vector<int> A_col_index;
+  std::vector<int> B_col_index;
+  std::vector<int> A_row_ptr;
+  std::vector<int> B_row_ptr;
+
+  prepareCRSMatrix(A_dense, A_values, A_col_index, A_row_ptr);
+  prepareCRSMatrix(B_dense, B_values, B_col_index, B_row_ptr);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_values.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_col_index.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_row_ptr.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_values.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_col_index.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_row_ptr.data()));
+
+    taskDataPar->inputs_count = {
+        static_cast<unsigned int>(A_values.size()),    static_cast<unsigned int>(A_col_index.size()),
+        static_cast<unsigned int>(A_row_ptr.size()),   static_cast<unsigned int>(B_values.size()),
+        static_cast<unsigned int>(B_col_index.size()), static_cast<unsigned int>(B_row_ptr.size())};
+
+    std::vector<double> C_values(1024 * 1024, 0.0);
+    std::vector<int> C_col_index(1024 * 1024, 0);
+    std::vector<int> C_row_ptr(1025, 0);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_values.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_col_index.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_row_ptr.data()));
+
+    taskDataPar->outputs_count = {static_cast<unsigned int>(C_values.size()),
+                                  static_cast<unsigned int>(C_col_index.size()),
+                                  static_cast<unsigned int>(C_row_ptr.size())};
+  }
+
+  borisov_s_crs_mul_mpi::CrsMatrixMulTaskMPI mpiTask(taskDataPar);
+  ASSERT_TRUE(mpiTask.validation());
+  mpiTask.pre_processing();
+  mpiTask.run();
+  mpiTask.post_processing();
+}
+
+TEST(borisov_s_crs_mpi_test, Large_Random_Matrices3) {
+  boost::mpi::communicator world;
+
+  auto A_dense = generateRandomDenseMatrix(100, 100, 0.5);
+  auto B_dense = generateRandomDenseMatrix(100, 100, 0.5);
+
+  std::vector<double> A_values;
+  std::vector<double> B_values;
+  std::vector<int> A_col_index;
+  std::vector<int> B_col_index;
+  std::vector<int> A_row_ptr;
+  std::vector<int> B_row_ptr;
+
+  prepareCRSMatrix(A_dense, A_values, A_col_index, A_row_ptr);
+  prepareCRSMatrix(B_dense, B_values, B_col_index, B_row_ptr);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_values.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_col_index.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_row_ptr.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_values.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_col_index.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_row_ptr.data()));
+
+    taskDataPar->inputs_count = {
+        static_cast<unsigned int>(A_values.size()),    static_cast<unsigned int>(A_col_index.size()),
+        static_cast<unsigned int>(A_row_ptr.size()),   static_cast<unsigned int>(B_values.size()),
+        static_cast<unsigned int>(B_col_index.size()), static_cast<unsigned int>(B_row_ptr.size())};
+
+    std::vector<double> C_values(100 * 100, 0.0);
+    std::vector<int> C_col_index(100 * 100, 0);
+    std::vector<int> C_row_ptr(101, 0);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_values.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_col_index.data()));

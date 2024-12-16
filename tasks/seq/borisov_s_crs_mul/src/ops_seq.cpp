@@ -1,4 +1,3 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/borisov_s_crs_mul/include/ops_seq.hpp"
 
 #include <algorithm>
