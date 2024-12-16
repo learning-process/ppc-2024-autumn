@@ -30,6 +30,10 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
 
+  if (sendcount == 0 && recvcount == 0) {
+    return MPI_SUCCESS;  // Immediately return for zero counts
+  }
+
   if (sendcount != size * recvcount) {
     return MPI_ERR_COUNT;
   }
