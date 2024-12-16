@@ -27,14 +27,6 @@ TEST(shuravina_o_jarvis_pass, Test_10_Points) {
   std::vector<Point> global_points = getRandomPoints(count_points, 0, 100);
   std::vector<Point> global_hull;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_points.data()));
-    taskDataPar->inputs_count.emplace_back(global_points.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_hull.data()));
-    taskDataPar->outputs_count.emplace_back(global_hull.size());
-  }
-
   JarvisPassMPI jarvis_mpi(global_points);
   ASSERT_TRUE(jarvis_mpi.validation());
   jarvis_mpi.run();
