@@ -1,8 +1,5 @@
 #include "seq/anufriev_d_linear_image/include/ops_seq_anufriev.hpp"
 
-#include <algorithm>
-#include <numeric>
-
 namespace anufriev_d_linear_image {
 
 bool SimpleIntSEQ::validation() {

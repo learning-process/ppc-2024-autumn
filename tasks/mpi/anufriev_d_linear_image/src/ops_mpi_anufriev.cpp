@@ -3,10 +3,7 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
 
-#include <algorithm>
-#include <boost/mpi.hpp>
 #include <iostream>
-#include <numeric>
 
 namespace anufriev_d_linear_image {
 

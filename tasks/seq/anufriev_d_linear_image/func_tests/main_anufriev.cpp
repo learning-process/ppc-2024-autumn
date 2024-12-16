@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <numeric>
 #include <random>
-#include <vector>
+#include <numeric>
 
 #include "core/task/include/task.hpp"
 #include "seq/anufriev_d_linear_image/include/ops_seq_anufriev.hpp"

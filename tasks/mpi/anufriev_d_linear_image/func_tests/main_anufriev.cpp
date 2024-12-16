@@ -1,10 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <numeric>
-#include <vector>
-
 #include "core/task/include/task.hpp"
 #include "mpi/anufriev_d_linear_image/include/ops_mpi_anufriev.hpp"
 
