@@ -226,9 +226,8 @@ class TaskParallel : public TaskCommon<T> {
       partial_res.row_pointers[row + 1 - roff] = partial_res.data.size();
     }
 
-    if (world.size() == 0) {
+    if (world.rank() == 0) {
       res_partials.clear();
-      res_partials.resize(world.size());
     }
     boost::mpi::gather(world, partial_res, res_partials, 0);
 
