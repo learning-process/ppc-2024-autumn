@@ -48,13 +48,13 @@ namespace nasedkin_e_strassen_algorithm {
 
     bool StrassenAlgorithmMPI::post_processing() { return true; }
 
-    void StrassenAlgorithmMPI::strassen_multiply(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
+    void StrassenAlgorithmMPI::strassen_multiply(const std::vector<std::vector<double>>& local_A, const std::vector<std::vector<double>>& local_B, std::vector<std::vector<double>>& local_result, int size) {
         if (size <= 64) {
             for (int i = 0; i < size; ++i) {
                 for (int j = 0; j < size; ++j) {
-                    C[i][j] = 0;
+                    local_result[i][j] = 0;
                     for (int k = 0; k < size; ++k) {
-                        C[i][j] += A[i][k] * B[k][j];
+                        local_result[i][j] += local_A[i][k] * local_B[k][j];
                     }
                 }
             }
@@ -77,8 +77,8 @@ namespace nasedkin_e_strassen_algorithm {
         std::vector<std::vector<double>> C21(new_size, std::vector<double>(new_size));
         std::vector<std::vector<double>> C22(new_size, std::vector<double>(new_size));
 
-        split_matrix(A, A11, A12, A21, A22, new_size);
-        split_matrix(B, B11, B12, B21, B22, new_size);
+        split_matrix(local_A, A11, A12, A21, A22, new_size);
+        split_matrix(local_B, B11, B12, B21, B22, new_size);
 
         std::vector<std::vector<double>> M1(new_size, std::vector<double>(new_size));
         std::vector<std::vector<double>> M2(new_size, std::vector<double>(new_size));
@@ -115,7 +115,7 @@ namespace nasedkin_e_strassen_algorithm {
         subtract_matrices(M3, M7, M1, new_size);
         add_matrices(M5, M1, C22, new_size);
 
-        join_matrices(C11, C12, C21, C22, C, size);
+        join_matrices(C11, C12, C21, C22, local_result, size);
     }
 
     void StrassenAlgorithmMPI::add_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
@@ -174,7 +174,7 @@ namespace nasedkin_e_strassen_algorithm {
         }
     }
 
-    void StrassenAlgorithmMPI::distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& local_matrix) {
+    void StrassenAlgorithmMPI::distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& distributed_matrix) {
         int num_processes = world.size();
         int local_size = n / num_processes;
 
@@ -184,7 +184,7 @@ namespace nasedkin_e_strassen_algorithm {
         std::vector<double> local_flat_matrix(local_size * n);
         boost::mpi::scatter(world, flat_matrix.data(), local_flat_matrix.data(), local_size * n, 0);
 
-        unflatten_matrix(local_flat_matrix, local_matrix, local_size, n);
+        unflatten_matrix(local_flat_matrix, distributed_matrix, local_size, n);
     }
 
     void StrassenAlgorithmMPI::gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& result) {
