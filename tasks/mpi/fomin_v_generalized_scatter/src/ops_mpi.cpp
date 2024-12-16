@@ -20,7 +20,8 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
 int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                                                      void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
                                                      MPI_Comm comm) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(comm, &rank);
   MPI_Comm_size(comm, &size);
 
@@ -43,6 +44,10 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   } else {
     if (rank == root) {
       const char* send_ptr = static_cast<const char*>(sendbuf);
+      // Ensure sendbuf is not null
+      if (send_ptr == nullptr) {
+        return MPI_ERR_BUFFER;
+      }
       for (int dest = 0; dest < size; ++dest) {
         if (dest == root) continue;
         int offset = dest * recvcount * datatype_size;
@@ -74,7 +79,8 @@ bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::validation() {
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::run() {
   internal_order_test();
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   int root = 0;

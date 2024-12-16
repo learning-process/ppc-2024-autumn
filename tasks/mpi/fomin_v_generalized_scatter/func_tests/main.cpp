@@ -15,7 +15,7 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
   int root = 0;
   const int data_size = size * 10;
   int* sendbuf = nullptr;
-  auto recvbuf = new int[10];
+  auto *recvbuf = new int[10];
 
   if (rank == root) {
     sendbuf = new int[data_size];
@@ -49,7 +49,7 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
   int root = 0;
   const int data_size = size * 10;
   float* sendbuf = nullptr;
-  auto recvbuf = new float[10];
+  auto *recvbuf = new float[10];
 
   if (rank == root) {
     sendbuf = new float[data_size];
@@ -83,7 +83,7 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
   int root = 0;
   const int data_size = size * 10;
   double* sendbuf = nullptr;
-  auto recvbuf = new double[10];
+  auto *recvbuf = new double[10];
 
   if (rank == root) {
     sendbuf = new double[data_size];
@@ -118,7 +118,7 @@ TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
   int root = 0;
   const int data_size = size * 10;
   int* sendbuf = nullptr;
-  auto recvbuf = new int[10];
+  auto *recvbuf = new int[10];
 
   if (rank == root) {
     sendbuf = new int[data_size];
