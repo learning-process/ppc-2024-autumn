@@ -90,7 +90,6 @@ class MPIGlobalOpt2Parallel : public ppc::core::Task {
 
   std::function<double(const Point&)> func_to_optimize_;
   std::vector<std::function<double(const Point&)>> constraints_funcs_;
-  Point initial_point_;
   int max_iteration = 1000;
   Point result_;
   double min_value_;

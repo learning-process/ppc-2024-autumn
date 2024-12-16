@@ -347,6 +347,32 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::run() {
       break;
     }
   }
+
+  std::vector<double> local_coordinates = {local_result_.x, local_result_.y};
+
+  std::vector<int> sizes(world.size(), 2);
+  all_results_.resize(2 * world.size());
+  if (world.rank() != 0) {
+    std::cout << local_result_.x << " " << local_result_.y << std::endl;
+  }
+  gatherv(world, local_coordinates.data(), local_coordinates.size(), all_results_.data(), sizes, 0);
+
+  if (world.rank() == 0) {
+    std::cout << "Process 0: Collected results from all processes:\n";
+    for (size_t i = 0; i < all_results_.size(); i += 2) {
+      std::cout << "  Point: (" << all_results_[i] << ", " << all_results_[i + 1] << ")\n";
+    }
+
+    for (size_t i = 0; i < all_results_.size(); i += 2) {
+      Point point{all_results_[i], all_results_[i + 1]};
+      double value = evaluate_function(point);
+      if (value < min_value_) {
+        min_value_ = value;
+        result_ = point;
+      }
+    }
+  }
+
   return true;
 }
 
@@ -385,34 +411,13 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::split_search_area
   process_upper_bound_y_ = bounds[3];
   std::cout << "Process " << world.rank() << ": Bounds -> X: [" << process_lower_bound_x_ << ", "
             << process_upper_bound_x_ << "], Y: [" << process_lower_bound_y_ << ", " << process_upper_bound_y_ << "]\n";
+
 }
 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::post_processing() {
   internal_order_test();
 
-  std::vector<double> local_coordinates = {local_result_.x, local_result_.y};
-
-  std::vector<int> sizes(world.size(), 2);
-  all_results_.resize(2 * world.size());
-  if (world.rank() != 0) {
-    std::cout << local_result_.x << " " << local_result_.y << std::endl;
-  }
-  gatherv(world, local_coordinates.data(), local_coordinates.size(), all_results_.data(), sizes, 0);
-
-  if (world.rank() == 0) {
-    std::cout << "Process 0: Collected results from all processes:\n";
-    for (size_t i = 0; i < all_results_.size(); i += 2) {
-      std::cout << "  Point: (" << all_results_[i] << ", " << all_results_[i + 1] << ")\n";
-    }
-
-    for (size_t i = 0; i < all_results_.size(); i += 2) {
-      Point point{all_results_[i], all_results_[i + 1]};
-      double value = evaluate_function(point);
-      if (value < min_value_) {
-        min_value_ = value;
-        result_ = point;
-      }
-    }
+  if (world.rank() == 0){
     reinterpret_cast<Point*>(taskData->outputs[0])[0] = {result_.x, result_.y};
     std::cout << "Global minimum value: " << min_value_ << "\n";
     std::cout << "At point: (" << result_.x << ", " << result_.y << ")\n";
@@ -430,8 +435,6 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::calculate_initial
   lower_bound_y_ = std::numeric_limits<double>::infinity();
   upper_bound_y_ = -std::numeric_limits<double>::infinity();
 
-  Point initial_point{std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity()};
-
   int num_steps = static_cast<int>(2 * test_range / step) + 1;
 
   for (int i = 0; i < num_steps; ++i) {
@@ -445,20 +448,8 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::calculate_initial
         upper_bound_x_ = std::max(upper_bound_x_, test_point.x);
         lower_bound_y_ = std::min(lower_bound_y_, test_point.y);
         upper_bound_y_ = std::max(upper_bound_y_, test_point.y);
-
-        if (initial_point.x == std::numeric_limits<double>::infinity() &&
-            initial_point.y == std::numeric_limits<double>::infinity()) {
-          initial_point = test_point;
-        }
       }
     }
-  }
-
-  if (initial_point.x != std::numeric_limits<double>::infinity() &&
-      initial_point.y != std::numeric_limits<double>::infinity()) {
-    initial_point_ = initial_point;
-  } else {
-    throw std::runtime_error("No valid initial point found.");
   }
 
   lower_bound_x_ -= 0.1;
