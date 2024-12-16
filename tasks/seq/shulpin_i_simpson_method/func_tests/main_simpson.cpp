@@ -385,7 +385,7 @@ TEST(shulpin_simpson_method, invalid_data_3) {
   double a = 0.0;
   double b = 3.0;
   double c = 0.0;
-  double d = 3.0;
+  double d = 4.0;
 
   int N = -101;
 
