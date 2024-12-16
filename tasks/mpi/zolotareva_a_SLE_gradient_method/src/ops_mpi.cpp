@@ -11,7 +11,7 @@
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   n_ = static_cast<int>(taskData->inputs_count[1]);
-  if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.size() < 1) {
+  if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) {
     return false;
   }
   if (int(taskData->inputs_count[0]) != n_ * n_ || int(taskData->inputs_count[1]) != n_) {
@@ -20,15 +20,10 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::validation() {
   if (int(taskData->outputs_count[0]) != n_) {
     return false;
   }
-  const double* A = reinterpret_cast<double*>(taskData->inputs[0]);
-  for (int i = 0; i < n_; ++i) {
-    for (int j = i + 1; j < n_; ++j) {
-      if (A[i * n_ + j] != A[j * n_ + i]) {
-        return false;
-      }
-    }
-  }
-  return true;
+
+  const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
+
+  return is_positive_and_simm(A, n_);
 }
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -65,8 +60,7 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     n_ = static_cast<int>(taskData->inputs_count[1]);
-
-    if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.size() < 1) {
+    if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) {
       return false;
     }
     if (int(taskData->inputs_count[0]) != n_ * n_ || int(taskData->inputs_count[1]) != n_) {
@@ -75,14 +69,10 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::validation() {
     if (int(taskData->outputs_count[0]) != n_) {
       return false;
     }
-    const double* A = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (int i = 0; i < n_; ++i) {
-      for (int j = i + 1; j < n_; ++j) {
-        if (A[i * n_ + j] != A[j * n_ + i]) {
-          return false;
-        }
-      }
-    }
+    // проверка симметрии и положительной определённости
+    const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
+
+    return zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::is_positive_and_simm(A, n_);
   }
   return true;
 }
@@ -142,16 +132,17 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
   double rs_old = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
   double rs_global_old;
   boost::mpi::all_reduce(world, rs_old, rs_global_old, std::plus<>());
-  double threshold = std::sqrt(rs_global_old) * 1e-12;
+  double initial_res_norm = std::sqrt(rs_global_old) * 1e-12;
+  double threshold = initial_res_norm == 0.0 ? 1e-12 : (1e-12 * initial_res_norm);
 
-  for (int iter = 0; iter < n_; ++iter) {
+  for (int iter = 0; iter <= n_; ++iter) {
     Ap = zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::matrix_vector_mult(local_A_, p, local_rows);
 
     double local_dot_pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
     double global_dot_pAp;
     boost::mpi::all_reduce(world, local_dot_pAp, global_dot_pAp, std::plus<>());
 
-    if (global_dot_pAp == 0) break;
+    if (global_dot_pAp == 0.0) break;
 
     double alpha = rs_global_old / global_dot_pAp;
     // обновляю x и r локально
@@ -194,12 +185,6 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
 
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  /*  if (world.rank() == 0) {
-    auto* output_raw = reinterpret_cast<double*>(taskData->outputs[0]);
-    std::copy(X_.begin(), X_.end(), output_raw);
-  }*/
-  // boost::mpi::gather(world, x_.data(), x_.size(), X_.data(), X_.size(), 0);
-
   if (world.rank() == 0) {
     auto* output_raw = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(X_.begin(), X_.end(), output_raw);
@@ -210,19 +195,19 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::post_processing(
 
 std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::conjugate_gradient(
     const std::vector<double>& A, const std::vector<double>& b, std::vector<double>& x, int N) {
-  double threshold = sqrt(dot_product(b, b, N)) * 1e-12;
-  if (threshold == 0) {
-    threshold = 1e-12;
-  }
-  std::vector<double> r = b;
-  std::vector<double> p = r;
+  double initial_res_norm = std::sqrt(dot_product(b, b, N));
+  double threshold = initial_res_norm == 0.0 ? 1e-12 : (1e-12 * initial_res_norm);
+
+  std::vector<double> r = b;  // начальный вектор невязки r = b - A*x0, x0 = 0
+  std::vector<double> p = r;  // начальное направление поиска p = r
   double rs_old = dot_product(r, r, N);
 
   for (int s = 0; s <= N; ++s) {
     std::vector<double> Ap = matrix_vector_mult(A, p, N);
-    if (dot_product(p, Ap, N) == 0) break;
+    double pAp = dot_product(p, Ap, N);
+    if (pAp == 0.0) break;
 
-    double alpha = rs_old / dot_product(p, Ap, N);
+    double alpha = rs_old / pAp;
 
     for (int i = 0; i < N; ++i) {
       x[i] += alpha * p[i];
@@ -230,7 +215,7 @@ std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential:
     }
 
     double rs_new = dot_product(r, r, N);
-    if (std::sqrt(rs_new) < threshold) {
+    if (rs_new < threshold) {  // Проверка на сходимость
       break;
     }
     double beta = rs_new / rs_old;
@@ -263,4 +248,36 @@ std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential:
     }
   }
   return result;
+}
+
+bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::is_positive_and_simm(const double* A, int n) {
+  std::vector<double> M(n * n);
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      double val = A[i * n + j];
+      M[i * n + j] = val;
+      if (j > i) {
+        if (val != A[j * n + i]) {
+          return false;
+        }
+      }
+    }
+  }
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j <= i; ++j) {
+      double sum = M[i * n + j];
+      for (int k = 0; k < j; k++) {
+        sum -= M[i * n + k] * M[j * n + k];
+      }
+      if (i == j) {
+        if (sum <= 1e-15) {
+          return false;
+        }
+        M[i * n + j] = std::sqrt(sum);
+      } else {
+        M[i * n + j] = sum / M[j * n + j];
+      }
+    }
+  }
+  return true;
 }
