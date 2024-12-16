@@ -13,7 +13,6 @@ namespace nasedkin_e_strassen_algorithm {
 
         result.resize(n, std::vector<double>(n, 0.0));
 
-        // Разделение матриц A и B между процессами
         std::vector<std::vector<double>> local_A;
         std::vector<std::vector<double>> local_B;
         distribute_matrix(A, local_A);
@@ -49,6 +48,23 @@ namespace nasedkin_e_strassen_algorithm {
     }
 
     bool StrassenAlgorithmMPI::post_processing() { return true; }
+
+    void flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix) {
+        flat_matrix.clear();
+        for (const auto& row : matrix) {
+            flat_matrix.insert(flat_matrix.end(), row.begin(), row.end());
+        }
+    }
+
+    void unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols) {
+        matrix.clear();
+        matrix.resize(rows, std::vector<double>(cols, 0.0));
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
+                matrix[i][j] = flat_matrix[i * cols + j];
+            }
+        }
+    }
 
     void StrassenAlgorithmMPI::strassen_multiply(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
         if (size <= 64) {
@@ -180,18 +196,26 @@ namespace nasedkin_e_strassen_algorithm {
         int num_processes = world.size();
         int local_size = n / num_processes;
 
-        local_matrix.resize(local_size, std::vector<double>(n, 0.0));
+        std::vector<double> flat_matrix;
+        flatten_matrix(matrix, flat_matrix);
 
-        // Разделяем матрицу по строкам между процессами
-        boost::mpi::scatter(world, matrix, local_matrix, 0);
+        std::vector<double> local_flat_matrix(local_size * n);
+        boost::mpi::scatter(world, flat_matrix, local_flat_matrix, 0);
+
+        unflatten_matrix(local_flat_matrix, local_matrix, local_size, n);
     }
 
     void StrassenAlgorithmMPI::gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& result) {
         int num_processes = world.size();
         int local_size = n / num_processes;
 
-        // Собираем результаты с процессов
-        boost::mpi::gather(world, local_result, result, 0);
+        std::vector<double> local_flat_result;
+        flatten_matrix(local_result, local_flat_result);
+
+        std::vector<double> flat_result(n * n);
+        boost::mpi::gather(world, local_flat_result, flat_result, 0);
+
+        unflatten_matrix(flat_result, result, n, n);
     }
 
 }  // namespace nasedkin_e_strassen_algorithm
