@@ -47,6 +47,8 @@ void template_test(const std::vector<int>& input_data) {
   }
 }
 
+}  // namespace petrov_a_Shell_sort_mpi
+
 TEST(petrov_a_Shell_sort_mpi, test_sorted_ascending_mpi) {
   petrov_a_Shell_sort_mpi::template_test({1, 2, 3, 4, 5, 6, 7, 8});
 }
@@ -68,4 +70,3 @@ TEST(petrov_a_Shell_sort_mpi, test_random_vector_mpi) {
   petrov_a_Shell_sort_mpi::template_test(random_vec);
 }
 
-}  // namespace petrov_a_Shell_sort_mpi
