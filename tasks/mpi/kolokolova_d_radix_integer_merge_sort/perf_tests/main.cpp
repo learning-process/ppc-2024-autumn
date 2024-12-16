@@ -25,7 +25,7 @@ std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(int 
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size_vector = world.size() * 1000;
+  int size_vector = 1200;
   std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
   std::vector<int32_t> result(size_vector);
@@ -68,7 +68,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_pipeline_run) {
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int size_vector = world.size() * 1000;
+  int size_vector = 1200;
   std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
   std::vector<int32_t> result(size_vector);

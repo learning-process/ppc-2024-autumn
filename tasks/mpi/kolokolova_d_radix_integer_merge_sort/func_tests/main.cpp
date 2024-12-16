@@ -25,9 +25,9 @@ std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(int 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
   boost::mpi::communicator world;
   int size_vector = world.size() * 4;
-  std::vector<int> unsorted_vector (size_vector);
+  std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
-  std::vector<int32_t> result (size_vector);
+  std::vector<int32_t> result(size_vector);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -177,7 +177,6 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort_Empty_Input_V
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    //unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
     taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));

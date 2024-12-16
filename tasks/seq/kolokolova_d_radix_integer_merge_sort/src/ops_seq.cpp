@@ -10,7 +10,7 @@
 using namespace std::chrono_literals;
 
 void kolokolova_d_radix_integer_merge_sort_seq::counting_sort_radix(std::vector<int>& array, int exp) {
-  int size_vector = array.size();
+  int size_vector = int(array.size());
   std::vector<int> func_res(size_vector);
   std::vector<int> nums_of_digits(20, 0);
 

@@ -45,10 +45,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<int> res, merge_vec;
   std::vector<int> remaind_vector;
   boost::mpi::communicator world;
-  unsigned int delta = 0;
   int size_input_vector = 0;
   int local_size = 0;
   int remainder = 0;
 };
 
-}  // namespace kolokolova_d_max_of_row_matrix_mpi
+}  // namespace kolokolova_d_radix_integer_merge_sort_mpi

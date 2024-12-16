@@ -10,7 +10,7 @@
 using namespace std::chrono_literals;
 
 void kolokolova_d_radix_integer_merge_sort_mpi::counting_sort_radix(std::vector<int>& array, int exp) {
-  int size_vector = array.size();
+  int size_vector = int(array.size());
   std::vector<int> func_res(size_vector);
   std::vector<int> nums_of_digits(20, 0);
 
@@ -45,7 +45,7 @@ std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::merge_and_sort(const
   std::vector<int> sort_vector(vec1);
   sort_vector.insert(sort_vector.end(), vec2.begin(), vec2.end());
   sort_vector = radix_sort(sort_vector);
-  for (int i = 0; i < sort_vector.size(); i++) {
+  for (int i = 0; i < int(sort_vector.size()); i++) {
   }
   return sort_vector;
 }
