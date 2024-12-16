@@ -37,17 +37,13 @@ fi
 #fi
 #echo "NUM_PROC: " $NUM_PROC
 
-# separate tests for debug
-for test_item in $(./build/bin/mpi_func_tests --gtest_list_tests | awk '/\./{ SUITE=$1 }  /  / { print SUITE $1 }')
-do
-  if [[ -z "$ASAN_RUN" ]]; then
-    if [[ $OSTYPE == "linux-gnu" ]]; then
-      mpirun --oversubscribe -np 4 ./build/bin/mpi_func_tests --gtest_filter="$test_item" --gtest_repeat=10
-    elif [[ $OSTYPE == "darwin"* ]]; then
-      mpirun -np 2 ./build/bin/mpi_func_tests --gtest_filter="$test_item" --gtest_repeat=10
-    fi
+if [[ -z "$ASAN_RUN" ]]; then
+  if [[ $OSTYPE == "linux-gnu" ]]; then
+    mpirun --oversubscribe -np 4 ./build/bin/mpi_func_tests --gtest_also_run_disabled_tests --gtest_repeat=10 --gtest_recreate_environments_when_repeating
+  elif [[ $OSTYPE == "darwin"* ]]; then
+    mpirun -np 2 ./build/bin/mpi_func_tests --gtest_also_run_disabled_tests --gtest_repeat=10 --gtest_recreate_environments_when_repeating
   fi
-done
+fi
 
 ./build/bin/omp_func_tests --gtest_also_run_disabled_tests --gtest_repeat=10 --gtest_recreate_environments_when_repeating
 ./build/bin/seq_func_tests --gtest_also_run_disabled_tests --gtest_repeat=10 --gtest_recreate_environments_when_repeating
