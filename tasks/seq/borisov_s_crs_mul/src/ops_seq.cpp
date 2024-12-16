@@ -1,7 +1,6 @@
 #include "seq/borisov_s_crs_mul/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <thread>
 
 using namespace std::chrono_literals;
 
