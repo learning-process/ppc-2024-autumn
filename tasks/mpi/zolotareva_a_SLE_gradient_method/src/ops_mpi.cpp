@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
+#include <boost/serialization/vector.hpp>
 #include <cmath>
 #include <seq/zolotareva_a_SLE_gradient_method/include/ops_seq.hpp>
 #include <vector>
@@ -100,20 +101,21 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
   int world_size = world.size();
   int rank = world.rank();
   boost::mpi::broadcast(world, n_, 0);
+
   int base_rows = n_ / world_size;
-  // std::cout << rank << ", local_rows = " << local_rows << std::endl;
+  int remainder = n_ % world_size;
   local_rows = base_rows;
+
   if (rank == 0) {
-    int remainder = n_ % world_size;
     local_rows += remainder;
 
     int start_row = local_rows;
     for (int proc = 1; proc < world_size; ++proc) {
-      // std::cout << proc << ", count_rows_to_send = " << count_rows_to_send << std::endl;
       world.send(proc, 0, A_.data() + start_row * n_, base_rows * n_);
       world.send(proc, 1, b_.data() + start_row, base_rows);
       start_row += base_rows;
     }
+
     local_A_.resize(local_rows * n_);
     local_b_.resize(local_rows);
     std::copy(A_.begin(), A_.begin() + local_rows * n_, local_A_.begin());
@@ -127,16 +129,40 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
 
   x_.resize(local_rows, 0.0);
   std::vector<double> r(local_b_);
-  std::vector<double> p(local_b_);
+  std::vector<double> p(r);
   std::vector<double> Ap(local_rows);
+
   double rs_old = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
   double rs_global_old;
   boost::mpi::all_reduce(world, rs_old, rs_global_old, std::plus<>());
-  double initial_res_norm = std::sqrt(rs_global_old) * 1e-12;
-  double threshold = initial_res_norm == 0.0 ? 1e-12 : (1e-12 * initial_res_norm);
+  double initial_res_norm = std::sqrt(rs_global_old);
+  double threshold = (initial_res_norm == 0.0) ? 1e-12 : (1e-12 * initial_res_norm);
 
   for (int iter = 0; iter <= n_; ++iter) {
-    Ap = zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::matrix_vector_mult(local_A_, p, local_rows);
+    // собираем полный вектор p от всех процессов
+    std::vector<std::vector<double>> gathered_p;
+    boost::mpi::all_gather(world, p, gathered_p);
+
+    std::vector<double> global_p(n_);
+    {
+      int offset = 0;
+      int local_rows_0 = base_rows + remainder;
+      std::copy(gathered_p[0].begin(), gathered_p[0].end(), global_p.begin() + offset);
+      offset += local_rows_0;
+
+      for (int proc = 1; proc < world_size; ++proc) {
+        std::copy(gathered_p[proc].begin(), gathered_p[proc].end(), global_p.begin() + offset);
+        offset += base_rows;
+      }
+    }
+
+    for (int i = 0; i < local_rows; ++i) {
+      double sum = 0.0;
+      for (int j = 0; j < n_; ++j) {
+        sum += local_A_[i * n_ + j] * global_p[j];
+      }
+      Ap[i] = sum;
+    }
 
     double local_dot_pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
     double global_dot_pAp;
@@ -145,7 +171,7 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
     if (global_dot_pAp == 0.0) break;
 
     double alpha = rs_global_old / global_dot_pAp;
-    // обновляю x и r локально
+
     for (int i = 0; i < local_rows; ++i) {
       x_[i] += alpha * p[i];
       r[i] -= alpha * Ap[i];
@@ -154,11 +180,10 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
     double local_rs_new = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
     double rs_global_new;
     boost::mpi::all_reduce(world, local_rs_new, rs_global_new, std::plus<>());
-    // мб лучше корень из rs чем тресхолд в степени
-    if (std::sqrt(rs_global_new) < threshold) break;
+
+    if (rs_global_new < threshold) break;
 
     double beta = rs_global_new / rs_global_old;
-
     for (int i = 0; i < local_rows; ++i) p[i] = r[i] + beta * p[i];
     rs_global_old = rs_global_new;
   }
@@ -177,9 +202,6 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
   } else
     world.send(0, 2, x_);
 
-  for (int i = 0; i < n_; ++i) {
-    std::cout << rank << ", x[" << i << "] = " << x_[i] << std::endl;
-  }
   return true;
 }
 

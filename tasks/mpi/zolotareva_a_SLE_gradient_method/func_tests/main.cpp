@@ -68,9 +68,99 @@ void form(int n_) {
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    EXPECT_EQ(seq_x, mpi_x);
+
+    for (int i = 0; i < n; ++i) {
+      EXPECT_NEAR(seq_x[i], mpi_x[i], 1e-10);
+    }
   }
 }
 }  // namespace zolotareva_a_SLE_gradient_method_mpi
 
-TEST(zolotareva_a_SLE_gradient_method_mpi, Test_random_3x3) { zolotareva_a_SLE_gradient_method_mpi::form(3); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, validation_non_symmetric) {
+  boost::mpi::communicator world;
+  int n = 2;
+  std::vector<double> A = {1, 2, 3, 4};  // не симметричная
+  std::vector<double> b = {5, 6};
+  std::vector<double> x(n);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(b.data()));
+    taskData->inputs_count.push_back(n * n);
+    taskData->inputs_count.push_back(n);
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskData->outputs_count.push_back(n);
+  }
+
+  zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel testMpiTaskParallel(taskData);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  } else {
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(zolotareva_a_SLE_gradient_method_mpi, small_system_n_1) {
+  boost::mpi::communicator world;
+  int n = 1;
+  std::vector<double> A;
+  std::vector<double> b;
+  std::vector<double> x(n);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    A = {2};
+    b = {4};
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(b.data()));
+    taskData->inputs_count.push_back(n * n);
+    taskData->inputs_count.push_back(n);
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskData->outputs_count.push_back(n);
+  }
+
+  zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel task(taskData);
+  ASSERT_TRUE(task.validation());
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    EXPECT_NEAR(x[0], 2.0, 1e-8);
+  }
+}
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_not_positive_definite) {
+  boost::mpi::communicator world;
+  int n = 2;
+  std::vector<double> A;
+  std::vector<double> b;
+  std::vector<double> x(n);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    A = {0, 0, 0, 0};
+    b = {0, 0};
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(b.data()));
+    taskData->inputs_count.push_back(n * n);
+    taskData->inputs_count.push_back(n);
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(x.data()));
+    taskData->outputs_count.push_back(n);
+  }
+
+  zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel task(taskData);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(task.validation());
+  } else {
+    ASSERT_TRUE(task.validation());
+  }
+}
+
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_3_random) { zolotareva_a_SLE_gradient_method_mpi::form(3); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_4_random) { zolotareva_a_SLE_gradient_method_mpi::form(4); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_5_random) { zolotareva_a_SLE_gradient_method_mpi::form(5); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_17_random) { zolotareva_a_SLE_gradient_method_mpi::form(17); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_51_random) { zolotareva_a_SLE_gradient_method_mpi::form(51); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_123_random) { zolotareva_a_SLE_gradient_method_mpi::form(123); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_1432_random) { zolotareva_a_SLE_gradient_method_mpi::form(1432); }
