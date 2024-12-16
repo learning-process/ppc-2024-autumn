@@ -1,9 +1,9 @@
+#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
+
 #include <mpi.h>
 
 #include <algorithm>
 #include <iostream>
-
-#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
 namespace petrov_a_Shell_sort_mpi {
 
