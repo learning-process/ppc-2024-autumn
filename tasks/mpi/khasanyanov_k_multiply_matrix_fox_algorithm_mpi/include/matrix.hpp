@@ -3,8 +3,6 @@
 
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
-#include <iomanip>
-#include <iostream>
 #include <stdexcept>
 #include <vector>
 namespace khasanyanov_k_fox_algorithm {
