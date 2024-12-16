@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <iostream>
 
+#define UNUSED(x) (void)(x)
+
 namespace zaitsev_a_jarvis_seq {
 
 template <typename T>
@@ -32,6 +34,9 @@ struct Point {
   void serialize(Archive& ar, const unsigned int version) {
     ar & x;
     ar & y;
+    // UNUSED needed here to supress -Wunused-parameter
+    // version arg can't be removed due to requrements of boost for Point struct to be serializable
+    UNUSED(x);
   }
 };
 
