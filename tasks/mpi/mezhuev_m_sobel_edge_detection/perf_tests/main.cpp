@@ -38,6 +38,7 @@ TEST(mezhuev_m_sobel_edge_detection, TestPerformanceSmallImage) {
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = end - start;
+  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
 }
 
 TEST(mezhuev_m_sobel_edge_detection, TestPerformanceMediumImage) {
@@ -71,6 +72,7 @@ TEST(mezhuev_m_sobel_edge_detection, TestPerformanceMediumImage) {
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = end - start;
+  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
 }
 
 TEST(mezhuev_m_sobel_edge_detection, TestPerformanceLargeImage) {
@@ -104,6 +106,7 @@ TEST(mezhuev_m_sobel_edge_detection, TestPerformanceLargeImage) {
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = end - start;
+  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
 }
 
 TEST(mezhuev_m_sobel_edge_detection, TestPerformanceExtraLargeImage) {
@@ -137,4 +140,5 @@ TEST(mezhuev_m_sobel_edge_detection, TestPerformanceExtraLargeImage) {
 
   auto end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed = end - start;
+  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
 }

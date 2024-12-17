@@ -44,11 +44,6 @@ bool SobelEdgeDetectionMPI::pre_processing(TaskData* task_data) {
   gradient_x.resize(taskData->width * taskData->height);
   gradient_y.resize(taskData->width * taskData->height);
 
-  taskData->outputs[0] = new uint8_t[taskData->width * taskData->height]();
-  if (taskData->outputs[0] == nullptr) {
-    return false;
-  }
-
   return true;
 }
 
@@ -103,7 +98,6 @@ bool SobelEdgeDetectionMPI::run() {
   world.barrier();
   return true;
 }
-
 
 bool SobelEdgeDetectionMPI::post_processing() {
   if (taskData == nullptr || taskData->outputs[0] == nullptr) {

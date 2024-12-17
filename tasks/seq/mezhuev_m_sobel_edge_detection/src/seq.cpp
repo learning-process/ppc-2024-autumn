@@ -1,7 +1,7 @@
 #include "seq/mezhuev_m_sobel_edge_detection/include/seq.hpp"
 
 #include <cmath>
-#include <iostream>
+#include <iostream>u
 
 namespace mezhuev_m_sobel_edge_detection {
 
@@ -40,7 +40,7 @@ bool SobelEdgeDetectionSeq::validation() {
 bool SobelEdgeDetectionSeq::pre_processing(TaskData* task_data) {
   if (task_data == nullptr) {
     std::cerr << "Error: task_data is nullptr before processing!" << std::endl;
-    return false;  // Возвращаем false, если task_data равен nullptr
+    return false;
   }
 
   if (!validation()) {
