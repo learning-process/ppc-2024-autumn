@@ -143,15 +143,17 @@ bool leontev_n_mat_vec_mpi::MPIMatVecParallel::pre_processing() {
 
 bool leontev_n_mat_vec_mpi::MPIMatVecParallel::validation() {
   internal_order_test();
-  if (taskData->inputs.size() != 2 || taskData->outputs.size() != 1) {
-    return false;
-  }
-  // square matrix
-  if (taskData->inputs_count[0] != taskData->inputs_count[1] * taskData->inputs_count[1]) {
-    return false;
-  }
-  if (taskData->inputs_count[0] == 0) {
-    return false;
+  if (world.rank() == 0) {
+    if (taskData->inputs.size() != 2 || taskData->outputs.size() != 1) {
+      return false;
+    }
+    // square matrix
+    if (taskData->inputs_count[0] != taskData->inputs_count[1] * taskData->inputs_count[1]) {
+      return false;
+    }
+    if (taskData->inputs_count[0] == 0) {
+      return false;
+    }
   }
   return true;
 }

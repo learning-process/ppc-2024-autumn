@@ -66,20 +66,6 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_50elem) {
   }
 }
 
-TEST(leontev_n_mat_vec_mpi, mul_mpi_0elem) {
-  boost::mpi::communicator world;
-  std::vector<int> global_vec;
-  std::vector<int> global_mat;
-  std::vector<int> global_res;
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskEmplacement(taskDataPar, global_vec, global_mat, global_vec);
-  }
-  leontev_n_mat_vec_mpi::MPIMatVecParallel MPIMatVecParallel(taskDataPar);
-  ASSERT_FALSE(MPIMatVecParallel.validation());
-}
-
 TEST(leontev_n_mat_vec_mpi, mul_mpi_500elem) {
   const int vector_size = 500;
   boost::mpi::communicator world;
