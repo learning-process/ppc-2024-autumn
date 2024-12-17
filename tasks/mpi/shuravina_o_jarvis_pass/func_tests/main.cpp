@@ -50,7 +50,6 @@ TEST(shuravina_o_jarvis_pass, Test_Minimal_Points) {
     }
   }
 }
-
 TEST(shuravina_o_jarvis_pass, Test_Hull_Size) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
