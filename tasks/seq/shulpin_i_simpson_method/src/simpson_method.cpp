@@ -9,22 +9,22 @@ double shulpin_simpson_method::f_x_mul_y(double x, double y) { return x * y; }
 double shulpin_simpson_method::f_sin_plus_cos(double x, double y) { return std::sin(x) + std::cos(y); }
 double shulpin_simpson_method::f_sin_mul_cos(double x, double y) { return std::sin(x) * std::cos(y); }
 
-inline double shulpin_simpson_method::calculate_coeff(int index, int limit) {
-  if (index == 0 || index == limit) {
+inline double shulpin_simpson_method::calculate_coeff(const int* index, const int* limit) {
+  if (*index == 0 || *index == *limit) {
     return 1.0;
   }
-  return (index % 2 == 0) ? 2.0 : 4.0;
+  return (*index % 2 == 0) ? 2.0 : 4.0;
 }
 
-double shulpin_simpson_method::calculate_row_sum(int i, int num_steps, double dx, double dy, double a, double c,
-                                                 const func& func) {
+double shulpin_simpson_method::calculate_row_sum(const int* i, const int* num_steps, const double* dx, const double* dy,
+                                                 const double* a, const double* c, const func* func) {
   double row_sum = 0.0;
-  double x = a + i * dx;
+  double x = *a + (*i) * (*dx);
   double x_coeff = calculate_coeff(i, num_steps);
 
-  for (int j = 0; j <= num_steps; ++j) {
-    double y = c + j * dy;
-    row_sum += x_coeff * calculate_coeff(j, num_steps) * func(x, y);
+  for (int j = 0; j <= *num_steps; ++j) {
+    double y = *c + j * (*dy);
+    row_sum += x_coeff * calculate_coeff(&j, num_steps) * (*func)(x, y);
   }
 
   return row_sum;
@@ -40,7 +40,7 @@ double shulpin_simpson_method::seq_simpson(double a, double b, double c, double 
   double seq_sum = 0.0;
 
   for (int i = 0; i <= N; ++i) {
-    seq_sum += calculate_row_sum(i, N, dx, dy, a, c, func_seq);
+    seq_sum += calculate_row_sum(&i, &N, &dx, &dy, &a, &c, &func_seq);
   }
 
   return (dx * dy / 9.0) * seq_sum;

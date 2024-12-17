@@ -20,8 +20,9 @@ double f_sin_plus_cos(double x, double y);
 double f_sin_mul_cos(double x, double y);
 
 double seq_simpson(double a, double b, double c, double d, int N, const func &f);
-inline double calculate_coeff(int index, int limit);
-double calculate_row_sum(int i, int num_steps, double dx, double dy, double a, double c, const func &func);
+inline double calculate_coeff(const int* index, const int* limit);
+double calculate_row_sum(const int* i, const int* num_steps, const double* dx, const double* dy, const double* a,
+                         const double* c, const func* func);
 double mpi_simpson(double a, double b, double c, double d, int N, const func &f);
 
 class SimpsonMethodSeq : public ppc::core::Task {
