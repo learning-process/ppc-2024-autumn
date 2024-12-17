@@ -1,5 +1,6 @@
 #include "mpi/shuravina_o_jarvis_pass/include/ops_mpi.hpp"
 
+#include <mpi.h>
 #include <boost/mpi/collectives.hpp>
 #include <boost/serialization/vector.hpp>
 
