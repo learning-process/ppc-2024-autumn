@@ -153,3 +153,30 @@ TEST(oturin_a_histogram_stretch_functest, Test_IMAGE_CODE) {
   testTaskSequential.post_processing();
   ASSERT_EQ(ref, out);
 }
+
+TEST(oturin_a_histogram_stretch_functest, Test_IMAGE_ONECOLOR) {
+  int width = 10;
+  int height = 10;
+
+  // Create data
+  std::vector<uint8_t> in(width * height * 3, 0);
+  std::vector<uint8_t> ref(width * height * 3, 0);
+  std::vector<uint8_t> out(width * height * 3, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(width);
+  taskDataSeq->inputs_count.emplace_back(height);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(width);
+  taskDataSeq->outputs_count.emplace_back(height);
+
+  // Create Task
+  oturin_a_histogram_stretch_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(ref, out);
+}
