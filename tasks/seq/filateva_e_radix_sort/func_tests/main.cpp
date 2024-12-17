@@ -166,7 +166,7 @@ TEST(filateva_e_radix_sort_seq, test_size_0) {
   EXPECT_FALSE(radixSort.validation());
 }
 
-TEST(filateva_e_radix_sort_seq, less_0) {
+TEST(filateva_e_radix_sort_seq, test_less_0) {
   int size = 0;
   std::vector<int> vec(size);
   std::vector<int> answer(size);

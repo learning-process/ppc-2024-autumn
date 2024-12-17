@@ -64,7 +64,7 @@ TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
   }
 }
 
-TEST(filateva_e_metod_gausa_mpi, test_task_run) {
+TEST(filateva_e_radix_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
   int size = 200000;
   std::vector<int> vec;
