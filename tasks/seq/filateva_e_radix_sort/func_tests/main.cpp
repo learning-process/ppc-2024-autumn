@@ -6,7 +6,7 @@
 
 #include "seq/filateva_e_radix_sort/include/ops_seq.hpp"
 
-void GeneratorVector(std::vector<int>& vec) {
+void GeneratorVector(std::vector<int> &vec) {
   int max_z = 10;
   int min_z = -10;
   for (int i = 0; i < vec.size(); i++) {

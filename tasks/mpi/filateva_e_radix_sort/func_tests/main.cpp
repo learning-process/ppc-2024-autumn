@@ -1,15 +1,15 @@
 // Filateva Elizaveta Radix Sort
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
-#include <algorithm>
 #include <vector>
 
 #include "mpi/filateva_e_radix_sort/include/ops_mpi.hpp"
 
-void GeneratorVector(std::vector<int>& vec) {
+void GeneratorVector(std::vector<int> &vec) {
   int max_z = 10;
   int min_z = -10;
   for (int i = 0; i < vec.size(); i++) {
@@ -29,7 +29,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_3) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -68,7 +68,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_10) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -107,7 +107,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_30) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -146,7 +146,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_100) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -185,7 +185,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_211) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -223,7 +223,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_different) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vec.data()));
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(answer.data()));
     taskData->inputs_count.emplace_back(size);
@@ -243,7 +243,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_0) {
   std::vector<int> vec;
   std::vector<int> answer;
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();  
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
     vec.resize(size);

@@ -1,10 +1,11 @@
 // Filateva Elizaveta Radix Sort
 #include "mpi/filateva_e_radix_sort/include/ops_mpi.hpp"
 
-#include <boost/serialization/vector.hpp>
-#include <vector>
-#include <string>
 #include <limits>
+#include <string>
+#include <boost/serialization/vector.hpp>
+#include <list> 
+#include <vector>
 
 bool filateva_e_radix_sort_mpi::RadixSort::pre_processing() {
   internal_order_test();
@@ -36,16 +37,16 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   std::vector<int> local_ans;
   boost::mpi::broadcast(world, size, 0);
   if (world.rank() == 0) {
-    delta = (world.size() == 1)? 0: arr.size() / (world.size() - 1);
-    ost = (world.size() == 1)? arr.size(): arr.size() % (world.size() - 1);
+    delta = (world.size() == 1) ? 0 : arr.size() / (world.size() - 1);
+    ost = (world.size() == 1) ? arr.size() : arr.size() % (world.size() - 1);
     local_ans.resize(size);
   }
   boost::mpi::broadcast(world, delta, 0);
   boost::mpi::broadcast(world, ost, 0);
 
-  int local_size = (world.rank() == 0)? ost: delta;
-  std::vector<std::list<int>> radix_list(kol);
-  std::vector<int> local_vec(local_size,0);
+  int local_size = (world.rank() == 0) ? ost : delta;
+  std::vector<list<int>> radix_list(kol);
+  std::vector<int> local_vec(local_size, 0);
 
   std::vector<int> distribution(world.size(), delta);
   distribution[0] = ost;
@@ -60,7 +61,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   }
   while (radix_list[10].size() != local_size) {
     raz *= 10;
-    std::vector<std::list<int>> temp(kol);
+    std::vector<list<int>> temp(kol);
     for (int i = 0; i < kol; i++) {
       for (auto p : radix_list[i]) {
         temp[p % raz / (raz / 10) + 10].push_back(p);
@@ -69,11 +70,11 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
     radix_list = temp;
   }
   int i = 0;
-  for (auto a: radix_list[10]) {
+  for (auto a : radix_list[10]) {
     local_vec[i] = a;
     i++;
   }
-  
+
   boost::mpi::gatherv(world, local_vec.data(), local_size, local_ans.data(), distribution, displacement, 0);
 
   if (world.rank() == 0) {

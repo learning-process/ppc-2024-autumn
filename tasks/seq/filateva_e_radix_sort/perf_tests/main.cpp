@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_radix_sort/include/ops_seq.hpp"
 
-void GeneratorVector(std::vector<int>& vec) {
+void GeneratorVector(std::vector<int> &vec) {
   int max_z = 100000;
   int min_z = -100000;
   for (int i = 0; i < vec.size(); i++) {
@@ -96,7 +96,7 @@ TEST(filateva_e_radix_sort_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(radixSort);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  
+
   std::sort(tResh.begin(), tResh.end());
 
   EXPECT_EQ(answer.size(), tResh.size());

@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_radix_sort/include/ops_mpi.hpp"
 
-void GeneratorVector(std::vector<int>& vec) {
+void GeneratorVector(std::vector<int> &vec) {
   int max_z = 100000;
   int min_z = -100000;
   for (int i = 0; i < vec.size(); i++) {
@@ -27,7 +27,7 @@ TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -36,7 +36,6 @@ TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
-
 
   auto radixSort = std::make_shared<filateva_e_radix_sort_mpi::RadixSort>(taskData);
   ASSERT_TRUE(radixSort->validation());
@@ -77,7 +76,7 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
-    
+
     GeneratorVector(vec);
     tResh = vec;
 
@@ -86,7 +85,6 @@ TEST(filateva_e_metod_gausa_mpi, test_task_run) {
     taskData->inputs_count.emplace_back(size);
     taskData->outputs_count.emplace_back(size);
   }
-
 
   auto radixSort = std::make_shared<filateva_e_radix_sort_mpi::RadixSort>(taskData);
   ASSERT_TRUE(radixSort->validation());

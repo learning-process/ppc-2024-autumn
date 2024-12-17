@@ -1,8 +1,8 @@
 // Filateva Elizaveta Radix Sort
 
-#include <vector>
 #include <iostream>
 #include <list>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
