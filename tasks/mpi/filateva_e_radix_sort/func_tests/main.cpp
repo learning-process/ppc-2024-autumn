@@ -12,7 +12,7 @@
 void GeneratorVector(std::vector<int> &vec) {
   int max_z = 10;
   int min_z = -10;
-  for (int i = 0; i < vec.size(); i++) {
+  for (unsigned long i = 0; i < vec.size(); i++) {
     vec[i] = rand() % (max_z - min_z + 1) + min_z;
   }
 }
