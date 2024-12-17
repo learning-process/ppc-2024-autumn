@@ -8,7 +8,7 @@
 bool zinoviev_a_bellman_ford_seq::BellmanFordTaskSequential::pre_processing() {
   internal_order_test();
   // Initialize input data
-  input_ = std::vector<int>(taskData->inputs_count[0]);
+  input_ = std::vector<int>(taskData->inputs_count[0]);  // Исправлено: input_ теперь вектор
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
