@@ -9,16 +9,6 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> zinoviev_a_readers_and_writers_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
@@ -35,7 +25,7 @@ bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::pre_pr
 bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] != 0);
 }
 
 bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::run() {
@@ -84,7 +74,7 @@ bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskParallel::validati
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] != 0);
   }
   return true;
 }

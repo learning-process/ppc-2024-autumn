@@ -6,6 +6,18 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/zinoviev_a_readers_and_writers/include/ops_mpi.hpp"
 
+using namespace zinoviev_a_readers_and_writers_mpi;
+
+std::vector<int> zinoviev_a_readers_and_writers_mpi::getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = gen() % 100;
+  }
+  return vec;
+}
+
 TEST(zinoviev_a_readers_and_writers_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
