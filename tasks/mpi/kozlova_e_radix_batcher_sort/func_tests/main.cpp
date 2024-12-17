@@ -200,3 +200,44 @@ TEST(kozlova_e_radix_batcher_sort_mpi, test_same_elements) {
     ASSERT_EQ(resSEQ, resMPI);
   }
 }
+
+TEST(kozlova_e_radix_batcher_sort_mpi, test_identical_elements_with_diff_signs) {
+  boost::mpi::communicator world;
+  std::vector<double> mas = {0.5, -0.5};
+  std::vector<double> resMPI(2);
+  std::vector<double> expected = {-0.5, 0.5};
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(mas.data()));
+    taskDataPar->inputs_count.emplace_back(mas.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(resMPI.data()));
+    taskDataPar->outputs_count.emplace_back(resMPI.size());
+  }
+
+  kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortMPI testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<double> resSEQ(2);
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(mas.data()));
+    taskDataSeq->inputs_count.emplace_back(mas.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resSEQ.data()));
+    taskDataSeq->outputs_count.emplace_back(resSEQ.size());
+
+    kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortSequential testMPITaskSequential(taskDataSeq);
+
+    ASSERT_EQ(testMPITaskSequential.validation(), true);
+    testMPITaskSequential.pre_processing();
+    testMPITaskSequential.run();
+    testMPITaskSequential.post_processing();
+
+    ASSERT_EQ(resSEQ, resMPI);
+    ASSERT_EQ(resSEQ, expected);
+  }
+}
