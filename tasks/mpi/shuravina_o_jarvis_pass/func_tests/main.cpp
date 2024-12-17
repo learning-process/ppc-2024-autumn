@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
   MPI_Init(&argc, &argv);
   ::testing::InitGoogleTest(&argc, argv);
   int result = RUN_ALL_TESTS();
+  MPI_Barrier(MPI_COMM_WORLD);
   MPI_Finalize();
   return result;
 }
@@ -29,7 +30,6 @@ TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
 
   if (rank == 0) {
     std::vector<Point> seq_hull = jarvis_march(global_points);
-
     ASSERT_EQ(global_hull.size(), seq_hull.size());
     for (size_t i = 0; i < global_hull.size(); i++) {
       EXPECT_EQ(global_hull[i], seq_hull[i]);
@@ -51,7 +51,6 @@ TEST(shuravina_o_jarvis_pass, Test_Minimal_Points) {
 
   if (rank == 0) {
     std::vector<Point> seq_hull = jarvis_march(global_points);
-
     ASSERT_EQ(global_hull.size(), seq_hull.size());
     for (size_t i = 0; i < global_hull.size(); i++) {
       EXPECT_EQ(global_hull[i], seq_hull[i]);
@@ -70,10 +69,9 @@ TEST(shuravina_o_jarvis_pass, Test_Hull_Size) {
   ASSERT_TRUE(jarvis_mpi.validation());
   jarvis_mpi.run();
   global_hull = jarvis_mpi.get_hull();
-  
+
   if (rank == 0) {
     std::vector<Point> seq_hull = jarvis_march(global_points);
-
     EXPECT_EQ(global_hull.size(), seq_hull.size());
   }
 }
@@ -103,7 +101,6 @@ TEST(shuravina_o_jarvis_pass, Test_Empty_Points) {
 
   if (rank == 0) {
     std::vector<Point> seq_hull = jarvis_march(global_points);
-
     EXPECT_EQ(global_hull.size(), seq_hull.size());
   }
 }
