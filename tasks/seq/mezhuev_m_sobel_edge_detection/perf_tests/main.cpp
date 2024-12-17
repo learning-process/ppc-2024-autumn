@@ -2,8 +2,8 @@
 
 #include <chrono>
 #include <cmath>
-#include <vector>
 #include <cstdlib>
+#include <vector>
 
 #include "seq/mezhuev_m_sobel_edge_detection/include/seq.hpp"
 

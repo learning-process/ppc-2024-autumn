@@ -1,7 +1,7 @@
 #include "seq/mezhuev_m_sobel_edge_detection/include/seq.hpp"
 
 #include <cmath>
-#include <iostream>u
+#include <iostream>
 
 namespace mezhuev_m_sobel_edge_detection {
 
