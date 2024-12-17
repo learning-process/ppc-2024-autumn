@@ -106,7 +106,6 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
 }
 
 TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
-  // Сheck function when the number of processes is not a power of two
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
@@ -141,9 +140,6 @@ TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
 
 TEST(fomin_v_generalized_scatter, ZeroElementsScatter) {
   boost::mpi::communicator world;
-  int rank = world.rank();
-  int size = world.size();
-
   int root = 0;
   const int data_size = 0;
   int* sendbuf = nullptr;
