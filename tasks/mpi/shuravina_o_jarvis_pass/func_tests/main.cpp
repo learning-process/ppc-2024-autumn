@@ -27,6 +27,7 @@ TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
       EXPECT_EQ(global_hull[i], seq_hull[i]);
     }
   }
+
 MPI_Finalize();
 }
 
