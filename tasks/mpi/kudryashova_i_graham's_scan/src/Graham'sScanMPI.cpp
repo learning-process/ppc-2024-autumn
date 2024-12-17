@@ -31,6 +31,7 @@ void sortPoints(std::vector<int8_t>& points) {
   int n = points.size() / 2;
   std::pair<int8_t, int8_t> p0(points[0], points[n]);
   std::vector<std::pair<int8_t, int8_t>> pointList;
+  pointList.resize(points.size());
   for (int i = 0; i < n; ++i) {
     pointList.emplace_back(points[i], points[n + i]);
   }
