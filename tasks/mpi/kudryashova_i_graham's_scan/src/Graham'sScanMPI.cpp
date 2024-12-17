@@ -241,7 +241,7 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskParallel::run() {
     if ((int)(taskData->inputs_count[0]) < world.size() || (world.size() == 1)) {
       runGrahamScan(input_data);
       return true;
-    } 
+    }
   } else {
     world.send(0, 0, local_result.data(), local_size);
   }
