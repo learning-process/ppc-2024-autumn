@@ -5,13 +5,17 @@
 #include <random>
 #include <vector>
 
+// Добавляем заголовок для функций MPI, таких как broadcast
+#include <boost/mpi/collectives.hpp>
+
 bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  broadcast(world, delta, 0);
+  // Используем broadcast для рассылки delta всем процессам
+  boost::mpi::broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     graph_ = std::vector<int>(taskData->inputs_count[0]);
