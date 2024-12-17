@@ -59,7 +59,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   for (int i = 0; i < local_size; i++) {
     radix_list[local_vec[i] % raz + 10].push_back(local_vec[i]);
   }
-  while (radix_list[10].size() != local_size) {
+  while ((int)radix_list[10].size() != local_size) {
     raz *= 10;
     std::vector<std::list<int>> temp(kol);
     for (int i = 0; i < kol; i++) {
