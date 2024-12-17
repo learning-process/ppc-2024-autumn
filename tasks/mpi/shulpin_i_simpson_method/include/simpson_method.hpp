@@ -19,11 +19,11 @@ double f_x_mul_y(double x, double y);
 double f_sin_plus_cos(double x, double y);
 double f_sin_mul_cos(double x, double y);
 
-double seq_simpson(double a, double b, double c, double d, int N, const func &f);
+double seq_simpson(double a, double b, double c, double d, int N, const func& f);
 inline double calculate_coeff(const int* index, const int* limit);
 double calculate_row_sum(const int* i, const int* num_steps, const double* dx, const double* dy, const double* a,
                          const double* c, const func* func);
-double mpi_simpson(double a, double b, double c, double d, int N, const func &f);
+double mpi_simpson(double a, double b, double c, double d, int N, const func& f);
 
 class SimpsonMethodSeq : public ppc::core::Task {
  public:
@@ -32,7 +32,7 @@ class SimpsonMethodSeq : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void set_seq(const func &f);
+  void set_seq(const func& f);
 
  private:
   double a_seq;
@@ -51,7 +51,7 @@ class SimpsonMethodMPI : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  void set_MPI(const func &f);
+  void set_MPI(const func& f);
 
  private:
   double a_MPI;
