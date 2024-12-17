@@ -94,7 +94,7 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskSequential::run() {
 
 bool kudryashova_i_graham_scan_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  int8_t* outputData = reinterpret_cast<int8_t*>(taskData->outputs[0]);
+  auto* outputData = reinterpret_cast<int8_t*>(taskData->outputs[0]);
   std::copy(result_vec.begin(), result_vec.end(), outputData);
   return true;
 }
@@ -240,16 +240,17 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskParallel::run() {
     if ((int)(taskData->inputs_count[0]) < world.size() || (world.size() == 1)) {
       runGrahamScan(input_data);
       return true;
-    } else {
-      for (int i = 1; i < world.size(); ++i) {
-        world.recv(i, 0, full_results.data() + displacements[i], sizes[i]);
-      }
-      std::copy(local_result.begin(), local_result.end(), full_results.data() + displacements[world.rank()]);
-      std::vector<int8_t> full_results_sort = rearrangeAndSort(full_results);
-      runGrahamScan(full_results_sort);
-    }
+    } 
   } else {
     world.send(0, 0, local_result.data(), local_size);
+  }
+  if (world.rank() == 0) {
+    for (int i = 1; i < world.size(); ++i) {
+      world.recv(i, 0, full_results.data() + displacements[i], sizes[i]);
+    }
+    std::copy(local_result.begin(), local_result.end(), full_results.data() + displacements[world.rank()]);
+    std::vector<int8_t> full_results_sort = rearrangeAndSort(full_results);
+    runGrahamScan(full_results_sort);
   }
   return true;
 }
@@ -258,7 +259,7 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     if (!taskData->outputs.empty()) {
-      int8_t* outputData = reinterpret_cast<int8_t*>(taskData->outputs[0]);
+      auto* outputData = reinterpret_cast<int8_t*>(taskData->outputs[0]);
       std::copy(result_vec.begin(), result_vec.end(), outputData);
     } else {
       return false;

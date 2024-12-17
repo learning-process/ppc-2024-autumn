@@ -3,19 +3,19 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kudryashova_i_graham's_scan/include/Graham'sScanSeq.hpp"
 
-void generateUniquePoints(int numPoints, double Ans_number, std::vector<int8_t> &xCoords,
+void generateUniquePoints(int numPoints, int8_t Ans_number, std::vector<int8_t> &xCoords,
                           std::vector<int8_t> &yCoords) {
-  int x_min = -(Ans_number - 1);
-  int x_max = (Ans_number - 1);
-  int y_min = -(Ans_number - 1);
-  int y_max = (Ans_number - 1);
+  int8_t x_min = -(Ans_number - 1);
+  int8_t x_max = (Ans_number - 1);
+  int8_t y_min = -(Ans_number - 1);
+  int8_t y_max = (Ans_number - 1);
   if (numPoints > (x_max - x_min + 1) * (y_max - y_min + 1)) {
     std::cerr << "Error: Not enough unique points can be generated in the given range." << std::endl;
     return;
   }
-  std::vector<std::pair<double, double>> allPoints;
-  for (double x = x_min; x <= x_max; x += 1) {
-    for (double y = y_min; y <= y_max; y += 1) {
+  std::vector<std::pair<int8_t, int8_t>> allPoints;
+  for (int8_t x = x_min; x <= x_max; x += 1) {
+    for (int8_t y = y_min; y <= y_max; y += 1) {
       allPoints.emplace_back(x, y);
     }
   }

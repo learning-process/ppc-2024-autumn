@@ -94,7 +94,7 @@ bool kudryashova_i_graham_scan_seq::TestTaskSequential::run() {
 
 bool kudryashova_i_graham_scan_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  int8_t* outputData = reinterpret_cast<int8_t*>(taskData->outputs[0]);
+  auto* outputData = reinterpret_cast<int8_t*>(taskData->outputs[0]);
   std::copy(result_vec.begin(), result_vec.end(), outputData);
   return true;
 }

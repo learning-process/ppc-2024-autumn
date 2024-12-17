@@ -4,15 +4,15 @@
 
 #include "mpi/kudryashova_i_graham's_scan/include/Graham'sScanMPI.hpp"
 
-void generateUniquePoints(int numPoints, double minX, double maxX, double minY, double maxY,
+void generateUniquePoints(int numPoints, int8_t minX, int8_t maxX, int8_t minY, int8_t maxY,
                           std::vector<int8_t> &xCoords, std::vector<int8_t> &yCoords) {
   if (numPoints > (maxX - minX + 1) * (maxY - minY + 1)) {
     std::cerr << "Error: Not enough unique points can be generated in the given range." << std::endl;
     return;
   }
-  std::vector<std::pair<double, double>> allPoints;
-  for (double x = minX; x <= maxX; x += 1) {
-    for (double y = minY; y <= maxY; y += 1) {
+  std::vector<std::pair<int8_t, int8_t>> allPoints;
+  for (int8_t x = minX; x <= maxX; x += 1) {
+    for (int8_t y = minY; y <= maxY; y += 1) {
       allPoints.emplace_back(x, y);
     }
   }
