@@ -18,7 +18,8 @@ namespace malyshev_v_conjugate_gradient_method {
 
 class MPIConjugateGradientSequential : public ppc::core::Task {
  public:
-  explicit MPIConjugateGradientSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit MPIConjugateGradientSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;
   bool validation() override;
