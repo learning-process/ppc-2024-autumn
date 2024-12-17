@@ -6,63 +6,45 @@
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
-  // Example graph in CRS format
-  std::vector<int> row_pointers = {0, 1, 2, 3};
-  std::vector<int> col_indices = {1, 2, 3};
-  std::vector<int> values = {2, 3, 1};
-  std::vector<int> distances(4, INT_MAX);
-  distances[0] = 0;
+  std::vector<int> graph = {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
+  std::vector<int> shortest_paths(4, 0);
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_pointers.data()));
-  taskDataSeq->inputs_count.emplace_back(row_pointers.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indices.data()));
-  taskDataSeq->inputs_count.emplace_back(col_indices.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-  taskDataSeq->inputs_count.emplace_back(values.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(distances.data()));
-  taskDataSeq->outputs_count.emplace_back(distances.size());
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(4);
+  taskData->inputs_count.emplace_back(4);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(4);
 
-  // Create Task
-  zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential bellmanFordSeqTaskSequential(taskDataSeq);
-  ASSERT_EQ(bellmanFordSeqTaskSequential.validation(), true);
-  bellmanFordSeqTaskSequential.pre_processing();
-  bellmanFordSeqTaskSequential.run();
-  bellmanFordSeqTaskSequential.post_processing();
+  zinoviev_a_bellman_ford_seq::BellmanFordSeq task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
 
-  // Reference distances
-  std::vector<int> reference_distances = {0, 2, 3, 1};
-  ASSERT_EQ(distances, reference_distances);
+  std::vector<int> expected = {0, 1, 2, 3};
+  ASSERT_EQ(shortest_paths, expected);
 }
 
 TEST(zinoviev_a_bellman_ford, Test_Medium_Graph) {
-  // Example graph in CRS format
-  std::vector<int> row_pointers = {0, 2, 4, 6};
-  std::vector<int> col_indices = {1, 2, 2, 3, 3, 4};
-  std::vector<int> values = {2, 3, 1, 4, 2, 3};
-  std::vector<int> distances(5, INT_MAX);
-  distances[0] = 0;
+  std::vector<int> graph = {0, 4, 0, 0, 0, 0,  0, 8, 0, 4, 0,  8, 0, 0, 0,  0, 11, 0, 0, 8, 0, 7,  0,  4, 0, 0, 2,
+                            0, 0, 7, 0, 9, 14, 0, 0, 0, 0, 0,  0, 9, 0, 10, 0, 0,  0, 0, 0, 4, 14, 10, 0, 2, 0, 0,
+                            0, 0, 0, 0, 0, 2,  0, 1, 6, 8, 11, 0, 0, 0, 0,  1, 0,  7, 0, 0, 2, 0,  0,  0, 6, 7, 0};
+  std::vector<int> shortest_paths(9, 0);
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_pointers.data()));
-  taskDataSeq->inputs_count.emplace_back(row_pointers.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indices.data()));
-  taskDataSeq->inputs_count.emplace_back(col_indices.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-  taskDataSeq->inputs_count.emplace_back(values.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(distances.data()));
-  taskDataSeq->outputs_count.emplace_back(distances.size());
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(9);
+  taskData->inputs_count.emplace_back(9);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(9);
 
-  // Create Task
-  zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential bellmanFordSeqTaskSequential(taskDataSeq);
-  ASSERT_EQ(bellmanFordSeqTaskSequential.validation(), true);
-  bellmanFordSeqTaskSequential.pre_processing();
-  bellmanFordSeqTaskSequential.run();
-  bellmanFordSeqTaskSequential.post_processing();
+  zinoviev_a_bellman_ford_seq::BellmanFordSeq task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
 
-  // Reference distances
-  std::vector<int> reference_distances = {0, 2, 3, 1, 4};
-  ASSERT_EQ(distances, reference_distances);
+  std::vector<int> expected = {0, 4, 12, 19, 21, 11, 9, 8, 14};
+  ASSERT_EQ(shortest_paths, expected);
 }

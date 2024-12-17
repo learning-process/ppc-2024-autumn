@@ -7,23 +7,24 @@
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
 TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
-  // Example graph in CRS format
-  std::vector<int> graph = {0, 2, 3, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-  std::vector<int> distances(6, INT_MAX);
-  distances[0] = 0;
+  std::vector<int> graph = {0, 4, 0, 0, 0, 0,  0, 8, 0, 4, 0,  8, 0, 0, 0,  0, 11, 0, 0, 8, 0, 7,  0,  4, 0, 0, 2,
+                            0, 0, 7, 0, 9, 14, 0, 0, 0, 0, 0,  0, 9, 0, 10, 0, 0,  0, 0, 0, 4, 14, 10, 0, 2, 0, 0,
+                            0, 0, 0, 0, 0, 2,  0, 1, 6, 8, 11, 0, 0, 0, 0,  1, 0,  7, 0, 0, 2, 0,  0,  0, 6, 7, 0};
+  std::vector<int> shortest_paths(9, 0);
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-  taskDataSeq->inputs_count.emplace_back(graph.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
-  taskDataSeq->outputs_count.emplace_back(distances.size());
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(9);
+  taskData->inputs_count.emplace_back(9);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(9);
 
-  // Create Task
-  auto bellmanFordSeqTaskSequential =
-      std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential>(taskDataSeq);
+  auto task = std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeq>(taskData);
+  ASSERT_EQ(task->validation(), true);
+  task->pre_processing();
+  task->run();
+  task->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -33,33 +34,32 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(bellmanFordSeqTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
 TEST(zinoviev_a_bellman_ford, test_task_run) {
-  // Example graph in CRS format
-  std::vector<int> graph = {0, 2, 3, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-  std::vector<int> distances(6, INT_MAX);
-  distances[0] = 0;
+  std::vector<int> graph = {0, 4, 0, 0, 0, 0,  0, 8, 0, 4, 0,  8, 0, 0, 0,  0, 11, 0, 0, 8, 0, 7,  0,  4, 0, 0, 2,
+                            0, 0, 7, 0, 9, 14, 0, 0, 0, 0, 0,  0, 9, 0, 10, 0, 0,  0, 0, 0, 4, 14, 10, 0, 2, 0, 0,
+                            0, 0, 0, 0, 0, 2,  0, 1, 6, 8, 11, 0, 0, 0, 0,  1, 0,  7, 0, 0, 2, 0,  0,  0, 6, 7, 0};
+  std::vector<int> shortest_paths(9, 0);
 
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-  taskDataSeq->inputs_count.emplace_back(graph.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
-  taskDataSeq->outputs_count.emplace_back(distances.size());
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(9);
+  taskData->inputs_count.emplace_back(9);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(9);
 
-  // Create Task
-  auto bellmanFordSeqTaskSequential =
-      std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential>(taskDataSeq);
+  auto task = std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeq>(taskData);
+  ASSERT_EQ(task->validation(), true);
+  task->pre_processing();
+  task->run();
+  task->post_processing();
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -69,11 +69,9 @@ TEST(zinoviev_a_bellman_ford, test_task_run) {
     return static_cast<double>(duration) * 1e-9;
   };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(bellmanFordSeqTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 }

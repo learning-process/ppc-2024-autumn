@@ -1,61 +1,92 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::pre_processing() {
+#include <algorithm>
+#include <vector>
+
+void zinoviev_a_bellman_ford_seq::BellmanFordSeq::toCRS(const int* input_matrix) {
+  row_ptr.push_back(0);
+  for (size_t i = 0; i < V; ++i) {
+    for (size_t j = 0; j < V; ++j) {
+      if (input_matrix[i * V + j] != 0) {
+        values.push_back(input_matrix[i * V + j]);
+        columns.push_back(j);
+      }
+    }
+    row_ptr.push_back(values.size());
+  }
+}
+
+bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::pre_processing() {
   internal_order_test();
+  auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+  V = taskData->inputs_count[0];
+  E = taskData->inputs_count[1];
 
-  // Initialize row pointers, column indices, and values
-  row_pointers_ = std::vector<int>(taskData->inputs_count[0]);
-  col_indices_ = std::vector<int>(taskData->inputs_count[1]);
-  values_ = std::vector<int>(taskData->inputs_count[2]);
+  toCRS(input_matrix);
 
-  auto* row_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  auto* col_idx = reinterpret_cast<int*>(taskData->inputs[1]);
-  auto* val = reinterpret_cast<int*>(taskData->inputs[2]);
-
-  for (size_t i = 0; i < row_pointers_.size(); ++i) {
-    row_pointers_[i] = row_ptr[i];
-  }
-  for (size_t i = 0; i < col_indices_.size(); ++i) {
-    col_indices_[i] = col_idx[i];
-  }
-  for (size_t i = 0; i < values_.size(); ++i) {
-    values_[i] = val[i];
-  }
-
-  // Initialize distances
-  distances_ = std::vector<int>(taskData->outputs_count[0], INT_MAX);
-  distances_[0] = 0;  // Source node
+  shortest_paths.resize(V, INF);
+  shortest_paths[0] = 0;
   return true;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::validation() {
+bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] > 0;
+  return taskData->inputs_count[0] < taskData->inputs_count[1] &&
+         taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::run() {
-  internal_order_test();
-
-  // Bellman-Ford algorithm
-  for (size_t i = 0; i < distances_.size() - 1; ++i) {
-    for (size_t u = 0; u < row_pointers_.size() - 1; ++u) {
-      for (size_t j = row_pointers_[u]; j < row_pointers_[u + 1]; ++j) {
-        int v = col_indices_[j];
-        int weight = values_[j];
-        if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
-          distances_[v] = distances_[u] + weight;
-        }
+bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::Iteration(std::vector<int>& paths) {
+  bool changed = false;
+  for (size_t i = 0; i < V; ++i) {
+    for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
+      int v = columns[j];
+      int weight = values[j];
+      if (paths[i] != INF && paths[i] + weight < paths[v]) {
+        paths[v] = paths[i] + weight;
+        changed = true;
       }
     }
   }
+  return changed;
+}
+
+bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::check_negative_cycle() {
+  for (size_t i = 0; i < V; ++i) {
+    for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
+      int v = columns[j];
+      int weight = values[j];
+      if (shortest_paths[i] != INF && shortest_paths[i] + weight < shortest_paths[v]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::run() {
+  internal_order_test();
+
+  bool changed = false;
+  for (size_t i = 0; i < V - 1; ++i) {
+    changed = Iteration(shortest_paths);
+    if (!changed) break;
+  }
+
+  if (check_negative_cycle()) {
+    return false;
+  }
+
+  for (size_t i = 0; i < V; ++i) {
+    if (shortest_paths[i] == INF) shortest_paths[i] = 0;
+  }
   return true;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::post_processing() {
+bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::post_processing() {
   internal_order_test();
-  for (size_t i = 0; i < distances_.size(); ++i) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = distances_[i];
+  for (size_t i = 0; i < V; ++i) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = shortest_paths[i];
   }
   return true;
 }
