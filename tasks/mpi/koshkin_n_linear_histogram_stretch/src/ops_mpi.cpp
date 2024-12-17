@@ -139,7 +139,7 @@ bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel::run() {
   int pixels_per_process = num_pixels / world.size();
   int extra_pixels = num_pixels % world.size();
 
-  // Локальное количество пикселей
+  // Р‹РѕРєР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРёРєСЃРµР»РµР№
   int local_pixels = pixels_per_process + (world.rank() < extra_pixels ? 1 : 0);
 
   std::vector<int> displacements(world.size(), 0);
