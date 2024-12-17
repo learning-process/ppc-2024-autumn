@@ -3,72 +3,80 @@
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
-#include <stdexcept>
 #include <vector>
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::pre_processing() {
+bool malyshev_conjugate_gradient_method::TestTaskSequential::pre_processing() {
   internal_order_test();
 
   uint32_t size = taskData->inputs_count[0];
 
   matrix_.resize(size, std::vector<double>(size));
-  vector_.resize(size);
-  solution_.resize(size);
+  b_.resize(size);
+  x_.resize(size, 0.0);
 
   double* data;
-  for (uint32_t i = 0; i < matrix_.size(); i++) {
+  for (uint32_t i = 0; i < size; i++) {
     data = reinterpret_cast<double*>(taskData->inputs[0]) + i * size;
     std::copy(data, data + size, matrix_[i].data());
   }
 
   data = reinterpret_cast<double*>(taskData->inputs[1]);
-  std::copy(data, data + size, vector_.data());
+  std::copy(data, data + size, b_.data());
 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::validation() {
+bool malyshev_conjugate_gradient_method::TestTaskSequential::validation() {
   internal_order_test();
+
+  if (taskData->inputs.size() != 2 || taskData->inputs_count.size() < 2) {
+    return false;
+  }
 
   return taskData->outputs_count[0] == taskData->inputs_count[0];
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::run() {
+bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
   internal_order_test();
 
-  uint32_t size = matrix_.size();
-  std::vector<double> x(size, 0.0);
-  std::vector<double> r = vector_;
-  std::vector<double> p = r;
-  double rsold = 0.0;
+  uint32_t size = taskData->inputs_count[0];
+  std::vector<double> r(size), p(size), Ap(size);
+  double rsold, rsnew, alpha;
+
+  // Initial residual
   for (uint32_t i = 0; i < size; i++) {
-    rsold += r[i] * r[i];
+    r[i] = b_[i];
+    for (uint32_t j = 0; j < size; j++) {
+      r[i] -= matrix_[i][j] * x_[j];
+    }
+    p[i] = r[i];
   }
 
-  for (uint32_t iter = 0; iter < size; iter++) {
-    std::vector<double> Ap(size, 0.0);
+  rsold = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
+
+  for (uint32_t k = 0; k < size; k++) {
+    // Compute Ap = A * p
     for (uint32_t i = 0; i < size; i++) {
+      Ap[i] = 0.0;
       for (uint32_t j = 0; j < size; j++) {
         Ap[i] += matrix_[i][j] * p[j];
       }
     }
 
-    double alpha = rsold / std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
+    // Compute alpha = rsold / (p' * Ap)
+    alpha = rsold / std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
 
+    // Update x and r
     for (uint32_t i = 0; i < size; i++) {
-      x[i] += alpha * p[i];
+      x_[i] += alpha * p[i];
       r[i] -= alpha * Ap[i];
     }
 
-    double rsnew = 0.0;
-    for (uint32_t i = 0; i < size; i++) {
-      rsnew += r[i] * r[i];
-    }
+    rsnew = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
 
-    if (std::sqrt(rsnew) < 1e-10) {
-      break;
-    }
+    if (std::sqrt(rsnew) < 1e-10) break;
 
+    // Update p
     for (uint32_t i = 0; i < size; i++) {
       p[i] = r[i] + (rsnew / rsold) * p[i];
     }
@@ -76,20 +84,18 @@ bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::run() {
     rsold = rsnew;
   }
 
-  solution_ = x;
-
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential::post_processing() {
+bool malyshev_conjugate_gradient_method::TestTaskSequential::post_processing() {
   internal_order_test();
 
-  std::copy(solution_.begin(), solution_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
+  std::copy(x_.begin(), x_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::pre_processing() {
+bool malyshev_conjugate_gradient_method::TestTaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -99,107 +105,107 @@ bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::pre_processing(
     ext_ = size % world.size();
 
     matrix_.resize(size, std::vector<double>(size));
-    vector_.resize(size);
-    solution_.resize(size);
+    b_.resize(size);
+    x_.resize(size, 0.0);
 
     double* data;
-    for (uint32_t i = 0; i < matrix_.size(); i++) {
+    for (uint32_t i = 0; i < size; i++) {
       data = reinterpret_cast<double*>(taskData->inputs[0]) + i * size;
       std::copy(data, data + size, matrix_[i].data());
     }
 
     data = reinterpret_cast<double*>(taskData->inputs[1]);
-    std::copy(data, data + size, vector_.data());
+    std::copy(data, data + size, b_.data());
   }
 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::validation() {
+bool malyshev_conjugate_gradient_method::TestTaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
+    if (taskData->inputs.size() != 2 || taskData->inputs_count.size() < 2) {
+      return false;
+    }
+
     return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::run() {
+bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
   internal_order_test();
 
   broadcast(world, delta_, 0);
   broadcast(world, ext_, 0);
+  broadcast(world, b_, 0);
 
-  std::vector<int32_t> sizes(world.size(), delta_);
+  std::vector<int> sizes(world.size(), delta_);
   for (uint32_t i = 0; i < ext_; i++) {
     sizes[world.size() - i - 1]++;
   }
 
-  local_matrix_.resize(sizes[world.rank()], std::vector<double>(matrix_.size()));
-  local_vector_.resize(sizes[world.rank()]);
-  local_solution_.resize(sizes[world.rank()]);
+  local_matrix_.resize(sizes[world.rank()]);
+  local_x_.resize(sizes[world.rank()], 0.0);
 
   scatterv(world, matrix_, sizes, local_matrix_.data(), 0);
-  scatterv(world, vector_, sizes, local_vector_.data(), 0);
 
-  uint32_t local_size = local_matrix_.size();
-  uint32_t global_size = matrix_.size();
-  std::vector<double> local_x(local_size, 0.0);
-  std::vector<double> local_r = local_vector_;
-  std::vector<double> local_p = local_r;
-  double local_rsold = 0.0;
-  for (uint32_t i = 0; i < local_size; i++) {
-    local_rsold += local_r[i] * local_r[i];
+  std::vector<double> r(sizes[world.rank()]), p(sizes[world.rank()]), Ap(sizes[world.rank()]);
+  double rsold, rsnew, alpha;
+
+  // Initial residual
+  for (uint32_t i = 0; i < static_cast<uint32_t>(sizes[world.rank()]); i++) {
+    r[i] = b_[i];
+    for (uint32_t j = 0; j < static_cast<uint32_t>(sizes[world.rank()]); j++) {
+      r[i] -= local_matrix_[i][j] * local_x_[j];
+    }
+    p[i] = r[i];
   }
 
-  double global_rsold = 0.0;
-  reduce(world, local_rsold, global_rsold, std::plus<>(), 0);
+  rsold = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
 
-  for (uint32_t iter = 0; iter < global_size; iter++) {
-    std::vector<double> local_Ap(local_size, 0.0);
-    for (uint32_t i = 0; i < local_size; i++) {
-      for (uint32_t j = 0; j < global_size; j++) {
-        local_Ap[i] += local_matrix_[i][j] * local_p[j];
+  for (uint32_t k = 0; k < static_cast<uint32_t>(sizes[world.rank()]); k++) {
+    // Compute Ap = A * p
+    for (uint32_t i = 0; i < static_cast<uint32_t>(sizes[world.rank()]); i++) {
+      Ap[i] = 0.0;
+      for (uint32_t j = 0; j < static_cast<uint32_t>(sizes[world.rank()]); j++) {
+        Ap[i] += local_matrix_[i][j] * p[j];
       }
     }
 
-    double local_alpha = local_rsold / std::inner_product(local_p.begin(), local_p.end(), local_Ap.begin(), 0.0);
+    // Compute alpha = rsold / (p' * Ap)
+    alpha = rsold / std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
 
-    for (uint32_t i = 0; i < local_size; i++) {
-      local_x[i] += local_alpha * local_p[i];
-      local_r[i] -= local_alpha * local_Ap[i];
+    // Update x and r
+    for (uint32_t i = 0; i < static_cast<uint32_t>(sizes[world.rank()]); i++) {
+      local_x_[i] += alpha * p[i];
+      r[i] -= alpha * Ap[i];
     }
 
-    double local_rsnew = 0.0;
-    for (uint32_t i = 0; i < local_size; i++) {
-      local_rsnew += local_r[i] * local_r[i];
+    rsnew = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
+
+    if (std::sqrt(rsnew) < 1e-10) break;
+
+    // Update p
+    for (uint32_t i = 0; i < static_cast<uint32_t>(sizes[world.rank()]); i++) {
+      p[i] = r[i] + (rsnew / rsold) * p[i];
     }
 
-    double global_rsnew = 0.0;
-    reduce(world, local_rsnew, global_rsnew, std::plus<>(), 0);
-
-    if (std::sqrt(global_rsnew) < 1e-10) {
-      break;
-    }
-
-    for (uint32_t i = 0; i < local_size; i++) {
-      local_p[i] = local_r[i] + (local_rsnew / local_rsold) * local_p[i];
-    }
-
-    local_rsold = local_rsnew;
+    rsold = rsnew;
   }
 
-  gatherv(world, local_x, solution_.data(), sizes, 0);
+  gatherv(world, local_x_, x_.data(), sizes, 0);
 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel::post_processing() {
+bool malyshev_conjugate_gradient_method::TestTaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    std::copy(solution_.begin(), solution_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
+    std::copy(x_.begin(), x_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
   }
 
   return true;

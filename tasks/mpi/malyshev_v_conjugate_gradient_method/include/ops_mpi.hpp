@@ -8,7 +8,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace malyshev_v_conjugate_gradient_method_mpi {
+namespace malyshev_conjugate_gradient_method {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -20,8 +20,8 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<std::vector<double>> matrix_;
-  std::vector<double> vector_;
-  std::vector<double> solution_;
+  std::vector<double> b_;
+  std::vector<double> x_;
 };
 
 class TestTaskParallel : public ppc::core::Task {
@@ -34,11 +34,11 @@ class TestTaskParallel : public ppc::core::Task {
 
  private:
   std::vector<std::vector<double>> matrix_, local_matrix_;
-  std::vector<double> vector_, local_vector_;
-  std::vector<double> solution_, local_solution_;
+  std::vector<double> b_, local_x_;
+  std::vector<double> x_;
   uint32_t delta_, ext_;
 
   boost::mpi::communicator world;
 };
 
-}  // namespace malyshev_v_conjugate_gradient_method_mpi
+}  // namespace malyshev_conjugate_gradient_method

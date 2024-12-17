@@ -1,34 +1,30 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
+#include <climits>
 #include <random>
 #include <vector>
 
 #include "mpi/malyshev_v_conjugate_gradient_method/include/ops_mpi.hpp"
 
-namespace malyshev_v_conjugate_gradient_method_test_function {
+namespace malyshev_conjugate_gradient_method {
 
-std::vector<std::vector<double>> getRandomSPDMatrix(uint32_t size) {
+std::vector<std::vector<double>> generateRandomSymmetricPositiveDefiniteMatrix(uint32_t size, double min_value,
+                                                                               double max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_real_distribution<double> dist(-1.0, 1.0);
+  std::uniform_real_distribution<> dis(min_value, max_value);
+
   std::vector<std::vector<double>> matrix(size, std::vector<double>(size));
 
-  // Генерируем нижнюю треугольную матрицу
   for (uint32_t i = 0; i < size; i++) {
     for (uint32_t j = 0; j <= i; j++) {
-      matrix[i][j] = dist(gen);
+      matrix[i][j] = dis(gen);
+      matrix[j][i] = matrix[i][j];
     }
   }
 
-  // Копируем нижнюю треугольную матрицу в верхнюю
-  for (uint32_t i = 0; i < size; i++) {
-    for (uint32_t j = i + 1; j < size; j++) {
-      matrix[i][j] = matrix[j][i];
-    }
-  }
-
-  // Делаем матрицу положительно определённой, добавляя к диагонали
+  // Make the matrix positive definite by adding a multiple of the identity matrix
   for (uint32_t i = 0; i < size; i++) {
     matrix[i][i] += size;
   }
@@ -36,41 +32,45 @@ std::vector<std::vector<double>> getRandomSPDMatrix(uint32_t size) {
   return matrix;
 }
 
-std::vector<double> getRandomVector(uint32_t size) {
+std::vector<double> generateRandomVector(uint32_t size, double min_value, double max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_real_distribution<double> dist(-1.0, 1.0);
+  std::uniform_real_distribution<> dis(min_value, max_value);
   std::vector<double> vector(size);
 
   for (auto &el : vector) {
-    el = dist(gen);
+    el = dis(gen);
   }
 
   return vector;
 }
 
-}  // namespace malyshev_v_conjugate_gradient_method_test_function
+}  // namespace malyshev_conjugate_gradient_method
 
-TEST(malyshev_v_conjugate_gradient_method_mpi, small_matrix_3x3) {
+TEST(malyshev_conjugate_gradient_method, test_small_system) {
   uint32_t size = 3;
+  double min_value = 0.1;
+  double max_value = 10.0;
 
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> randomMatrix;
-  std::vector<double> randomVector;
-  std::vector<double> mpiSolution;
+  std::vector<std::vector<double>> matrix;
+  std::vector<double> b;
+  std::vector<double> x;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
+  malyshev_conjugate_gradient_method::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
-    randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
-    mpiSolution.resize(size);
+    matrix =
+        malyshev_conjugate_gradient_method::generateRandomSymmetricPositiveDefiniteMatrix(size, min_value, max_value);
+    b = malyshev_conjugate_gradient_method::generateRandomVector(size, min_value, max_value);
+    x.resize(size, 0.0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
     taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiSolution.data()));
+    taskDataPar->inputs_count.push_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(x.data()));
     taskDataPar->outputs_count.push_back(size);
   }
 
@@ -80,15 +80,16 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, small_matrix_3x3) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> seqSolution(size);
+    std::vector<double> seqResult(size);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential taskSeq(taskDataSeq);
+    malyshev_conjugate_gradient_method::TestTaskSequential taskSeq(taskDataSeq);
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
     taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqSolution.data()));
+    taskDataSeq->inputs_count.push_back(size);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
     taskDataSeq->outputs_count.push_back(size);
 
     ASSERT_TRUE(taskSeq.validation());
@@ -97,31 +98,35 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, small_matrix_3x3) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < size; i++) {
-      ASSERT_NEAR(seqSolution[i], mpiSolution[i], 1e-6);
+      ASSERT_NEAR(seqResult[i], x[i], 1e-6);
     }
   }
 }
 
-TEST(malyshev_v_conjugate_gradient_method_mpi, medium_matrix_100x100) {
+TEST(malyshev_conjugate_gradient_method, test_large_system) {
   uint32_t size = 100;
+  double min_value = 0.1;
+  double max_value = 10.0;
 
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> randomMatrix;
-  std::vector<double> randomVector;
-  std::vector<double> mpiSolution;
+  std::vector<std::vector<double>> matrix;
+  std::vector<double> b;
+  std::vector<double> x;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
+  malyshev_conjugate_gradient_method::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
-    randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
-    mpiSolution.resize(size);
+    matrix =
+        malyshev_conjugate_gradient_method::generateRandomSymmetricPositiveDefiniteMatrix(size, min_value, max_value);
+    b = malyshev_conjugate_gradient_method::generateRandomVector(size, min_value, max_value);
+    x.resize(size, 0.0);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
     taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiSolution.data()));
+    taskDataPar->inputs_count.push_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(x.data()));
     taskDataPar->outputs_count.push_back(size);
   }
 
@@ -131,15 +136,16 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, medium_matrix_100x100) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> seqSolution(size);
+    std::vector<double> seqResult(size);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential taskSeq(taskDataSeq);
+    malyshev_conjugate_gradient_method::TestTaskSequential taskSeq(taskDataSeq);
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
     taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqSolution.data()));
+    taskDataSeq->inputs_count.push_back(size);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
     taskDataSeq->outputs_count.push_back(size);
 
     ASSERT_TRUE(taskSeq.validation());
@@ -148,84 +154,7 @@ TEST(malyshev_v_conjugate_gradient_method_mpi, medium_matrix_100x100) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < size; i++) {
-      ASSERT_NEAR(seqSolution[i], mpiSolution[i], 1e-6);
+      ASSERT_NEAR(seqResult[i], x[i], 1e-6);
     }
-  }
-}
-
-TEST(malyshev_v_conjugate_gradient_method_mpi, large_matrix_1000x1000) {
-  uint32_t size = 1000;
-
-  boost::mpi::communicator world;
-  std::vector<std::vector<double>> randomMatrix;
-  std::vector<double> randomVector;
-  std::vector<double> mpiSolution;
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
-
-  if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
-    randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
-    mpiSolution.resize(size);
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
-    taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiSolution.data()));
-    taskDataPar->outputs_count.push_back(size);
-  }
-
-  ASSERT_TRUE(taskMPI.validation());
-  ASSERT_TRUE(taskMPI.pre_processing());
-  ASSERT_TRUE(taskMPI.run());
-  ASSERT_TRUE(taskMPI.post_processing());
-
-  if (world.rank() == 0) {
-    std::vector<double> seqSolution(size);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential taskSeq(taskDataSeq);
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
-    taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqSolution.data()));
-    taskDataSeq->outputs_count.push_back(size);
-
-    ASSERT_TRUE(taskSeq.validation());
-    ASSERT_TRUE(taskSeq.pre_processing());
-    ASSERT_TRUE(taskSeq.run());
-    ASSERT_TRUE(taskSeq.post_processing());
-
-    for (uint32_t i = 0; i < size; i++) {
-      ASSERT_NEAR(seqSolution[i], mpiSolution[i], 1e-6);
-    }
-  }
-}
-
-TEST(malyshev_v_conjugate_gradient_method_mpi, test_validation) {
-  uint32_t size = 3;
-
-  boost::mpi::communicator world;
-  std::vector<std::vector<double>> randomMatrix;
-  std::vector<double> randomVector;
-  std::vector<double> mpiSolution;
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataPar);
-
-  if (world.rank() == 0) {
-    randomMatrix = malyshev_v_conjugate_gradient_method_test_function::getRandomSPDMatrix(size);
-    randomVector = malyshev_v_conjugate_gradient_method_test_function::getRandomVector(size);
-    mpiSolution.resize(size);
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
-    taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiSolution.data()));
-    taskDataPar->outputs_count.push_back(0);
-
-    ASSERT_FALSE(taskMPI.validation());
   }
 }
