@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -10,26 +9,28 @@
 TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_graph;
-  std::vector<int> global_dist(1, 0);
-
+  std::vector<int> global_distances;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int num_vertices = 100;
-    const int num_edges = 500;
-    global_graph = generateRandomGraph(num_vertices, num_edges);
+    // Example graph in CRS format
+    global_graph = {0, 2, 3, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+    global_distances = std::vector<int>(6, INT_MAX);
+    global_distances[0] = 0;
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
     taskDataPar->inputs_count.emplace_back(global_graph.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_dist.data()));
-    taskDataPar->outputs_count.emplace_back(global_dist.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_distances.data()));
+    taskDataPar->outputs_count.emplace_back(global_distances.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_bellman_ford::BellmanFordMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  auto bellmanFordMPITaskParallel =
+      std::make_shared<zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel>(taskDataPar);
+  ASSERT_EQ(bellmanFordMPITaskParallel->validation(), true);
+  bellmanFordMPITaskParallel->pre_processing();
+  bellmanFordMPITaskParallel->run();
+  bellmanFordMPITaskParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -41,7 +42,7 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(bellmanFordMPITaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
@@ -51,26 +52,28 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
 TEST(zinoviev_a_bellman_ford, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_graph;
-  std::vector<int> global_dist(1, 0);
-
+  std::vector<int> global_distances;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int num_vertices = 100;
-    const int num_edges = 500;
-    global_graph = generateRandomGraph(num_vertices, num_edges);
+    // Example graph in CRS format
+    global_graph = {0, 2, 3, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
+    global_distances = std::vector<int>(6, INT_MAX);
+    global_distances[0] = 0;
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
     taskDataPar->inputs_count.emplace_back(global_graph.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_dist.data()));
-    taskDataPar->outputs_count.emplace_back(global_dist.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_distances.data()));
+    taskDataPar->outputs_count.emplace_back(global_distances.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_bellman_ford::BellmanFordMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  testMpiTaskParallel->pre_processing();
-  testMpiTaskParallel->run();
-  testMpiTaskParallel->post_processing();
+  auto bellmanFordMPITaskParallel =
+      std::make_shared<zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel>(taskDataPar);
+  ASSERT_EQ(bellmanFordMPITaskParallel->validation(), true);
+  bellmanFordMPITaskParallel->pre_processing();
+  bellmanFordMPITaskParallel->run();
+  bellmanFordMPITaskParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -82,7 +85,7 @@ TEST(zinoviev_a_bellman_ford, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(bellmanFordMPITaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);

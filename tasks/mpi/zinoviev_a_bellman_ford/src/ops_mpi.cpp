@@ -2,10 +2,59 @@
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <functional>
 #include <random>
+#include <string>
+#include <thread>
 #include <vector>
 
-bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::pre_processing() {
+using namespace std::chrono_literals;
+
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential::pre_processing() {
+  internal_order_test();
+  // Init graph
+  graph_ = std::vector<int>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+    graph_[i] = tmp_ptr[i];
+  }
+  // Init distances
+  distances_ = std::vector<int>(taskData->outputs_count[0], INT_MAX);
+  distances_[0] = 0;
+  return true;
+}
+
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential::validation() {
+  internal_order_test();
+  // Check count elements of output
+  return taskData->outputs_count[0] > 0;
+}
+
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential::run() {
+  internal_order_test();
+  // Bellman-Ford algorithm
+  for (size_t i = 0; i < distances_.size() - 1; ++i) {
+    for (size_t j = 0; j < graph_.size(); j += 3) {
+      int u = graph_[j];
+      int v = graph_[j + 1];
+      int weight = graph_[j + 2];
+      if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
+        distances_[v] = distances_[u] + weight;
+      }
+    }
+  }
+  return true;
+}
+
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential::post_processing() {
+  internal_order_test();
+  for (size_t i = 0; i < distances_.size(); ++i) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = distances_[i];
+  }
+  return true;
+}
+
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::pre_processing() {
   internal_order_test();
   unsigned int delta = 0;
   if (world.rank() == 0) {
@@ -14,6 +63,7 @@ bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::pre_processing() {
   broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
+    // Init graph
     graph_ = std::vector<int>(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
@@ -29,29 +79,44 @@ bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::pre_processing() {
   } else {
     world.recv(0, 0, local_graph_.data(), delta);
   }
-  dist_ = std::vector<int>(taskData->outputs_count[0], 0);
+  // Init distances
+  distances_ = std::vector<int>(taskData->outputs_count[0], INT_MAX);
+  distances_[0] = 0;
   return true;
 }
 
-bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::validation() {
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    // Check count elements of output
     return taskData->outputs_count[0] > 0;
   }
   return true;
 }
 
-bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::run() {
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::run() {
   internal_order_test();
+  // Bellman-Ford algorithm
+  for (size_t i = 0; i < distances_.size() - 1; ++i) {
+    for (size_t j = 0; j < local_graph_.size(); j += 3) {
+      int u = local_graph_[j];
+      int v = local_graph_[j + 1];
+      int weight = local_graph_[j + 2];
+      if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
+        distances_[v] = distances_[u] + weight;
+      }
+    }
+    // Reduce distances
+    reduce(world, distances_.data(), distances_.size(), distances_.data(), std::min<int>, 0);
+  }
   return true;
 }
 
-bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::post_processing() {
+bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (unsigned i = 0; i < dist_.size(); i++) {
-      tmp_ptr[i] = dist_[i];
+    for (size_t i = 0; i < distances_.size(); ++i) {
+      reinterpret_cast<int*>(taskData->outputs[0])[i] = distances_[i];
     }
   }
   return true;

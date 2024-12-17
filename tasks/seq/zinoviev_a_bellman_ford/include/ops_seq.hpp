@@ -1,11 +1,11 @@
 #pragma once
 
-#include <memory>
+#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace zinoviev_a_bellman_ford {
+namespace zinoviev_a_bellman_ford_seq {
 
 class BellmanFordSeqTaskSequential : public ppc::core::Task {
  public:
@@ -17,7 +17,7 @@ class BellmanFordSeqTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<int> graph_;
-  std::vector<int> dist_;
+  std::vector<int> distances_;
 };
 
-}  // namespace zinoviev_a_bellman_ford
+}  // namespace zinoviev_a_bellman_ford_seq
