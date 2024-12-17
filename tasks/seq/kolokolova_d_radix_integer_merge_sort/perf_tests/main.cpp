@@ -7,10 +7,7 @@
 #include "seq/kolokolova_d_radix_integer_merge_sort/include/ops_seq.hpp"
 
 TEST(kolokolova_d_radix_integer_merge_sort_seq, test_pipeline_run) {
-  std::vector<int> unsorted_vector;
-  for (int i = 0; i < 700000; ++i) {
-    unsorted_vector.push_back(0);
-  }
+  std::vector<int> unsorted_vector(100000, 0);
 
   std::vector<int> sorted_vector(int(unsorted_vector.size()), 0);
 
@@ -44,10 +41,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_seq, test_pipeline_run) {
 }
 
 TEST(kolokolova_d_radix_integer_merge_sort_seq, test_task_run) {
-  std::vector<int> unsorted_vector;
-  for (int i = 0; i < 600000; ++i) {
-    unsorted_vector.push_back(1);
-  }
+  std::vector<int> unsorted_vector(100000, 1);
 
   std::vector<int> sorted_vector(int(unsorted_vector.size()), 0);
 
