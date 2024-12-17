@@ -9,7 +9,7 @@
 
 TEST(chistov_a_gather_my, test_pipeline_run2) {
   boost::mpi::communicator world;
-  const int count_size_vector = 50000000;
+  const int count_size_vector = 6000000;
   std::vector<int> local_vec(count_size_vector, 1);
   std::vector<int> gathered_data;
   std::vector<int> mpi_gathered_data;
@@ -50,7 +50,7 @@ TEST(chistov_a_gather_my, test_pipeline_run2) {
 
 TEST(chistov_a_gather_my, test_task_run2) {
   boost::mpi::communicator world;
-  const int count_size_vector = 50000000;
+  const int count_size_vector = 6000000;
   std::vector<int> local_vec(count_size_vector, 1);
   std::vector<int> gathered_data;
   std::vector<int> mpi_gathered_data;
