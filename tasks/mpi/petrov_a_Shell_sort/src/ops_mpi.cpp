@@ -19,7 +19,7 @@ bool TestTaskMPI::pre_processing() {
   return !data_.empty
 }
 
- bool TestTaskMPI::validation() { return true; }
+bool TestTaskMPI::validation() { return true; }
 
 bool TestTaskMPI::run() {
   int n = data_.size();
