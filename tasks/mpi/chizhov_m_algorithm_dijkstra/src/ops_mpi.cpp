@@ -55,10 +55,9 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::validation() {
     return false;
   }
 
-  size = taskData->inputs_count[0];
-  for (int i = 0; i < size; i++) {
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (int j = 0; j < size; j++) {
+    for (unsigned int j = 0; j < taskData->inputs_count[0]; j++) {
       if (tmp_ptr[j] < 0) {
         return false;
       }
@@ -237,10 +236,10 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
 
     boost::mpi::all_reduce(world, local_pair, global_pair,
                            [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
-      if (a.first < b.first) return a;
-      if (a.first > b.first) return b;
-      return a;
-    });
+                             if (a.first < b.first) return a;
+                             if (a.first > b.first) return b;
+                             return a;
+                           });
 
     if (global_pair.first == INT_MAX || global_pair.second == -1) {
       break;

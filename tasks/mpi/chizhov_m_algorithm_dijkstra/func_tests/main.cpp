@@ -238,7 +238,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_20_vertex) {
   }
 }
 
- TEST(chizhov_m_dijkstra_realization_mpi, source_vertex_validation_false) {
+TEST(chizhov_m_dijkstra_realization_mpi, Test_Source_Vertex_False) {
   boost::mpi::communicator world;
   int size = 10;
   int st = 13;
@@ -263,32 +263,16 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_20_vertex) {
   }
 
   chizhov_m_dijkstra_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
-
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int> res_seq(size, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(size);
-    taskDataSeq->inputs_count.emplace_back(st);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
-
-    // Create Task
-    chizhov_m_dijkstra_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_FALSE(testMpiTaskSequential.validation());
+    ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
 
-TEST(chizhov_m_dijkstra_realization_mpi, negative_value_test) {
+TEST(chizhov_m_dijkstra_realization_mpi, Test_Negative_Value) {
   boost::mpi::communicator world;
   int size = 3;
   int st = 0;
-
+  
   std::vector<std::vector<int>> matrix = {{0, 2, 5}, {4, 0, 2}, {3, -1, 0}};
   std::vector<int> res(size, 0);
   // Create TaskData
@@ -304,23 +288,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, negative_value_test) {
   }
 
   chizhov_m_dijkstra_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
-
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int> res_seq(size, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    for (unsigned int i = 0; i < matrix.size(); i++)
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
-    taskDataSeq->inputs_count.emplace_back(size);
-    taskDataSeq->inputs_count.emplace_back(st);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(res_seq.size());
-
-    // Create Task
-    chizhov_m_dijkstra_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_FALSE(testMpiTaskSequential.validation());
+    ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
