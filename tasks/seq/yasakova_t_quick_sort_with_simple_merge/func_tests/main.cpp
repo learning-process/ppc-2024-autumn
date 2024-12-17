@@ -18,7 +18,8 @@ void executeQuickSortTest(const std::vector<int>& inputData) {
   taskDataPtr->outputs.emplace_back(reinterpret_cast<uint8_t*>(sortedData.data()));
   taskDataPtr->outputs_count.emplace_back(sortedData.size());
 
-  auto quickSortTask = std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
+  auto quickSortTask =
+      std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
 
   if (quickSortTask->validation()) {
     quickSortTask->pre_processing();
@@ -55,9 +56,7 @@ TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesSingleElementInput) {
   executeQuickSortTest(vec);
 }
 
-TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesEmptyInput) {
-  executeQuickSortTest({});
-}
+TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesEmptyInput) {executeQuickSortTest({});}
 
 TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesMixedLargeAndSmallNumbers) {
   executeQuickSortTest({100, 99, 98, 1, 2, 3, 4, 5});

@@ -4,8 +4,8 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/yasakova_t_quick_sort_with_simple_merge/include/ops_mpi.hpp"
@@ -33,7 +33,8 @@ TEST(yasakova_t_quick_sort_with_simple_merge_mpi, pipeline_run) {
     task_data->outputs_count.emplace_back(output_data.size());
   }
 
-  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
+  auto parallel_sort_task =
+      std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
   ASSERT_TRUE(parallel_sort_task->validation());
   parallel_sort_task->pre_processing();
@@ -77,7 +78,8 @@ TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_task_execution) {
     task_data->outputs_count.emplace_back(output_data.size());
   }
 
-  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
+  auto parallel_sort_task =
+      std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
   ASSERT_TRUE(parallel_sort_task->validation());
   parallel_sort_task->pre_processing();
