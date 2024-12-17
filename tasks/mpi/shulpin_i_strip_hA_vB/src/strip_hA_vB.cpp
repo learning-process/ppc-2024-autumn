@@ -71,7 +71,7 @@ void shulpin_strip_scheme_A_B::calculate_mpi(int rows_a, int cols_a, int cols_b,
   for (int i = 0; i < LocalRows; ++i) {
     for (int k = 0; k < cols_a; ++k) {
       int temp = bufA[i * cols_a + k];
-      const int* B_row = &bufB[k * cols_b]; 
+      const int* B_row = &bufB[k * cols_b];
       int* C_row = &bufC[i * cols_b];
       for (int j = 0; j < cols_b; ++j) {
         C_row[j] += temp * B_row[j];
