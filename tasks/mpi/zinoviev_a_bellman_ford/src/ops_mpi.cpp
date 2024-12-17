@@ -2,10 +2,9 @@
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <boost/mpi/collectives.hpp>
 #include <random>
 #include <vector>
-
-#include <boost/mpi/collectives.hpp>
 
 bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::pre_processing() {
   internal_order_test();
