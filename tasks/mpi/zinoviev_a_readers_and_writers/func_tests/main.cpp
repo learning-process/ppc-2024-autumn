@@ -3,6 +3,9 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
+#include <algorithm>
+#include <functional> 
+#include <random> 
 
 #include "mpi/zinoviev_a_readers_and_writers/include/ops_mpi.hpp"
 
