@@ -7,6 +7,36 @@
 
 using namespace shuravina_o_jarvis_pass;
 
+bool mpi_initialized = false;
+
+void MPI_Setup() {
+  if (!mpi_initialized) {
+    MPI_Init(nullptr, nullptr);
+    mpi_initialized = true;
+  }
+}
+
+void MPI_Teardown() {
+  if (mpi_initialized) {
+    MPI_Finalize();
+  }
+}
+
+class MPITestEnvironment : public ::testing::Environment {
+ public:
+  virtual void SetUp() override { MPI_Setup(); }
+
+  virtual void TearDown() override { MPI_Teardown(); }
+};
+
+int main(int argc, char** argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+
+  ::testing::AddGlobalTestEnvironment(new MPITestEnvironment);
+
+  return RUN_ALL_TESTS();
+}
+
 TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
