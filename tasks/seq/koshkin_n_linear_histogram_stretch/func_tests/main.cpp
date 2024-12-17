@@ -14,7 +14,7 @@ TEST(koshkin_n_linear_histogram_stretch_seq, test_correct_image) {
   // Create data
   std::vector<int> in_vec = {15, 50, 45, 101, 92, 79};
   std::vector<int> out_vec(count_size_vector, 0);
-  std::vector<int> res_exp_out = {0, 0, 0, 255, 252, 216}; // теоретически посчитано
+  std::vector<int> res_exp_out = {0, 0, 0, 255, 252, 216}; // С‚РµРѕСЂРµС‚РёС‡РµСЃРєРё РїРѕСЃС‡РёС‚Р°РЅРѕ
 
   // Create TaskData
 

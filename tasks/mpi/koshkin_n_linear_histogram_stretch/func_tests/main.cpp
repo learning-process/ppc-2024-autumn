@@ -12,9 +12,9 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_133) {
   const int width = 150;
   const int height = 150;
   const int count_size_vector = width * height * 3;
-  //const int count_size_vector = 9;
+  // const int count_size_vector = 9;
   std::vector<int> in_vec = koshkin_n_linear_histogram_stretch_mpi::getRandomImage(count_size_vector);
-  //std::vector<int> in_vec = {105, 150, 200, 50, 80, 90, 255, 255, 255};
+  // std::vector<int> in_vec = {105, 150, 200, 50, 80, 90, 255, 255, 255};
   std::vector<int> out_vec_par(count_size_vector, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
