@@ -160,7 +160,8 @@ std::vector<int8_t> rearrangeAndSort(const std::vector<int8_t>& input) {
   return result;
 }
 
-std::vector<int8_t> kudryashova_i_graham_scan_mpi::TestMPITaskParallel::runGrahamScan(std::vector<int8_t>& Graham_input_data) {
+std::vector<int8_t> kudryashova_i_graham_scan_mpi::TestMPITaskParallel::runGrahamScan(
+    std::vector<int8_t>& Graham_input_data) {
   std::vector<int8_t> hull;
   std::vector<int8_t> points = Graham_input_data;
   int n = points.size() / 2;
@@ -225,7 +226,7 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskParallel::run() {
     local_GrahamScan_data.insert(local_GrahamScan_data.end(), local_input1_.begin(), local_input1_.end());
     local_GrahamScan_data.insert(local_GrahamScan_data.end(), local_input2_.begin(), local_input2_.end());
     local_result = runGrahamScan(local_GrahamScan_data);
-  }    
+  }
   size_t local_size = local_result.size();
   std::vector<size_t> sizes(world.size());
   world.barrier();

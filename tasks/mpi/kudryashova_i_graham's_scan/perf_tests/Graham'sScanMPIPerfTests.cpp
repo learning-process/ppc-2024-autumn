@@ -113,5 +113,5 @@ TEST(kudryashova_i_graham_scan_mpi, test_task_run) {
     std::vector<int8_t> answer = {-ans_number, -ans_number, ans_number,  -ans_number,
                                   ans_number,  ans_number,  -ans_number, ans_number};
     ASSERT_EQ(answer, result);
-   }
+  }
 }
