@@ -1,200 +1,119 @@
+// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
-#include <climits>
-#include <random>
+#include <boost/mpi/environment.hpp>
 #include <vector>
 
 #include "mpi/malyshev_v_conjugate_gradient_method/include/ops_mpi.hpp"
 
-namespace malyshev_conjugate_gradient_method {
-
-std::vector<std::vector<double>> generateRandomSymmetricPositiveDefiniteMatrix(uint32_t size, double min_value,
-                                                                               double max_value) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_real_distribution<> dis(min_value, max_value);
-
-  std::vector<std::vector<double>> matrix(size, std::vector<double>(size));
-
-  for (uint32_t i = 0; i < size; i++) {
-    for (uint32_t j = 0; j <= i; j++) {
-      matrix[i][j] = dis(gen);
-      matrix[j][i] = matrix[i][j];
-    }
-  }
-
-  // Make the matrix positive definite by adding a multiple of the identity matrix
-  for (uint32_t i = 0; i < size; i++) {
-    matrix[i][i] += size;
-  }
-
-  return matrix;
-}
-
-std::vector<double> generateRandomVector(uint32_t size, double min_value, double max_value) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::uniform_real_distribution<> dis(min_value, max_value);
-  std::vector<double> vector(size);
-
-  for (auto &el : vector) {
-    el = dis(gen);
-  }
-
-  return vector;
-}
-
-}  // namespace malyshev_conjugate_gradient_method
-
-TEST(malyshev_conjugate_gradient_method, test_small_system) {
-  uint32_t size = 3;
-  double min_value = 0.1;
-  double max_value = 10.0;
-
+TEST(malyshev_v_conjugate_gradient_method_mpi, Test_CG_Method_1_1) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrix;
-  std::vector<double> b;
-  std::vector<double> x;
 
+  size_t matrix_size = 1;
+  std::vector<double> global_result(matrix_size, 0.0);
+  std::vector<double> Matrix = {10.0};
+  std::vector<double> Values = {1.0};
+  double epsilon = 0.001;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_conjugate_gradient_method::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    matrix =
-        malyshev_conjugate_gradient_method::generateRandomSymmetricPositiveDefiniteMatrix(size, min_value, max_value);
-    b = malyshev_conjugate_gradient_method::generateRandomVector(size, min_value, max_value);
-    x.resize(size, 0.0);
-
-    // Check for NaN and Inf in matrix and b
-    for (const auto& row : matrix) {
-      for (double val : row) {
-        ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-      }
-    }
-
-    for (double val : b) {
-      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-    }
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
-    taskDataPar->inputs_count.push_back(size);
-    taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(x.data()));
-    taskDataPar->outputs_count.push_back(size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Matrix.data()));
+    taskDataPar->inputs_count.emplace_back(Matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Values.data()));
+    taskDataPar->inputs_count.emplace_back(Values.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  ASSERT_TRUE(taskMPI.validation());
-  ASSERT_TRUE(taskMPI.pre_processing());
-  ASSERT_TRUE(taskMPI.run());
-  ASSERT_TRUE(taskMPI.post_processing());
+  malyshev_v_conjugate_gradient_method::MPIConjugateGradientParallel taskPar(taskDataPar);
+  ASSERT_TRUE(taskPar.validation());
+  taskPar.pre_processing();
+  taskPar.run();
+  taskPar.post_processing();
 
+  std::vector<double> expected_result = {0.1};
   if (world.rank() == 0) {
-    std::vector<double> seqResult(size);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_conjugate_gradient_method::TestTaskSequential taskSeq(taskDataSeq);
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
-    taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
-    taskDataSeq->outputs_count.push_back(size);
-
-    ASSERT_TRUE(taskSeq.validation());
-    ASSERT_TRUE(taskSeq.pre_processing());
-    ASSERT_TRUE(taskSeq.run());
-    ASSERT_TRUE(taskSeq.post_processing());
-
-    // Check for NaN and Inf in results
-    for (double val : x) {
-      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-    }
-
-    for (double val : seqResult) {
-      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-    }
-
-    for (uint32_t i = 0; i < size; i++) {
-      ASSERT_NEAR(seqResult[i], x[i], 1e-6);
+    for (unsigned int i = 0; i < global_result.size(); ++i) {
+      ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
     }
   }
 }
 
-TEST(malyshev_conjugate_gradient_method, test_large_system) {
-  uint32_t size = 100;
-  double min_value = 0.1;
-  double max_value = 10.0;
-
+TEST(malyshev_v_conjugate_gradient_method_mpi, Test_CG_Method_2_2) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrix;
-  std::vector<double> b;
-  std::vector<double> x;
 
+  size_t matrix_size = 2;
+  std::vector<double> global_result(matrix_size, 0.0);
+  std::vector<double> Matrix = {4.0, 1.0, 1.0, 3.0};
+  std::vector<double> Values = {1.0, 2.0};
+  double epsilon = 0.001;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_conjugate_gradient_method::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    matrix =
-        malyshev_conjugate_gradient_method::generateRandomSymmetricPositiveDefiniteMatrix(size, min_value, max_value);
-    b = malyshev_conjugate_gradient_method::generateRandomVector(size, min_value, max_value);
-    x.resize(size, 0.0);
-
-    // Check for NaN and Inf in matrix and b
-    for (const auto& row : matrix) {
-      for (double val : row) {
-        ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-      }
-    }
-
-    for (double val : b) {
-      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-    }
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
-    taskDataPar->inputs_count.push_back(size);
-    taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(x.data()));
-    taskDataPar->outputs_count.push_back(size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Matrix.data()));
+    taskDataPar->inputs_count.emplace_back(Matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Values.data()));
+    taskDataPar->inputs_count.emplace_back(Values.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  ASSERT_TRUE(taskMPI.validation());
-  ASSERT_TRUE(taskMPI.pre_processing());
-  ASSERT_TRUE(taskMPI.run());
-  ASSERT_TRUE(taskMPI.post_processing());
+  malyshev_v_conjugate_gradient_method::MPIConjugateGradientParallel taskPar(taskDataPar);
+  ASSERT_TRUE(taskPar.validation());
+  taskPar.pre_processing();
+  taskPar.run();
+  taskPar.post_processing();
+
+  std::vector<double> expected_result = {0.25, 0.5};
+  if (world.rank() == 0) {
+    for (unsigned int i = 0; i < global_result.size(); ++i) {
+      ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
+    }
+  }
+}
+
+TEST(malyshev_v_conjugate_gradient_method_mpi, Test_CG_Method_3_3) {
+  boost::mpi::communicator world;
+
+  size_t matrix_size = 3;
+  std::vector<double> global_result(matrix_size, 0.0);
+  std::vector<double> Matrix = {4.0, 1.0, 2.0, 1.0, 3.0, 1.0, 2.0, 1.0, 5.0};
+  std::vector<double> Values = {1.0, 2.0, 3.0};
+  double epsilon = 0.001;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    std::vector<double> seqResult(size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Matrix.data()));
+    taskDataPar->inputs_count.emplace_back(Matrix.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(Values.data()));
+    taskDataPar->inputs_count.emplace_back(Values.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_conjugate_gradient_method::TestTaskSequential taskSeq(taskDataSeq);
+  malyshev_v_conjugate_gradient_method::MPIConjugateGradientParallel taskPar(taskDataPar);
+  ASSERT_TRUE(taskPar.validation());
+  taskPar.pre_processing();
+  taskPar.run();
+  taskPar.post_processing();
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
-    taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
-    taskDataSeq->outputs_count.push_back(size);
-
-    ASSERT_TRUE(taskSeq.validation());
-    ASSERT_TRUE(taskSeq.pre_processing());
-    ASSERT_TRUE(taskSeq.run());
-    ASSERT_TRUE(taskSeq.post_processing());
-
-    // Check for NaN and Inf in results
-    for (double val : x) {
-      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-    }
-
-    for (double val : seqResult) {
-      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
-    }
-
-    for (uint32_t i = 0; i < size; i++) {
-      ASSERT_NEAR(seqResult[i], x[i], 1e-6);
+  std::vector<double> expected_result = {0.2, 0.4, 0.6};
+  if (world.rank() == 0) {
+    for (unsigned int i = 0; i < global_result.size(); ++i) {
+      ASSERT_NEAR(global_result[i], expected_result[i], epsilon);
     }
   }
 }
