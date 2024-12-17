@@ -66,6 +66,6 @@ TEST(petrov_a_Shell_sort_seq, test_all_equal_elements) {
 }
 
 TEST(petrov_a_Shell_sort_seq, test_random_vector) {
-  auto random_vec = generate_random_vector(1000, -1000, 1000);
+  auto random_vec = petrov_a_Shell_sort_seq::generate_random_vector(1000, -1000, 1000);
   petrov_a_Shell_sort_seq::template_test(random_vec);
 }
