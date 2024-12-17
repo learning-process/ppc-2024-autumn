@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <algorithm>  // для std::sort
 #include <memory>
+#include <vector>
 
 #include "seq/petrov_o_radix_sort_with_simple_merge/include/ops_seq.hpp"
 
 // Базовый тест на сортировку небольшого массива
-TEST(RadixSortTest, BasicSortTest) {
+TEST(petrov_o_radix_sort_with_simple_merge_seq, BasicSortTest) {
   // Создание данных
   std::vector<int> in{8, 3};
   std::vector<int> out(in.size(), 0);
@@ -21,7 +21,7 @@ TEST(RadixSortTest, BasicSortTest) {
 
   // Создание задачи
   petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  
+
   ASSERT_TRUE(testTaskSequential.validation());
   ASSERT_TRUE(testTaskSequential.pre_processing());
   ASSERT_TRUE(testTaskSequential.run());
@@ -34,7 +34,7 @@ TEST(RadixSortTest, BasicSortTest) {
 }
 
 // Тестирование сортировки массива с отрицательными числами
-TEST(RadixSortTest, NegativeNumbersTest) {
+TEST(petrov_o_radix_sort_with_simple_merge_seq, NegativeNumbersTest) {
   // Создание данных
   std::vector<int> in{-100, -5, -3, 2, 7, 12};
   std::vector<int> out(in.size(), 0);
@@ -48,7 +48,7 @@ TEST(RadixSortTest, NegativeNumbersTest) {
 
   // Создание задачи
   petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  
+
   ASSERT_TRUE(testTaskSequential.validation());
   ASSERT_TRUE(testTaskSequential.pre_processing());
   ASSERT_TRUE(testTaskSequential.run());
@@ -61,7 +61,7 @@ TEST(RadixSortTest, NegativeNumbersTest) {
 }
 
 // Тестирование сортировки массива, отсортированного в обратном порядке
-TEST(RadixSortTest, ReverseSortedTest) {
+TEST(petrov_o_radix_sort_with_simple_merge_seq, ReverseSortedTest) {
   // Создание данных
   std::vector<int> in{10, 8, 6, 4, 2, 0};
   std::vector<int> out(in.size(), 0);
@@ -75,7 +75,7 @@ TEST(RadixSortTest, ReverseSortedTest) {
 
   // Создание задачи
   petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  
+
   ASSERT_TRUE(testTaskSequential.validation());
   ASSERT_TRUE(testTaskSequential.pre_processing());
   ASSERT_TRUE(testTaskSequential.run());
@@ -88,7 +88,7 @@ TEST(RadixSortTest, ReverseSortedTest) {
 }
 
 // Тестирование сортировки массива с одинаковыми элементами
-TEST(RadixSortTest, DuplicateElementsTest) {
+TEST(petrov_o_radix_sort_with_simple_merge_seq, DuplicateElementsTest) {
   // Создание данных
   std::vector<int> in{5, 5, 5, 5, 5, 5};
   std::vector<int> out(in.size(), 0);
@@ -102,7 +102,7 @@ TEST(RadixSortTest, DuplicateElementsTest) {
 
   // Создание задачи
   petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  
+
   ASSERT_TRUE(testTaskSequential.validation());
   ASSERT_TRUE(testTaskSequential.pre_processing());
   ASSERT_TRUE(testTaskSequential.run());
