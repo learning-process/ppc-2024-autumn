@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-
+#include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <chrono>
 #include <random>
 #include <vector>
