@@ -59,7 +59,6 @@ bool TaskParallel::run() {
     send_counts[i] += 1;
   }
 
-  // Определим смещения для scatterv
   std::vector<int> displs(size, 0);
   for (int i = 1; i < size; ++i) {
     displs[i] = displs[i - 1] + send_counts[i - 1];
@@ -67,9 +66,6 @@ bool TaskParallel::run() {
 
   std::vector<int> local_data(send_counts[rank]);
 
-  // Разослать данные с процесса 0 на все процессы
-  // Здесь используем scatterv вручную через send/recv для наглядности,
-  // так как в boost::mpi нет прямого scatterv:
   if (rank == 0) {
     // Отправляем части остальным процессам
     for (int proc = 1; proc < size; ++proc) {
@@ -83,6 +79,8 @@ bool TaskParallel::run() {
 
   // Теперь каждый процесс имеет свой local_data
   // Инвертируем знаковый бит
+  // Это необхожимо для правильной обработки отрицательных чисел, ведущий бит которых всегда равен единице. После
+  // инверитрования они естественным образом встанут на позиции перед положительными числами
   for (auto& num : local_data) {
     num ^= 0x80000000;
   }
@@ -162,14 +160,11 @@ bool TaskParallel::run() {
 
   if (rank == 0) {
     // На процессе 0 есть все отсортированные блоки, нужно слить их в один массив.
-    // Так как каждый блок уже отсортирован, делаем K-way merge.
     // Простой подход: последовательно сливать массивы.
 
     // У нас есть recv_buf, разбитый на скомпонованные сегменты:
     // Отрезки: [0:send_counts[0]), [displs[1]:displs[1]+send_counts[1]), ...
     // Сольём их всех:
-    // Один из простых способов: итеративно мерджим каждый следующий отсортированный отрезок с промежуточным
-    // результатом.
     std::vector<int> final_result;
     // Начинаем с первого блока
     final_result.insert(final_result.end(), recv_buf.begin(), recv_buf.begin() + send_counts[0]);
