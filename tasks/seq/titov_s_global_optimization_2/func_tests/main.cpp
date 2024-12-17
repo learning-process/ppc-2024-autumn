@@ -256,8 +256,7 @@ TEST(titov_s_global_optimization_2_seq, Test_7) {
 }
 
 TEST(titov_s_global_optimization_2_seq, Validation_InvalidInputs) {
-
-   std::function<double(const titov_s_global_optimization_2_seq::Point&)> func =
+  std::function<double(const titov_s_global_optimization_2_seq::Point&)> func =
       [](const titov_s_global_optimization_2_seq::Point& p) { return p.x * p.x * p.x + p.y * p.y * p.y; };
 
   auto constraint1 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.x - 2.9; };
@@ -270,7 +269,7 @@ TEST(titov_s_global_optimization_2_seq, Validation_InvalidInputs) {
           std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>{
               constraint1, constraint2, constraint3, constraint4});
 
- std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
   taskDataSeq->inputs_count.emplace_back(1);
 
@@ -321,8 +320,8 @@ TEST(titov_s_global_optimization_2_seq, Test_Wrong_Constraits) {
 
   auto constraints_ptr =
       std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>>(
-          std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>{
-              constraint1, constraint3, constraint4});
+          std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>{constraint1, constraint3,
+                                                                                              constraint4});
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
