@@ -83,8 +83,8 @@ INSTANTIATE_TEST_SUITE_P(zaitsev_a_jarvis_seq_test, zaitsev_a_jarvis_seq_test, :
     ),
     // Doubleton is the convex hull of itself
     Params(
-      {{102, 105}, {101, 105}},
-      {{102, 105}, {101, 105}}
+      {{103, 105}, {101, 105}},
+      {{103, 105}, {101, 105}}
     ),
     // Midpoints of one segments ignored (Collinear points case)
     Params(
