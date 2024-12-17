@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
 #include <vector>
 
 void zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::toCRS(const int* input_matrix) {
@@ -148,8 +149,8 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::Iteration(std::vector<int>&
   boost::mpi::reduce(
       world, start_paths.data(), V, reduced_paths.data(),
       [](int a, int b) {
-        if (a == INF) return b;
-        if (b == INF) return a;
+        if (a == zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::INF) return b;
+        if (b == zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::INF) return a;
         return std::min(a, b);
       },
       0);
