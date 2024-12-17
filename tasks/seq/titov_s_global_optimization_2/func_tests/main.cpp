@@ -279,7 +279,7 @@ TEST(titov_s_global_optimization_2_seq, Validation_InvalidInputs) {
 
   titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
 
-  ASSERT_THROW(optimizationTask.validation(), std::runtime_error);
+  EXPECT_FALSE(optimizationTask.validation());
 }
 
 TEST(titov_s_global_optimization_2_seq, Test_Validation_InvalidOutputs) {
@@ -307,7 +307,7 @@ TEST(titov_s_global_optimization_2_seq, Test_Validation_InvalidOutputs) {
 
   titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
 
-  ASSERT_THROW(optimizationTask.validation(), std::runtime_error);
+  EXPECT_FALSE(optimizationTask.validation());
 }
 
 TEST(titov_s_global_optimization_2_seq, Test_Wrong_Constraits) {
@@ -337,5 +337,5 @@ TEST(titov_s_global_optimization_2_seq, Test_Wrong_Constraits) {
   titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
 
   ASSERT_TRUE(optimizationTask.validation());
-  ASSERT_THROW(optimizationTask.pre_processing(), std::runtime_error);
+  EXPECT_FALSE(optimizationTask.pre_processing());
 }

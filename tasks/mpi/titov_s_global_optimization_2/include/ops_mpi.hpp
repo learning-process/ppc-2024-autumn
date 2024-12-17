@@ -35,7 +35,7 @@ class MPIGlobalOpt2Sequential : public ppc::core::Task {
   double evaluate_function(const Point& point);
   bool is_within_bounds(const Point& point);
   bool all_constraints_satisfied(const Point& point);
-  void calculate_initial_search_area();
+  bool calculate_initial_search_area();
   Point compute_gradient(const Point& point);
   static Point Calculate(const Point& x, const Point& grad, double lambda);
   double GoldenSelection(double a, double b, double eps, const Point& grad, const Point& xj);

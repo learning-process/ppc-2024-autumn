@@ -20,7 +20,9 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
   min_value_ = std::numeric_limits<double>::infinity();
   result_ = {0.0, 0.0};
 
-  calculate_initial_search_area();
+  if (!calculate_initial_search_area()) {
+    return false;
+  }
 
   return true;
 }
@@ -28,8 +30,8 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
   internal_order_test();
   if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->inputs.empty() ||
-      taskData->inputs.size() < 2) {
-    throw std::runtime_error("Invalid inputs provided to the task.");
+      taskData->inputs_count.size() < 2) {
+    return false;
   }
 
   auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
@@ -40,13 +42,12 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
   }
 
   if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
-    throw std::runtime_error("Validation failed: No outputs provided.");
     return false;
   }
   return true;
 }
 
-void titov_s_global_optimization_2_seq::GlobalOpt2Sequential::calculate_initial_search_area() {
+bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::calculate_initial_search_area() {
   double test_range = 10.0;
   double step = 0.1;
 
@@ -90,13 +91,14 @@ void titov_s_global_optimization_2_seq::GlobalOpt2Sequential::calculate_initial_
       initial_point.y != std::numeric_limits<double>::infinity()) {
     initial_point_ = initial_point;
   } else {
-    throw std::runtime_error("No valid initial point found.");
+    return false;
   }
 
   lower_bound_x_ -= 1;
   upper_bound_x_ += 1;
   lower_bound_y_ -= 1;
   upper_bound_y_ += 1;
+  return true;
 }
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::run() {

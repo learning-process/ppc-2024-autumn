@@ -23,7 +23,9 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::pre_processing(
   min_value_ = std::numeric_limits<double>::infinity();
   result_ = {0.0, 0.0};
 
-  calculate_initial_search_area();
+  if (!calculate_initial_search_area()) {
+    return false;
+  }
 
   return true;
 }
@@ -31,7 +33,7 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::validation() {
   internal_order_test();
   return true;
 }
-void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initial_search_area() {
+bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initial_search_area() {
   double test_range = 10.0;
   double step = 0.1;
 
@@ -75,13 +77,14 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initi
       initial_point.y != std::numeric_limits<double>::infinity()) {
     initial_point_ = initial_point;
   } else {
-    throw std::runtime_error("No valid initial point found.");
+    return false;
   }
 
   lower_bound_x_ -= 1;
   upper_bound_x_ += 1;
   lower_bound_y_ -= 1;
   upper_bound_y_ += 1;
+  return true;
 }
 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::run() {
