@@ -16,7 +16,9 @@ class BellmanFordSeqTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> graph_;
+  std::vector<int> row_pointers_;
+  std::vector<int> col_indices_;
+  std::vector<int> values_;
   std::vector<int> distances_;
 };
 

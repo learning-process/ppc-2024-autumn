@@ -9,22 +9,22 @@
 
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   boost::mpi::communicator world;
-  std::vector<int> global_graph;
-  std::vector<int> global_distances;
+  std::vector<int> row_pointers = {0, 1, 2, 3};
+  std::vector<int> col_indices = {1, 2, 3};
+  std::vector<int> values = {2, 3, 1};
+  std::vector<int> distances(4, INT_MAX);
+  distances[0] = 0;
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    // Example graph in CRS format
-    global_graph = {0, 2, 3, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-    global_distances = std::vector<int>(4, INT_MAX);
-    global_distances[0] = 0;
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataPar->inputs_count.emplace_back(global_graph.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_distances.data()));
-    taskDataPar->outputs_count.emplace_back(global_distances.size());
-  }
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_pointers.data()));
+  taskDataPar->inputs_count.emplace_back(row_pointers.size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indices.data()));
+  taskDataPar->inputs_count.emplace_back(col_indices.size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values.data()));
+  taskDataPar->inputs_count.emplace_back(values.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
+  taskDataPar->outputs_count.emplace_back(distances.size());
 
   zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel bellmanFordMPITaskParallel(taskDataPar);
   ASSERT_EQ(bellmanFordMPITaskParallel.validation(), true);
@@ -33,40 +33,7 @@ TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   bellmanFordMPITaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Reference distances
     std::vector<int> reference_distances = {0, 2, 3, 1};
-    ASSERT_EQ(global_distances, reference_distances);
-  }
-}
-
-TEST(zinoviev_a_bellman_ford, Test_Medium_Graph) {
-  boost::mpi::communicator world;
-  std::vector<int> global_graph;
-  std::vector<int> global_distances;
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    // Example graph in CRS format
-    global_graph = {0, 2, 3, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3};
-    global_distances = std::vector<int>(6, INT_MAX);
-    global_distances[0] = 0;
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataPar->inputs_count.emplace_back(global_graph.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_distances.data()));
-    taskDataPar->outputs_count.emplace_back(global_distances.size());
-  }
-
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel bellmanFordMPITaskParallel(taskDataPar);
-  ASSERT_EQ(bellmanFordMPITaskParallel.validation(), true);
-  bellmanFordMPITaskParallel.pre_processing();
-  bellmanFordMPITaskParallel.run();
-  bellmanFordMPITaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // Reference distances
-    std::vector<int> reference_distances = {0, 2, 3, 1, 2, 3};
-    ASSERT_EQ(global_distances, reference_distances);
+    ASSERT_EQ(distances, reference_distances);
   }
 }

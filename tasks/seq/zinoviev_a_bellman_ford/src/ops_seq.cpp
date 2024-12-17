@@ -1,40 +1,51 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::pre_processing() {
   internal_order_test();
-  // Init graph
-  graph_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    graph_[i] = tmp_ptr[i];
+
+  // Initialize row pointers, column indices, and values
+  row_pointers_ = std::vector<int>(taskData->inputs_count[0]);
+  col_indices_ = std::vector<int>(taskData->inputs_count[1]);
+  values_ = std::vector<int>(taskData->inputs_count[2]);
+
+  auto* row_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto* col_idx = reinterpret_cast<int*>(taskData->inputs[1]);
+  auto* val = reinterpret_cast<int*>(taskData->inputs[2]);
+
+  for (size_t i = 0; i < row_pointers_.size(); ++i) {
+    row_pointers_[i] = row_ptr[i];
   }
-  // Init distances
+  for (size_t i = 0; i < col_indices_.size(); ++i) {
+    col_indices_[i] = col_idx[i];
+  }
+  for (size_t i = 0; i < values_.size(); ++i) {
+    values_[i] = val[i];
+  }
+
+  // Initialize distances
   distances_ = std::vector<int>(taskData->outputs_count[0], INT_MAX);
-  distances_[0] = 0;
+  distances_[0] = 0;  // Source node
   return true;
 }
 
 bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::validation() {
   internal_order_test();
-  // Check count elements of output
   return taskData->outputs_count[0] > 0;
 }
 
 bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::run() {
   internal_order_test();
+
   // Bellman-Ford algorithm
   for (size_t i = 0; i < distances_.size() - 1; ++i) {
-    for (size_t j = 0; j < graph_.size(); j += 3) {
-      int u = graph_[j];
-      int v = graph_[j + 1];
-      int weight = graph_[j + 2];
-      if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
-        distances_[v] = distances_[u] + weight;
+    for (size_t u = 0; u < row_pointers_.size() - 1; ++u) {
+      for (size_t j = row_pointers_[u]; j < row_pointers_[u + 1]; ++j) {
+        int v = col_indices_[j];
+        int weight = values_[j];
+        if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
+          distances_[v] = distances_[u] + weight;
+        }
       }
     }
   }
