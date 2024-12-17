@@ -66,6 +66,6 @@ TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements_mpi) {
 }
 
 TEST(petrov_a_Shell_sort_mpi, test_random_vector_mpi) {
-  auto random_vec = generate_random_vector(1000, -1000, 1000);
+  auto random_vec = petrov_a_Shell_sort_mpi::generate_random_vector(1000, -1000, 1000);
   petrov_a_Shell_sort_mpi::template_test(random_vec);
 }
