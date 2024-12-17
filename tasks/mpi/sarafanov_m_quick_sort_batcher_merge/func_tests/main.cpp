@@ -6,7 +6,6 @@
 #include <random>
 #include <vector>
 
-#include "boost/mpi/collectives/broadcast.hpp"
 #include "core/task/include/task.hpp"
 #include "mpi/sarafanov_m_quick_sort_batcher_merge/include/ops_mpi.hpp"
 

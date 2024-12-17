@@ -57,7 +57,9 @@ bool QuicksortBatcherMerge::validation() {
   internal_order_test();
 
   int val_arr_size = taskData->inputs_count[0];
-  return val_arr_size > 0 && (val_arr_size & (val_arr_size - 1)) == 0;
+  int val_out_arr_size = taskData->outputs_count[0];
+
+  return val_arr_size > 0 && val_out_arr_size == val_arr_size && (val_arr_size & (val_arr_size - 1)) == 0;
 }
 
 bool QuicksortBatcherMerge::pre_processing() {

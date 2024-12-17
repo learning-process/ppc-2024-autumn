@@ -11,17 +11,17 @@ TEST(sarafanov_m_quick_sort_batcher_merge_seq, pipeline_run) {
   std::vector<int> data(vector_size);
   int current = vector_size;
   std::generate(data.begin(), data.end(), [&current]() { return current--; });
-  std::vector<int> result_data;
+  std::vector<int> result_data(vector_size);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-  taskDataPar->inputs_count.emplace_back(data.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+  taskDataSeq->inputs_count.emplace_back(data.size());
 
-  result_data.resize(vector_size);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+  taskDataSeq->outputs_count.emplace_back(result_data.size());
 
-  auto taskSequential = std::make_shared<sarafanov_m_quick_sort_batcher_merge_seq::QuicksortBatcherMerge>(taskDataPar);
+  auto taskSequential = std::make_shared<sarafanov_m_quick_sort_batcher_merge_seq::QuicksortBatcherMerge>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -45,18 +45,17 @@ TEST(sarafanov_m_quick_sort_batcher_merge_seq, task_run) {
   std::vector<int> data(vector_size);
   int current = vector_size;
   std::generate(data.begin(), data.end(), [&current]() { return current--; });
-  std::vector<int> result_data;
+  std::vector<int> result_data(vector_size);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-  taskDataPar->inputs_count.emplace_back(data.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+  taskDataSeq->inputs_count.emplace_back(data.size());
 
-  result_data.resize(vector_size);
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-  taskDataPar->outputs_count.emplace_back(result_data.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+  taskDataSeq->outputs_count.emplace_back(result_data.size());
 
-  auto taskSequential = std::make_shared<sarafanov_m_quick_sort_batcher_merge_seq::QuicksortBatcherMerge>(taskDataPar);
+  auto taskSequential = std::make_shared<sarafanov_m_quick_sort_batcher_merge_seq::QuicksortBatcherMerge>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
