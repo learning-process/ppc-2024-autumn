@@ -61,6 +61,7 @@ bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskSequential::run() {
     int G = image_input[i + 1];
     int B = image_input[i + 2];
 
+    // ¬ычисление ¤ркости
     I[k] = static_cast<int>(0.299 * R + 0.587 * G + 0.114 * B);
 
     if (I[k] < Imin) Imin = I[k];
@@ -136,10 +137,19 @@ bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel::run() {
 
   broadcast(world, size, 0);
 
-  int pixels_per_process = num_pixels / world.size();
-  int extra_pixels = num_pixels % world.size();
+  int num_pixels = 0;
+  int pixels_per_process = 0;
+  int extra_pixels = 0;
+  if (world.rank() == 0) {
+    num_pixels = size / 3;
+    pixels_per_process = num_pixels / world.size();
+    extra_pixels = num_pixels % world.size();
+  }
 
-  // Ћокальное количество пикселей
+  broadcast(world, num_pixels, 0);
+  broadcast(world, pixels_per_process, 0);
+  broadcast(world, extra_pixels, 0);
+
   int local_pixels = pixels_per_process + (world.rank() < extra_pixels ? 1 : 0);
 
   std::vector<int> displacements(world.size(), 0);
