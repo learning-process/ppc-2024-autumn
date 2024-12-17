@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
-
-#include <core/task/include/task.hpp>
-#include <random>
 #include <vector>
+#include <random>
 
 #include "seq/shuravina_o_jarvis_pass/include/ops_seq.hpp"
 

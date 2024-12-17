@@ -1,9 +1,7 @@
 #pragma once
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/serialization.hpp>
-#include <boost/serialization/vector.hpp>
+#include <mpi.h>
+
 #include <vector>
 
 namespace shuravina_o_jarvis_pass {
@@ -14,15 +12,6 @@ struct Point {
 
   bool operator<(const Point& p) const { return (x < p.x) || (x == p.x && y < p.y); }
   bool operator==(const Point& p) const { return x == p.x && y == p.y; }
-
- private:
-  friend class boost::serialization::access;
-
-  template <typename Archive>
-  void serialize(Archive& ar, const unsigned int version) {
-    ar & x;
-    ar & y;
-  }
 };
 
 class JarvisPassMPI {
