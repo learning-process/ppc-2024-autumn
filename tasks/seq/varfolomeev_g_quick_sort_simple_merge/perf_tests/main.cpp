@@ -9,7 +9,10 @@
 
 namespace varfolomeev_g_quick_sort_simple_merge_seq {
 
-std::vector<int> getAntisorted_seq(int sz, int a) {  // [a + sz, a)
+static std::vector<int> getAntisorted_seq(int sz, int a) {  // (a, a + sz]
+  if (sz <= 0) {
+    return {};
+  }
   std::vector<int> vec(sz);
   for (int i = a + sz, j = 0; i > a && j < sz; i--, j++) {
     vec[j] = i;

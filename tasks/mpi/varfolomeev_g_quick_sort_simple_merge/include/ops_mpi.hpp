@@ -22,13 +22,10 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static std::vector<int> quickSort(const std::vector<int>& vec) {
-    std::vector<int> sortedvec = vec;
-    quickSortRecursive(sortedvec, 0, sortedvec.size() - 1);
-    return sortedvec;
-  }
+  static void quickSort(std::vector<int>& vec) { quickSortRecursive(vec, 0, vec.size() - 1); }
 
  private:
+  // main realization
   static void quickSortRecursive(std::vector<int>& vec, int left, int right) {
     if (left >= right) return;
     int p = vec[(left + right) / 2];
@@ -38,9 +35,7 @@ class TestTaskSequential : public ppc::core::Task {
       while (vec[i] < p) i++;
       while (vec[j] > p) j--;
       if (i <= j) {
-        int tmp = vec[i];
-        vec[i] = vec[j];
-        vec[j] = tmp;
+        std::swap(vec[i], vec[j]);
         i++;
         j--;
       }

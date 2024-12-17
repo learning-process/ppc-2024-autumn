@@ -8,7 +8,7 @@
 #include "seq/varfolomeev_g_quick_sort_simple_merge/include/ops_seq.hpp"
 
 namespace varfolomeev_g_quick_sort_simple_merge_seq {
-std::vector<int> getRandomVector_seq(int sz, int a, int b) {  // [a, b]
+static std::vector<int> getRandomVector_seq(int sz, int a, int b) {  // [a, b]
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -18,7 +18,10 @@ std::vector<int> getRandomVector_seq(int sz, int a, int b) {  // [a, b]
   return vec;
 }
 
-std::vector<int> getAntisorted_seq(int sz, int a) {  // [a + sz, a)
+static std::vector<int> getAntisorted_seq(int sz, int a) {  // (a, a + sz]
+  if (sz <= 0) {
+    return {};
+  }
   std::vector<int> vec(sz);
   for (int i = a + sz, j = 0; i > a && j < sz; i--, j++) {
     vec[j] = i;
@@ -26,6 +29,37 @@ std::vector<int> getAntisorted_seq(int sz, int a) {  // [a + sz, a)
   return vec;
 }
 }  // namespace varfolomeev_g_quick_sort_simple_merge_seq
+
+TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_getRandomVector_func) {
+  int size = 100;
+  int lower_bound = -50;
+  int upper_bound = 50;
+  std::vector<int> vec = varfolomeev_g_quick_sort_simple_merge_seq::getRandomVector_seq(size, lower_bound, upper_bound);
+  EXPECT_EQ(vec.size(), size);
+  for (int value : vec) {
+    EXPECT_GE(value, lower_bound);
+    EXPECT_LE(value, upper_bound);
+  }
+  std::vector<int> vec2 =
+      varfolomeev_g_quick_sort_simple_merge_seq::getRandomVector_seq(size, lower_bound, upper_bound);
+  EXPECT_NE(vec, vec2);
+}
+
+TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_getAntisortedVecor_func) {
+  int size = 100;
+  int start = -50;
+  std::vector<int> vec = varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(size, start);
+  EXPECT_EQ(vec.size(), size);
+  for (int i = 0; i < vec.size() - 1; i++) {
+    EXPECT_LE(vec[i + 1], vec[i]);
+  }
+  for (int value : vec) {
+    EXPECT_LE(value, start + size + 1);
+    EXPECT_GE(value, start);
+  }
+  EXPECT_TRUE(varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(0, 10).empty());
+  EXPECT_TRUE(varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(-5, 10).empty());
+}
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_manual_10) {
   // Create data
@@ -41,12 +75,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_manual_10) {
 
   // Create Task
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  EXPECT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Zero) {
@@ -60,7 +94,7 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Zero) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), false);
+  EXPECT_EQ(testTaskSequential.validation(), false);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
@@ -78,7 +112,7 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_wrong_output_size) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), false);
+  EXPECT_EQ(TestTaskSequential.validation(), false);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
@@ -97,12 +131,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Single) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Manual_Random_2) {
@@ -118,12 +152,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Manual_Random_2) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Manual_Random_4) {
@@ -139,12 +173,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Manual_Random_4) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_Positive) {
@@ -161,12 +195,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_Positive) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_Negative) {
@@ -183,12 +217,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_Negative) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_Positive_Negative) {
@@ -205,12 +239,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_Positive_Negativ
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_RandomVector_Positive) {
@@ -227,12 +261,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_RandomVector_Positive) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  EXPECT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_RandomVector_Negative) {
@@ -249,12 +283,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_RandomVector_Negative) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  EXPECT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_RandomVector_Positive_Negative) {
@@ -271,12 +305,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_RandomVector_Positive_Negat
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  EXPECT_EQ(testTaskSequential.validation(), true);
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_64) {
@@ -293,12 +327,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_64) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_128) {
@@ -315,12 +349,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_128) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_512) {
@@ -337,12 +371,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_512) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_1024) {
@@ -359,12 +393,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_1024) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_4096) {
@@ -381,12 +415,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_4096) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_8192) {
@@ -403,12 +437,12 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_8192) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }
 
 TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_65536) {
@@ -425,10 +459,10 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Antisorted_65536) {
   taskDataSeq->outputs_count.emplace_back(global_res.size());
 
   varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
-  ASSERT_EQ(TestTaskSequential.validation(), true);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
   TestTaskSequential.pre_processing();
   TestTaskSequential.run();
   TestTaskSequential.post_processing();
   bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
-  ASSERT_TRUE(isSorted);
+  EXPECT_TRUE(isSorted);
 }

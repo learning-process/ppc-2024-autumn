@@ -8,7 +8,7 @@ bool varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential::pre_processi
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
-  res.resize(input_.size());
+  res = input_;
   return true;
 }
 
@@ -20,7 +20,7 @@ bool varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential::validation()
 
 bool varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential::run() {
   internal_order_test();
-  res = quickSort(input_);
+  quickSort(res);
   return true;
 }
 
