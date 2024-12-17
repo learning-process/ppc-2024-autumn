@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+using namespace std::chrono_literals;
+
 std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
