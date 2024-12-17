@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -14,7 +13,7 @@ TEST(koshkin_n_linear_histogram_stretch_seq, test_correct_image) {
   // Create data
   std::vector<int> in_vec = {15, 50, 45, 101, 92, 79};
   std::vector<int> out_vec(count_size_vector, 0);
-  std::vector<int> res_exp_out = {0, 0, 0, 255, 252, 216}; // теоретически посчитано
+  std::vector<int> res_exp_out = {0, 0, 0, 255, 252, 216};  // теоретически посчитано
 
   // Create TaskData
 
@@ -29,7 +28,6 @@ TEST(koshkin_n_linear_histogram_stretch_seq, test_correct_image) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_EQ(res_exp_out, out_vec);
-
 }
 
 TEST(koshkin_n_linear_histogram_stretch_seq, test_incorrect_rgb_size_image) {
@@ -42,7 +40,6 @@ TEST(koshkin_n_linear_histogram_stretch_seq, test_incorrect_rgb_size_image) {
   std::vector<int> in_vec = {15, 50, 45, 101, 92, 79, 0, 0};
   std::vector<int> out_vec(count_size_vector, 0);
 
-
   // Create TaskData
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
@@ -52,7 +49,6 @@ TEST(koshkin_n_linear_histogram_stretch_seq, test_incorrect_rgb_size_image) {
 
   // Create Task
   ASSERT_NE(testTaskSequential.validation(), true);
-
 }
 
 TEST(koshkin_n_linear_histogram_stretch_seq, test_incorrect_value_color_range_image) {
