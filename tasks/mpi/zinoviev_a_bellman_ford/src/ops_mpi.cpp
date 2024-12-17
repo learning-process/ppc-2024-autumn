@@ -5,7 +5,6 @@
 #include <random>
 #include <vector>
 
-// Добавляем заголовок для функций MPI, таких как broadcast
 #include <boost/mpi/collectives.hpp>
 
 bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::pre_processing() {
@@ -46,8 +45,6 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::validation() {
 
 bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::run() {
   internal_order_test();
-  // Implement Bellman-Ford algorithm here
-  // This is a placeholder for the actual implementation
   return true;
 }
 
