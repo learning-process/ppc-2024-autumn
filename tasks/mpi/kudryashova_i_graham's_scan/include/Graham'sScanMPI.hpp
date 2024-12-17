@@ -1,8 +1,8 @@
 #pragma once
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <random>
-#include <algorithm>
 #include <vector>
 
 #include "core/task/include/task.hpp"
