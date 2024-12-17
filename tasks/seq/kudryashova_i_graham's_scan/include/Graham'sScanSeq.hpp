@@ -1,5 +1,6 @@
 #pragma once
 #include <random>
+#include <algorithm>
 #include <vector>
 
 #include "core/task/include/task.hpp"

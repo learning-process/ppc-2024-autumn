@@ -2,6 +2,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <random>
+#include <algorithm>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -18,7 +19,6 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<int8_t> input_data;
   std::vector<int> firstHalf, secondHalf;
-  int result{};
   std::vector<int8_t> result_vec;
 };
 class TestMPITaskParallel : public ppc::core::Task {
