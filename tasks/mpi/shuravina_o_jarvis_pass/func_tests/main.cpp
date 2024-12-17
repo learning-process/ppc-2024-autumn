@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 
+#include <boost/mpi.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <boost/serialization/vector.hpp>
 #include <vector>
 
 #include "mpi/shuravina_o_jarvis_pass/include/ops_mpi.hpp"
@@ -27,6 +29,7 @@ TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
     }
   }
 }
+
 TEST(shuravina_o_jarvis_pass, Test_Minimal_Points) {
   boost::mpi::communicator world;
   std::vector<Point> global_points = {Point(0, 0), Point(1, 1), Point(0, 2)};

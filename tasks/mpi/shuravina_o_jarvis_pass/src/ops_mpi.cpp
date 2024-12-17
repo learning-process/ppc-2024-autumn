@@ -1,6 +1,7 @@
 #include "mpi/shuravina_o_jarvis_pass/include/ops_mpi.hpp"
 
 #include <boost/mpi/collectives.hpp>
+#include <boost/serialization/vector.hpp>
 
 namespace shuravina_o_jarvis_pass {
 
