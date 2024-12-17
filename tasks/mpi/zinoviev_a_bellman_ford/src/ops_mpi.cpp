@@ -14,7 +14,6 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
   }
-  // Используем broadcast для рассылки delta всем процессам
   boost::mpi::broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
