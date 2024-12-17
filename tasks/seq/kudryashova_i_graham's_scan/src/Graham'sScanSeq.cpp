@@ -20,7 +20,7 @@ bool kudryashova_i_graham_scan_seq::TestTaskSequential::validation() {
 
 bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int8_t, int8_t>& p2,
                         const std::pair<int8_t, int8_t>& p3) {
-  return (p2.first - p1.first) * (p3.second - p1.second) >(p2.second - p1.second) * (p3.first - p1.first) ;
+  return (p2.first - p1.first) * (p3.second - p1.second) > (p2.second - p1.second) * (p3.first - p1.first) ;
 }
 
 double angle(const std::pair<int8_t, int8_t>& p0, const std::pair<int8_t, int8_t>& p) {
@@ -36,10 +36,10 @@ void sortPoints(std::vector<int8_t>& points) {
   }
   std::sort(pointList.begin(), pointList.end(),
             [&p0](const std::pair<int8_t, int8_t>&a, const std::pair<int8_t, int8_t> &b) {
-            if (atan2(a.second - p0.second, a.first - p0.first) == atan2(b.second - p0.second, b.first - p0.first)) {
-              return ((a.first - p0.first) * (a.first - p0.first) + (a.second - p0.second) * (a.second - p0.second)) <
-                     ((b.first - p0.first) * (b.first - p0.first) + (b.second - p0.second) * (b.second - p0.second));
-            }
+              if (atan2(a.second - p0.second, a.first - p0.first) == atan2(b.second - p0.second, b.first - p0.first)) {
+                return ((a.first - p0.first) * (a.first - p0.first) + (a.second - p0.second) * (a.second - p0.second)) <
+                       ((b.first - p0.first) * (b.first - p0.first) + (b.second - p0.second) * (b.second - p0.second));
+              }
             return atan2(a.second - p0.second, a.first - p0.first) < atan2(b.second - p0.second, b.first - p0.first);
             });
   for (int i = 0; i < n; ++i) {
@@ -48,7 +48,8 @@ void sortPoints(std::vector<int8_t>& points) {
   }
 }
 
-std::vector<int8_t> kudryashova_i_graham_scan_seq::TestTaskSequential::runGrahamScan(std::vector<int8_t>& Graham_input_data) {
+std::vector<int8_t> kudryashova_i_graham_scan_seq::TestTaskSequential::runGrahamScan(
+    std::vector<int8_t>& Graham_input_data) {
   std::vector<int8_t> hull;
   std::vector<int8_t> points = Graham_input_data;
   int n = points.size() / 2;
@@ -68,11 +69,14 @@ std::vector<int8_t> kudryashova_i_graham_scan_seq::TestTaskSequential::runGraham
   hull.push_back(points[n]);
   for (int i = 1; i < n; ++i) {
     int index = indices[i];
-    while (hull.size() >= 4 && !isCounterClockwise({hull[hull.size() - 4], hull[hull.size() - 3]}, {hull[hull.size() - 2], hull[hull.size() - 1]}, {points[index], points[n + index]})) {
+    while (hull.size() >= 4 &&
+           !isCounterClockwise({hull[hull.size() - 4], hull[hull.size() - 3]},
+                               {hull[hull.size() - 2], hull[hull.size() - 1]}, {points[index], points[n + index]})) {
       hull.pop_back();
       hull.pop_back();
     }
-    if (!isCounterClockwise({hull[hull.size() - 2], hull[hull.size() - 1]}, {points[index], points[n + index]}, {points[index], points[n + index]})) {
+    if (!isCounterClockwise({hull[hull.size() - 2], hull[hull.size() - 1]}, {points[index], points[n + index]},
+                            {points[index], points[n + index]})) {
       hull.push_back(points[index]);
       hull.push_back(points[n + index]);
     }
@@ -94,4 +98,4 @@ bool kudryashova_i_graham_scan_seq::TestTaskSequential::post_processing() {
   std::copy(result_vec.begin(), result_vec.end(), outputData);
   return true;
 }
-}  // namespace kudryashova_i_graham_scan
+}  // namespace kudryashova_i_graham_scan_seq

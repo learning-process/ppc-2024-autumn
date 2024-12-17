@@ -78,7 +78,6 @@ TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_test_star) {
   ASSERT_EQ(result, gold);
 }
 
-
 TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_simple_test_1) {
   std::vector<int8_t> global_vector;
   std::vector<int8_t> vector_x = {3, 0, 2, 3, 1, -1, 1, 0, 3, -3, -3};
@@ -167,7 +166,7 @@ TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_check_same_number_x_and_y) {
   taskDataSeq->outputs_count.emplace_back(result.size());
   kudryashova_i_graham_scan_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), true);
- }
+}
 
 TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_check_not_same_number_x_and_y) {
   const int count = 8;
@@ -185,7 +184,7 @@ TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_check_not_same_number_x_and_
   taskDataSeq->outputs_count.emplace_back(result.size());
   kudryashova_i_graham_scan_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
- }
+}
 
 TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_check_empty_vertex) {
   std::vector<int8_t> global_vector;
@@ -202,4 +201,4 @@ TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_check_empty_vertex) {
   taskDataSeq->outputs_count.emplace_back(result.size());
   kudryashova_i_graham_scan_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
- }
+}

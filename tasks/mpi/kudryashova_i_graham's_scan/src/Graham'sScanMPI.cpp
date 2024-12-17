@@ -27,6 +27,7 @@ bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int
   return (p2.first - p1.first) * (p3.second - p1.second) > (p2.second - p1.second) * (p3.first - p1.first);
 }
 
+
 void sortPoints(std::vector<int8_t>& points) {
   int n = points.size() / 2;
   std::pair<int8_t, int8_t> p0(points[0], points[n]);
@@ -36,13 +37,11 @@ void sortPoints(std::vector<int8_t>& points) {
   }
   std::sort(pointList.begin(), pointList.end(),
             [&p0](const std::pair<int8_t, int8_t>& a, const std::pair<int8_t, int8_t>& b) {
-              double angleA = atan2(a.second - p0.second, a.first - p0.first);
-              double angleB = atan2(b.second - p0.second, b.first - p0.first);
-              if (angleA == angleB) {
+              if (atan2(a.second - p0.second, a.first - p0.first) == atan2(b.second - p0.second, b.first - p0.first)) {
                 return ((a.first - p0.first) * (a.first - p0.first) + (a.second - p0.second) * (a.second - p0.second)) <
                        ((b.first - p0.first) * (b.first - p0.first) + (b.second - p0.second) * (b.second - p0.second));
               }
-              return angleA < angleB;
+              return atan2(a.second - p0.second, a.first - p0.first) < atan2(b.second - p0.second, b.first - p0.first);
             });
   for (int i = 0; i < n; ++i) {
     points[i] = pointList[i].first;
@@ -64,7 +63,6 @@ std::vector<int8_t> kudryashova_i_graham_scan_mpi::TestMPITaskSequential::runGra
   }
   std::swap(points[0], points[min_y_index]);
   std::swap(points[n], points[min_y_index + n]);
-  std::pair<int8_t, int8_t> p0 = {points[0], points[n]};
   std::vector<int> indices(n);
   for (int i = 1; i < n; ++i) indices[i] = i;
   sortPoints(points);
@@ -145,7 +143,7 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskParallel::validation() {
 std::vector<int8_t> rearrangeAndSort(const std::vector<int8_t>& input) {
   std::vector<int8_t> x_values;
   std::vector<int8_t> y_values;
-  for (size_t i = 0; i < input.size(); i += 2) {
+  for (int i = 0; i < input.size(); i += 2) {
     if (i < input.size()) {
       x_values.push_back(input[i]);
     }
@@ -179,7 +177,7 @@ std::vector<int8_t> kudryashova_i_graham_scan_mpi::TestMPITaskParallel::runGraha
   sortPoints(points);
   hull.push_back(points[0]);
   hull.push_back(points[n]);
-  for (size_t i = 1; i < n; ++i) {
+  for (int i = 1; i < n; ++i) {
     int index = indices[i];
     while (hull.size() >= 4 &&
            !isCounterClockwise({hull[hull.size() - 4], hull[hull.size() - 3]},
