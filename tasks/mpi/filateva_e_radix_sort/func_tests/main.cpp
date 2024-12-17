@@ -219,7 +219,7 @@ TEST(filateva_e_radix_sort_mpi, test_size_different) {
   std::vector<int> answer;
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  
+
   if (world.rank() == 0) {
     vec.resize(size);
     answer.resize(size);
