@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
-#include <vector>
+
 #include <random>
+#include <vector>
 
 #include "seq/shuravina_o_jarvis_pass/include/ops_seq.hpp"
 
