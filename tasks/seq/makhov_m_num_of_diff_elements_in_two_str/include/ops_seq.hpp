@@ -19,8 +19,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string str1{};
-  std::string str2{};
+  std::string str1;
+  std::string str2;
   int res{};
 };
 

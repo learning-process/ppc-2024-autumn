@@ -62,8 +62,8 @@ bool makhov_m_ring_topology::TestMPITaskParallel::run() {
 bool makhov_m_ring_topology::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    int32_t* output_ptr = reinterpret_cast<int32_t*>(taskData->outputs[0]);
-    int32_t* sequence_ptr = reinterpret_cast<int32_t*>(taskData->outputs[1]);
+    auto* output_ptr = reinterpret_cast<int32_t*>(taskData->outputs[0]);
+    auto* sequence_ptr = reinterpret_cast<int32_t*>(taskData->outputs[1]);
 
     std::copy(input_data.begin(), input_data.end(), output_ptr);
     std::copy(sequence.begin(), sequence.end(), sequence_ptr);
