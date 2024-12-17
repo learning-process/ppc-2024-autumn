@@ -1,5 +1,5 @@
 // Copyright 2024 Nesterov Alexander
-#include "seq/zinoviev_readers_and_writers/include/ops_seq.hpp"
+#include "seq/zinoviev_a_readers_and_writers/include/ops_seq.hpp"
 
 #include <thread>
 
