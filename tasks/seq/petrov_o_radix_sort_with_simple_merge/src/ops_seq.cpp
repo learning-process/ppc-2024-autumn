@@ -37,7 +37,7 @@ bool TestTaskSequential::run() {
   }
 
   // Найти максимальное число для определения количества бит
-  unsigned int max_num = static_cast<unsigned int>(input_[0]);
+  auto max_num = static_cast<unsigned int>(input_[0]);
   for (const auto& num : input_) {
     if (static_cast<unsigned int>(num) > max_num) {
       max_num = static_cast<unsigned int>(num);

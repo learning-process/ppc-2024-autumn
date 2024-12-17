@@ -17,7 +17,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, BasicSortTest) {
   boost::mpi::communicator world;
 
   // Исходные данные на rank=0
-  std::vector<int> in, out;
+  std::vector<int> in;
+  std::vector<int> out;
   if (world.rank() == 0) {
     in = {8, 3};
     out.resize(in.size(), 0);
@@ -58,7 +59,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, NegativeNumbersTest) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  std::vector<int> in, out;
+  std::vector<int> in;
+  std::vector<int> out;
   if (world.rank() == 0) {
     in = {-100, -5, -3, 2, 7, 12};
     out.resize(in.size(), 0);
@@ -96,7 +98,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, ReverseSortedTest) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  std::vector<int> in, out;
+  std::vector<int> in;
+  std::vector<int> out;
   if (world.rank() == 0) {
     in = {10, 8, 6, 4, 2, 0};
     out.resize(in.size(), 0);
@@ -134,7 +137,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, DuplicateElementsTest) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  std::vector<int> in, out;
+  std::vector<int> in;
+  std::vector<int> out;
   if (world.rank() == 0) {
     in = {5, 5, 5, 5, 5, 5};
     out.resize(in.size(), 0);
@@ -172,7 +176,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, RandomValuesTest) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  std::vector<int> in, out;
+  std::vector<int> in;
+  std::vector<int> out;
   if (world.rank() == 0) {
     // Задаём размер массива
     const size_t array_size = 1000;

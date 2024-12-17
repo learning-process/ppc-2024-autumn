@@ -15,9 +15,9 @@ bool TaskParallel::validation() {
   if (world.rank() == 0) {
     bool isValid = (!taskData->inputs_count.empty()) && (!taskData->inputs.empty()) && (!taskData->outputs.empty());
     return isValid;
-  } else {
-    return true;
   }
+
+    return true;
 }
 
 bool TaskParallel::pre_processing() {
@@ -74,7 +74,7 @@ bool TaskParallel::run() {
     // Свою часть копируем локально
     std::copy(input_.begin(), input_.begin() + send_counts[0], local_data.begin());
   } else {
-    world.recv(0, 0, &local_data[0], send_counts[rank]);
+    world.recv(0, 0, local_data.data(), send_counts[rank]);
   }
 
   // Теперь каждый процесс имеет свой local_data
@@ -90,7 +90,7 @@ bool TaskParallel::run() {
   if (!local_data.empty()) {
     local_max = static_cast<unsigned int>(local_data[0]);
     for (auto& num : local_data) {
-      unsigned int val = static_cast<unsigned int>(num);
+      auto val = static_cast<unsigned int>(num);
       if (val > local_max) {
         local_max = val;
       }
@@ -155,7 +155,7 @@ bool TaskParallel::run() {
     }
   } else {
     // Отправляем свою часть на 0
-    world.send(0, 1, &local_data[0], send_counts[rank]);
+    world.send(0, 1, local_data.data(), send_counts[rank]);
   }
 
   if (rank == 0) {
@@ -173,7 +173,8 @@ bool TaskParallel::run() {
     auto merge_two = [](const std::vector<int>& a, const std::vector<int>& b) {
       std::vector<int> merged;
       merged.reserve(a.size() + b.size());
-      size_t i = 0, j = 0;
+      size_t i = 0;
+      size_t j = 0;
       while (i < a.size() && j < b.size()) {
         if (a[i] < b[j]) {
           merged.push_back(a[i++]);
@@ -245,7 +246,7 @@ bool TaskSequential::run() {
   }
 
   // Найти максимальное число для определения количества бит
-  unsigned int max_num = static_cast<unsigned int>(input_[0]);
+  auto max_num = static_cast<unsigned int>(input_[0]);
   for (const auto& num : input_) {
     if (static_cast<unsigned int>(num) > max_num) {
       max_num = static_cast<unsigned int>(num);
