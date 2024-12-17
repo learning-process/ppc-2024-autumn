@@ -7,15 +7,6 @@
 
 using namespace shuravina_o_jarvis_pass;
 
-int main(int argc, char** argv) {
-  MPI_Init(&argc, &argv);
-  ::testing::InitGoogleTest(&argc, argv);
-  int result = RUN_ALL_TESTS();
-  MPI_Barrier(MPI_COMM_WORLD);
-  MPI_Finalize();
-  return result;
-}
-
 TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
