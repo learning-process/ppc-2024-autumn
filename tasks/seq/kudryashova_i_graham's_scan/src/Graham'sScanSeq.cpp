@@ -20,7 +20,7 @@ bool kudryashova_i_graham_scan_seq::TestTaskSequential::validation() {
 
 bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int8_t, int8_t>& p2,
                         const std::pair<int8_t, int8_t>& p3) {
-  return (p2.first - p1.first) * (p3.second - p1.second) > (p2.second - p1.second) * (p3.first - p1.first) ;
+  return (p2.first - p1.first) * (p3.second - p1.second) > (p2.second - p1.second) * (p3.first - p1.first);
 }
 
 double angle(const std::pair<int8_t, int8_t>& p0, const std::pair<int8_t, int8_t>& p) {
@@ -35,12 +35,12 @@ void sortPoints(std::vector<int8_t>& points) {
     pointList.emplace_back(points[i], points[n + i]);
   }
   std::sort(pointList.begin(), pointList.end(),
-            [&p0](const std::pair<int8_t, int8_t>&a, const std::pair<int8_t, int8_t> &b) {
+            [&p0](const std::pair<int8_t, int8_t>& a, const std::pair<int8_t, int8_t> &b) {
               if (atan2(a.second - p0.second, a.first - p0.first) == atan2(b.second - p0.second, b.first - p0.first)) {
                 return ((a.first - p0.first) * (a.first - p0.first) + (a.second - p0.second) * (a.second - p0.second)) <
                        ((b.first - p0.first) * (b.first - p0.first) + (b.second - p0.second) * (b.second - p0.second));
               }
-            return atan2(a.second - p0.second, a.first - p0.first) < atan2(b.second - p0.second, b.first - p0.first);
+              return atan2(a.second - p0.second, a.first - p0.first) < atan2(b.second - p0.second, b.first - p0.first);
             });
   for (int i = 0; i < n; ++i) {
     points[i] = pointList[i].first;

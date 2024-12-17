@@ -27,7 +27,6 @@ bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int
   return (p2.first - p1.first) * (p3.second - p1.second) > (p2.second - p1.second) * (p3.first - p1.first);
 }
 
-
 void sortPoints(std::vector<int8_t>& points) {
   int n = points.size() / 2;
   std::pair<int8_t, int8_t> p0(points[0], points[n]);
@@ -143,7 +142,7 @@ bool kudryashova_i_graham_scan_mpi::TestMPITaskParallel::validation() {
 std::vector<int8_t> rearrangeAndSort(const std::vector<int8_t>& input) {
   std::vector<int8_t> x_values;
   std::vector<int8_t> y_values;
-  for (int i = 0; i < input.size(); i += 2) {
+  for (unsigned long i = 0; i < input.size(); i += 2) {
     if (i < input.size()) {
       x_values.push_back(input[i]);
     }
