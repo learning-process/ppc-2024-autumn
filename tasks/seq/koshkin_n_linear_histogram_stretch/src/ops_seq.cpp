@@ -15,17 +15,6 @@ std::vector<int> koshkin_n_linear_histogram_stretch_seq::getRandomImage(int sz) 
   return vec;
 }
 
-void koshkin_n_linear_histogram_stretch_seq::linearHistogramStretch(const std::vector<int>& input,
-                                                                    std::vector<int>& output) {
-  auto [min_it, max_it] = minmax_element(input.begin(), input.end());
-  int min_val = *min_it;
-  int max_val = *max_it;
-
-  for (int val : input) {
-    output.push_back((val - min_val) * 255 / (max_val - min_val));
-  }
-}
-
 bool koshkin_n_linear_histogram_stretch_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
