@@ -27,7 +27,7 @@ class BellmanFordMPISeq : public ppc::core::Task {
   std::vector<int> columns;
   std::vector<int> row_ptr;
   std::vector<int> shortest_paths;
-  static constexpr int INF = std::numeric_limits<int>::max();  // Сделаем INF статической константой
+  static constexpr int INF = std::numeric_limits<int>::max();
 
   bool Iteration(std::vector<int>& paths);
   bool check_negative_cycle();
@@ -50,7 +50,7 @@ class BellmanFordMPIMPI : public ppc::core::Task {
   std::vector<int> row_ptr;
   std::vector<int> shortest_paths;
   boost::mpi::communicator world;
-  static constexpr int INF = std::numeric_limits<int>::max();  // Сделаем INF статической константой
+  static constexpr int INF = std::numeric_limits<int>::max();
 
   bool Iteration(std::vector<int>& paths);
   bool check_negative_cycle();
