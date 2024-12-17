@@ -16,11 +16,7 @@ bool TestTaskMPI::pre_processing() {
   size_t input_size = taskData->inputs_count[0];
   data_ = std::vector<int>(input_data, input_data + input_size);
 
-  if (data_.empty()) {
-    return false;
-  }
-  return true;
-}
+ return !data_.empty
 
 bool TestTaskMPI::validation() { return true; }
 
