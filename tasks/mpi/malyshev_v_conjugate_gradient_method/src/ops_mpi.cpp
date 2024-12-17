@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
+#include <limits>
 #include <vector>
 
 bool malyshev_conjugate_gradient_method::TestTaskSequential::pre_processing() {
@@ -40,8 +41,13 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
   internal_order_test();
 
   uint32_t size = taskData->inputs_count[0];
-  std::vector<double> r(size), p(size), Ap(size);
-  double rsold, rsnew, alpha;
+
+  std::vector<double> r(size);
+  std::vector<double> p(size);
+  std::vector<double> Ap(size);
+  double rsold = 0.0;
+  double rsnew = 0.0;
+  double alpha = 0.0;
 
   // Initial residual
   for (uint32_t i = 0; i < size; i++) {
@@ -64,7 +70,12 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
     }
 
     // Compute alpha = rsold / (p' * Ap)
-    alpha = rsold / std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
+    double pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
+    if (pAp == 0.0) {
+      // Handle division by zero
+      break;
+    }
+    alpha = rsold / pAp;
 
     // Update x and r
     for (uint32_t i = 0; i < size; i++) {
@@ -152,8 +163,12 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
 
   scatterv(world, matrix_, sizes, local_matrix_.data(), 0);
 
-  std::vector<double> r(sizes[world.rank()]), p(sizes[world.rank()]), Ap(sizes[world.rank()]);
-  double rsold, rsnew, alpha;
+  std::vector<double> r(sizes[world.rank()]);
+  std::vector<double> p(sizes[world.rank()]);
+  std::vector<double> Ap(sizes[world.rank()]);
+  double rsold = 0.0;
+  double rsnew = 0.0;
+  double alpha = 0.0;
 
   // Initial residual
   for (uint32_t i = 0; i < static_cast<uint32_t>(sizes[world.rank()]); i++) {
@@ -176,7 +191,11 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
     }
 
     // Compute alpha = rsold / (p' * Ap)
-    alpha = rsold / std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
+    double pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
+    if (pAp == 0.0) {
+      break;
+    }
+    alpha = rsold / pAp;
 
     // Update x and r
     for (uint32_t i = 0; i < static_cast<uint32_t>(sizes[world.rank()]); i++) {
