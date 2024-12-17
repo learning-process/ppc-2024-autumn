@@ -8,37 +8,46 @@
 
 namespace mezhuev_m_sobel_edge_detection {
 
+bool SobelEdgeDetectionMPI::setTaskData(TaskData* task_data) {
+  taskData = task_data;
+  return true;
+}
+
 bool SobelEdgeDetectionMPI::validation() {
   if (taskData == nullptr || taskData->inputs.empty() || taskData->outputs.empty()) {
     return false;
   }
-
   if (taskData->inputs.size() != 1 || taskData->outputs.size() != 1) {
     return false;
   }
-
   if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
     return false;
   }
-
   if (taskData->inputs_count.empty() || taskData->outputs_count.empty() ||
       taskData->inputs_count[0] != taskData->outputs_count[0]) {
     return false;
   }
-
   return true;
 }
 
 bool SobelEdgeDetectionMPI::pre_processing(TaskData* task_data) {
+  if (task_data == nullptr) {
+    return false;
+  }
+
   if (!validation()) {
     return false;
   }
 
   taskData = task_data;
+
   gradient_x.resize(taskData->width * taskData->height);
   gradient_y.resize(taskData->width * taskData->height);
 
   taskData->outputs[0] = new uint8_t[taskData->width * taskData->height]();
+  if (taskData->outputs[0] == nullptr) {
+    return false;
+  }
 
   return true;
 }
@@ -53,8 +62,16 @@ bool SobelEdgeDetectionMPI::run() {
   size_t width = taskData->width;
   size_t height = taskData->height;
 
+  if (width == 0 || height == 0) {
+    return false;
+  }
+
   uint8_t* input_image = taskData->inputs[0];
   uint8_t* output_image = taskData->outputs[0];
+
+  if (input_image == nullptr || output_image == nullptr) {
+    return false;
+  }
 
   int sobel_x[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   int sobel_y[3][3] = {{1, 2, 1}, {0, 0, 0}, {-1, -2, -1}};
@@ -65,7 +82,6 @@ bool SobelEdgeDetectionMPI::run() {
   size_t start_row = static_cast<size_t>(rank * rows_per_process + std::min(rank, static_cast<int>(extra_rows)));
   size_t end_row =
       static_cast<size_t>((rank + 1) * rows_per_process + std::min(rank + 1, static_cast<int>(extra_rows)));
-
   for (size_t y = start_row + 1; y < end_row - 1; ++y) {
     for (size_t x = 1; x < width - 1; ++x) {
       int gx = 0;
@@ -85,21 +101,19 @@ bool SobelEdgeDetectionMPI::run() {
   }
 
   world.barrier();
-
   return true;
 }
+
 
 bool SobelEdgeDetectionMPI::post_processing() {
   if (taskData == nullptr || taskData->outputs[0] == nullptr) {
     return false;
   }
-
   for (size_t i = 0; i < taskData->outputs_count[0]; ++i) {
     if (taskData->outputs[0][i] != 0) {
       return true;
     }
   }
-
   return false;
 }
 

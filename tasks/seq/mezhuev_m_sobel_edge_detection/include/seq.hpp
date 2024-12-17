@@ -7,12 +7,12 @@ namespace mezhuev_m_sobel_edge_detection {
 class SobelEdgeDetectionSeq {
  public:
   struct TaskData {
-    std::vector<uint8_t*> inputs;
-    std::vector<size_t> inputs_count;
-    std::vector<uint8_t*> outputs;
-    std::vector<size_t> outputs_count;
     size_t width;
     size_t height;
+    std::vector<uint8_t*> inputs;
+    std::vector<uint8_t*> outputs;
+    std::vector<size_t> inputs_count;
+    std::vector<size_t> outputs_count;
   };
 
   SobelEdgeDetectionSeq() = default;
@@ -25,6 +25,9 @@ class SobelEdgeDetectionSeq {
   bool run();
   bool validation();
   bool post_processing();
+
+  const std::vector<int16_t>& getGradientX() const { return gradient_x; }
+  const std::vector<int16_t>& getGradientY() const { return gradient_y; }
 
  private:
   TaskData* taskData = nullptr;

@@ -32,6 +32,8 @@ class SobelEdgeDetectionMPI {
   bool run();
   bool post_processing();
 
+  bool setTaskData(TaskData* task_data);
+
  private:
   boost::mpi::communicator& world;
   TaskData* taskData = nullptr;
