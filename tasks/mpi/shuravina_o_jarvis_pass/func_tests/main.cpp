@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <mpi.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
@@ -27,8 +26,6 @@ TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
       EXPECT_EQ(global_hull[i], seq_hull[i]);
     }
   }
-
-  MPI_Finalize();
 }
 
 TEST(shuravina_o_jarvis_pass, Test_Minimal_Points) {

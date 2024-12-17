@@ -38,6 +38,4 @@ TEST(shuravina_o_jarvis_pass_mpi_perf, Test_1000_Points) {
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "Time taken for 1000 points (MPI): " << elapsed.count() << " seconds" << std::endl;
   }
-
-  MPI_Finalize();
 }
