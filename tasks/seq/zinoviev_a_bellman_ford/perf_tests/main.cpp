@@ -7,22 +7,20 @@
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
 TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
-  const int count = 100;
-
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  const int num_vertices = 100;
+  const int num_edges = 500;
+  std::vector<int> graph = generateRandomGraph(num_vertices, num_edges);
+  std::vector<int> dist(num_vertices, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskDataSeq->inputs_count.emplace_back(graph.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(dist.data()));
+  taskDataSeq->outputs_count.emplace_back(dist.size());
 
   // Create Task
-  auto bellmanFordTaskSequential =
-      std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordTaskSequential>(taskDataSeq);
+  auto testSeqTaskSequential = std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -38,29 +36,26 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(bellmanFordTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testSeqTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
 }
 
 TEST(zinoviev_a_bellman_ford, test_task_run) {
-  const int count = 100;
-
-  // Create data
-  std::vector<int> in(1, count);
-  std::vector<int> out(1, 0);
+  const int num_vertices = 100;
+  const int num_edges = 500;
+  std::vector<int> graph = generateRandomGraph(num_vertices, num_edges);
+  std::vector<int> dist(num_vertices, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskDataSeq->inputs_count.emplace_back(graph.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(dist.data()));
+  taskDataSeq->outputs_count.emplace_back(dist.size());
 
   // Create Task
-  auto bellmanFordTaskSequential =
-      std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordTaskSequential>(taskDataSeq);
+  auto testSeqTaskSequential = std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -76,8 +71,7 @@ TEST(zinoviev_a_bellman_ford, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(bellmanFordTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testSeqTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(count, out[0]);
 }

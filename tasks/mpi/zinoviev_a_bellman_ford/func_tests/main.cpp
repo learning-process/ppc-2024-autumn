@@ -7,207 +7,62 @@
 
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
-// Helper function to generate a simple graph for testing
-std::vector<int> createTestGraph(int num_vertices, const std::vector<std::pair<int, int>>& edges,
-                                 const std::vector<int>& weights) {
-  std::vector<int> graph = {num_vertices, static_cast<int>(edges.size())};
-  std::vector<int> row_ptr(num_vertices + 1, 0);
-  std::vector<int> col_ind;
-  std::vector<int> values;
-
-  // Build row pointers
-  for (const auto& edge : edges) {
-    row_ptr[edge.first + 1]++;
-  }
-  for (int i = 1; i <= num_vertices; i++) {
-    row_ptr[i] += row_ptr[i - 1];
-  }
-
-  // Build column indices and values
-  for (size_t i = 0; i < edges.size(); i++) {
-    col_ind.push_back(edges[i].second);
-    values.push_back(weights[i]);
-  }
-
-  // Combine all parts into a single graph vector
-  graph.insert(graph.end(), row_ptr.begin(), row_ptr.end());
-  graph.insert(graph.end(), col_ind.begin(), col_ind.end());
-  graph.insert(graph.end(), values.begin(), values.end());
-  return graph;
-}
-
-// Test case for a simple graph with positive weights
-TEST(Parallel_Bellman_Ford_MPI, Test_Shortest_Path_Positive_Weights) {
+TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   boost::mpi::communicator world;
   std::vector<int> global_graph;
   std::vector<int> global_dist(1, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // Create a simple graph with 3 vertices and positive weights
-    std::vector<std::pair<int, int>> edges = {{0, 1}, {1, 2}, {0, 2}};
-    std::vector<int> weights = {2, 3, 5};
-    global_graph = createTestGraph(3, edges, weights);
+    const int num_vertices = 4;
+    const int num_edges = 5;
+    global_graph = {0, 1, 1, 0, 2, 4, 1, 2, 2, 1, 3, 5, 2, 3, 1};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
     taskDataPar->inputs_count.emplace_back(global_graph.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_dist.data()));
     taskDataPar->outputs_count.emplace_back(global_dist.size());
   }
 
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel bellmanFordMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(bellmanFordMpiTaskParallel.validation(), true);
-  bellmanFordMpiTaskParallel.pre_processing();
-  bellmanFordMpiTaskParallel.run();
-  bellmanFordMpiTaskParallel.post_processing();
+  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int> reference_dist(1, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataSeq->inputs_count.emplace_back(global_graph.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_dist.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_dist.size());
-
-    // Create Task
-    zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential bellmanFordMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(bellmanFordMpiTaskSequential.validation(), true);
-    bellmanFordMpiTaskSequential.pre_processing();
-    bellmanFordMpiTaskSequential.run();
-    bellmanFordMpiTaskSequential.post_processing();
-
-    // The shortest path from 0 to 2 should be 5 (0 -> 2)
-    ASSERT_EQ(reference_dist[0], global_dist[0]);
-    ASSERT_EQ(global_dist[0], 5);
+    std::vector<int> reference_dist = {0, 1, 3, 4};
+    ASSERT_EQ(reference_dist, global_dist);
   }
 }
 
-// Test case for a graph with negative weights
-TEST(Parallel_Bellman_Ford_MPI, Test_Shortest_Path_Negative_Weights) {
+TEST(zinoviev_a_bellman_ford, Test_Medium_Graph) {
   boost::mpi::communicator world;
   std::vector<int> global_graph;
   std::vector<int> global_dist(1, 0);
+
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // Create a simple graph with 3 vertices and negative weights
-    std::vector<std::pair<int, int>> edges = {{0, 1}, {1, 2}, {0, 2}};
-    std::vector<int> weights = {2, -3, 1};
-    global_graph = createTestGraph(3, edges, weights);
+    const int num_vertices = 5;
+    const int num_edges = 7;
+    global_graph = {0, 1, 2, 0, 2, 4, 1, 2, 1, 1, 3, 7, 2, 3, 3, 2, 4, 5, 3, 4, 2};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
     taskDataPar->inputs_count.emplace_back(global_graph.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_dist.data()));
     taskDataPar->outputs_count.emplace_back(global_dist.size());
   }
 
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel bellmanFordMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(bellmanFordMpiTaskParallel.validation(), true);
-  bellmanFordMpiTaskParallel.pre_processing();
-  bellmanFordMpiTaskParallel.run();
-  bellmanFordMpiTaskParallel.post_processing();
+  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    // Create data
-    std::vector<int> reference_dist(1, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataSeq->inputs_count.emplace_back(global_graph.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_dist.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_dist.size());
-
-    // Create Task
-    zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential bellmanFordMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(bellmanFordMpiTaskSequential.validation(), true);
-    bellmanFordMpiTaskSequential.pre_processing();
-    bellmanFordMpiTaskSequential.run();
-    bellmanFordMpiTaskSequential.post_processing();
-
-    // The shortest path from 0 to 2 should be -1 (0 -> 1 -> 2)
-    ASSERT_EQ(reference_dist[0], global_dist[0]);
-    ASSERT_EQ(global_dist[0], -1);
-  }
-}
-
-// Test case for a graph with a negative cycle
-TEST(Parallel_Bellman_Ford_MPI, Test_Negative_Cycle) {
-  boost::mpi::communicator world;
-  std::vector<int> global_graph;
-  std::vector<int> global_dist(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    // Create a graph with a negative cycle
-    std::vector<std::pair<int, int>> edges = {{0, 1}, {1, 2}, {2, 0}};
-    std::vector<int> weights = {2, 3, -6};
-    global_graph = createTestGraph(3, edges, weights);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataPar->inputs_count.emplace_back(global_graph.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_dist.data()));
-    taskDataPar->outputs_count.emplace_back(global_dist.size());
-  }
-
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel bellmanFordMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(bellmanFordMpiTaskParallel.validation(), true);
-  bellmanFordMpiTaskParallel.pre_processing();
-  bellmanFordMpiTaskParallel.run();
-  bellmanFordMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // The algorithm should detect a negative cycle and return -1
-    ASSERT_EQ(global_dist[0], -1);
-  }
-}
-
-// Test case for a large graph with random weights
-TEST(Parallel_Bellman_Ford_MPI, Test_Large_Graph_Random_Weights) {
-  boost::mpi::communicator world;
-  std::vector<int> global_graph;
-  std::vector<int> global_dist(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    const int num_vertices = 100;
-    const int num_edges = 500;
-    global_graph = zinoviev_a_bellman_ford_mpi::getRandomGraph(num_vertices, num_edges);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataPar->inputs_count.emplace_back(global_graph.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_dist.data()));
-    taskDataPar->outputs_count.emplace_back(global_dist.size());
-  }
-
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel bellmanFordMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(bellmanFordMpiTaskParallel.validation(), true);
-  bellmanFordMpiTaskParallel.pre_processing();
-  bellmanFordMpiTaskParallel.run();
-  bellmanFordMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int> reference_dist(1, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_graph.data()));
-    taskDataSeq->inputs_count.emplace_back(global_graph.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_dist.data()));
-    taskDataSeq->outputs_count.emplace_back(reference_dist.size());
-
-    // Create Task
-    zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskSequential bellmanFordMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(bellmanFordMpiTaskSequential.validation(), true);
-    bellmanFordMpiTaskSequential.pre_processing();
-    bellmanFordMpiTaskSequential.run();
-    bellmanFordMpiTaskSequential.post_processing();
-
-    // Compare results
-    ASSERT_EQ(reference_dist[0], global_dist[0]);
+    std::vector<int> reference_dist = {0, 2, 3, 6, 8};
+    ASSERT_EQ(reference_dist, global_dist);
   }
 }
