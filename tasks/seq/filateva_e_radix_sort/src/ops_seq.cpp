@@ -24,28 +24,42 @@ bool filateva_e_radix_sort_seq::RadixSort::validation() {
 bool filateva_e_radix_sort_seq::RadixSort::run() {
   internal_order_test();
 
-  int kol = 20;
+  int kol = 10;
   std::vector<std::list<int>> radix_list(kol);
+  std::vector<std::list<int>> negativ_radix_list(kol);
 
   int raz = 10;
   for (unsigned long i = 0; i < arr.size(); i++) {
-    radix_list[arr[i] % raz + 10].push_back(arr[i]);
+    if (arr[i] >= 0) {
+      radix_list[arr[i] % raz].push_back(arr[i]);
+    } else {
+      negativ_radix_list[std::abs(arr[i]) % raz].push_back(std::abs(arr[i]));
+    }
   }
-  while (radix_list[10].size() != arr.size()) {
+  while (radix_list[0].size() + negativ_radix_list[0].size() != arr.size()) {
     raz *= 10;
     std::vector<std::list<int>> temp(kol);
+    std::vector<std::list<int>> negativ_temp(kol);
     for (int i = 0; i < kol; i++) {
       for (auto p : radix_list[i]) {
-        temp[p % raz / (raz / 10) + 10].push_back(p);
+        temp[p % raz / (raz / 10)].push_back(p);
+      }
+      for (auto p : negativ_radix_list[i]) {
+        negativ_temp[p % raz / (raz / 10)].push_back(p);
       }
     }
     radix_list = temp;
+    negativ_radix_list = negativ_temp;
   }
 
+  auto rit = negativ_radix_list[0].rbegin();
   int i = 0;
-  for (auto a : radix_list[10]) {
-    ans[i] = a;
-    i++;
+  for (; rit != negativ_radix_list[0].rend(); rit++, i++) {
+    ans[i] = -(*rit);
+  }
+  auto it = radix_list[0].begin();
+  for (; it != radix_list[0].end(); it++, i++) {
+    ans[i] = *it;
   }
 
   return true;

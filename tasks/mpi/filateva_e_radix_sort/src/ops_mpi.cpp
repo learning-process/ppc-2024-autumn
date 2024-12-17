@@ -30,7 +30,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::validation() {
 
 bool filateva_e_radix_sort_mpi::RadixSort::run() {
   internal_order_test();
-  int kol = 20;
+  int kol = 10;
   int raz = 10;
   int delta;
   int ost;
@@ -46,6 +46,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
 
   int local_size = (world.rank() == 0) ? ost : delta;
   std::vector<std::list<int>> radix_list(kol);
+  std::vector<std::list<int>> negativ_radix_list(kol);
   std::vector<int> local_vec(local_size, 0);
 
   std::vector<int> distribution(world.size(), delta);
@@ -56,23 +57,38 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   }
 
   boost::mpi::scatterv(world, arr.data(), distribution, displacement, local_vec.data(), local_size, 0);
-  for (int i = 0; i < local_size; i++) {
-    radix_list[local_vec[i] % raz + 10].push_back(local_vec[i]);
+
+  for (int i = 0; i < local_vec.size(); i++) {
+    if (local_vec[i] >= 0) {
+      radix_list[local_vec[i] % raz].push_back(local_vec[i]);
+    } else {
+      negativ_radix_list[std::abs(local_vec[i]) % raz].push_back(std::abs(local_vec[i]));
+    }
   }
-  while ((int)radix_list[10].size() != local_size) {
+  while ((int)radix_list[0].size() + negativ_radix_list[0].size() != local_size) {
     raz *= 10;
     std::vector<std::list<int>> temp(kol);
+    std::vector<std::list<int>> negativ_temp(kol);
     for (int i = 0; i < kol; i++) {
       for (auto p : radix_list[i]) {
-        temp[p % raz / (raz / 10) + 10].push_back(p);
+        temp[p % raz / (raz / 10)].push_back(p);
+      }
+      for (auto p : negativ_radix_list[i]) {
+        negativ_temp[p % raz / (raz / 10)].push_back(p);
       }
     }
     radix_list = temp;
+    negativ_radix_list = negativ_temp;
   }
+
+  auto rit = negativ_radix_list[0].rbegin();
   int i = 0;
-  for (auto a : radix_list[10]) {
-    local_vec[i] = a;
-    i++;
+  for (; rit != negativ_radix_list[0].rend(); rit++, i++) {
+    local_vec[i] = -(*rit);
+  }
+  auto it = radix_list[0].begin();
+  for (; it != radix_list[0].end(); it++, i++) {
+    local_vec[i] = *it;
   }
 
   boost::mpi::gatherv(world, local_vec.data(), local_size, local_ans.data(), distribution, displacement, 0);
