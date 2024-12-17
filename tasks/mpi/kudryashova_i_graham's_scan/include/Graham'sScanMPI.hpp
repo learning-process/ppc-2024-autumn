@@ -14,6 +14,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   std::vector<int8_t> input_data;
   std::vector<int> firstHalf, secondHalf;
@@ -28,6 +29,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
  private:
   boost::mpi::communicator world;
   std::vector<int8_t> input_data;

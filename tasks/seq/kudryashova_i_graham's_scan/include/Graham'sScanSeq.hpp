@@ -18,6 +18,5 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int8_t> input_data;
   std::vector<int8_t> result_vec;
   std::vector<std::pair<int8_t, int8_t>> pointList;
-  int result{};
 };
-}
+}  // namespace kudryashova_i_graham_scan_seq

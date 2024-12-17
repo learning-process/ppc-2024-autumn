@@ -4,7 +4,8 @@
 
 #include "mpi/kudryashova_i_graham's_scan/include/Graham'sScanMPI.hpp"
 
-void generateUniquePoints(int numPoints, double minX, double maxX, double minY, double maxY, std::vector<int8_t> &xCoords, std::vector<int8_t> &yCoords) {
+void generateUniquePoints(int numPoints, double minX, double maxX, double minY, double maxY,
+                          std::vector<int8_t> &xCoords, std::vector<int8_t> &yCoords) {
   if (numPoints > (maxX - minX + 1) * (maxY - minY + 1)) {
     std::cerr << "Error: Not enough unique points can be generated in the given range." << std::endl;
     return;
@@ -41,8 +42,8 @@ TEST(kudryashova_i_graham_scan_mpi, mpi_graham_scan_test_square) {
   std::vector<int8_t> result(8, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-     std::vector<int8_t> vector_x = {0, 0, 1, 1};
-     std::vector<int8_t> vector_y = {1, 0, 0, 1};
+    std::vector<int8_t> vector_x = {0, 0, 1, 1};
+    std::vector<int8_t> vector_y = {1, 0, 0, 1};
     global_vector.reserve(vector_x.size() + vector_y.size());
     global_vector.insert(global_vector.end(), vector_x.begin(), vector_x.end());
     global_vector.insert(global_vector.end(), vector_y.begin(), vector_y.end());
@@ -193,7 +194,8 @@ TEST(kudryashova_i_graham_scan_mpi, mpi_graham_scan_random_test) {
   if (world.rank() == 0) {
     std::vector<int8_t> vector_x;
     std::vector<int8_t> vector_y;
-    generateUniquePoints(count_size, -(ans_number - 1), (ans_number - 1), -(ans_number - 1), (ans_number - 1), vector_x, vector_y);
+    generateUniquePoints(count_size, -(ans_number - 1), (ans_number - 1), -(ans_number - 1), (ans_number - 1), vector_x,
+                         vector_y);
     addAns(vector_x, vector_y, ans_number);
     global_vector.reserve(vector_x.size() + vector_y.size());
     global_vector.insert(global_vector.end(), vector_x.begin(), vector_x.end());
@@ -234,7 +236,8 @@ TEST(kudryashova_i_graham_scan_mpi, mpi_graham_scan_random_test_no_ans) {
   if (world.rank() == 0) {
     std::vector<int8_t> vector_x;
     std::vector<int8_t> vector_y;
-    generateUniquePoints(count_size, -(ans_number - 1), (ans_number - 1), -(ans_number - 1), (ans_number - 1), vector_x, vector_y);
+    generateUniquePoints(count_size, -(ans_number - 1), (ans_number - 1), -(ans_number - 1), (ans_number - 1), vector_x,
+                         vector_y);
     global_vector.reserve(vector_x.size() + vector_y.size());
     global_vector.insert(global_vector.end(), vector_x.begin(), vector_x.end());
     global_vector.insert(global_vector.end(), vector_y.begin(), vector_y.end());
@@ -282,7 +285,7 @@ TEST(kudryashova_i_graham_scan_mpi, mpi_graham_scan_check_same_number_x_and_y) {
     kudryashova_i_graham_scan_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), true);
   }
- }
+}
 
 TEST(kudryashova_i_graham_scan_mpi, mpi_graham_scan_check_not_same_number_x_and_y) {
   boost::mpi::communicator world;

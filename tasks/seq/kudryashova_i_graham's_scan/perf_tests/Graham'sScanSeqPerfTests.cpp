@@ -3,7 +3,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/kudryashova_i_graham's_scan/include/Graham'sScanSeq.hpp"
 
-void generateUniquePoints(int numPoints, double Ans_number, std::vector<int8_t> &xCoords, std::vector<int8_t> &yCoords) {
+void generateUniquePoints(int numPoints, double Ans_number,
+                          std::vector<int8_t> &xCoords, std::vector<int8_t> &yCoords) {
   int x_min = -(Ans_number - 1);
   int x_max = (Ans_number - 1);
   int y_min = -(Ans_number - 1);
@@ -64,7 +65,8 @@ TEST(kudryashova_i_graham_scan_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  std::vector<int8_t> answer = {-ans_number, -ans_number, ans_number, -ans_number, ans_number,  ans_number,  -ans_number, ans_number};
+  std::vector<int8_t> answer = {-ans_number, -ans_number, ans_number, -ans_number,
+                                ans_number,  ans_number,  -ans_number, ans_number};
   ASSERT_EQ(answer, result);
 }
 
@@ -97,6 +99,7 @@ TEST(kudryashova_i_graham_scan_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  std::vector<int8_t> answer = {-ans_number, -ans_number, ans_number,  -ans_number, ans_number,  ans_number,  -ans_number, ans_number};
+  std::vector<int8_t> answer = {-ans_number, -ans_number, ans_number,  -ans_number,
+                                ans_number,  ans_number,  -ans_number, ans_number};
   ASSERT_EQ(answer, result);
 }

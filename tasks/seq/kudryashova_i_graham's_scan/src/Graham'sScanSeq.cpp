@@ -18,7 +18,8 @@ bool kudryashova_i_graham_scan_seq::TestTaskSequential::validation() {
   return taskData->inputs_count[0] >= 6 && taskData->inputs_count[0] % 2 == 0;
 }
 
-bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int8_t, int8_t>& p2, const std::pair<int8_t, int8_t>& p3) {
+bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int8_t, int8_t>& p2,
+                        const std::pair<int8_t, int8_t>& p3) {
   return (p2.first - p1.first) * (p3.second - p1.second) >(p2.second - p1.second) * (p3.first - p1.first) ;
 }
 
@@ -33,15 +34,14 @@ void sortPoints(std::vector<int8_t>& points) {
   for (int i = 0; i < n; ++i) {
     pointList.emplace_back(points[i], points[n + i]);
   }
-  std::sort(pointList.begin(), pointList.end(),[&p0](const std::pair<int8_t, int8_t>&a, const std::pair<int8_t, int8_t> &b) {
-    double angleA = atan2(a.second - p0.second, a.first - p0.first);
-    double angleB = atan2(b.second - p0.second, b.first - p0.first);
-    if (angleA == angleB) {
-      return ((a.first - p0.first) * (a.first - p0.first) + (a.second - p0.second) * (a.second - p0.second)) <
-          ((b.first - p0.first) * (b.first - p0.first) + (b.second - p0.second) * (b.second - p0.second));
-    }
-    return angleA < angleB;
-  });
+  std::sort(pointList.begin(), pointList.end(),
+            [&p0](const std::pair<int8_t, int8_t>&a, const std::pair<int8_t, int8_t> &b) {
+            if (atan2(a.second - p0.second, a.first - p0.first) == atan2(b.second - p0.second, b.first - p0.first)) {
+              return ((a.first - p0.first) * (a.first - p0.first) + (a.second - p0.second) * (a.second - p0.second)) <
+                     ((b.first - p0.first) * (b.first - p0.first) + (b.second - p0.second) * (b.second - p0.second));
+            }
+            return atan2(a.second - p0.second, a.first - p0.first) < atan2(b.second - p0.second, b.first - p0.first);
+            });
   for (int i = 0; i < n; ++i) {
     points[i] = pointList[i].first;
     points[n + i] = pointList[i].second;
@@ -61,13 +61,12 @@ std::vector<int8_t> kudryashova_i_graham_scan_seq::TestTaskSequential::runGraham
   }
   std::swap(points[0], points[min_y_index]);
   std::swap(points[n], points[min_y_index + n]);
-  std::pair<int8_t, int8_t> p0 = {points[0], points[n]};
   std::vector<int> indices(n);
   for (int i = 1; i < n; ++i) indices[i] = i;
   sortPoints(points);
   hull.push_back(points[0]);
   hull.push_back(points[n]);
-  for (size_t i = 1; i < n; ++i) {
+  for (int i = 1; i < n; ++i) {
     int index = indices[i];
     while (hull.size() >= 4 && !isCounterClockwise({hull[hull.size() - 4], hull[hull.size() - 3]}, {hull[hull.size() - 2], hull[hull.size() - 1]}, {points[index], points[n + index]})) {
       hull.pop_back();
