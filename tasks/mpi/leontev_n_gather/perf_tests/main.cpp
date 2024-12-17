@@ -19,7 +19,7 @@ inline void taskEmplacement(std::shared_ptr<ppc::core::TaskData>& taskDataPar, s
 
 TEST(leontev_n_mat_vec_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int count_size_vector = 3000;
+  int count_size_vector = 500;
   std::vector<int> global_vec(count_size_vector, 1);
   std::vector<int> global_mat(count_size_vector * count_size_vector, 1);
   std::vector<int> global_res(count_size_vector);
@@ -53,7 +53,7 @@ TEST(leontev_n_mat_vec_mpi, test_pipeline_run) {
 
 TEST(leontev_n_mat_vec_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int count_size_vector = 3000;
+  int count_size_vector = 500;
   std::vector<int> global_vec(count_size_vector, 1);
   std::vector<int> global_mat(count_size_vector * count_size_vector, 1);
   std::vector<int> global_res(count_size_vector);

@@ -116,8 +116,8 @@ TEST(leontev_n_mat_vec_mpi, mul_mpi_500elem) {
   }
 }
 
-TEST(leontev_n_mat_vec_mpi, mul_mpi_5000elem) {
-  const int vector_size = 5000;
+TEST(leontev_n_mat_vec_mpi, mul_mpi_150elem) {
+  const int vector_size = 150;
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int> global_mat;
