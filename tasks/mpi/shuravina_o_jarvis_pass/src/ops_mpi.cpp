@@ -7,7 +7,8 @@
 namespace shuravina_o_jarvis_pass {
 
 void JarvisPassMPI::run() {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
