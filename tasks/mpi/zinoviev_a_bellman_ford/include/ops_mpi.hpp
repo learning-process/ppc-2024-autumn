@@ -22,7 +22,6 @@ class BellmanFordSeqTaskSequential : public ppc::core::Task {
   std::vector<int> dist_;
 };
 
-// Функция для генерации случайного графа
 std::vector<int> generateRandomGraph(int num_vertices, int num_edges);
 
 }  // namespace zinoviev_a_bellman_ford_seq
