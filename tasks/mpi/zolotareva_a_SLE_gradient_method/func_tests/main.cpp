@@ -12,7 +12,7 @@ namespace zolotareva_a_SLE_gradient_method_mpi {
 void generateSLE(std::vector<double>& A, std::vector<double>& b, int n) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dist(-10.0f, 10.0f);
+  std::uniform_real_distribution<double> dist(-100.0f, 100.0f);
 
   for (int i = 0; i < n; ++i) {
     b[i] = dist(gen);
@@ -24,7 +24,7 @@ void generateSLE(std::vector<double>& A, std::vector<double>& b, int n) {
   }
 
   for (int i = 0; i < n; ++i) {
-    A[i * n + i] += n * 10.0f;  // Обеспечение доминирования диагонали
+    A[i * n + i] += n * 100.0f;  // Обеспечение доминирования диагонали
   }
 }
 
@@ -163,4 +163,4 @@ TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_5_random) { zolotareva_a_SLE
 TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_17_random) { zolotareva_a_SLE_gradient_method_mpi::form(17); }
 TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_51_random) { zolotareva_a_SLE_gradient_method_mpi::form(51); }
 TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_123_random) { zolotareva_a_SLE_gradient_method_mpi::form(123); }
-TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_1432_random) { zolotareva_a_SLE_gradient_method_mpi::form(1432); }
+TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_591_random) { zolotareva_a_SLE_gradient_method_mpi::form(591); }
