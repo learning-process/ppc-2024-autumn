@@ -49,12 +49,13 @@ class Jarvis : public ppc::core::Task {
   bool run() override {
     internal_order_test();
 
-    if (world.rank() == 0 && taskData->inputs_count[0] < 3) {
-      convex_hull = set;
+    boost::mpi::broadcast(world, set, root);
+
+    if (set.size() < 3) {
+      if (world.rank() == root) convex_hull = set;
       return true;
     }
 
-    boost::mpi::broadcast(world, set, root);
     boost::mpi::broadcast(world, length, root);
 
     shift = (world.rank() == 0) ? length / world.size() + length % world.size() : length / world.size();
