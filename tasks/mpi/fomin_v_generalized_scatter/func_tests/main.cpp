@@ -7,8 +7,6 @@
 #include "mpi/fomin_v_generalized_scatter/include/ops_mpi.hpp"
 
 TEST(fomin_v_generalized_scatter, ScatterIntegers) {
-  int rank;
-  int size;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
@@ -42,8 +40,6 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
 }
 
 TEST(fomin_v_generalized_scatter, ScatterFloats) {
-  int rank;
-  int size;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
@@ -77,8 +73,6 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
 }
 
 TEST(fomin_v_generalized_scatter, ScatterDoubles) {
-  int rank;
-  int size;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
@@ -113,8 +107,6 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
 
 TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
   // Сheck function when the number of processes is not a power of two
-  int rank;
-  int size;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
@@ -148,8 +140,6 @@ TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
 }
 
 TEST(fomin_v_generalized_scatter, ZeroElementsScatter) {
-  int rank;
-  int size;
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
