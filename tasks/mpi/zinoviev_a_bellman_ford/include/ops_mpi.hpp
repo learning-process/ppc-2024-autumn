@@ -1,17 +1,17 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <boost/mpi/communicator.hpp>
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace zinoviev_a_bellman_ford_mpi {
+namespace zinoviev_a_bellman_ford_seq {
 
-class BellmanFordMPITaskParallel : public ppc::core::Task {
+class BellmanFordSeqTaskSequential : public ppc::core::Task {
  public:
-  explicit BellmanFordMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit BellmanFordSeqTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -19,9 +19,10 @@ class BellmanFordMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<int> graph_;
-  std::vector<int> local_graph_;
   std::vector<int> dist_;
-  boost::mpi::communicator world;
 };
 
-}  // namespace zinoviev_a_bellman_ford_mpi
+// Функция для генерации случайного графа
+std::vector<int> generateRandomGraph(int num_vertices, int num_edges);
+
+}  // namespace zinoviev_a_bellman_ford_seq
