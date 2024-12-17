@@ -76,7 +76,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_5_vertex) {
   }
 }
 
-/*TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_10_vertex) {
+TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_10_vertex) {
   boost::mpi::communicator world;
   int size = 10;
   int st = 3;
@@ -323,4 +323,4 @@ TEST(chizhov_m_dijkstra_realization_mpi, negative_value_test) {
     chizhov_m_dijkstra_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_FALSE(testMpiTaskSequential.validation());
   }
-}*/
+}

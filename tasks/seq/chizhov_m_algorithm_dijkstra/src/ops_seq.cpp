@@ -31,10 +31,9 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::validation() {
     return false;
   }
 
-  size = taskData->inputs_count[0];
-  for (int i = 0; i < size; i++) {
+  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (int j = 0; j < size; j++) {
+    for (unsigned int j = 0; j < taskData->inputs_count[0]; j++) {
       if (tmp_ptr[j] < 0) {
         return false;
       }

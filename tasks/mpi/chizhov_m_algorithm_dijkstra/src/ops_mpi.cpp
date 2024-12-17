@@ -159,10 +159,9 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::validation() {
       return false;
     }
 
-    size = taskData->inputs_count[0];
-    for (int i = 0; i < size; i++) {
+    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      for (int j = 0; j < size; j++) {
+      for (unsigned int j = 0; j < taskData->inputs_count[0]; j++) {
         if (tmp_ptr[j] < 0) {
           return false;
         }
@@ -184,25 +183,25 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::validation() {
 bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  broadcast(world, size, 0);
-  broadcast(world, st, 0);
+  boost::mpi::broadcast(world, size, 0);
+  boost::mpi::broadcast(world, st, 0);
 
   // broadcast of CRS vectors
   int values_size = values.size();
   int rowPtr_size = rowPtr.size();
   int colIndex_size = colIndex.size();
 
-  broadcast(world, values_size, 0);
-  broadcast(world, rowPtr_size, 0);
-  broadcast(world, colIndex_size, 0);
+  boost::mpi::broadcast(world, values_size, 0);
+  boost::mpi::broadcast(world, rowPtr_size, 0);
+  boost::mpi::broadcast(world, colIndex_size, 0);
 
   values.resize(values_size);
   rowPtr.resize(rowPtr_size);
   colIndex.resize(colIndex_size);
 
-  broadcast(world, values.data(), values.size(), 0);
-  broadcast(world, rowPtr.data(), rowPtr.size(), 0);
-  broadcast(world, colIndex.data(), colIndex.size(), 0);
+  boost::mpi::broadcast(world, values.data(), values.size(), 0);
+  boost::mpi::broadcast(world, rowPtr.data(), rowPtr.size(), 0);
+  boost::mpi::broadcast(world, colIndex.data(), colIndex.size(), 0);
 
   int delta = size / world.size();
   int extra = size % world.size();
@@ -220,7 +219,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
     res_[st] = 0;
   }
 
-  broadcast(world, res_.data(), size, 0);
+  boost::mpi::broadcast(world, res_.data(), size, 0);
 
   for (int k = 0; k < size; k++) {
     int local_min = INT_MAX;
@@ -236,7 +235,8 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
     std::pair<int, int> local_pair = {local_min, local_index};
     std::pair<int, int> global_pair = {INT_MAX, -1};
 
-    all_reduce(world, local_pair, global_pair, [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+    boost::mpi::all_reduce(world, local_pair, global_pair,
+                           [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
       if (a.first < b.first) return a;
       if (a.first > b.first) return b;
       return a;
@@ -257,7 +257,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
       }
     }
 
-    all_reduce(world, res_.data(), size, D.data(), boost::mpi::minimum<int>());
+    boost::mpi::all_reduce(world, res_.data(), size, D.data(), boost::mpi::minimum<int>());
     res_ = D;
   }
 
