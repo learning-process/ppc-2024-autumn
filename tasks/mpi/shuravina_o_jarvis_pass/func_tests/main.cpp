@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-
 #include <mpi.h>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <vector>
@@ -28,7 +28,7 @@ TEST(shuravina_o_jarvis_pass, Test_Fixed_Points) {
     }
   }
 
-MPI_Finalize();
+  MPI_Finalize();
 }
 
 TEST(shuravina_o_jarvis_pass, Test_Minimal_Points) {
