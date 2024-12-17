@@ -273,6 +273,8 @@ TEST(titov_s_global_optimization_2_seq, Validation_InvalidInputs) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
   taskDataSeq->inputs_count.emplace_back(1);
 
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
+
   std::vector<titov_s_global_optimization_2_seq::Point> out(1, {0.0, 0.0});
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
@@ -304,6 +306,9 @@ TEST(titov_s_global_optimization_2_seq, Test_Validation_InvalidOutputs) {
   taskDataSeq->inputs_count.emplace_back(constraints_ptr->size());
 
   std::vector<titov_s_global_optimization_2_seq::Point> out(1, {0.0, 0.0});
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(1);
+  taskDataSeq->outputs_count.emplace_back(1);
 
   titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
 

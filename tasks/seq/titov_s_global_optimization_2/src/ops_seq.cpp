@@ -20,11 +20,7 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
   min_value_ = std::numeric_limits<double>::infinity();
   result_ = {0.0, 0.0};
 
-  if (!calculate_initial_search_area()) {
-    return false;
-  }
-
-  return true;
+  return calculate_initial_search_area();
 }
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
@@ -41,7 +37,7 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
     return false;
   }
 
-  if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
+  if (taskData->outputs.empty() || taskData->outputs.size() != 1 || taskData->outputs_count.size() != 1) {
     return false;
   }
   return true;

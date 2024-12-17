@@ -23,11 +23,7 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::pre_processing(
   min_value_ = std::numeric_limits<double>::infinity();
   result_ = {0.0, 0.0};
 
-  if (!calculate_initial_search_area()) {
-    return false;
-  }
-
-  return true;
+  return calculate_initial_search_area();
 }
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::validation() {
   internal_order_test();
