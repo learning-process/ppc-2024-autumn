@@ -66,8 +66,7 @@ std::vector<int> master_function(boost::mpi::communicator& world, const std::vec
 }
 
 void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>& local_data,
-                        const std::vector<int>& element_sizes,
-                std::vector<int>& res) {
+                        const std::vector<int>& element_sizes, std::vector<int>& res) {
   if (world.rank() == 0) {
     res = master_function(world, local_data, element_sizes);
   } else {

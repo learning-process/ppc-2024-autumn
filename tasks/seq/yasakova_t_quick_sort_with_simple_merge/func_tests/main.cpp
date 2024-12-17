@@ -56,7 +56,7 @@ TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesSingleElementInput) {
   executeQuickSortTest(vec);
 }
 
-TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesEmptyInput) {executeQuickSortTest({});}
+ TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesEmptyInput) { executeQuickSortTest({}); }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesMixedLargeAndSmallNumbers) {
   executeQuickSortTest({100, 99, 98, 1, 2, 3, 4, 5});

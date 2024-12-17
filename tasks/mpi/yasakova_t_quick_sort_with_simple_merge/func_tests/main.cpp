@@ -123,7 +123,7 @@ TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_single_element_array) {
   execute_parallel_sort_test(vec);
 }
 
-TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_empty_array) {execute_parallel_sort_test({});}
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_empty_array) { execute_parallel_sort_test({}); }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_mixed_large_and_small_numbers_array) {
   execute_parallel_sort_test({100, 99, 98, 1, 2, 3, 4, 5});
