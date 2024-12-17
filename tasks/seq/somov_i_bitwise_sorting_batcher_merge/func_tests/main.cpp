@@ -8,7 +8,7 @@
 
 #include "seq/somov_i_bitwise_sorting_batcher_merge/include/ops_seq.hpp"
 
-std::vector<double> create_random_vector(int size, double mean = 4.0, double stddev = 300.0) {
+std::vector<double> create_random_vector(int size, double mean = 3.0, double stddev = 300.0) {
   std::normal_distribution<double> norm_dist(mean, stddev);
 
   std::random_device rand_dev;
