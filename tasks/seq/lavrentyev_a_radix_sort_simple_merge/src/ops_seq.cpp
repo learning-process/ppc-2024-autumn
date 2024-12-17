@@ -7,7 +7,7 @@ namespace lavrentyev_a_radix_sort_simple_merge_seq {
 bool RadixSimpleMerge::validation() {
   internal_order_test();
 
-  return taskData->inputs_count[0] > 0;
+  return taskData->inputs_count[0] > 1;
 }
 
 bool RadixSimpleMerge::pre_processing() {

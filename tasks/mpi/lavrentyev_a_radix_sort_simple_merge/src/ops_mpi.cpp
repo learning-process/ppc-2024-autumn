@@ -40,7 +40,7 @@ bool lavrentyev_a_radix_sort_simple_merge_mpi::RadixSimpleMerge::validation() {
 
   if (world.rank() != 0) return true;
 
-  return taskData->inputs_count[0] > 0;
+  return taskData->inputs_count[0] > 1;
 }
 
 bool lavrentyev_a_radix_sort_simple_merge_mpi::RadixSimpleMerge::pre_processing() {
@@ -76,7 +76,9 @@ bool lavrentyev_a_radix_sort_simple_merge_mpi::RadixSimpleMerge::run() {
   if (wrank == 0) {
     boost::mpi::scatterv(world, arr.data(), sizes, displs, local_arr.data(), sizes[0], 0);
   } else {
-    boost::mpi::scatterv(world, local_arr.data(), sizes[wrank], 0);
+    if (local_arr.data() != nullptr) {
+      boost::mpi::scatterv(world, local_arr.data(), sizes[wrank], 0);
+    }
   }
 
   radixSortDouble(local_arr.begin(), local_arr.end());

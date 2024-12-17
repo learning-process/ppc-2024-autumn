@@ -14,7 +14,7 @@ void radixSortDouble(RandomIt begin, RandomIt end) {
   if (begin == end) return;
 
   using ValueType = typename std::iterator_traits<RandomIt>::value_type;
-  static_assert(std::is_floating_point<ValueType>::value, "This function is designed for floating-point types.");
+  static_assert(std::is_floating_point_v<ValueType>, "This function is designed for floating-point types.");
 
   const size_t numBits = sizeof(ValueType) * 8;
   const size_t numBuckets = 256;
