@@ -17,7 +17,7 @@ bool TaskParallel::validation() {
     return isValid;
   }
 
-    return true;
+  return true;
 }
 
 bool TaskParallel::pre_processing() {
