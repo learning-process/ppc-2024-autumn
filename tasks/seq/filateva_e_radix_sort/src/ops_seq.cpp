@@ -25,7 +25,7 @@ bool filateva_e_radix_sort_seq::RadixSort::run() {
   internal_order_test();
 
   int kol = 20;
-  std::vector<list<int>> radix_list(kol);
+  std::vector<std::list<int>> radix_list(kol);
 
   int raz = 10;
   for (int i = 0; i < arr.size(); i++) {
@@ -33,7 +33,7 @@ bool filateva_e_radix_sort_seq::RadixSort::run() {
   }
   while (radix_list[10].size() != arr.size()) {
     raz *= 10;
-    std::vector<list<int>> temp(kol);
+    std::vector<std::list<int>> temp(kol);
     for (int i = 0; i < kol; i++) {
       for (auto p : radix_list[i]) {
         temp[p % raz / (raz / 10) + 10].push_back(p);

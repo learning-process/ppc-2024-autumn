@@ -45,7 +45,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   boost::mpi::broadcast(world, ost, 0);
 
   int local_size = (world.rank() == 0) ? ost : delta;
-  std::vector<list<int>> radix_list(kol);
+  std::vector<std::list<int>> radix_list(kol);
   std::vector<int> local_vec(local_size, 0);
 
   std::vector<int> distribution(world.size(), delta);
@@ -61,7 +61,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   }
   while (radix_list[10].size() != local_size) {
     raz *= 10;
-    std::vector<list<int>> temp(kol);
+    std::vector<std::list<int>> temp(kol);
     for (int i = 0; i < kol; i++) {
       for (auto p : radix_list[i]) {
         temp[p % raz / (raz / 10) + 10].push_back(p);
