@@ -29,14 +29,17 @@ bool filateva_e_radix_sort_seq::RadixSort::run() {
   std::vector<std::list<int>> negativ_radix_list(kol);
 
   int raz = 10;
+  int max_r = -1;
   for (unsigned long i = 0; i < arr.size(); i++) {
+    max_r = std::max(max_r, std::abs(arr[i]));
     if (arr[i] >= 0) {
       radix_list[arr[i] % raz].push_back(arr[i]);
     } else {
       negativ_radix_list[std::abs(arr[i]) % raz].push_back(std::abs(arr[i]));
     }
   }
-  while (radix_list[0].size() + negativ_radix_list[0].size() != arr.size()) {
+  
+  while (max_r / (raz / 10) > 0) {
     raz *= 10;
     std::vector<std::list<int>> temp(kol);
     std::vector<std::list<int>> negativ_temp(kol);

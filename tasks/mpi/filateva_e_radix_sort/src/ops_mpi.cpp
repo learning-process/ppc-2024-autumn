@@ -58,14 +58,17 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
 
   boost::mpi::scatterv(world, arr.data(), distribution, displacement, local_vec.data(), local_size, 0);
 
+   int max_r = -1;
+
   for (long unsigned int i = 0; i < local_vec.size(); i++) {
+    max_r = std::max(max_r, std::abs(local_vec[i]));
     if (local_vec[i] >= 0) {
       radix_list[local_vec[i] % raz].push_back(local_vec[i]);
     } else {
       negativ_radix_list[std::abs(local_vec[i]) % raz].push_back(std::abs(local_vec[i]));
     }
   }
-  while ((int)radix_list[0].size() + (int)negativ_radix_list[0].size() != local_size) {
+  while (max_r / (raz / 10) > 0) {
     raz *= 10;
     std::vector<std::list<int>> temp(kol);
     std::vector<std::list<int>> negativ_temp(kol);
@@ -80,6 +83,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
     radix_list = temp;
     negativ_radix_list = negativ_temp;
   }
+
 
   auto rit = negativ_radix_list[0].rbegin();
   int i = 0;
