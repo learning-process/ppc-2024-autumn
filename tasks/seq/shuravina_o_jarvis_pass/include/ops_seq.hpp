@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
 #include <vector>
 
 namespace shuravina_o_jarvis_pass {

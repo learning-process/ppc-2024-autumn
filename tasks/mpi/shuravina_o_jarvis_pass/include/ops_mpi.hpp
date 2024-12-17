@@ -3,6 +3,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/serialization.hpp>
 #include <vector>
 
 namespace shuravina_o_jarvis_pass {
