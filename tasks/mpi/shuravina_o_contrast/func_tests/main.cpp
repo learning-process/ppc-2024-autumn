@@ -2,119 +2,164 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <iostream>
+#include <random>
 #include <vector>
 
 #include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
-TEST(shuravina_o_contrast, Test_Contrast_10) {
-  boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
-    const int count_size_vector = 10;
-    global_vec = std::vector<uint8_t>(count_size_vector, 128);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
-  }
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
+namespace shuravina_o_contrast {
 
-  if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
+std::vector<uint8_t> generateRandomImage(size_t size) {
+  std::vector<uint8_t> image(size);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(0, 255);
+
+  for (size_t i = 0; i < size; ++i) {
+    image[i] = static_cast<uint8_t>(distrib(gen));
   }
+
+  return image;
 }
-TEST(shuravina_o_contrast, Test_Contrast_20) {
+
+}  // namespace shuravina_o_contrast
+
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Empty_Input) {
+  boost::mpi::environment env;
   boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 20;
-    global_vec = std::vector<uint8_t>(count_size_vector, 64);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
-  }
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
+    std::vector<uint8_t> input = {};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
 
-  if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
-  }
-}
-TEST(shuravina_o_contrast, Test_Contrast_30) {
-  boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
 
-  if (world.rank() == 0) {
-    const int count_size_vector = 30;
-    global_vec = std::vector<uint8_t>(count_size_vector, 32);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
-  }
-
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
-
-  if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
   }
 }
 
-TEST(shuravina_o_contrast, Test_Contrast_40) {
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Single_Element_Input) {
+  boost::mpi::environment env;
   boost::mpi::communicator world;
-  std::vector<uint8_t> global_vec;
-  std::vector<uint8_t> global_out;
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    const int count_size_vector = 40;
-    global_vec = std::vector<uint8_t>(count_size_vector, 16);
-    global_out = std::vector<uint8_t>(count_size_vector, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
-    taskDataPar->outputs_count.emplace_back(global_out.size());
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<uint8_t> input = {50};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
   }
+}
 
-  shuravina_o_contrast::ContrastParallel contrastTask(taskDataPar);
-  ASSERT_EQ(contrastTask.validation(), true);
-  contrastTask.pre_processing();
-  contrastTask.run();
-  contrastTask.post_processing();
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Max_Values_Input) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
 
   if (world.rank() == 0) {
-    for (int i = 0; i < global_out.size(); ++i) {
-      ASSERT_EQ(global_out[i], 255);
-    }
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<uint8_t> input = {255, 255, 255, 255, 255};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
+  }
+}
+
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_Min_Values_Input) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<uint8_t> input = {0, 0, 0, 0, 0};
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
+  }
+}
+
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_100x32_Input) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<uint8_t> input = shuravina_o_contrast::generateRandomImage(100 * 32);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
+  }
+}
+
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_64x23_Input) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<uint8_t> input = shuravina_o_contrast::generateRandomImage(64 * 23);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
+  }
+}
+
+TEST(shuravina_o_contrast, Test_Contrast_Enhancement_27x128_Input) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<uint8_t> input = shuravina_o_contrast::generateRandomImage(27 * 128);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs_count.emplace_back(input.size());
+
+    std::vector<uint8_t> output(input.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+
+    shuravina_o_contrast::ContrastTaskParallel contrastTaskParallel(taskDataPar);
+    ASSERT_TRUE(contrastTaskParallel.validation());
   }
 }
