@@ -27,13 +27,9 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::pre_processing() {
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
   internal_order_test();
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->inputs.empty() ||
+      taskData->inputs.size() < 2) {
     throw std::runtime_error("Invalid inputs provided to the task.");
-  }
-
-  if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
-    throw std::runtime_error("Validation failed: No inputs provided.");
-    return false;
   }
 
   auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
@@ -44,8 +40,8 @@ bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::validation() {
   }
 
   if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
-    return false;
     throw std::runtime_error("Validation failed: No outputs provided.");
+    return false;
   }
   return true;
 }
@@ -101,10 +97,6 @@ void titov_s_global_optimization_2_seq::GlobalOpt2Sequential::calculate_initial_
   upper_bound_x_ += 1;
   lower_bound_y_ -= 1;
   upper_bound_y_ += 1;
-
-  if (lower_bound_x_ >= upper_bound_x_ || lower_bound_y_ >= upper_bound_y_) {
-    throw std::runtime_error("Constraints do not define a valid search area.");
-  }
 }
 
 bool titov_s_global_optimization_2_seq::GlobalOpt2Sequential::run() {

@@ -29,23 +29,6 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::pre_processing(
 }
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::validation() {
   internal_order_test();
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
-    return false;
-  }
-
-  if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
-    return false;
-  }
-
-  auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
-  auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
-  if (func_ptr == nullptr || constraints_ptr == nullptr) {
-    return false;
-  }
-
-  if (taskData->outputs.empty() || taskData->outputs.size() != 1) {
-    return false;
-  }
   return true;
 }
 void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initial_search_area() {
@@ -99,10 +82,6 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::calculate_initi
   upper_bound_x_ += 1;
   lower_bound_y_ -= 1;
   upper_bound_y_ += 1;
-
-  if (lower_bound_x_ >= upper_bound_x_ || lower_bound_y_ >= upper_bound_y_) {
-    throw std::runtime_error("Constraints do not define a valid search area.");
-  }
 }
 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Sequential::run() {
@@ -289,14 +268,10 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::pre_processing() 
 bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->inputs.empty() ||
+        taskData->inputs.size() < 2) {
       return false;
     }
-
-    if (taskData->inputs.empty() || taskData->inputs.size() < 2) {
-      return false;
-    }
-
     auto* func_ptr = reinterpret_cast<std::function<double(const Point&)>*>(taskData->inputs[0]);
     auto* constraints_ptr = reinterpret_cast<std::vector<std::function<bool(const Point&)>>*>(taskData->inputs[1]);
     if (func_ptr == nullptr || constraints_ptr == nullptr) {
@@ -455,10 +430,6 @@ void titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::calculate_initial
   upper_bound_x_ += 0.1;
   lower_bound_y_ -= 0.1;
   upper_bound_y_ += 0.1;
-
-  if (lower_bound_x_ >= upper_bound_x_ || lower_bound_y_ >= upper_bound_y_) {
-    throw std::runtime_error("Constraints do not define a valid search area.");
-  }
 }
 
 titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::compute_gradient(

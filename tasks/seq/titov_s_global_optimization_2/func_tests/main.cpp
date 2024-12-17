@@ -254,3 +254,89 @@ TEST(titov_s_global_optimization_2_seq, Test_7) {
   ASSERT_NEAR(out[0].x, 2.9, 0.1);
   ASSERT_NEAR(out[0].y, 0.0, 0.1);
 }
+
+TEST(titov_s_global_optimization_2_seq, Validation_InvalidInputs) {
+
+   std::function<double(const titov_s_global_optimization_2_seq::Point&)> func =
+      [](const titov_s_global_optimization_2_seq::Point& p) { return p.x * p.x * p.x + p.y * p.y * p.y; };
+
+  auto constraint1 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.x - 2.9; };
+  auto constraint2 = [](const titov_s_global_optimization_2_seq::Point& p) { return 3.1 - p.x; };
+  auto constraint3 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.y; };
+  auto constraint4 = [](const titov_s_global_optimization_2_seq::Point& p) { return 4.0 - p.y; };
+
+  auto constraints_ptr =
+      std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>>(
+          std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>{
+              constraint1, constraint2, constraint3, constraint4});
+
+ std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  std::vector<titov_s_global_optimization_2_seq::Point> out(1, {0.0, 0.0});
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
+
+  ASSERT_THROW(optimizationTask.validation(), std::runtime_error);
+}
+
+TEST(titov_s_global_optimization_2_seq, Test_Validation_InvalidOutputs) {
+  std::function<double(const titov_s_global_optimization_2_seq::Point&)> func =
+      [](const titov_s_global_optimization_2_seq::Point& p) { return p.x * p.x * p.x + p.y * p.y * p.y; };
+
+  auto constraint1 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.x - 2.9; };
+  auto constraint2 = [](const titov_s_global_optimization_2_seq::Point& p) { return 3.1 - p.x; };
+  auto constraint3 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.y; };
+  auto constraint4 = [](const titov_s_global_optimization_2_seq::Point& p) { return 4.0 - p.y; };
+
+  auto constraints_ptr =
+      std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>>(
+          std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>{
+              constraint1, constraint2, constraint3, constraint4});
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
+  taskDataSeq->inputs_count.emplace_back(constraints_ptr->size());
+
+  std::vector<titov_s_global_optimization_2_seq::Point> out(1, {0.0, 0.0});
+
+  titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
+
+  ASSERT_THROW(optimizationTask.validation(), std::runtime_error);
+}
+
+TEST(titov_s_global_optimization_2_seq, Test_Wrong_Constraits) {
+  std::function<double(const titov_s_global_optimization_2_seq::Point&)> func =
+      [](const titov_s_global_optimization_2_seq::Point& p) { return p.x * p.x * p.x + p.y * p.y * p.y; };
+
+  auto constraint1 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.x; };
+  auto constraint3 = [](const titov_s_global_optimization_2_seq::Point& p) { return p.y; };
+  auto constraint4 = [](const titov_s_global_optimization_2_seq::Point& p) { return -4.0 - p.y; };
+
+  auto constraints_ptr =
+      std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>>(
+          std::vector<std::function<double(const titov_s_global_optimization_2_seq::Point&)>>{
+              constraint1, constraint3, constraint4});
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
+  taskDataSeq->inputs_count.emplace_back(constraints_ptr->size());
+
+  std::vector<titov_s_global_optimization_2_seq::Point> out(1, {0.0, 0.0});
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  titov_s_global_optimization_2_seq::GlobalOpt2Sequential optimizationTask(taskDataSeq);
+
+  ASSERT_TRUE(optimizationTask.validation());
+  ASSERT_THROW(optimizationTask.pre_processing(), std::runtime_error);
+}
