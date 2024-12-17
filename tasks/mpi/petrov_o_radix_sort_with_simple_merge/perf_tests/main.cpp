@@ -10,7 +10,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_o_radix_sort_with_simple_merge/include/ops_mpi.hpp"
 
-// Используем пространство имён для MPI варианта
 using namespace petrov_o_radix_sort_with_simple_merge_mpi;
 
 // Тестирование производительности pipeline_run для параллельной версии
@@ -21,10 +20,9 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, test_pipeline_run_mpi) {
   // Только на процессе с рангом 0 инициализируем данные
   std::vector<int> in;
   std::vector<int> out;
-  const size_t array_size = 100000;  // 10 миллионов элементов
+  const size_t array_size = 100000;
 
   if (world.rank() == 0) {
-    // Инициализация генератора случайных чисел
     std::mt19937 rng(42);  // фиксированный сид для воспроизводимости
     std::uniform_int_distribution<int> dist(-1000000, 1000000);
 
@@ -34,7 +32,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, test_pipeline_run_mpi) {
       in[i] = dist(rng);
     }
 
-    // Инициализация выходного массива
     out.resize(in.size(), 0);
   }
 
@@ -90,10 +87,9 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, test_task_run_mpi) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  // Только на процессе с рангом 0 инициализируем данные
   std::vector<int> in;
   std::vector<int> out;
-  const size_t array_size = 100000;  // 10 миллионов элементов
+  const size_t array_size = 100000;
 
   if (world.rank() == 0) {
     // Инициализация генератора случайных чисел
@@ -164,9 +160,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, test_pipeline_run_seq) {
     // Создание данных
     std::vector<int> in;
     std::vector<int> out;
-    const size_t array_size = 100000;  // 10 миллионов элементов
+    const size_t array_size = 100000;
 
-    // Инициализация генератора случайных чисел с фиксированным сидом для воспроизводимости
     std::mt19937 rng(42);  // фиксированный сид
     std::uniform_int_distribution<int> dist(-1000000, 1000000);
 
@@ -221,9 +216,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, test_task_run_seq) {
     // Создание данных
     std::vector<int> in;
     std::vector<int> out;
-    const size_t array_size = 100000;  // 10 миллионов элементов
+    const size_t array_size = 100000;
 
-    // Инициализация генератора случайных чисел с фиксированным сидом для воспроизводимости
     std::mt19937 rng(42);  // фиксированный сид
     std::uniform_int_distribution<int> dist(-1000000, 1000000);
 
