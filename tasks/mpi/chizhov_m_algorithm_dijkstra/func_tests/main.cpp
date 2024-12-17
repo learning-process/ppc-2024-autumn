@@ -42,7 +42,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_5_vertex) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(size);
     taskDataPar->inputs_count.emplace_back(st);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size());
   }
 
@@ -288,12 +288,8 @@ TEST(chizhov_m_dijkstra_realization_mpi, negative_value_test) {
   boost::mpi::communicator world;
   int size = 3;
   int st = 0;
-
-  std::vector<std::vector<int>> matrix = {
-      {0, 2, 5}, 
-      {4, 0, 2}, 
-      {3, -1, 0}
-  };
+  
+  std::vector<std::vector<int>> matrix = {{0, 2, 5}, {4, 0, 2}, {3, -1, 0}};
   std::vector<int> res(size, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

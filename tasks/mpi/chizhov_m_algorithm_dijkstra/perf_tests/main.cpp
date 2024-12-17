@@ -25,7 +25,7 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_pipeline_run) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_size_vector);
     taskDataPar->inputs_count.emplace_back(st);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_path.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_path.data()));
     taskDataPar->outputs_count.emplace_back(global_path.size());
   }
 
@@ -71,7 +71,7 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_task_run) {
       taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
     taskDataPar->inputs_count.emplace_back(count_size_vector);
     taskDataPar->inputs_count.emplace_back(st);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_path.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_path.data()));
     taskDataPar->outputs_count.emplace_back(global_path.size());
   }
 

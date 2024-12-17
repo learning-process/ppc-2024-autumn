@@ -8,7 +8,8 @@
 
 namespace chizhov_m_dijkstra_seq {
 
-void convertToCRS(const std::vector<std::vector<int>>& w, std::vector<int>& values, std::vector<int>& colIndex, std::vector<int>& rowPtr);
+void convertToCRS(const std::vector<std::vector<int>>& w, std::vector<int>& values, std::vector<int>& colIndex,
+                  std::vector<int>& rowPtr);
 
 class TestTaskSequential : public ppc::core::Task {
  public:

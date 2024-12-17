@@ -5,9 +5,7 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <climits>
 #include <vector>
-
 
 void chizhov_m_dijkstra_mpi::convertToCRS(const std::vector<std::vector<int>>& w, std::vector<int>& values,
                                           std::vector<int>& colIndex, std::vector<int>& rowPtr) {
@@ -146,7 +144,6 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::pre_processing() {
   } else {
     input_ = std::vector<std::vector<int>>(size, std::vector<int>(size, 0));
   }
-  
   return true;
 }
 

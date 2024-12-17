@@ -1,7 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/chizhov_m_algorithm_dijkstra/include/ops_seq.hpp"
 
-
 bool chizhov_m_dijkstra_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -55,7 +54,7 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::validation() {
 }
 
 void chizhov_m_dijkstra_seq::convertToCRS(const std::vector<std::vector<int>>& w, std::vector<int>& values,
-    std::vector<int>& colIndex, std::vector<int>& rowPtr) {
+                                          std::vector<int>& colIndex, std::vector<int>& rowPtr) {
   int n = w.size();
   rowPtr.resize(n + 1);
   int nnz = 0;
@@ -100,7 +99,7 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::run() {
     visited[u] = true;
 
     for (int j = rowPtr[u]; j < rowPtr[u + 1]; j++) {
-      int v = colIndex[j];     // index neighbour
+      int v = colIndex[j];
       int weight = values[j];
 
       if (!visited[v] && D[u] != INT_MAX && (D[u] + weight < D[v])) {
