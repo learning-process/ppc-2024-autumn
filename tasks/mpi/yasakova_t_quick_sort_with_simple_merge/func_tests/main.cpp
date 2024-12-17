@@ -150,6 +150,10 @@ TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_max_and_min_integer_value
       {std::numeric_limits<int>::max(), std::numeric_limits<int>::min(), 0});
 }
 
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_prime_numbers_array) {
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({11, 13, 17, 19, 23, 29, 31});
+}
+
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_descending_array_with_negatives) {
   yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({50, 40, 30, 20, 10, 0, -10, -20, -30});
 }
@@ -164,6 +168,10 @@ TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_consecutive_mixed_numbers
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_descending_with_zero_and_negatives_array) {
   yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({7, 6, 5, 4, 3, 2, 1, 0, -1, -2});
+}
+
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_large_integers_array) {
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({1000, 2000, 1500, 2500, 1750});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_mixed_digits_and_zero_array) {

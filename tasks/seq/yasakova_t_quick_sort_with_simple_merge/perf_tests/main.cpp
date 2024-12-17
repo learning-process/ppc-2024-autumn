@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
