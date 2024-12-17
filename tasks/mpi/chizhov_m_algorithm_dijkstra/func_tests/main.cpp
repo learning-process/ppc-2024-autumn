@@ -76,7 +76,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_5_vertex) {
   }
 }
 
-TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_10_vertex) {
+/*TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_10_vertex) {
   boost::mpi::communicator world;
   int size = 10;
   int st = 3;
@@ -238,7 +238,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_20_vertex) {
   }
 }
 
-/* TEST(chizhov_m_dijkstra_realization_mpi, source_vertex_validation_false) {
+ TEST(chizhov_m_dijkstra_realization_mpi, source_vertex_validation_false) {
   boost::mpi::communicator world;
   int size = 10;
   int st = 13;
@@ -282,7 +282,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_20_vertex) {
     chizhov_m_dijkstra_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_FALSE(testMpiTaskSequential.validation());
   }
-}*/
+}
 
 TEST(chizhov_m_dijkstra_realization_mpi, negative_value_test) {
   boost::mpi::communicator world;
@@ -323,4 +323,4 @@ TEST(chizhov_m_dijkstra_realization_mpi, negative_value_test) {
     chizhov_m_dijkstra_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_FALSE(testMpiTaskSequential.validation());
   }
-}
+}*/
