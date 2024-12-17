@@ -3,7 +3,7 @@
 
 #include <boost/serialization/vector.hpp>
 #include <limits>
-#include <list> 
+#include <list>
 #include <string>
 #include <vector>
 
