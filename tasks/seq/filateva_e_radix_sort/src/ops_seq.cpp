@@ -28,7 +28,7 @@ bool filateva_e_radix_sort_seq::RadixSort::run() {
   std::vector<std::list<int>> radix_list(kol);
 
   int raz = 10;
-  for (int i = 0; i < arr.size(); i++) {
+  for (unsigned long i = 0; i < arr.size(); i++) {
     radix_list[arr[i] % raz + 10].push_back(arr[i]);
   }
   while (radix_list[10].size() != arr.size()) {
