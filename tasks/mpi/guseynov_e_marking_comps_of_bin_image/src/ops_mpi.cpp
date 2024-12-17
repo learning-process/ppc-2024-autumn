@@ -1,28 +1,44 @@
 #include "mpi/guseynov_e_marking_comps_of_bin_image/include/ops_mpi.hpp"
 
 #include <map>
-#include <random>
 #include <vector>
+#include <queue>
+#include <set>
 
-int find(std::map<int, int>& parent, int x) {
-  if (parent[x] != x) {
-    parent[x] = find(parent, parent[x]);
-  }
-  return parent[x];
+int findParent(std::map<int, std::set<int>>& parent, int labl) {
+    for (const auto& entry : parent) {
+        if (entry.second.find(labl) != entry.second.end() && entry.first != labl) {
+            return entry.first;  
+        }
+    }
+
+    // Если ничего не найдено, вернуть labl
+    return labl;
 }
 
-void unite(std::map<int, int>& parent, int x, int y) {
-  int rootX = find(parent, x);
-  int rootY = find(parent, y);
-  if (rootX != rootY) {
-    parent[rootY] = rootX;
+void fixTable(std::map<int, std::set<int>>& parent, int new_label, int old_label){
+  if (new_label == old_label){
+    return;
+  }
+  parent[new_label] = parent[old_label];
+  parent.erase(old_label);
+}
+
+
+void unite(std::map<int, std::set<int>>& parent, int min_label, int label) {
+  for (auto& pair : parent){
+    if (pair.second.find(min_label) != pair.second.end()){
+      pair.second.insert(label);
+      return;
+    }
   }
 }
 
 void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows, int columns, int min_label) {
-  std::vector<int> label_equivalence;
+  
+  std::queue<int> label_equivalence;
   int current_label = min_label;
-  std::map<int, int> parent;
+  std::map<int, std::set<int>> parent;
   // Displacements for neighbours
   int dx[] = {-1, 1, 0, 0, -1, 1};
   int dy[] = {0, 0, -1, 1, 1, -1};
@@ -44,7 +60,8 @@ void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows
 
         if (neighbours.empty()) {
           labeled_image[position] = current_label;
-          parent[current_label] = current_label;
+          parent[current_label].insert(current_label);
+          label_equivalence.push(current_label);
           current_label++;
         } else {
           int min_label = *min_element(neighbours.begin(), neighbours.end());
@@ -62,11 +79,19 @@ void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows
     for (int y = 0; y < columns; y++) {
       int position = x * columns + y;
       if (labeled_image[position] > 1) {
-        labeled_image[position] = find(parent, labeled_image[position]);
+        int find_label = findParent(parent, labeled_image[position]);
+        if (label_equivalence.size() != 0 && find_label >= label_equivalence.front()){
+          fixTable(parent, label_equivalence.front(), find_label);
+          find_label = findParent(parent, labeled_image[position]);;
+          label_equivalence.pop();
+        }
+        labeled_image[position] = find_label;
       }
     }
+    
   }
 }
+
 
 void labelingFix(std::vector<int>& labeled_image, int rows, int columns) {
   int current_label = 2;
@@ -97,6 +122,14 @@ void labelingFix(std::vector<int>& labeled_image, int rows, int columns) {
             current_label++;
           }
           labeled_image[position] = min_label;
+           for (int i = 0; i < 6; i++) {
+          int nx = x + dx[i];
+          int ny = y + dy[i];
+          int tmp_pos = nx * columns + ny;
+          if (nx >= 0 && nx < rows && ny >= 0 && ny < columns && (labeled_image[tmp_pos] > 1)) {
+            labeled_image[tmp_pos] = min_label;
+          }
+          }
         }
       }
     }
