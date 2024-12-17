@@ -20,7 +20,7 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
   taskDataSeq->outputs_count.emplace_back(dist.size());
 
   // Create Task
-  auto testSeqTaskSequential = std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential>(taskDataSeq);
+  auto testSeqTaskSequential = std::make_shared<zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -55,7 +55,7 @@ TEST(zinoviev_a_bellman_ford, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(dist.size());
 
   // Create Task
-  auto testSeqTaskSequential = std::make_shared<zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential>(taskDataSeq);
+  auto testSeqTaskSequential = std::make_shared<zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential>(taskDataSeq);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

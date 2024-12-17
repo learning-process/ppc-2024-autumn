@@ -18,7 +18,7 @@ TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(dist.data()));
   taskDataSeq->outputs_count.emplace_back(dist.size());
 
-  zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential testSeqTaskSequential(taskDataSeq);
+  zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential testSeqTaskSequential(taskDataSeq);
   ASSERT_EQ(testSeqTaskSequential.validation(), true);
   testSeqTaskSequential.pre_processing();
   testSeqTaskSequential.run();
@@ -41,7 +41,7 @@ TEST(zinoviev_a_bellman_ford, Test_Medium_Graph) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(dist.data()));
   taskDataSeq->outputs_count.emplace_back(dist.size());
 
-  zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential testSeqTaskSequential(taskDataSeq);
+  zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential testSeqTaskSequential(taskDataSeq);
   ASSERT_EQ(testSeqTaskSequential.validation(), true);
   testSeqTaskSequential.pre_processing();
   testSeqTaskSequential.run();

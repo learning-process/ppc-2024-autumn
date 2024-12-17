@@ -25,7 +25,7 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_dist.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_bellman_ford::BellmanFordMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -66,7 +66,7 @@ TEST(zinoviev_a_bellman_ford, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_dist.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<zinoviev_a_bellman_ford::BellmanFordMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();

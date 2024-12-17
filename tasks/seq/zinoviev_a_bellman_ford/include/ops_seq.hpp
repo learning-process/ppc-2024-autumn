@@ -5,7 +5,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace zinoviev_a_bellman_ford_seq {
+namespace zinoviev_a_bellman_ford {
 
 class BellmanFordSeqTaskSequential : public ppc::core::Task {
  public:
@@ -20,4 +20,4 @@ class BellmanFordSeqTaskSequential : public ppc::core::Task {
   std::vector<int> dist_;
 };
 
-}  // namespace zinoviev_a_bellman_ford_seq
+}  // namespace zinoviev_a_bellman_ford

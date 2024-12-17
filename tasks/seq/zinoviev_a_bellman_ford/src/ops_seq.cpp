@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <vector>
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::pre_processing() {
+bool zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential::pre_processing() {
   internal_order_test();
   graph_ = std::vector<int>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -15,17 +15,17 @@ bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::pre_processing()
   return true;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::validation() {
+bool zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential::validation() {
   internal_order_test();
   return taskData->outputs_count[0] > 0;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::run() {
+bool zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential::run() {
   internal_order_test();
   return true;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeqTaskSequential::post_processing() {
+bool zinoviev_a_bellman_ford::BellmanFordSeqTaskSequential::post_processing() {
   internal_order_test();
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
   for (unsigned i = 0; i < dist_.size(); i++) {

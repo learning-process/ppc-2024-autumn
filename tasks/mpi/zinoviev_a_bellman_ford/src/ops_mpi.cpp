@@ -1,58 +1,58 @@
 // Copyright 2023 Nesterov Alexander
+#include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <random>
 #include <vector>
 
-#include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
-
-namespace zinoviev_a_bellman_ford_seq {
-
-bool BellmanFordSeqTaskSequential::pre_processing() {
+bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::pre_processing() {
   internal_order_test();
-  graph_ = std::vector<int>(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-  for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
-    graph_[i] = tmp_ptr[i];
+  unsigned int delta = 0;
+  if (world.rank() == 0) {
+    delta = taskData->inputs_count[0] / world.size();
+  }
+  broadcast(world, delta, 0);
+
+  if (world.rank() == 0) {
+    graph_ = std::vector<int>(taskData->inputs_count[0]);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
+      graph_[i] = tmp_ptr[i];
+    }
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, graph_.data() + proc * delta, delta);
+    }
+  }
+  local_graph_ = std::vector<int>(delta);
+  if (world.rank() == 0) {
+    local_graph_ = std::vector<int>(graph_.begin(), graph_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_graph_.data(), delta);
   }
   dist_ = std::vector<int>(taskData->outputs_count[0], 0);
   return true;
 }
 
-bool BellmanFordSeqTaskSequential::validation() {
+bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] > 0;
-}
-
-bool BellmanFordSeqTaskSequential::run() {
-  internal_order_test();
-  return true;
-}
-
-bool BellmanFordSeqTaskSequential::post_processing() {
-  internal_order_test();
-  auto* tmp_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
-  for (unsigned i = 0; i < dist_.size(); i++) {
-    tmp_ptr[i] = dist_[i];
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] > 0;
   }
   return true;
 }
 
-std::vector<int> generateRandomGraph(int num_vertices, int num_edges) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> vertex_dist(0, num_vertices - 1);
-  std::uniform_int_distribution<> weight_dist(1, 10);
-
-  std::vector<int> graph;
-  for (int i = 0; i < num_edges; ++i) {
-    int from = vertex_dist(gen);
-    int to = vertex_dist(gen);
-    int weight = weight_dist(gen);
-    graph.push_back(from);
-    graph.push_back(to);
-    graph.push_back(weight);
-  }
-  return graph;
+bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::run() {
+  internal_order_test();
+  return true;
 }
 
-}  // namespace zinoviev_a_bellman_ford_seq
+bool zinoviev_a_bellman_ford::BellmanFordMPITaskParallel::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->outputs[0]);
+    for (unsigned i = 0; i < dist_.size(); i++) {
+      tmp_ptr[i] = dist_[i];
+    }
+  }
+  return true;
+}

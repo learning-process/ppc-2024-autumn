@@ -7,7 +7,7 @@
 
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
-using namespace zinoviev_a_bellman_ford_mpi;
+using namespace zinoviev_a_bellman_ford;
 
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   boost::mpi::communicator world;
