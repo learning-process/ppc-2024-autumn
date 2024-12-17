@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+
+
 #include <functional> 
 #include <random> 
 #include <vector>
