@@ -1,12 +1,7 @@
 #include "mpi/kozlova_e_radix_batcher_sort/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <cstring>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 bool kozlova_e_radix_batcher_sort_mpi::RadixBatcherSortSequential::pre_processing() {
