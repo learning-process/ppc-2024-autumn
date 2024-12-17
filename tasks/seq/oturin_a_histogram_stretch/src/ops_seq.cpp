@@ -3,8 +3,8 @@
 bool oturin_a_histogram_stretch_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check elements count in i/o
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] &&
-         taskData->outputs_count[1];
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0 &&
+         taskData->outputs_count[1] > 0;
 }
 
 bool oturin_a_histogram_stretch_seq::TestTaskSequential::pre_processing() {
@@ -40,7 +40,7 @@ bool oturin_a_histogram_stretch_seq::TestTaskSequential::run() {
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width * 3; x++) {
-        result[y * width * 3 + x] = round((input[y * width * 3 + x] - minimum) * pixMultiplier);
+        result[y * width * 3 + x] = std::round((input[y * width * 3 + x] - minimum) * pixMultiplier);
       }
     }
   }

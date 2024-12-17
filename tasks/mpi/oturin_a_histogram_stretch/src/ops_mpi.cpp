@@ -3,8 +3,8 @@
 bool oturin_a_histogram_stretch_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check elements count in i/o
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] &&
-         taskData->outputs_count[1];
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0 &&
+         taskData->outputs_count[1] > 0;
 }
 
 bool oturin_a_histogram_stretch_mpi::TestMPITaskSequential::pre_processing() {
@@ -40,7 +40,7 @@ bool oturin_a_histogram_stretch_mpi::TestMPITaskSequential::run() {
 
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width * 3; x++) {
-        result[y * width * 3 + x] = round((input[y * width * 3 + x] - minimum) * pixMultiplier);
+        result[y * width * 3 + x] = std::round((input[y * width * 3 + x] - minimum) * pixMultiplier);
       }
     }
   }
@@ -59,8 +59,8 @@ bool oturin_a_histogram_stretch_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   // Check elements count in i/o
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] &&
-           taskData->outputs_count[1];
+    return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 && taskData->outputs_count[0] > 0 &&
+           taskData->outputs_count[1] > 0;
   }
   return true;
 }
@@ -137,7 +137,7 @@ bool oturin_a_histogram_stretch_mpi::TestMPITaskParallel::run() {
 
       for (int i = 0; i < lastBlock; i++) {
         result[blockSize * (workWorldSize - 1) + i] =
-            (uint8_t)round((input[blockSize * (workWorldSize - 1) + i] - minimum) * pixMultiplier);
+            (uint8_t)std::round((input[blockSize * (workWorldSize - 1) + i] - minimum) * pixMultiplier);
       }
 
       for (int i = 1; i < workWorldSize; i++) {
@@ -151,7 +151,7 @@ bool oturin_a_histogram_stretch_mpi::TestMPITaskParallel::run() {
       return true;
     }
 
-    uint8_t* data = new uint8_t[picMemSize];
+    auto* data = new uint8_t[picMemSize];
     world.recv(0, TAG_DATA, data, picMemSize);
 
     for (int i = 0; i < picMemSize; i += 3) {
@@ -168,7 +168,7 @@ bool oturin_a_histogram_stretch_mpi::TestMPITaskParallel::run() {
       pixMultiplier = 255.0f / (maximum - minimum);
 
       for (int i = 0; i < picMemSize; i++) {
-        data[i] = (uint8_t)round((data[i] - minimum) * pixMultiplier);
+        data[i] = (uint8_t)std::round((data[i] - minimum) * pixMultiplier);
       }
 
       world.send(0, TAG_RESULT, data, picMemSize);
