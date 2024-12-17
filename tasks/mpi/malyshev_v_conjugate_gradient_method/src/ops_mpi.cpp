@@ -72,8 +72,7 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
     // Compute alpha = rsold / (p' * Ap)
     double pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
     if (pAp == 0.0) {
-      // Handle division by zero
-      break;
+      return false;
     }
     alpha = rsold / pAp;
 
@@ -193,7 +192,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
     // Compute alpha = rsold / (p' * Ap)
     double pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
     if (pAp == 0.0) {
-      break;
+      return false;
     }
     alpha = rsold / pAp;
 

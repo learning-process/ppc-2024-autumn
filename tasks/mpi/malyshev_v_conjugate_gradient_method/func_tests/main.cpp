@@ -66,6 +66,17 @@ TEST(malyshev_conjugate_gradient_method, test_small_system) {
     b = malyshev_conjugate_gradient_method::generateRandomVector(size, min_value, max_value);
     x.resize(size, 0.0);
 
+    // Check for NaN and Inf in matrix and b
+    for (const auto& row : matrix) {
+      for (double val : row) {
+        ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+      }
+    }
+
+    for (double val : b) {
+      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+    }
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
     taskDataPar->inputs_count.push_back(size);
@@ -96,6 +107,15 @@ TEST(malyshev_conjugate_gradient_method, test_small_system) {
     ASSERT_TRUE(taskSeq.pre_processing());
     ASSERT_TRUE(taskSeq.run());
     ASSERT_TRUE(taskSeq.post_processing());
+
+    // Check for NaN and Inf in results
+    for (double val : x) {
+      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+    }
+
+    for (double val : seqResult) {
+      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+    }
 
     for (uint32_t i = 0; i < size; i++) {
       ASSERT_NEAR(seqResult[i], x[i], 1e-6);
@@ -122,6 +142,17 @@ TEST(malyshev_conjugate_gradient_method, test_large_system) {
     b = malyshev_conjugate_gradient_method::generateRandomVector(size, min_value, max_value);
     x.resize(size, 0.0);
 
+    // Check for NaN and Inf in matrix and b
+    for (const auto& row : matrix) {
+      for (double val : row) {
+        ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+      }
+    }
+
+    for (double val : b) {
+      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+    }
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(b.data()));
     taskDataPar->inputs_count.push_back(size);
@@ -152,6 +183,15 @@ TEST(malyshev_conjugate_gradient_method, test_large_system) {
     ASSERT_TRUE(taskSeq.pre_processing());
     ASSERT_TRUE(taskSeq.run());
     ASSERT_TRUE(taskSeq.post_processing());
+
+    // Check for NaN and Inf in results
+    for (double val : x) {
+      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+    }
+
+    for (double val : seqResult) {
+      ASSERT_FALSE(std::isnan(val) || std::isinf(val));
+    }
 
     for (uint32_t i = 0; i < size; i++) {
       ASSERT_NEAR(seqResult[i], x[i], 1e-6);
