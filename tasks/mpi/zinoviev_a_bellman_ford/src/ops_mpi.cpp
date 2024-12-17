@@ -42,7 +42,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::run() {
   // Bellman-Ford algorithm
   for (size_t i = 0; i < distances_.size() - 1; ++i) {
     for (size_t u = 0; u < row_pointers_.size() - 1; ++u) {
-      for (size_t j = row_pointers_[u]; j < row_pointers_[u + 1]; ++j) {
+      for (size_t j = static_cast<size_t>(row_pointers_[u]); j < static_cast<size_t>(row_pointers_[u + 1]); ++j) {
         int v = col_indices_[j];
         int weight = values_[j];
         if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
@@ -52,11 +52,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPITaskParallel::run() {
     }
     // Reduce distances across all processes
     boost::mpi::reduce(
-        world, distances_.data(), distances_.size(), distances_.data(),
-        [](const int* in, const int* in_end, int* out) {
-          std::transform(in, in_end, out, out, [](int a, int b) { return std::min(a, b); });
-        },
-        0);
+        world, distances_.data(), distances_.size(), distances_.data(), [](int a, int b) { return std::min(a, b); }, 0);
   }
   return true;
 }
