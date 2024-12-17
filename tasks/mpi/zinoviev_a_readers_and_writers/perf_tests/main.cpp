@@ -1,3 +1,7 @@
+#include <gtest/gtest.h>
+#include <boost/mpi/timer.hpp>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/zinoviev_a_readers_and_writers/include/ops_mpi.hpp"
 
