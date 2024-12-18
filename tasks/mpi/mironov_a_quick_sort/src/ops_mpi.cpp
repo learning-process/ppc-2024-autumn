@@ -4,7 +4,7 @@
 #include <thread>
 #include <utility>
 
-//#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 using namespace std;
@@ -96,29 +96,12 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::run() {
 
   boost::mpi::gather(world, local_input.data(), local_input.size(), result_.data(), 0);
   if (world.rank() == 0) {
-#ifdef DEBUG
-
-    for (auto x : result_) {
-      std::cout << x << " ";
-    }
-    std::cout << " 1231 " << std::endl;
-
-    std::cout << " 1231wwW " << std::endl;
-#endif  // DEBUG
-
     for (int i = 1; i < world.size(); ++i) {
-#ifdef DEBUG
-      std::cout << "! " << i * delta << " " << (i + 1) * delta - 1 << std::endl;
-#endif  // DEBUG
-
       merge(result_, i * delta, (i + 1) * delta - 1);
     }
-#ifdef DEBUG
-    for (auto x : result_) {
-      std::cout << x << " ";
-    }
-    std::cout << " 1231wwweqweW " << std::endl;
-#endif  // DEBUG
+  }
+  if (world.rank() == 0) {
+    delete[] res;
   }
   return true;
 }

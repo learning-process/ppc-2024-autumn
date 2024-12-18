@@ -35,7 +35,7 @@ TEST(mironov_a_quick_sort_mpi, Test_Sort_1) {
 
   if (world.rank() == 0) {
     // Create TaskData
-    
+
     global_vec.resize(count);
     global_max.resize(count);
     for (int i = 0; i < count; ++i) {
@@ -49,14 +49,14 @@ TEST(mironov_a_quick_sort_mpi, Test_Sort_1) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  //cout << "Epoch 1 " << world.rank() << endl;
+  // cout << "Epoch 1 " << world.rank() << endl;
   mironov_a_quick_sort_mpi::QuickSortMPI testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  //cout << "Epoch 2 " << world.rank() << endl;
+  // cout << "Epoch 2 " << world.rank() << endl;
   testMpiTaskParallel.pre_processing();
-  //cout << "Epoch 3 " << world.rank() << endl;
+  // cout << "Epoch 3 " << world.rank() << endl;
   testMpiTaskParallel.run();
-  //cout << "Epoch 4 " << world.rank() << endl;
+  // cout << "Epoch 4 " << world.rank() << endl;
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {

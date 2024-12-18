@@ -14,13 +14,13 @@ TEST(mironov_a_quick_sort_mpi, test_pipeline_run) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-    
+
   if (world.rank() == 0) {
     const int count = 6291456;
     global_vec.resize(count);
     global_max.resize(count);
     for (int i = 0; i < count; ++i) {
-      global_vec[i] = count + i ;
+      global_vec[i] = count + i;
     }
     gold = global_vec;
     std::sort(gold.begin(), gold.end());
@@ -60,7 +60,6 @@ TEST(mironov_a_quick_sort_mpi, test_task_run) {
   std::vector<int> global_vec;
   std::vector<int> global_max;
   std::vector<int> gold;
-
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
