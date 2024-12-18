@@ -407,4 +407,4 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, triple_integral_one_var)
 // int main(int argc, char **argv) {
 //   testing::InitGoogleTest(&argc, argv);
 //   return RUN_ALL_TESTS();
-// }//
+// }////
