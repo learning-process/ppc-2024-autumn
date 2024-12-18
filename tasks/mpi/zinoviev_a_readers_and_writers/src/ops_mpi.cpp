@@ -74,10 +74,8 @@ bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskParallel::pre_proc
 bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    std::cout << "Inputs count: " << taskData->inputs_count[0] << std::endl;
-    std::cout << "Outputs count: " << taskData->outputs_count[0] << std::endl;
     // Check count elements of output
-    return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] != 0);
+    return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] >= 0);
   }
   return true;
 }
