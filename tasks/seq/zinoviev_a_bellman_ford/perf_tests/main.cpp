@@ -15,7 +15,7 @@ TEST(zinoviev_a_bellman_ford, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
   taskData->inputs_count.emplace_back(9);
-  taskData->inputs_count.emplace_back(9);
+  taskData->inputs_count.emplace_back(28);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
   taskData->outputs_count.emplace_back(9);
 
@@ -50,7 +50,7 @@ TEST(zinoviev_a_bellman_ford, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
   taskData->inputs_count.emplace_back(9);
-  taskData->inputs_count.emplace_back(9);
+  taskData->inputs_count.emplace_back(28);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
   taskData->outputs_count.emplace_back(9);
 

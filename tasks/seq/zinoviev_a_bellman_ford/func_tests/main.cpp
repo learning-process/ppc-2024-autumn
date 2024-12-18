@@ -12,7 +12,7 @@ TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
   taskData->inputs_count.emplace_back(4);
-  taskData->inputs_count.emplace_back(3);
+  taskData->inputs_count.emplace_back(4);
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
   taskData->outputs_count.emplace_back(4);
 
