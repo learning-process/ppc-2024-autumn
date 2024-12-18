@@ -113,27 +113,28 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
-  int local_start = world.rank() * (vertices_ / world.size());
-  int local_end = local_start + (vertices_ / world.size());
-  if (world.rank() == world.size() - 1) {
-    local_end = vertices_;  // Последний процесс обрабатывает остаток
-  }
+  int local_start = world.rank() * (vertices_ / world.size()) + std::min(world.rank(), vertices_ % world.size());
+  int local_end = local_start + (vertices_ / world.size()) + (world.rank() < vertices_ % world.size() ? 1 : 0);
 
   for (int i = 0; i < vertices_ - 1; ++i) {
+    std::vector<int> local_distances = distances_;
     bool local_changed = false;
 
     for (int u = local_start; u < local_end; ++u) {
       for (int j = row_offsets_[u]; j < row_offsets_[u + 1]; ++j) {
         int v = col_indices_[j];
         int weight = weights_[j];
-        if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
-          distances_[v] = distances_[u] + weight;
+        if (distances_[u] != INT_MAX && distances_[u] + weight < local_distances[v]) {
+          local_distances[v] = distances_[u] + weight;
           local_changed = true;
         }
       }
     }
 
-    boost::mpi::all_reduce(world, distances_.data(), vertices_, std::min<int>);
+    boost::mpi::all_reduce(world, local_distances.data(), vertices_, distances_.data(), [](int a, int b) {
+      return (a == INT_MAX) ? b : (b == INT_MAX) ? a : std::min(a, b);
+    });
+
     bool global_changed = boost::mpi::all_reduce(world, local_changed, std::logical_or<bool>());
     if (!global_changed) break;
   }
