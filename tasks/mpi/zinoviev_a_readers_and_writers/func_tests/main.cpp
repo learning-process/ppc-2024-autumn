@@ -10,7 +10,7 @@
 #include "mpi/zinoviev_a_readers_and_writers/include/ops_mpi.hpp"
 
 namespace zinoviev_a_readers_and_writers_mpi {
-  std::vector<int> getRandomVector(int sz);
+std::vector<int> getRandomVector(int sz);
 }
 
 using namespace zinoviev_a_readers_and_writers_mpi;
