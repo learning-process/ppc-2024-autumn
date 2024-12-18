@@ -28,20 +28,18 @@ bool vavilov_v_bellman_ford_seq::TestTaskSequential::run() {
   internal_order_test();
 
   for (int i = 1; i < vertices_; ++i) {
-    for (const auto& edge : edges_) {
+    std::for_each(edges_.begin(), edges_.end(), [this](const Edge& edge) {
       if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
         distances_[edge.dest] = distances_[edge.src] + edge.weight;
       }
-    }
+    });
   }
 
-  for (const auto& edge : edges_) {
-    if (distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest]) {
-      return false;  // Negative weight cycle detected
-    }
-  }
+  const bool has_negative_cycle = std::ranges::any_of(edges_, [this](const Edge& edge) {
+    return distances_[edge.src] != INT_MAX && distances_[edge.src] + edge.weight < distances_[edge.dest];
+  });
 
-  return true;
+  return !has_negative_cycle;
 }
 
 bool vavilov_v_bellman_ford_seq::TestTaskSequential::post_processing() {
