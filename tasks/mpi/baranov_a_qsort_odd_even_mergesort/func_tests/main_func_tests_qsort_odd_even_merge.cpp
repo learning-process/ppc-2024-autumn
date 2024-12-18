@@ -349,6 +349,7 @@ TEST(baranov_a_qsort_odd_even_merge, Test_sort_2_in_power_of_15_number_32768_uin
   test1.pre_processing();
   test1.run();
   test1.post_processing();
+
   if (world.rank() == 0) {
     std::sort(arr.begin(), arr.end());
     ASSERT_EQ(arr, out_vec);
