@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <vector>
 
-void zinoviev_a_bellman_ford_seq::BellmanFordSeq::toCRS(const int* input_matrix) {
+namespace zinoviev_a_bellman_ford_seq {
+
+void BellmanFordSeq::toCRS(const int* input_matrix) {
   row_ptr.push_back(0);
   for (size_t i = 0; i < V; ++i) {
     for (size_t j = 0; j < V; ++j) {
@@ -17,7 +19,7 @@ void zinoviev_a_bellman_ford_seq::BellmanFordSeq::toCRS(const int* input_matrix)
   }
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::pre_processing() {
+bool BellmanFordSeq::pre_processing() {
   internal_order_test();
   auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
   V = taskData->inputs_count[0];
@@ -30,13 +32,23 @@ bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::pre_processing() {
   return true;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::validation() {
+bool BellmanFordSeq::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] < taskData->inputs_count[1] &&
-         taskData->inputs_count[0] == taskData->outputs_count[0];
+
+  size_t V = taskData->inputs_count[0];
+
+  size_t E = 0;
+  auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+  for (size_t i = 0; i < V * V; ++i) {
+    if (input_matrix[i] != 0) {
+      E++;
+    }
+  }
+
+  return V < E && V == taskData->outputs_count[0];
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::Iteration(std::vector<int>& paths) {
+bool BellmanFordSeq::Iteration(std::vector<int>& paths) {
   bool changed = false;
   for (size_t i = 0; i < V; ++i) {
     for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
@@ -51,7 +63,7 @@ bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::Iteration(std::vector<int>& pa
   return changed;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::check_negative_cycle() {
+bool BellmanFordSeq::check_negative_cycle() {
   for (size_t i = 0; i < V; ++i) {
     for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
       int v = columns[j];
@@ -64,7 +76,7 @@ bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::check_negative_cycle() {
   return false;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::run() {
+bool BellmanFordSeq::run() {
   internal_order_test();
 
   bool changed = false;
@@ -83,10 +95,12 @@ bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::run() {
   return true;
 }
 
-bool zinoviev_a_bellman_ford_seq::BellmanFordSeq::post_processing() {
+bool BellmanFordSeq::post_processing() {
   internal_order_test();
   for (size_t i = 0; i < V; ++i) {
     reinterpret_cast<int*>(taskData->outputs[0])[i] = shortest_paths[i];
   }
   return true;
 }
+
+}  // namespace zinoviev_a_bellman_ford_seq
