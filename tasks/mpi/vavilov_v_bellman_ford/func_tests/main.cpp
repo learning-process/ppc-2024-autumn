@@ -12,7 +12,9 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_seq) {
 
   std::vector<int> matrix = {0, 10, 5, 0, 0, 0, 0, 2, 1, 0, 0, 3, 0, 9, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
-  int vertices = 5, edges_count = 8, source = 0;
+  int vertices = 5;
+  edges_count = 8;
+  source = 0;
   taskDataSeq->inputs_count.emplace_back(vertices);
   taskDataSeq->inputs_count.emplace_back(edges_count);
   taskDataSeq->inputs_count.emplace_back(source);
@@ -39,7 +41,9 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths) {
   std::vector<int> matrix = {0, 10, 5, 0, 0, 0, 0, 2, 1, 0, 0, 3, 0, 9, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
   std::vector<int> expected_output(5);
-  int vertices = 5, edges_count = 8, source = 0;
+  int vertices = 5;
+  edges_count = 8;
+  source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -75,7 +79,9 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_1) {
 
   std::vector<int> matrix = {0, 10, 5, 0, 0, 0, 0, 2, 1, 0, 0, 3, 0, 9, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
-  int vertices = 5, edges_count = 8, source = 0;
+  int vertices = 5;
+  edges_count = 8;
+  source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -100,8 +106,9 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_2) {
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::vector<int> matrix = {0, -1, 4, 0, 0, 0, 0, 3, 2, 0, 0, 0, 0, 5, -3, 2, 0, -1, 0, 0, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
-  int vertices = 5, edges_count = 6, source = 0;
-
+  int vertices = 5;
+  edges_count = 6;
+  source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -127,8 +134,9 @@ TEST(vavilov_v_bellman_ford_mpi, DisconnectedGraph) {
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::vector<int> matrix = {0, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
-  int vertices = 5, edges_count = 3, source = 0;
-
+  int vertices = 5;
+  edges_count = 3;
+  source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -153,8 +161,9 @@ TEST(vavilov_v_bellman_ford_mpi, NegativeCycle) {
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::vector<int> matrix = {0, 1, 0, 0, 0, -1, -1, 0, 0};
   std::vector<int> output(3);
-  int vertices = 3, edges_count = 3, source = 0;
-
+  int vertices = 3; 
+  edges_count = 3; 
+  source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -174,8 +183,9 @@ TEST(vavilov_v_bellman_ford_mpi, SingleVertexGraph) {
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   std::vector<int> matrix = {0};
   std::vector<int> output(1, 0);
-  int vertices = 1, edges_count = 0, source = 0;
-
+  int vertices = 1;
+  edges_count = 0;
+  source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
