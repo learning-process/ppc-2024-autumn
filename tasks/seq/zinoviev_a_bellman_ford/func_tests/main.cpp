@@ -6,12 +6,7 @@
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
-  std::vector<int> graph = {
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1,
-      0, 0, 0, 0
-  };
+  std::vector<int> graph = {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   std::vector<int> shortest_paths(4, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
