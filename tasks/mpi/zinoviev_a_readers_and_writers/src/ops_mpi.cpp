@@ -45,6 +45,7 @@ bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskParallel::pre_proc
   unsigned int delta = 0;
   if (world.rank() == 0) {
     delta = taskData->inputs_count[0] / world.size();
+    std::cout << "Delta: " << delta << std::endl;
   }
   broadcast(world, delta, 0);
 
