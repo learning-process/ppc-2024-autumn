@@ -10,7 +10,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
-TEST(petrov_a_Shell_sort, pipeline_run) {
+TEST(petrov_a_Shell_sort_mpi, pipeline_run) {
   boost::mpi::communicator world;
   int vector_size = 10000;
   std::vector<int> data(vector_size);
@@ -33,7 +33,7 @@ TEST(petrov_a_Shell_sort, pipeline_run) {
     taskDataPar->outputs_count.emplace_back(result_data.size());
   }
 
-  auto taskParallel = std::make_shared<petrov_a_Shell_sort::petrov_a_Shell_sort_mpi>(taskDataPar);
+  auto taskParallel = std::make_shared<petrov_a_Shell_sort_mpi::TestTaskMPI>(taskDataPar);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -52,7 +52,7 @@ TEST(petrov_a_Shell_sort, pipeline_run) {
   }
 }
 
-TEST(petrov_a_Shell_sort, task_run) {
+TEST(petrov_a_Shell_sort_mpi, task_run) {
   boost::mpi::communicator world;
   int vector_size = 10000;
   std::vector<int> data(vector_size);
@@ -74,7 +74,7 @@ TEST(petrov_a_Shell_sort, task_run) {
     taskDataPar->outputs_count.emplace_back(result_data.size());
   }
 
-  auto taskParallel = std::make_shared<petrov_a_Shell_sort::petrov_a_Shell_sort_mpi>(taskDataPar);
+  auto taskParallel = std::make_shared<petrov_a_Shell_sort_mpi::TestTaskMPI>(taskDataPar);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
