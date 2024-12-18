@@ -4,7 +4,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
-#include <memory>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
