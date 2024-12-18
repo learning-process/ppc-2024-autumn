@@ -24,9 +24,9 @@ TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
   }
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.push_back(input_data);
+  taskData->inputs.push_back(reinterpret_cast<void*>(input_data.data()));
   taskData->inputs_count.push_back(size);
-  taskData->outputs.push_back(output_data);
+  taskData->outputs.push_back(reinterpret_cast<void*>(output_data.data()));
   taskData->outputs_count.push_back(size);
 
   petrov_a_Shell_sort_mpi::TestTaskMPI task(taskData);
@@ -68,9 +68,9 @@ TEST(petrov_a_Shell_sort_mpi, test_pipeline_run_mpi) {
   petrov_a_Shell_sort_mpi::TestTaskMPI task(nullptr);
 
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.push_back(local_data);
+  taskData->inputs.push_back(reinterpret_cast<void*>(local_data.data()));
   taskData->inputs_count.push_back(local_data.size());
-  taskData->outputs.push_back(local_data);
+  taskData->outputs.push_back(reinterpret_cast<void*>(local_data.data()));
   taskData->outputs_count.push_back(local_data.size());
 
   task = petrov_a_Shell_sort_mpi::TestTaskMPI(taskData);

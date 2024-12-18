@@ -12,9 +12,9 @@ bool TestTaskMPI::pre_processing() {
     return false;
   }
 
-  const std::vector<int>& input_data = taskData->inputs[0];
+  const int* input_data = reinterpret_cast<const int*>(taskData->inputs[0]);
   size_t input_size = taskData->inputs_count[0];
-  data_ = input_data;
+  data_ = std::vector<int>(input_data, input_data + input_size);
 
   return !data_.empty();
 }
@@ -39,9 +39,9 @@ bool TestTaskMPI::run() {
 
 bool TestTaskMPI::post_processing() {
   if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
-    std::vector<int>& output_data = taskData->outputs[0];
+    int* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     size_t output_size = taskData->outputs_count[0];
-    std::copy(data_.begin(), data_.begin() + std::min(output_size, data_.size()), output_data.begin());
+    std::copy(data_.begin(), data_.begin() + std::min(output_size, data_.size()), output_data);
   } else {
     return false;
   }
