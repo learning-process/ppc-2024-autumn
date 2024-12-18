@@ -115,7 +115,7 @@ TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskData);
 
   ASSERT_TRUE(testTaskSequential.validation());
   ASSERT_TRUE(testTaskSequential.pre_processing());
