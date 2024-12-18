@@ -62,9 +62,6 @@ TEST(titov_s_global_optimization_2_mpi, Test_rectangle) {
     optimizationTaskSeq.run();
     optimizationTaskSeq.post_processing();
 
-    std::cout << "Parallel Output: x = " << outPar[0].x << ", y = " << outPar[0].y << std::endl;
-    std::cout << "Sequential Output: x = " << outSeq[0].x << ", y = " << outSeq[0].y << std::endl;
-
     ASSERT_NEAR(outPar[0].x, outSeq[0].x, 0.2);
     ASSERT_NEAR(outPar[0].y, outSeq[0].y, 0.2);
   }
@@ -126,9 +123,6 @@ TEST(titov_s_global_optimization_2_mpi, Test_triangle) {
     optimizationTaskSeq.run();
     optimizationTaskSeq.post_processing();
 
-    std::cout << "Parallel Output: x = " << outPar[0].x << ", y = " << outPar[0].y << std::endl;
-    std::cout << "Sequential Output: x = " << outSeq[0].x << ", y = " << outSeq[0].y << std::endl;
-
     ASSERT_NEAR(outPar[0].x, outSeq[0].x, 0.2);
     ASSERT_NEAR(outPar[0].y, outSeq[0].y, 0.2);
   }
@@ -185,9 +179,6 @@ TEST(titov_s_global_optimization_2_mpi, Test_triangle_2) {
     optimizationTaskSeq.pre_processing();
     optimizationTaskSeq.run();
     optimizationTaskSeq.post_processing();
-
-    std::cout << "Parallel Output: x = " << outPar[0].x << ", y = " << outPar[0].y << std::endl;
-    std::cout << "Sequential Output: x = " << outSeq[0].x << ", y = " << outSeq[0].y << std::endl;
 
     ASSERT_NEAR(outPar[0].x, outSeq[0].x, 0.2);
     ASSERT_NEAR(outPar[0].y, outSeq[0].y, 0.2);
@@ -246,9 +237,6 @@ TEST(titov_s_global_optimization_2_mpi, Test_4) {
     optimizationTaskSeq.pre_processing();
     optimizationTaskSeq.run();
     optimizationTaskSeq.post_processing();
-
-    std::cout << "Parallel Output: x = " << outPar[0].x << ", y = " << outPar[0].y << std::endl;
-    std::cout << "Sequential Output: x = " << outSeq[0].x << ", y = " << outSeq[0].y << std::endl;
 
     ASSERT_NEAR(outPar[0].x, outSeq[0].x, 0.2);
     ASSERT_NEAR(outPar[0].y, outSeq[0].y, 0.2);
@@ -312,9 +300,6 @@ TEST(titov_s_global_optimization_2_mpi, Test_5_constraits_non_linear) {
     optimizationTaskSeq.run();
     optimizationTaskSeq.post_processing();
 
-    std::cout << "Parallel Output: x = " << outPar[0].x << ", y = " << outPar[0].y << std::endl;
-    std::cout << "Sequential Output: x = " << outSeq[0].x << ", y = " << outSeq[0].y << std::endl;
-
     ASSERT_NEAR(outPar[0].x, outSeq[0].x, 0.2);
     ASSERT_NEAR(outPar[0].y, outSeq[0].y, 0.2);
   }
@@ -376,10 +361,74 @@ TEST(titov_s_global_optimization_2_mpi, Test_constraits_cubic) {
     optimizationTaskSeq.run();
     optimizationTaskSeq.post_processing();
 
-    std::cout << "Parallel Output: x = " << outPar[0].x << ", y = " << outPar[0].y << std::endl;
-    std::cout << "Sequential Output: x = " << outSeq[0].x << ", y = " << outSeq[0].y << std::endl;
-
     ASSERT_NEAR(outPar[0].x, outSeq[0].x, 0.2);
     ASSERT_NEAR(outPar[0].y, outSeq[0].y, 0.2);
   }
+}
+
+TEST(titov_s_global_optimization_2_mpi, Test_wrong_input) {
+  boost::mpi::communicator world;
+  std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
+      [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x + p.y * p.y; };
+  auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 4.0 - p.x; };
+  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x; };
+  auto constraint3 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 4.0 - p.y; };
+  auto constraint4 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y; };
+
+  auto constraints_ptr =
+      std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_mpi::Point&)>>>(
+          std::vector<std::function<double(const titov_s_global_optimization_2_mpi::Point&)>>{
+              constraint1, constraint2, constraint3, constraint4});
+
+  std::vector<titov_s_global_optimization_2_mpi::Point> outPar(1, {0.0, 0.0});
+  std::vector<titov_s_global_optimization_2_mpi::Point> outSeq;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
+  taskDataPar->inputs_count.emplace_back(1);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
+    taskDataPar->outputs_count.emplace_back(outPar.size());
+  }
+
+  titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel optimizationTaskPar(taskDataPar);
+  ASSERT_FALSE(optimizationTaskPar.validation());
+}
+
+TEST(titov_s_global_optimization_2_mpi, Test_wrong_output) {
+  boost::mpi::communicator world;
+  std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
+      [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x + p.y * p.y; };
+  auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 4.0 - p.x; };
+  auto constraint2 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x; };
+  auto constraint3 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 4.0 - p.y; };
+  auto constraint4 = [](const titov_s_global_optimization_2_mpi::Point& p) { return p.y; };
+
+  auto constraints_ptr =
+      std::make_shared<std::vector<std::function<double(const titov_s_global_optimization_2_mpi::Point&)>>>(
+          std::vector<std::function<double(const titov_s_global_optimization_2_mpi::Point&)>>{
+              constraint1, constraint2, constraint3, constraint4});
+
+  std::vector<titov_s_global_optimization_2_mpi::Point> outPar(1, {0.0, 0.0});
+  std::vector<titov_s_global_optimization_2_mpi::Point> outSeq;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
+  taskDataPar->inputs_count.emplace_back(1);
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
+  taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
+
+  if (world.rank() == 0) {
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
+    taskDataPar->outputs_count.emplace_back(outPar.size());
+    taskDataPar->outputs_count.emplace_back(outPar.size());
+  }
+
+  titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel optimizationTaskPar(taskDataPar);
+  ASSERT_FALSE(optimizationTaskPar.validation());
 }
