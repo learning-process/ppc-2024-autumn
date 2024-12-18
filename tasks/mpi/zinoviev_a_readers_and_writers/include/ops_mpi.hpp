@@ -14,8 +14,6 @@
 
 namespace zinoviev_a_readers_and_writers_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class ReadersWritersMPITaskSequential : public ppc::core::Task {
  public:
   explicit ReadersWritersMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)

@@ -12,12 +12,10 @@
 using namespace zinoviev_a_readers_and_writers_mpi;
 
 std::vector<int> zinoviev_a_readers_and_writers_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
+  static std::mt19937 gen(std::random_device{}());
+  std::uniform_int_distribution<int> dist(0, 99);
   std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
+  std::generate(vec.begin(), vec.end(), [&]() { return dist(gen); });
   return vec;
 }
 
