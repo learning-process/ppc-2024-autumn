@@ -4,12 +4,7 @@
 #include <algorithm>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
-#include <cstdlib>
-#include <ctime>
-#include <functional>
 #include <iostream>
-#include <limits>
-#include <numeric>
 #include <vector>
 
 std::vector<int> muhina_m_horizontal_cheme_mpi::matrixVectorMultiplication(const std::vector<int>& matrix,

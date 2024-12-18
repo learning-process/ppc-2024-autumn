@@ -4,7 +4,6 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
-#include <memory>
 #include <random>
 #include <vector>
 
@@ -21,9 +20,9 @@ TEST(muhina_m_horizontal_cheme_mpi, run_pipeline) {
   std::vector<int> result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows = 1024;
-  int num_cols = 1024;
-  int num_res = 1024;
+  int num_rows = 5000;
+  int num_cols = 5000;
+  int num_res = 5000;
 
   if (world.rank() == 0) {
     matrix.resize(num_rows * num_cols);
@@ -99,9 +98,9 @@ TEST(muhina_m_horizontal_cheme_mpi, run_task) {
   std::vector<int> result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows = 1024;
-  int num_cols = 1024;
-  int num_res = 1024;
+  int num_rows = 5000;
+  int num_cols = 5000;
+  int num_res = 5000;
 
   if (world.rank() == 0) {
     matrix.resize(num_rows * num_cols);

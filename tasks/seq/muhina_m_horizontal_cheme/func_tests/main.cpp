@@ -7,7 +7,7 @@
 
 TEST(muhina_m_horizontal_cheme_seq, Test_Validation_1) {
   std::vector<int> matrix = {1, 2, 3, 4, 5, 6};
-  std::vector<int> vec = {};
+  std::vector<int> vec;
   std::vector<int> result(0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -24,7 +24,7 @@ TEST(muhina_m_horizontal_cheme_seq, Test_Validation_1) {
 }
 
 TEST(muhina_m_horizontal_cheme_seq, Test_Validation_2) {
-  std::vector<int> input_matrix = {};
+  std::vector<int> input_matrix;
   std::vector<int> input_vector = {1, 2};
   std::vector<int> result(0);
 

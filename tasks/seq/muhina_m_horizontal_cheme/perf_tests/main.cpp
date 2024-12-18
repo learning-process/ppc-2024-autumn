@@ -7,7 +7,7 @@
 #include "seq/muhina_m_horizontal_cheme/include/ops_seq.hpp"
 
 TEST(muhina_m_horizontal_cheme, test_pipeline_run) {
-  int size = 1000;
+  int size = 5000;
   std::vector<int> matrix(size * size, 1);
   std::vector<int> vec(size, 1);
   std::vector<int> out(size, 0);
@@ -51,7 +51,7 @@ TEST(muhina_m_horizontal_cheme, test_pipeline_run) {
 }
 
 TEST(muhina_m_horizontal_cheme, test_task_run) {
-  int size = 1100;
+  int size = 5000;
   std::vector<int> matrix(size * size, 1);
   std::vector<int> vec(size, 1);
   std::vector<int> out(size, 0);
