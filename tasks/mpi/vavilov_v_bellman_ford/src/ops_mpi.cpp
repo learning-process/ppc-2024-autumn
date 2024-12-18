@@ -38,12 +38,15 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::validation() {
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (int u = 0; u < vertices_; ++u) {
-    for (int j = row_offsets_[u]; j < row_offsets_[u + 1]; ++j) {
-      int v = col_indices_[j];
-      int weight = weights_[j];
-      if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
-        distances_[v] = distances_[u] + weight;
+
+  for (int i = 0; i < vertices_ - 1; ++i) {
+    for (int u = 0; u < vertices_; ++u) {
+      for (int j = row_offsets_[u]; j < row_offsets_[u + 1]; ++j) {
+        int v = col_indices_[j];
+        int weight = weights_[j];
+        if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
+          distances_[v] = distances_[u] + weight;
+        }
       }
     }
   }
@@ -53,7 +56,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskSequential::run() {
       int v = col_indices_[j];
       int weight = weights_[j];
       if (distances_[u] != INT_MAX && distances_[u] + weight < distances_[v]) {
-        return false;  // Negative weight cycle detected
+        return false;
       }
     }
   }
