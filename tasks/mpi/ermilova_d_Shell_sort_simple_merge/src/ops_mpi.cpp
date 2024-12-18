@@ -24,6 +24,12 @@ std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::ShellSort(std::vector<i
   }
   return vec;
 }
+std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::merge(std::vector<int>& vec1, std::vector<int>& vec2) {
+  std::vector<int> result;
+  std::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std::back_inserter(result));
+
+  return result;
+}
 
 bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
@@ -99,37 +105,17 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
 
   local_input_ = ShellSort(local_input_);
 
-  std::vector<int> sorted_input;
+  std::vector<std::vector<int>> sorted_inputs;
 
-  boost::mpi::gather(world, local_input_.data(), local_input_.size(), sorted_input, 0);
+  boost::mpi::gather(world, local_input_, sorted_inputs, 0);
 
   if (world.rank() == 0) {
-
-    std::vector<int> temp_vec = sorted_input;
-    sorted_input.clear();
-    sorted_input.reserve(input_.size());
-
-    std::priority_queue<std::pair<int, size_t>, std::vector<std::pair<int, size_t>>, std::greater<>> pq;
-
+    std::vector<int> merge_vec;
     for (int i = 0; i < world.size(); i++) {
-      if (!temp_vec.empty()) {
-        pq.push({temp_vec[i * delta], i});
-      }
+      merge_vec = ermilova_d_Shell_sort_simple_merge_mpi::merge(merge_vec, sorted_inputs[i]);
     }
-
-    while (!pq.empty()) {
-      auto top = pq.top();
-      pq.pop();
-      sorted_input.push_back(top.first);
-
-      size_t next_index = top.second * delta + (sorted_input.size() - 1) % delta + 1;
-      if (next_index < temp_vec.size() && next_index < (top.second + 1) * delta) {
-        pq.push({temp_vec[next_index], top.second});
-      }
-    }
+    res = merge_vec;
   }
-
-  res = sorted_input;
 
   return true;
 }

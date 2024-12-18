@@ -15,6 +15,7 @@
 namespace ermilova_d_Shell_sort_simple_merge_mpi {
 
 std::vector<int> ShellSort(std::vector<int> &vec);
+std::vector<int> merge(std::vector<int> &vec1, std::vector<int> &vec2);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -24,7 +25,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
- private:
  private:
   std::vector<int> input_;
   std::vector<int> res;
