@@ -21,9 +21,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::pre_processing() {
 bool filateva_e_radix_sort_mpi::RadixSort::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] != taskData->outputs_count[0]) {
-      return false;
-    }
+    return !(taskData->inputs_count[0] <= 0 || taskData->inputs_count[0] != taskData->outputs_count[0]);
   }
   return true;
 }
