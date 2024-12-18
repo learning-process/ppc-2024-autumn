@@ -15,7 +15,7 @@ bool filateva_e_radix_sort_seq::RadixSort::pre_processing() {
 
 bool filateva_e_radix_sort_seq::RadixSort::validation() {
   internal_order_test();
-  taskData->inputs_count[0] > 0 && taskData->inputs_count[0] == taskData->outputs_count[0];
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool filateva_e_radix_sort_seq::RadixSort::run() {
