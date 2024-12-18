@@ -41,7 +41,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
   }
 
   kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -59,13 +59,13 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
 
     kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testTaskSequential.validation(), true);
+    ASSERT_TRUE(testTaskSequential.validation());
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
     for (int i = 0; i < size_vector; i++) {
-      ASSERT_EQ(sorted_vector[i], reference_res[i]);
+      EXPECT_EQ(sorted_vector[i], reference_res[i]);
     }
   }
 }
@@ -89,7 +89,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort2) {
   }
 
   kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -107,13 +107,13 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort2) {
 
     kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testTaskSequential.validation(), true);
+    ASSERT_TRUE(testTaskSequential.validation());
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
     for (int i = 0; i < size_vector; i++) {
-      ASSERT_EQ(sorted_vector[i], reference_res[i]);
+      EXPECT_EQ(sorted_vector[i], reference_res[i]);
     }
   }
 }
@@ -137,7 +137,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort3) {
   }
 
   kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
@@ -155,13 +155,13 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort3) {
 
     kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testTaskSequential.validation(), true);
+    ASSERT_TRUE(testTaskSequential.validation());
     testTaskSequential.pre_processing();
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
     for (int i = 0; i < size_vector; i++) {
-      ASSERT_EQ(sorted_vector[i], reference_res[i]);
+      EXPECT_EQ(sorted_vector[i], reference_res[i]);
     }
   }
 }
@@ -185,6 +185,6 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort_Empty_Input_V
 
   if (world.rank() == 0) {
     kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
