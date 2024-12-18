@@ -156,7 +156,6 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
 TEST(kovalev_k_num_of_orderly_violations_mpi, len_100_opposite_sort_double_) {
   const size_t length = 100;
   std::srand(std::time(nullptr));
-  const double alpha = (static_cast<double>(rand()) - 1) / (RAND_MAX);
   std::vector<double> in(length);
   std::vector<size_t> out(1, 0);
   for (size_t i = 0; i < length; i++) {
@@ -184,7 +183,6 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, len_100_opposite_sort_double_) {
 TEST(kovalev_k_num_of_orderly_violations_mpi, len_10000_opposite_sort_double_) {
   const size_t length = 10000;
   std::srand(std::time(nullptr));
-  const double alpha = (static_cast<double>(rand()) - 1) / (RAND_MAX);
   std::vector<double> in(length);
   std::vector<size_t> out(1, 0);
   for (size_t i = 0; i < length; i++) {
