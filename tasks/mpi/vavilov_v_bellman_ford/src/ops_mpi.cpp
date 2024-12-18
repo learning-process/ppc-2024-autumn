@@ -135,10 +135,12 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
     }
 
     boost::mpi::all_reduce(world, local_distances.data(), vertices_, distances_.data(), [](int a, int b) {
-      return (a == INT_MAX) ? b : (b == INT_MAX) ? a : std::min(a, b);
+      if (a == INT_MAX) return b;
+      if (b == INT_MAX) return a;
+      return std::min(a, b);
     });
 
-    bool global_changed = boost::mpi::all_reduce(world, local_changed, std::logical_or<bool>());
+    bool global_changed = boost::mpi::all_reduce(world, local_changed, std::logical_or<>());
     if (!global_changed) break;
   }
 
@@ -154,7 +156,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
     }
   }
 
-  has_negative_cycle = boost::mpi::all_reduce(world, has_negative_cycle, std::logical_or<bool>());
+  has_negative_cycle = boost::mpi::all_reduce(world, has_negative_cycle, std::logical_or<>());
   return !has_negative_cycle;
 }
 
