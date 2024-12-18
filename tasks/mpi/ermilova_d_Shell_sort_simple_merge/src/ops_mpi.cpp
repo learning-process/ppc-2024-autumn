@@ -2,6 +2,7 @@
 #include "mpi/ermilova_d_Shell_sort_simple_merge/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <boost/serialization/vector.hpp>
 #include <functional>
 #include <queue>
 #include <thread>
@@ -72,9 +73,15 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::validation() {
 
 bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  size_t size = input_.size();
-  size_t delta = size / world.size();
-  size_t extra = size % world.size();
+  size_t delta = 0;
+  size_t extra = 0;
+
+  if (world.rank() == 0) {
+    delta = input_.size() / world.size();
+    extra = input_.size() % world.size();
+  }
+
+  broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
@@ -82,27 +89,25 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
     }
   }
 
-  std::vector<int> local_input(delta);
+  local_input_ = std::vector<int>(delta);
 
   if (world.rank() == 0) {
-    local_input = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
+    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
   } else {
-    world.recv(0, 0, local_input.data(), delta);
+    world.recv(0, 0, local_input_.data(), delta);
   }
 
-  local_input = ShellSort(local_input);
+  local_input_ = ShellSort(local_input_);
 
   std::vector<int> sorted_input;
-  if (world.rank() == 0) {
-    sorted_input.resize(size);
-  }
 
-  boost::mpi::gather(world, local_input.data(), local_input.size(), sorted_input.data(), 0);
+  boost::mpi::gather(world, local_input_.data(), local_input_.size(), sorted_input, 0);
 
   if (world.rank() == 0) {
+
     std::vector<int> temp_vec = sorted_input;
     sorted_input.clear();
-    sorted_input.reserve(size);
+    sorted_input.reserve(input_.size());
 
     std::priority_queue<std::pair<int, size_t>, std::vector<std::pair<int, size_t>>, std::greater<>> pq;
 
