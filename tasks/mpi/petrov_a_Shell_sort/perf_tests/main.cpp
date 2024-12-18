@@ -1,163 +1,103 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
 
-#include <algorithm>
 #include <vector>
+#include <algorithm>
+#include <random>
 
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
 TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
   int rank;
-  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int rows = 10000;
-  int cols = 50;
-
-  std::vector<int> global_matrix;
-  std::vector<int> global_vector(cols, 1);
-  std::vector<int> local_result;
-  std::vector<int> global_result;
+  const size_t size = 10000;
+  std::vector<int> input_data;
+  std::vector<int> output_data(size);
 
   if (rank == 0) {
-    global_matrix.resize(rows * cols);
-    for (size_t i = 0; i < global_matrix.size(); ++i) {
-      global_matrix[i] = i + 1;
+    std::mt19937 rng(123);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    input_data.resize(size);
+    for (size_t i = 0; i < size; ++i) {
+      input_data[i] = dist(rng);
     }
   }
 
-  MPI_Bcast(global_vector.data(), global_vector.size(), MPI_INT, 0, MPI_COMM_WORLD);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(input_data.data());
+  taskData->inputs_count.push_back(size);
+  taskData->outputs.push_back(output_data.data());
+  taskData->outputs_count.push_back(size);
 
-  int rows_per_proc = rows / size;
-  int remainder = rows % size;
-  int start_row = rank * rows_per_proc + std::min(rank, remainder);
-  int end_row = start_row + rows_per_proc + static_cast<int>(rank < remainder);
-  end_row = std::min(end_row, rows);
+  petrov_a_Shell_sort_mpi::TestTaskMPI task(taskData);
 
-  std::vector<int> local_matrix((end_row - start_row) * cols);
-
-  int* sendcounts = new int[size];
-  int* displs = new int[size];
-  for (int i = 0; i < size; ++i) {
-    sendcounts[i] = (rows_per_proc + static_cast<int>(i < remainder)) * cols;
-    displs[i] = (rows_per_proc * i + std::min(i, remainder)) * cols;
-  }
-  MPI_Scatterv(global_matrix.data(), sendcounts, displs, MPI_INT, local_matrix.data(), (end_row - start_row) * cols,
-               MPI_INT, 0, MPI_COMM_WORLD);
-  delete[] sendcounts;
-  delete[] displs;
-
-  local_result.resize(end_row - start_row);
-  for (int i = 0; i < end_row - start_row; ++i) {
-    local_result[i] = 0;
-    for (int j = 0; j < cols; ++j) {
-      local_result[i] += local_matrix[i * cols + j] * global_vector[j];
-    }
-  }
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
-    global_result.resize(rows);
-    for (int i = 0; i < rows; ++i) {
-      global_result[i] = 0;
-      for (int j = 0; j < cols; ++j) {
-        global_result[i] += (i * cols + j + 1) * global_vector[j];
-      }
-    }
-  }
-
-  sendcounts = new int[size];
-  displs = new int[size];
-  for (int i = 0; i < size; ++i) {
-    sendcounts[i] = rows_per_proc + static_cast<int>(i < remainder);
-    displs[i] = (rows_per_proc * i + std::min(i, remainder));
-  }
-  MPI_Gatherv(local_result.data(), local_result.size(), MPI_INT, global_result.data(), sendcounts, displs, MPI_INT, 0,
-              MPI_COMM_WORLD);
-  delete[] sendcounts;
-  delete[] displs;
-
-  if (rank == 0) {
-    std::vector<int> expected_result = global_result;
-    std::sort(expected_result.begin(), expected_result.end());
-
-    EXPECT_EQ(global_result, expected_result);
+    std::vector<int> expected_data = input_data;
+    std::sort(expected_data.begin(), expected_data.end());
+    EXPECT_EQ(output_data, expected_data);
   }
 }
 
+#include <gtest/gtest.h>
+#include <mpi.h>
+
+#include <algorithm>
+#include <random>
+#include <vector>
+
+#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
+
 TEST(petrov_a_Shell_sort_mpi, test_pipeline_run_mpi) {
-  int rank;
-  int size;
+  int rank, size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int rows = 2000;
-  int cols = 100;
+  const int total_elements = 10000;
+  const int elements_per_proc = total_elements / size;
 
-  std::vector<int> global_matrix;
-  std::vector<int> global_vector(cols, 1);
-  std::vector<int> local_result;
-  std::vector<int> global_result;
+  std::vector<int> global_data;
+  std::vector<int> local_data(elements_per_proc);
 
   if (rank == 0) {
-    global_matrix.resize(rows * cols);
-    for (size_t i = 0; i < global_matrix.size(); ++i) {
-      global_matrix[i] = i + 1;
+    global_data.resize(total_elements);
+    std::mt19937 rng(123);
+    std::uniform_int_distribution<int> dist(-1000, 1000);
+    for (int i = 0; i < total_elements; ++i) {
+      global_data[i] = dist(rng);
     }
   }
 
-  MPI_Bcast(global_vector.data(), global_vector.size(), MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatter(global_data.data(), elements_per_proc, MPI_INT, local_data.data(), elements_per_proc, MPI_INT, 0,
+              MPI_COMM_WORLD);
 
-  int rows_per_proc = rows / size;
-  int remainder = rows % size;
-  int start_row = rank * rows_per_proc + std::min(rank, remainder);
-  int end_row = start_row + rows_per_proc + static_cast<int>(rank < remainder);
-  end_row = std::min(end_row, rows);
+  petrov_a_Shell_sort_mpi::TestTaskMPI task(nullptr);
 
-  std::vector<int> local_matrix((end_row - start_row) * cols);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(local_data.data());
+  taskData->inputs_count.push_back(local_data.size());
+  taskData->outputs.push_back(local_data.data());
+  taskData->outputs_count.push_back(local_data.size());
 
-  std::vector<int> sendcounts(size);
-  std::vector<int> displs(size);
-  for (int i = 0; i < size; ++i) {
-    sendcounts[i] = (rows_per_proc + static_cast<int>(i < remainder)) * cols;
-    displs[i] = (rows_per_proc * i + std::min(i, remainder)) * cols;
-  }
+  task = petrov_a_Shell_sort_mpi::TestTaskMPI(taskData);
 
-  MPI_Scatterv(global_matrix.data(), sendcounts.data(), displs.data(), MPI_INT, local_matrix.data(),
-               (end_row - start_row) * cols, MPI_INT, 0, MPI_COMM_WORLD);
-
-  local_result.resize(end_row - start_row);
-  for (int i = 0; i < end_row - start_row; ++i) {
-    local_result[i] = 0;
-    for (int j = 0; j < cols; ++j) {
-      local_result[i] += local_matrix[i * cols + j] * global_vector[j];
-    }
-  }
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
-    global_result.resize(rows);
-    for (int i = 0; i < rows; ++i) {
-      global_result[i] = 0;
-      for (int j = 0; j < cols; ++j) {
-        global_result[i] += (i * cols + j + 1) * global_vector[j];
-      }
-    }
+    global_data.resize(total_elements);
   }
 
-  std::vector<int> recvcounts(size);
-  std::vector<int> recvdispls(size);
-  for (int i = 0; i < size; ++i) {
-    recvcounts[i] = rows_per_proc + static_cast<int>(i < remainder);
-    recvdispls[i] = (rows_per_proc * i + std::min(i, remainder));
-  }
-
-  MPI_Gatherv(local_result.data(), local_result.size(), MPI_INT, global_result.data(), recvcounts.data(),
-              recvdispls.data(), MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gather(local_data.data(), elements_per_proc, MPI_INT, global_data.data(), elements_per_proc, MPI_INT, 0,
+             MPI_COMM_WORLD);
 
   if (rank == 0) {
-    std::vector<int> expected_result = global_result;
-    std::sort(expected_result.begin(), expected_result.end());
-
-    EXPECT_EQ(global_result, expected_result);
+    EXPECT_TRUE(std::is_sorted(global_data.begin(), global_data.end()));
   }
 }
