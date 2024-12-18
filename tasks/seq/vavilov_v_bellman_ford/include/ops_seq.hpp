@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <limits>
 #include <memory>
+#include <ranges>
 #include <string>
 #include <vector>
 
