@@ -12,19 +12,15 @@ using namespace std;
 bool mironov_a_quick_sort_mpi::QuickSortMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    delta = taskData->inputs_count[0] / world.size() + (taskData->inputs_count[0] % world.size() > 0);
-#ifdef DEBUG
-    cout << "Delta " << delta << endl;
-#endif
+    delta = taskData->inputs_count[0] / world.size();
+    if (taskData->inputs_count[0] % world.size() > 0) {
+      delta++;
+    }
+
     input_ = std::vector<int>(delta * world.size(), std::numeric_limits<int>::max());
     result_.resize(input_.size(), std::numeric_limits<int>::max());
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
-#ifdef DEBUG
-    cout << "sz " << input_.size() << " " << result_.size() << endl;
-#endif
-    for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
-      input_[i] = it[i];
-    }
+    std::copy(it, it + taskData->inputs_count[0], input_.begin());
   }
   return true;
 }

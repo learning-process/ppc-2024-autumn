@@ -15,7 +15,7 @@ std::vector<int> get_random_vector(int sz) {
 
   const int mod = 1000000;
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % mod;
+    vec[i] = 5000000 - gen() % mod;
   }
 
   return vec;
@@ -100,4 +100,21 @@ TEST(mironov_a_quick_sort_seq, Test_sort_3) {
   QuickSortSequential.run();
   QuickSortSequential.post_processing();
   ASSERT_EQ(gold, out);
+}
+
+TEST(mironov_a_quick_sort_seq, Test_wrong_input) {
+  // Create data
+  std::vector<int> in;
+  std::vector<int> out;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(taskDataSeq);
+  ASSERT_EQ(QuickSortSequential.validation(), false);
 }
