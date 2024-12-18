@@ -63,7 +63,7 @@ bool kholin_k_multidimensional_integrals_rectangle_seq::TestTaskSequential::pre_
   auto* ptr_f_values = reinterpret_cast<double*>(taskData->inputs[1]);
   f_values.assign(ptr_f_values, ptr_f_values + sz_values);
 
-  auto ptr_f = reinterpret_cast<std::function<double(const std::vector<double>&)>*>(taskData->inputs[2]);
+  auto* ptr_f = reinterpret_cast<std::function<double(const std::vector<double>&)>*>(taskData->inputs[2]);
   f = *ptr_f;
 
   auto* ptr_lower_limits = reinterpret_cast<double*>(taskData->inputs[3]);
