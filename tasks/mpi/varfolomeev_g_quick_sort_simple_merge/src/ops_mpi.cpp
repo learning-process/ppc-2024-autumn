@@ -93,7 +93,7 @@ bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::run() {
 bool varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (int i = 0; i < (int)res.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(res.size()); ++i) {
       reinterpret_cast<int*>(taskData->outputs[0])[i] = res[i];
     }
   }

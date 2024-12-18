@@ -35,7 +35,7 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_getRandomVector_func) {
   int lower_bound = -50;
   int upper_bound = 50;
   std::vector<int> vec = varfolomeev_g_quick_sort_simple_merge_seq::getRandomVector_seq(size, lower_bound, upper_bound);
-  EXPECT_EQ((int)vec.size(), size);
+  EXPECT_EQ(static_cast<int>(vec.size()), size);
   for (int value : vec) {
     EXPECT_GE(value, lower_bound);
     EXPECT_LE(value, upper_bound);
@@ -49,8 +49,8 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_getAntisortedVecor_func) {
   int size = 100;
   int start = -50;
   std::vector<int> vec = varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(size, start);
-  EXPECT_EQ((int)vec.size(), size);
-  for (int i = 0; i < (int)vec.size() - 1; i++) {
+  EXPECT_EQ(static_cast<int>(vec.size()), size);
+  for (int i = 0; i < static_cast<int>(vec.size()) - 1; i++) {
     EXPECT_LE(vec[i + 1], vec[i]);
   }
   for (int value : vec) {
@@ -124,6 +124,26 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Single) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   global_vec = {33};
+  global_res.resize(global_vec.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
+  taskDataSeq->inputs_count.emplace_back(global_vec.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
+  taskDataSeq->outputs_count.emplace_back(global_res.size());
+
+  varfolomeev_g_quick_sort_simple_merge_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
+  EXPECT_EQ(TestTaskSequential.validation(), true);
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
+  bool isSorted = std::is_sorted(global_res.begin(), global_res.end());
+  EXPECT_TRUE(isSorted);
+}
+
+TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_Already_Sorted) {
+  std::vector<int> global_vec = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+  std::vector<int> global_res;
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
   global_res.resize(global_vec.size());
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vec.data()));
   taskDataSeq->inputs_count.emplace_back(global_vec.size());

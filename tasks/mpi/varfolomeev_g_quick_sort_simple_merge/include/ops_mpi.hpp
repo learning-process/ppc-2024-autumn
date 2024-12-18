@@ -64,16 +64,16 @@ class TestMPITaskParallel : public ppc::core::Task {
 
   // Вспомогательная функция для сортировки
   static std::vector<int> quickSortRecursive(const std::vector<int>& vec) {
-    if ((int)vec.size() <= 1) {
+    if (static_cast<int>(vec.size()) <= 1) {
       return vec;
     }
 
-    int p = vec[(int)vec.size() / 2];
+    int p = vec[static_cast<int>(vec.size()) / 2];
 
     std::vector<int> left;
     std::vector<int> right;
     std::vector<int> equal;
-    for (int i = 0; i < (int)vec.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(vec.size()); ++i) {
       if (vec[i] < p) {
         left.emplace_back(vec[i]);
       }
@@ -97,7 +97,7 @@ class TestMPITaskParallel : public ppc::core::Task {
     mergedvec.reserve(vec1.size() + vec2.size());
     int i = 0;
     int j = 0;
-    while (i < (int)vec1.size() && j < (int)vec2.size()) {
+    while (i < static_cast<int>(vec1.size()) && j < static_cast<int>(vec2.size())) {
       if (vec1[i] < vec2[j]) {
         mergedvec.push_back(vec1[i++]);
       } else {

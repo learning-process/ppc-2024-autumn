@@ -72,6 +72,46 @@ TEST(varfolomeev_g_quick_sort_simple_merge_mpi, Test_Zero_Elements) {
   }
 }
 
+TEST(varfolomeev_g_quick_sort_simple_merge_mpi, Test_Already_Sorted) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  std::vector<int> global_res(global_vec.size());
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    int size = 0;
+    global_vec = varfolomeev_g_quick_sort_simple_merge_mpi::getAntisorted_mpi(size, 200);
+    global_res.resize(global_vec.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
+    taskDataPar->outputs_count.emplace_back(global_res.size());
+  }
+
+  varfolomeev_g_quick_sort_simple_merge_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> check_vec(global_res.size());
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(check_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(check_vec.size());
+
+    varfolomeev_g_quick_sort_simple_merge_mpi::TestTaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    EXPECT_EQ(global_res, check_vec);
+  }
+}
+
 TEST(varfolomeev_g_quick_sort_simple_merge_mpi, Test_Only_Duplicates) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
