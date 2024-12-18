@@ -16,6 +16,8 @@ struct Node {
   bool operator>(const Node& other) const { return value > other.value; }
 };
 
+void mergeSortedVectorsInPlace(std::vector<double>& arr, const std::vector<int>& sizes, const std::vector<int>& displs);
+
 template <typename RandomIt>
 void radixSortDouble(RandomIt begin, RandomIt end) {
   if (begin == end) return;
