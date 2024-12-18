@@ -79,6 +79,8 @@ TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
 
   if (rank == 0) {
     std::vector<int> expected_result = global_result;
+    std::sort(expected_result.begin(), expected_result.end());
+
     EXPECT_EQ(global_result, expected_result);
   }
 }
@@ -154,6 +156,8 @@ TEST(petrov_a_Shell_sort_mpi, test_pipeline_run_mpi) {
 
   if (rank == 0) {
     std::vector<int> expected_result = global_result;
+    std::sort(expected_result.begin(), expected_result.end());
+
     EXPECT_EQ(global_result, expected_result);
   }
 }
