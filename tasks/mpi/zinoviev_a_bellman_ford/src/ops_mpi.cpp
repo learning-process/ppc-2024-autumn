@@ -142,4 +142,4 @@ bool BellmanFordMPIMPI::post_processing() {
   return true;
 }
 
-}
+}  // namespace zinoviev_a_bellman_ford_mpi
