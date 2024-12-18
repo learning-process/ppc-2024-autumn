@@ -11,10 +11,10 @@ bool zolotareva_a_SLE_gradient_method_seq::TestTaskSequential::validation() {
   if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) {
     return false;
   }
-  if (int(taskData->inputs_count[0]) != n_ * n_ || int(taskData->inputs_count[1]) != n_) {
+  if (static_cast<int>(taskData->inputs_count[0]) != n_ * n_ || static_cast<int>(taskData->inputs_count[1]) != n_) {
     return false;
   }
-  if (int(taskData->outputs_count[0]) != n_) {
+  if (static_cast<int>(taskData->outputs_count[0]) != n_) {
     return false;
   }
   // проверка симметрии и положительной определённости

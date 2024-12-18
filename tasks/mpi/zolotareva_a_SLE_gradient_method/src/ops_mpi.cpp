@@ -20,7 +20,7 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::validation() {
       (static_cast<int>(taskData->inputs_count[1]) * static_cast<int>(taskData->inputs_count[1])))
     return false;
 
-  if (static_cast<int>(taskData->outputs_count[0]) != taskData->inputs_count[1]) return false;
+  if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
 
   // проверка симметрии и положительной определённости
   const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
@@ -71,7 +71,7 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::validation() {
         (static_cast<int>(taskData->inputs_count[1]) * static_cast<int>(taskData->inputs_count[1])))
       return false;
 
-    if (static_cast<int>(taskData->outputs_count[0]) != taskData->inputs_count[1]) return false;
+    if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
 
     // проверка симметрии и положительной определённости
     const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
