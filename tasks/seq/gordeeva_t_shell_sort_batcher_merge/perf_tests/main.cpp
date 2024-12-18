@@ -36,7 +36,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int i = 1; i < res.size(); i++) {
+  for (size_t i = 1; i < res.size(); i++) {
     ASSERT_LE(res[i - 1], res[i]);
   }
 }
@@ -72,7 +72,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  for (int i = 1; i < res.size(); i++) {
+  for (size_t i = 1; i < res.size(); i++) {
     ASSERT_LE(res[i - 1], res[i]);
   }
 }
