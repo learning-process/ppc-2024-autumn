@@ -36,16 +36,29 @@ bool BellmanFordSeq::validation() {
   internal_order_test();
 
   size_t V = taskData->inputs_count[0];
+  size_t E_expected = taskData->inputs_count[1];
+  size_t E_actual = 0;
 
-  size_t E = 0;
   auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < V * V; ++i) {
     if (input_matrix[i] != 0) {
-      E++;
+      E_actual++;
     }
   }
 
-  return V < E && V == taskData->outputs_count[0];
+  if (E_expected != E_actual) {
+    return false;
+  }
+
+  if (V >= E_actual) {
+    return false;
+  }
+
+  if (V != taskData->outputs_count[0]) {
+    return false;
+  }
+
+  return true;
 }
 
 bool BellmanFordSeq::Iteration(std::vector<int>& paths) {
