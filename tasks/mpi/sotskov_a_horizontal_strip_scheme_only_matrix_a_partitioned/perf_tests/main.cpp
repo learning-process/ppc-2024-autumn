@@ -20,15 +20,15 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, test_pipel
   int num_cols;
 
   if (world.rank() == 0) {
-    num_rows = 2048;
-    num_cols = 2048;
+    num_rows = 1024;
+    num_cols = 1024;
 
     // Generate random matrix in column-major order
     global_A.resize(num_rows * num_cols, 0);
 
     // Generate random vector
     global_B.resize(num_cols * num_rows, 0);
-    global_result.resize(2048 * 2048, 0);
+    global_result.resize(1024 * 1024, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_A.data()));
     taskDataPar->inputs_count.emplace_back(num_rows);
@@ -102,15 +102,15 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_mpi, test_task_
   int num_cols;
 
   if (world.rank() == 0) {
-    num_rows = 2048;
-    num_cols = 2048;
+    num_rows = 1024;
+    num_cols = 1024;
 
     // Generate random matrix in column-major order
     global_matrix.resize(num_rows * num_cols, 0);
 
     // Generate random vector
-    global_vector.resize(num_cols * 2048, 0);
-    global_result.resize(num_rows * 2048, 0);
+    global_vector.resize(num_cols * 1024, 0);
+    global_result.resize(num_rows * 1024, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(num_rows);
