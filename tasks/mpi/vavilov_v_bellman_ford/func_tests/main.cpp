@@ -13,7 +13,7 @@ TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths) {
 
   std::vector<int> matrix = {0, 10, 5, 0, 0, 0, 0, 2, 1, 0, 0, 3, 0, 9, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0};
   std::vector<int> output(5);
-  std::vector<int> expected_output(5)
+  std::vector<int> expected_output(5);
   int vertices = 5, edges_count = 8, source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
