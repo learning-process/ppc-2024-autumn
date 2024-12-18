@@ -17,8 +17,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pipeline_run) {
   std::vector<double> in_upper_limits{15, 20, 17};
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
@@ -70,8 +69,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_task_run) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));

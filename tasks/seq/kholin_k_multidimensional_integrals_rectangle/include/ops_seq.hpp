@@ -31,13 +31,13 @@ class TestTaskSequential : public ppc::core::Task {
   size_t sz_lower_limits;
   size_t sz_upper_limits;
 
-  double integrate(Function f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits,
+  double integrate(const Function& f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits,
                    const std::vector<double>& h, std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_,
                    size_t n);
-  double integrate_with_rectangle_method(Function f_, std::vector<double>& f_values_,
+  double integrate_with_rectangle_method(const Function& f_, std::vector<double>& f_values_,
                                          const std::vector<double>& l_limits, const std::vector<double>& u_limits,
                                          size_t dim_, size_t n);
-  double run_multistep_scheme_method_rectangle(Function f_, std::vector<double>& f_values_,
+  double run_multistep_scheme_method_rectangle(const Function& f_, std::vector<double>& f_values_,
                                                const std::vector<double>& l_limits, const std::vector<double>& u_limits,
                                                size_t dim_, double epsilon_);
 };

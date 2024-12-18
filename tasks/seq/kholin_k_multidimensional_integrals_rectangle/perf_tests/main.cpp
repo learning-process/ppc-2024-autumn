@@ -15,8 +15,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_pipeline_run) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
 
-  kholin_k_multidimensional_integrals_rectangle_seq::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -66,8 +65,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
 
-  kholin_k_multidimensional_integrals_rectangle_seq::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

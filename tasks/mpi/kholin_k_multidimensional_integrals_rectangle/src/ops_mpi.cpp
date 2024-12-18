@@ -10,8 +10,8 @@
 using namespace std::chrono_literals;
 
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::integrate(
-    Function f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits, const std::vector<double>& h,
-    std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_, size_t n) {
+    const Function& f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits,
+    const std::vector<double>& h, std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_, size_t n) {
   if (curr_index_dim == dim_) {
     return f_(f_values_);
   }
@@ -25,18 +25,18 @@ double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential:
 }
 
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::integrate_with_rectangle_method(
-    Function f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
+    const Function& f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
     const std::vector<double>& u_limits, size_t dim_, size_t n) {
   std::vector<double> h(dim_);
   for (size_t i = 0; i < dim_; ++i) {
     h[i] = (u_limits[i] - l_limits[i]) / n;
   }
 
-  return integrate(f_, l_limits, u_limits, h, f_values_, 0, dim_, n);
+  return integrate(std::move(f_), l_limits, u_limits, h, f_values_, 0, dim_, n);
 }
 
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::run_multistep_scheme_method_rectangle(
-    Function f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
+    const Function& f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
     const std::vector<double>& u_limits, size_t dim_, double epsilon_) {
   int n = 1;
   double I_n = integrate_with_rectangle_method(f_, f_values_, l_limits, u_limits, dim_, n);
@@ -62,13 +62,13 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::p
   sz_lower_limits = taskData->inputs_count[1];
   sz_upper_limits = taskData->inputs_count[2];
 
-  auto ptr_dim = reinterpret_cast<size_t*>(taskData->inputs[0]);
+  auto* ptr_dim = reinterpret_cast<size_t*>(taskData->inputs[0]);
   dim = *ptr_dim;
 
   auto* ptr_f_values = reinterpret_cast<double*>(taskData->inputs[1]);
   f_values.assign(ptr_f_values, ptr_f_values + sz_values);
 
-  auto ptr_f = reinterpret_cast<std::function<double(const std::vector<double>&)>*>(taskData->inputs[2]);
+  auto* ptr_f = reinterpret_cast<std::function<double(const std::vector<double>&)>*>(taskData->inputs[2]);
   f = *ptr_f;
 
   auto* ptr_lower_limits = reinterpret_cast<double*>(taskData->inputs[3]);
@@ -77,7 +77,7 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::p
   auto* ptr_upper_limits = reinterpret_cast<double*>(taskData->inputs[4]);
   upper_limits.assign(ptr_upper_limits, ptr_upper_limits + sz_upper_limits);
 
-  auto ptr_epsilon = reinterpret_cast<double*>(taskData->inputs[5]);
+  auto* ptr_epsilon = reinterpret_cast<double*>(taskData->inputs[5]);
   epsilon = *ptr_epsilon;
 
   result = 0.0;
@@ -87,7 +87,7 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::p
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[1] && taskData->inputs_count[2];
+  return taskData->inputs_count[1] > 0u && taskData->inputs_count[2] > 0u;
 }
 
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::run() {
@@ -106,8 +106,8 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::p
 }
 
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::integrate(
-    Function f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits, const std::vector<double>& h,
-    std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_, size_t n) {
+    const Function& f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits,
+    const std::vector<double>& h, std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_, size_t n) {
   if (curr_index_dim == dim_) {
     return f_(f_values_);
   }
@@ -121,20 +121,21 @@ double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::i
 }
 
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::integrate_with_rectangle_method(
-    Function f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
+    const Function& f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
     const std::vector<double>& u_limits, size_t dim_, size_t n) {
   std::vector<double> h(dim_);
   for (size_t i = 0; i < dim_; ++i) {
     h[i] = (u_limits[i] - l_limits[i]) / n;
   }
 
-  return integrate(f_, l_limits, u_limits, h, f_values_, 0, dim_, n);
+  return integrate(std::move(f_), l_limits, u_limits, h, f_values_, 0, dim_, n);
 }
 
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::run_multistep_scheme_method_rectangle(
-    Function f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
+    const Function& f_, std::vector<double>& f_values_, const std::vector<double>& l_limits,
     const std::vector<double>& u_limits, size_t dim_, double epsilon_) {
-  int size, ProcRank;
+  int size;
+  int ProcRank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
 
@@ -195,7 +196,8 @@ double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::r
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   // Init value for input and output
-  int size, ProcRank;
+  int size;
+  int ProcRank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   if (ProcRank == 0) {
@@ -203,7 +205,7 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::pre
     sz_lower_limits = taskData->inputs_count[1];
     sz_upper_limits = taskData->inputs_count[2];
 
-    auto ptr_dim = reinterpret_cast<size_t*>(taskData->inputs[0]);
+    auto* ptr_dim = reinterpret_cast<size_t*>(taskData->inputs[0]);
     dim = *ptr_dim;
 
     auto* ptr_f_values = reinterpret_cast<double*>(taskData->inputs[1]);
@@ -215,7 +217,7 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::pre
     auto* ptr_upper_limits = reinterpret_cast<double*>(taskData->inputs[3]);
     upper_limits.assign(ptr_upper_limits, ptr_upper_limits + sz_upper_limits);
 
-    auto ptr_epsilon = reinterpret_cast<double*>(taskData->inputs[4]);
+    auto* ptr_epsilon = reinterpret_cast<double*>(taskData->inputs[4]);
     epsilon = *ptr_epsilon;
   }
   return true;
@@ -223,20 +225,22 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::pre
 
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  int size, ProcRank;
+  int size;
+  int ProcRank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   sz_t = get_mpi_type();
   if (ProcRank == 0) {
     // Check count elements of output
-    return taskData->inputs_count[1] && taskData->inputs_count[2];
+    return taskData->inputs_count[1] > 0u && taskData->inputs_count[2] > 0u;
   }
   return true;
 }
 
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  int size, ProcRank;
+  int size;
+  int ProcRank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
 

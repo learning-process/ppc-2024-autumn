@@ -18,8 +18,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_validation) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -76,8 +75,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pre_processing) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -136,8 +134,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_run) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -198,8 +195,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_post_processing) {
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -262,8 +258,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var)
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -331,8 +326,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var)
   double epsilon = 1e-1;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -401,8 +395,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var)
   double epsilon = 1e-3;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -470,8 +463,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var)
   double epsilon = 1e-1;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -539,8 +531,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_va
   double epsilon = 1e-2;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -608,8 +599,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var)
   double epsilon = 1e-2;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -677,8 +667,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var)
   double epsilon = 1e-2;
   std::vector<double> out_I(1, 0.0);
   enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  kholin_k_multidimensional_integrals_rectangle_mpi::Function *f_object =
-      new std::function<double(const std::vector<double> &)>(f);
+  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
