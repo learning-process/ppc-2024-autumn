@@ -3,9 +3,9 @@
 
 #include <algorithm>
 #include <functional>
+#include <iostream>
 #include <random>
 #include <vector>
-#include <iostream>
 
 std::vector<double> sobel_filter(const std::vector<double>& image_vector, int h, int w) {
   std::vector<double> result(h * w, 0.0);

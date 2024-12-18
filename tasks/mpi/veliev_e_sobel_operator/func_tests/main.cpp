@@ -5,9 +5,9 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <functional>
+#include <iostream>
 #include <random>
 #include <vector>
-#include <iostream>
 
 #include "mpi/veliev_e_sobel_operator/include/ops_mpi.hpp"
 
