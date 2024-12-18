@@ -32,7 +32,6 @@ std::vector<int> generateGraph(const int V) {
 TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   const int V = 1000;
-  int E = 0;
 
   // Create data
   std::vector<int> graph;
@@ -42,12 +41,9 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     graph = gnitienko_k_func_mpi::generateGraph(V);
-    for (size_t i = 0; i < graph.size(); i++)
-      if (graph[i] != 0) E++;
     resMPI.resize(V);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
-    taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(E));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
   }
@@ -62,7 +58,6 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
     resSEQ.resize(V);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(V));
-    taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(E));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSEQ.data()));
     taskDataSeq->outputs_count.emplace_back(resSEQ.size());
 
@@ -94,7 +89,6 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
 TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
   boost::mpi::communicator world;
   const int V = 5000;
-  const int E = 10000;
 
   // Create data
   std::vector<int> graph;
@@ -106,7 +100,6 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
     resMPI.resize(V);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
-    taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(E));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
     taskDataPar->outputs_count.emplace_back(resMPI.size());
   }
@@ -122,7 +115,6 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
     resSEQ.resize(V);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(V));
-    taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(E));
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSEQ.data()));
     taskDataSeq->outputs_count.emplace_back(resSEQ.size());
 

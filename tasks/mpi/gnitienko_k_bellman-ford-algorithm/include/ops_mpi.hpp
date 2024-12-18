@@ -24,7 +24,6 @@ class BellmanFordAlgSeq : public ppc::core::Task {
 
  private:
   size_t V{};
-  size_t E{};
   std::vector<int> values;
   std::vector<int> columns;
   std::vector<int> row_ptr;
@@ -46,7 +45,6 @@ class BellmanFordAlgMPI : public ppc::core::Task {
 
  private:
   size_t V{};
-  size_t E{};
   size_t values_size{};
   size_t columns_size{};
   size_t row_ptr_size{};
