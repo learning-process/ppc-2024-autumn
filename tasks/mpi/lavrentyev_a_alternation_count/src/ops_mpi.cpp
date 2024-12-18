@@ -49,7 +49,6 @@ bool lavrentyev_a_alternation_count_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-
 bool lavrentyev_a_alternation_count_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
