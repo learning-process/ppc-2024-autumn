@@ -27,7 +27,7 @@ bool TestTaskMPI::validation() {
   if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
     return false;
   }
-  
+
   return true;
 }
 
