@@ -153,15 +153,14 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_viol_0_double_) {
   }
 }
 
-TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_double_) {
+TEST(kovalev_k_num_of_orderly_violations_mpi, len_100_opposite_sort_double_) {
   const size_t length = 100;
   std::srand(std::time(nullptr));
   const double alpha = (static_cast<double>(rand()) - 1) / (RAND_MAX);
   std::vector<double> in(length);
   std::vector<size_t> out(1, 0);
-  in[0] = static_cast<double>(length);
-  for (size_t i = 1; i < length; i++) {
-    in[i] = in[i - 1] * alpha;
+  for (size_t i = 0; i < length; i++) {
+    in[i] = (length - i) * 1.0;
   }
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
@@ -182,11 +181,39 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_100_opposite_sort_do
   }
 }
 
-TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_rand_double_) {
+TEST(kovalev_k_num_of_orderly_violations_mpi, len_10000_opposite_sort_double_) {
+  const size_t length = 10000;
+  std::srand(std::time(nullptr));
+  const double alpha = (static_cast<double>(rand()) - 1) / (RAND_MAX);
+  std::vector<double> in(length);
+  std::vector<size_t> out(1, 0);
+  for (size_t i = 0; i < length; i++) {
+    in[i] = (length - i) * 1.0;
+  }
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> tmpPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    tmpPar->inputs_count.emplace_back(in.size());
+    tmpPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    tmpPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    tmpPar->outputs_count.emplace_back(out.size());
+  }
+  kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<double> tmpTaskPar(tmpPar);
+  ASSERT_TRUE(tmpTaskPar.validation());
+  tmpTaskPar.pre_processing();
+  tmpTaskPar.run();
+  tmpTaskPar.post_processing();
+  size_t result = length - 1;
+  if (world.rank() == 0) {
+    ASSERT_EQ(result, out[0]);
+  }
+}
+
+TEST(kovalev_k_num_of_orderly_violations_mpi, len_10_rand_double_) {
   const size_t length = 10;
   std::vector<double> in(length);
-  auto max = static_cast<double>(1000000);
-  auto min = static_cast<double>(-1000000);
+  double max = 1000000.0;
+  double min = -1000000.0;
   std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<size_t> out(1, 0);
@@ -211,11 +238,11 @@ TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10_rand_double_) {
   }
 }
 
-TEST(kovalev_k_num_of_orderly_violations_mpi, Test_NoOV_len_10000_rand_double_) {
+TEST(kovalev_k_num_of_orderly_violations_mpi, len_10000_rand_double_) {
   const size_t length = 10000;
   std::vector<double> in(length);
-  auto max = static_cast<double>(1000000);
-  auto min = static_cast<double>(-1000000);
+  double max = 1000000.0;
+  double min = -1000000.0;
   std::srand(std::time(nullptr));
   for (size_t i = 0; i < length; i++) in[i] = min + static_cast<double>(rand()) / RAND_MAX * (max - min);
   std::vector<size_t> out(1, 0);
