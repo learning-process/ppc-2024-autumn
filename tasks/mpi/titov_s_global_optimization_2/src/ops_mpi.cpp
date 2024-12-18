@@ -324,9 +324,6 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::run() {
 
   std::vector<int> sizes(world.size(), 2);
   all_results_.resize(2 * world.size());
-  if (world.rank() != 0) {
-    std::cout << local_result_.x << " " << local_result_.y << std::endl;
-  }
   gatherv(world, local_coordinates.data(), local_coordinates.size(), all_results_.data(), sizes, 0);
 
   if (world.rank() == 0) {
