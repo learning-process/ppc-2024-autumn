@@ -13,17 +13,14 @@
 
 #include "core/task/include/task.hpp"
 
-namespace enum_ops {
-enum operations : std::uint8_t { MULTISTEP_SCHEME_METHOD_RECTANGLE };
-};
-
 namespace kholin_k_multidimensional_integrals_rectangle_mpi {
 using Function = std::function<double(const std::vector<double>&)>;
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, enum_ops::operations ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_,
+                                 std::function<double(const std::vector<double>&)> f_)
+      : Task(std::move(taskData_)), f(std::move(f_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -51,14 +48,14 @@ class TestMPITaskSequential : public ppc::core::Task {
   double run_multistep_scheme_method_rectangle(const Function& f_, std::vector<double>& f_values_,
                                                const std::vector<double>& l_limits, const std::vector<double>& u_limits,
                                                size_t dim_, double epsilon_);
-  enum_ops::operations ops;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
   MPI_Datatype get_mpi_type();
 
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, Function f_)
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_,
+                               std::function<double(const std::vector<double>&)> f_)
       : Task(std::move(taskData_)), f(std::move(f_)) {}
   bool pre_processing() override;
   bool validation() override;

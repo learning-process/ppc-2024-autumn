@@ -68,16 +68,13 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::p
   auto* ptr_f_values = reinterpret_cast<double*>(taskData->inputs[1]);
   f_values.assign(ptr_f_values, ptr_f_values + sz_values);
 
-  auto* ptr_f = reinterpret_cast<std::function<double(const std::vector<double>&)>*>(taskData->inputs[2]);
-  f = *ptr_f;
-
-  auto* ptr_lower_limits = reinterpret_cast<double*>(taskData->inputs[3]);
+  auto* ptr_lower_limits = reinterpret_cast<double*>(taskData->inputs[2]);
   lower_limits.assign(ptr_lower_limits, ptr_lower_limits + sz_lower_limits);
 
-  auto* ptr_upper_limits = reinterpret_cast<double*>(taskData->inputs[4]);
+  auto* ptr_upper_limits = reinterpret_cast<double*>(taskData->inputs[3]);
   upper_limits.assign(ptr_upper_limits, ptr_upper_limits + sz_upper_limits);
 
-  auto* ptr_epsilon = reinterpret_cast<double*>(taskData->inputs[5]);
+  auto* ptr_epsilon = reinterpret_cast<double*>(taskData->inputs[4]);
   epsilon = *ptr_epsilon;
 
   result = 0.0;
@@ -92,10 +89,8 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::v
 
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  if (ops == enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE) {
-    // std::cout << "seq" << std::endl;
-    result = run_multistep_scheme_method_rectangle(f, f_values, lower_limits, upper_limits, dim, epsilon);
-  }
+  // std::cout << "seq" << std::endl;
+  result = run_multistep_scheme_method_rectangle(f, f_values, lower_limits, upper_limits, dim, epsilon);
   return true;
 }
 

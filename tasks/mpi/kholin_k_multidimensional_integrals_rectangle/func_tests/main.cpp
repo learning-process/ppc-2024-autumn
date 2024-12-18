@@ -17,8 +17,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_validation) {
   std::vector<double> in_upper_limits{1};
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -35,7 +33,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_validation) {
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
 
   if (ProcRank == 0) {
@@ -46,7 +44,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_validation) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -57,10 +54,9 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_validation) {
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pre_processing) {
@@ -74,8 +70,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pre_processing) {
   std::vector<double> in_upper_limits{1};
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -92,7 +86,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pre_processing) {
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   ASSERT_EQ(testMpiTaskParallel.pre_processing(), true);
 
@@ -104,7 +98,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pre_processing) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -115,11 +108,10 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pre_processing) {
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     ASSERT_EQ(testMpiTaskSequential.pre_processing(), true);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_run) {
@@ -133,8 +125,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_run) {
   std::vector<double> in_upper_limits{1};
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -151,7 +141,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_run) {
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   ASSERT_EQ(testMpiTaskParallel.run(), true);
@@ -164,7 +154,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_run) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -175,12 +164,11 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_run) {
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     ASSERT_EQ(testMpiTaskSequential.run(), true);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_post_processing) {
@@ -194,8 +182,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_post_processing) {
   std::vector<double> in_upper_limits{1};
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -212,7 +198,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_post_processing) {
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -226,7 +212,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_post_processing) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -237,13 +222,12 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_post_processing) {
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     ASSERT_EQ(testMpiTaskSequential.post_processing(), true);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var) {
@@ -257,8 +241,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var)
   std::vector<double> in_upper_limits{1};
   double epsilon = 0.001;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -275,7 +257,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var)
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -289,7 +271,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var)
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -300,7 +281,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var)
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -311,7 +292,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_one_var)
   if (ProcRank == 0) {
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var) {
@@ -325,8 +305,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var)
   std::vector<double> in_upper_limits{5};
   double epsilon = 1e-1;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -343,7 +321,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var)
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -357,7 +335,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var)
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -368,7 +345,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var)
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -380,7 +357,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, single_integral_two_var)
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
     // Wrap condition procrank
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var) {
@@ -394,8 +370,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var)
   std::vector<double> in_upper_limits{10, 4};
   double epsilon = 1e-3;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -412,7 +386,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var)
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -426,7 +400,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var)
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -437,7 +410,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var)
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -448,7 +421,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_two_var)
   if (ProcRank == 0) {
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var) {
@@ -462,8 +434,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var)
   std::vector<double> in_upper_limits{10, 4};
   double epsilon = 1e-1;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -480,7 +450,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var)
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -494,7 +464,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var)
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -505,7 +474,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var)
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -516,7 +485,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, double_integral_one_var)
   if (ProcRank == 0) {
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_var) {
@@ -530,8 +498,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_va
   std::vector<double> in_upper_limits{4, 13, 8};
   double epsilon = 1e-2;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -548,7 +514,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_va
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -562,7 +528,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_va
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -573,7 +538,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_va
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -584,7 +549,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_three_va
   if (ProcRank == 0) {
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var) {
@@ -598,8 +562,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var)
   std::vector<double> in_upper_limits{12, 20, 2};
   double epsilon = 1e-2;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -616,7 +578,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var)
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -630,7 +592,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var)
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -641,7 +602,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var)
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -652,7 +613,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_two_var)
   if (ProcRank == 0) {
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
   }
-  delete f_object;
 }
 
 TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var) {
@@ -666,8 +626,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var)
   std::vector<double> in_upper_limits{12, 20, 2};
   double epsilon = 1e-2;
   std::vector<double> out_I(1, 0.0);
-  enum_ops::operations op = enum_ops::MULTISTEP_SCHEME_METHOD_RECTANGLE;
-  auto *f_object = new std::function<double(const std::vector<double> &)>(f);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -684,7 +642,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var)
     taskDataPar->outputs_count.emplace_back(out_I.size());
   }
 
-  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, *f_object);
+  kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar, f);
   testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
@@ -698,7 +656,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var)
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dim));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(f_object));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
@@ -709,7 +666,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var)
     taskDataSeq->outputs_count.emplace_back(ref_I.size());
 
     // Create Task
-    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, op);
+    kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq, f);
     testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
@@ -720,7 +677,6 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, triple_integral_one_var)
   if (ProcRank == 0) {
     ASSERT_NEAR(out_I[0], ref_I[0], epsilon);
   }
-  delete f_object;  //
 }
 //
 // int main(int argc, char **argv) {
