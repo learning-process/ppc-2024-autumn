@@ -68,6 +68,7 @@ const std::vector<int> data_5_2 = {
 	0  ,255,255,255,0//4
 };
 //   0   1   2   3   4 
+const std::vector<int> ans_data_5_2 = { 4, 0, 4,4, 0,2 };
 const std::vector<int> data_5_empty = {
 	255,255,255,255,255,
 	255,255,255,255,255,
@@ -81,4 +82,4 @@ const std::vector<int> data_3_full = {
 	0,0,0,
 	0,0,0
 };
-const std::vector<int> ans_data_3_full = { 0,2,  1,2, 2,2,  1,2, 0,2,  0,1,  0,0,  0,1 };
+const std::vector<int> ans_data_3_full = { 2,0,  2,1, 2,2,  2,1, 2,0,  1,0,  0,0,  1,0 };

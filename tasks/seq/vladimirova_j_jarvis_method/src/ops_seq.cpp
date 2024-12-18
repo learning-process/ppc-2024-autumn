@@ -119,7 +119,7 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::validation() {
       std::cout << (int)(tmp_ptr[i])<<", ";
   }
   std::cout << std::endl;
-  return ((bool)c);
+  return (c>2);
 }
 
 bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
