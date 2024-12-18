@@ -8,16 +8,17 @@
 
 namespace chernykh_a_multidimensional_integral_simpson_seq {
 
-double integrate_1d(const std::function<double(double)> &func,  //
-                    const std::pair<double, double> &bound,     //
-                    int num_steps);
+using bound_t = std::pair<double, double>;
+using bounds_t = std::vector<bound_t>;
+using step_range_t = std::pair<int, int>;
+using func_args_t = std::vector<double>;
+using func_1d_t = std::function<double(double)>;
+using func_nd_t = std::function<double(const func_args_t &)>;
 
-double integrate_nd(const std::function<double(const std::vector<double> &)> &func,  //
-                    std::vector<double> &func_args,                                  //
-                    const std::vector<std::pair<double, double>> &bounds,            //
-                    const std::pair<int, int> &step_range,                           //
-                    double tolerance,                                                //
-                    int dim);
+double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps);
+
+double integrate_nd(const func_nd_t &func, func_args_t &func_args, const bounds_t &bounds,
+                    const step_range_t &step_range, double tolerance, int dim);
 
 class SequentialTask : public ppc::core::Task {
  public:
@@ -28,10 +29,10 @@ class SequentialTask : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::function<double(const std::vector<double> &)> func;
-  std::vector<double> func_args;
-  std::vector<std::pair<double, double>> bounds;
-  std::pair<int, int> step_range;
+  func_nd_t func;
+  func_args_t func_args;
+  bounds_t bounds;
+  step_range_t step_range;
   double tolerance{};
   double result{};
 };

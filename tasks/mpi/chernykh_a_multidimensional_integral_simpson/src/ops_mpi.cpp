@@ -7,13 +7,10 @@
 #include <cmath>
 #include <functional>
 #include <limits>
-#include <vector>
 
 namespace chernykh_a_multidimensional_integral_simpson_mpi {
 
-double integrate_1d(const std::function<double(double)> &func,  //
-                    const std::pair<double, double> &bound,     //
-                    int num_steps) {
+double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps) {
   auto [lower_bound, upper_bound] = bound;
   double step_size = (upper_bound - lower_bound) / num_steps;
   double result = func(lower_bound) + func(upper_bound);
@@ -27,12 +24,8 @@ double integrate_1d(const std::function<double(double)> &func,  //
   return result * step_size / 3.0;
 }
 
-double integrate_nd(const std::function<double(const std::vector<double> &)> &func,  //
-                    std::vector<double> &func_args,                                  //
-                    const std::vector<std::pair<double, double>> &bounds,            //
-                    const std::pair<int, int> &step_range,                           //
-                    double tolerance,                                                //
-                    int dim) {
+double integrate_nd(const func_nd_t &func, func_args_t &func_args, const bounds_t &bounds,
+                    const step_range_t &step_range, double tolerance, int dim) {
   auto [min_steps, max_steps] = step_range;
   double prev_steps_result = 0.0;
   double curr_steps_result = 0.0;
@@ -60,9 +53,9 @@ double integrate_nd(const std::function<double(const std::vector<double> &)> &fu
 
 bool SequentialTask::validation() {
   internal_order_test();
-  auto *bounds_ptr = reinterpret_cast<std::pair<double, double> *>(taskData->inputs[1]);
+  auto *bounds_ptr = reinterpret_cast<bound_t *>(taskData->inputs[1]);
   auto bounds_size = taskData->inputs_count[1];
-  auto *step_range_ptr = reinterpret_cast<std::pair<int, int> *>(taskData->inputs[2]);
+  auto *step_range_ptr = reinterpret_cast<step_range_t *>(taskData->inputs[2]);
   auto *tolerance_ptr = reinterpret_cast<double *>(taskData->inputs[3]);
 
   auto is_valid_bounds = std::all_of(bounds_ptr, bounds_ptr + bounds_size, [](auto &b) { return b.first < b.second; });
@@ -77,11 +70,11 @@ bool SequentialTask::validation() {
 
 bool SequentialTask::pre_processing() {
   internal_order_test();
-  func = *reinterpret_cast<std::function<double(const std::vector<double> &)> *>(taskData->inputs[0]);
-  auto *bounds_ptr = reinterpret_cast<std::pair<double, double> *>(taskData->inputs[1]);
+  func = *reinterpret_cast<func_nd_t *>(taskData->inputs[0]);
+  auto *bounds_ptr = reinterpret_cast<bound_t *>(taskData->inputs[1]);
   auto bounds_size = taskData->inputs_count[1];
   bounds.assign(bounds_ptr, bounds_ptr + bounds_size);
-  step_range = *reinterpret_cast<std::pair<int, int> *>(taskData->inputs[2]);
+  step_range = *reinterpret_cast<step_range_t *>(taskData->inputs[2]);
   tolerance = *reinterpret_cast<double *>(taskData->inputs[3]);
 
   func_args.resize(bounds_size, 0.0);
@@ -103,16 +96,16 @@ bool SequentialTask::post_processing() {
 bool ParallelTask::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto *bounds_ptr = reinterpret_cast<std::pair<double, double> *>(taskData->inputs[0]);
+    auto *bounds_ptr = reinterpret_cast<bound_t *>(taskData->inputs[0]);
     auto bounds_size = taskData->inputs_count[0];
-    auto *step_range_ptr = reinterpret_cast<std::pair<int, int> *>(taskData->inputs[1]);
+    auto *step_range_ptr = reinterpret_cast<step_range_t *>(taskData->inputs[1]);
     auto *tolerance_ptr = reinterpret_cast<double *>(taskData->inputs[2]);
 
     auto is_valid_bounds =
         std::all_of(bounds_ptr, bounds_ptr + bounds_size, [](auto &b) { return b.first < b.second; });
 
-    return bounds_size > 0 &&                                 // At least one dimension is required for integration
-           is_valid_bounds &&                                 // Bounds for each dimension must be valid (lower < upper)
+    return bounds_size > 0 &&  // At least one dimension is required for integration
+           is_valid_bounds &&  // Bounds for each dimension must be correct (lower < upper)
            step_range_ptr->first < step_range_ptr->second &&  // Minimum step count must be less than maximum step count
            step_range_ptr->first % 2 == 0 &&  // Minimum step count must be even (Simpson's rule requirement)
            step_range_ptr->first >= 2 &&      // Minimum step count must be at least 2
@@ -124,10 +117,10 @@ bool ParallelTask::validation() {
 bool ParallelTask::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    auto *bounds_ptr = reinterpret_cast<std::pair<double, double> *>(taskData->inputs[0]);
+    auto *bounds_ptr = reinterpret_cast<bound_t *>(taskData->inputs[0]);
     auto bounds_size = taskData->inputs_count[0];
     bounds.assign(bounds_ptr, bounds_ptr + bounds_size);
-    step_range = *reinterpret_cast<std::pair<int, int> *>(taskData->inputs[1]);
+    step_range = *reinterpret_cast<step_range_t *>(taskData->inputs[1]);
     tolerance = *reinterpret_cast<double *>(taskData->inputs[2]);
 
     func_args.resize(bounds.size(), 0.0);
@@ -145,7 +138,7 @@ bool ParallelTask::run() {
 
   auto [lower_bound, upper_bound] = bounds[dim];
   double chunk_size = (upper_bound - lower_bound) / world.size();
-  std::pair<double, double> chunk_bound = {
+  bound_t chunk_bound = {
       lower_bound + (chunk_size * world.rank()),
       lower_bound + (chunk_size * (world.rank() + 1)),
   };

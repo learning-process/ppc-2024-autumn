@@ -4,7 +4,6 @@
 #include <cmath>
 #include <functional>
 #include <memory>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/chernykh_a_multidimensional_integral_simpson/include/ops_seq.hpp"
@@ -13,11 +12,8 @@ namespace chernykh_a_multidimensional_integral_simpson_seq {
 
 enum class RunType : uint8_t { TASK, PIPELINE };
 
-void run_task(RunType run_type, std::function<double(const std::vector<double> &)> func,  //
-              std::vector<std::pair<double, double>> bounds,                              //
-              std::pair<int, int> step_range,                                             //
-              double tolerance) {
-  double output;
+void run_task(RunType run_type, func_nd_t func, bounds_t &bounds, step_range_t &step_range, double tolerance) {
+  double output = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
@@ -58,24 +54,24 @@ void run_task(RunType run_type, std::function<double(const std::vector<double> &
 
 }  // namespace chernykh_a_multidimensional_integral_simpson_seq
 
+namespace chernykh_a_mis_seq = chernykh_a_multidimensional_integral_simpson_seq;
+
 TEST(chernykh_a_multidimensional_integral_simpson_seq, test_pipeline_run) {
-  auto func = [](const std::vector<double> &args) -> double {
+  auto func = [](const chernykh_a_mis_seq::func_args_t &args) -> double {
     return std::sin((args[0] * args[1]) + args[2]) * std::log(args[0] + args[1] + args[2] + 1.0);
   };
-  std::vector<std::pair<double, double>> bounds = {{0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}};
-  std::pair<int, int> step_range = {2, 1000};
-  double tolerance = 1e-6;
-  chernykh_a_multidimensional_integral_simpson_seq::run_task(
-      chernykh_a_multidimensional_integral_simpson_seq::RunType::PIPELINE, func, bounds, step_range, tolerance);
+  chernykh_a_mis_seq::bounds_t bounds = {{0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}};
+  chernykh_a_mis_seq::step_range_t step_range = {2, 100};
+  double tolerance = 1e-7;
+  chernykh_a_mis_seq::run_task(chernykh_a_mis_seq::RunType::PIPELINE, func, bounds, step_range, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_seq, test_task_run) {
-  auto func = [](const std::vector<double> &args) -> double {
+  auto func = [](const chernykh_a_mis_seq::func_args_t &args) -> double {
     return std::sin((args[0] * args[1]) + args[2]) * std::log(args[0] + args[1] + args[2] + 1.0);
   };
-  std::vector<std::pair<double, double>> bounds = {{0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}};
-  std::pair<int, int> step_range = {2, 1000};
-  double tolerance = 1e-6;
-  chernykh_a_multidimensional_integral_simpson_seq::run_task(
-      chernykh_a_multidimensional_integral_simpson_seq::RunType::TASK, func, bounds, step_range, tolerance);
+  chernykh_a_mis_seq::bounds_t bounds = {{0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}};
+  chernykh_a_mis_seq::step_range_t step_range = {2, 100};
+  double tolerance = 1e-7;
+  chernykh_a_mis_seq::run_task(chernykh_a_mis_seq::RunType::TASK, func, bounds, step_range, tolerance);
 }
