@@ -1,4 +1,3 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/zolotareva_a_SLE_gradient_method/include/ops_seq.hpp"
 
 #include <algorithm>

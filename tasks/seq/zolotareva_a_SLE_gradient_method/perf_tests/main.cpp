@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -7,7 +6,7 @@
 #include "seq/zolotareva_a_SLE_gradient_method/include/ops_seq.hpp"
 
 TEST(sequential_zolotareva_a_SLE_gradient_method_perf_test, test_pipeline_run) {
-  const uint32_t n = 100;
+  const uint32_t n = 1000;
   std::vector<double> A(n * n);
   std::vector<double> b(n);
   std::vector<double> x(n);
@@ -41,7 +40,7 @@ TEST(sequential_zolotareva_a_SLE_gradient_method_perf_test, test_pipeline_run) {
 }
 
 TEST(sequential_zolotareva_a_SLE_gradient_method_perf_test, test_task_run) {
-  const uint32_t n = 100;
+  const uint32_t n = 1000;
   std::vector<double> A(n * n);
   std::vector<double> b(n);
   std::vector<double> x(n);
