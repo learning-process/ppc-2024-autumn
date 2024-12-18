@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 namespace petrov_a_Shell_sort_mpi {
 
