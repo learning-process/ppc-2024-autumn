@@ -27,8 +27,8 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_pipeline_run) {
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
 
-  std::vector<int> res = input;
-  std::sort(res.begin(), res.end());
+  std::vector<int> sort_ref = input;
+  std::sort(sort_ref.begin(), sort_ref.end());
 
   // Create  TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -57,7 +57,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, output);
+  ASSERT_EQ(sort_ref, output);
 }
 
 TEST(ermilova_d_Shell_sort_simple_merge_seq, test_task_run) {
@@ -69,8 +69,8 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_task_run) {
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
 
-  std::vector<int> res = input;
-  std::sort(res.begin(), res.end());
+  std::vector<int> sort_ref = input;
+  std::sort(sort_ref.begin(), sort_ref.end());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -99,5 +99,5 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, output);
+  ASSERT_EQ(sort_ref, output);
 }

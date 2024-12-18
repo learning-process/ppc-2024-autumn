@@ -58,14 +58,14 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_10) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res(input.size(), 0);
+    std::vector<int> sort_ref(input.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataSeq->inputs_count.emplace_back(input.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-    taskDataSeq->outputs_count.emplace_back(res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sort_ref.data()));
+    taskDataSeq->outputs_count.emplace_back(sort_ref.size());
 
     // Create Task
     ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
@@ -74,7 +74,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_10) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
-    ASSERT_EQ(res, output);
+    ASSERT_EQ(sort_ref, output);
   }
 }
 
@@ -103,14 +103,14 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_100) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res(input.size(), 0);
+    std::vector<int> sort_ref(input.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataSeq->inputs_count.emplace_back(input.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-    taskDataSeq->outputs_count.emplace_back(res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sort_ref.data()));
+    taskDataSeq->outputs_count.emplace_back(sort_ref.size());
 
     // Create Task
     ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
@@ -119,7 +119,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_100) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
-    ASSERT_EQ(res, output);
+    ASSERT_EQ(sort_ref, output);
   }
 }
 
@@ -148,14 +148,14 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_1000) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res(input.size(), 0);
+    std::vector<int> sort_ref(input.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataSeq->inputs_count.emplace_back(input.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-    taskDataSeq->outputs_count.emplace_back(res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sort_ref.data()));
+    taskDataSeq->outputs_count.emplace_back(sort_ref.size());
 
     // Create Task
     ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
@@ -164,7 +164,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_1000) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
-    ASSERT_EQ(res, output);
+    ASSERT_EQ(sort_ref, output);
   }
 }
 
@@ -193,14 +193,14 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_5000) {
 
   if (world.rank() == 0) {
     // Create data
-    std::vector<int> res(input.size(), 0);
+    std::vector<int> sort_ref(input.size(), 0);
 
     // Create TaskData
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataSeq->inputs_count.emplace_back(input.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-    taskDataSeq->outputs_count.emplace_back(res.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sort_ref.data()));
+    taskDataSeq->outputs_count.emplace_back(sort_ref.size());
 
     // Create Task
     ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
@@ -209,6 +209,6 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_5000) {
     testTaskSequential.run();
     testTaskSequential.post_processing();
 
-    ASSERT_EQ(res, output);
+    ASSERT_EQ(sort_ref, output);
   }
 }

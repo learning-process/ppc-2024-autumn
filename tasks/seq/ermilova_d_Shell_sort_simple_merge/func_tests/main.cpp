@@ -65,8 +65,8 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_100) {
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
 
-  std::vector<int> res = input;
-  std::sort(res.begin(), res.end());
+  std::vector<int> sort_ref = input;
+  std::sort(sort_ref.begin(), sort_ref.end());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -81,7 +81,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_100) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(output, res);
+  ASSERT_EQ(output, sort_ref);
 }
 
 TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_1000) {
@@ -92,8 +92,8 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_1000) {
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
 
-  std::vector<int> res = input;
-  std::sort(res.begin(), res.end());
+  std::vector<int> sort_ref = input;
+  std::sort(sort_ref.begin(), sort_ref.end());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -108,7 +108,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_1000) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(output, res);
+  ASSERT_EQ(output, sort_ref);
 }
 
 TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_10000) {
@@ -119,8 +119,8 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_10000) {
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
 
-  std::vector<int> res = input;
-  std::sort(res.begin(), res.end());
+  std::vector<int> sort_ref = input;
+  std::sort(sort_ref.begin(), sort_ref.end());
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -135,5 +135,5 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_10000) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  ASSERT_EQ(output, res);
+  ASSERT_EQ(output, sort_ref);
 }
