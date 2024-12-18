@@ -1,4 +1,4 @@
-#include "mpi/petrov_o_radix_sort_with_simple_merge/include/ops_mpi.hpp"
+﻿#include "mpi/petrov_o_radix_sort_with_simple_merge/include/ops_mpi.hpp"
 
 #include <algorithm>
 #include <boost/mpi.hpp>
@@ -11,7 +11,6 @@ namespace petrov_o_radix_sort_with_simple_merge_mpi {
 bool TaskParallel::validation() {
   internal_order_test();
 
-  // Валидация данных только на процессе 0
   if (world.rank() == 0) {
     bool isValid = (!taskData->inputs_count.empty()) && (!taskData->inputs.empty()) && (!taskData->outputs.empty());
     return isValid;
@@ -23,7 +22,6 @@ bool TaskParallel::validation() {
 bool TaskParallel::pre_processing() {
   internal_order_test();
 
-  // Данные доступны только процессу 0
   if (world.rank() == 0) {
     int size = taskData->inputs_count[0];
     input_.resize(size);
@@ -32,7 +30,6 @@ bool TaskParallel::pre_processing() {
     res.resize(size);
   }
 
-  // На других процессах пока никаких данных
   return true;
 }
 
@@ -42,15 +39,12 @@ bool TaskParallel::run() {
   int rank = world.rank();
   int size = world.size();
 
-  // Передаем размер массива от процесса 0 ко всем остальным
   int n = 0;
   if (rank == 0) {
     n = static_cast<int>(input_.size());
   }
   boost::mpi::broadcast(world, n, 0);
 
-  // Распределяем данные по всем процессам
-  // Определим размеры кусочков: деление на почти равные части
   int base_count = n / size;
   int remainder = n % size;
 
@@ -67,25 +61,18 @@ bool TaskParallel::run() {
   std::vector<int> local_data(send_counts[rank]);
 
   if (rank == 0) {
-    // Отправляем части остальным процессам
     for (int proc = 1; proc < size; ++proc) {
       world.send(proc, 0, &input_[displs[proc]], send_counts[proc]);
     }
-    // Свою часть копируем локально
     std::copy(input_.begin(), input_.begin() + send_counts[0], local_data.begin());
   } else {
     world.recv(0, 0, local_data.data(), send_counts[rank]);
   }
 
-  // Теперь каждый процесс имеет свой local_data
-  // Инвертируем знаковый бит
-  // Это необхожимо для правильной обработки отрицательных чисел, ведущий бит которых всегда равен единице. После
-  // инверитрования они естественным образом встанут на позиции перед положительными числами
   for (auto& num : local_data) {
     num ^= 0x80000000;
   }
 
-  // Найти максимальный элемент локально
   unsigned int local_max = 0;
   if (!local_data.empty()) {
     local_max = static_cast<unsigned int>(local_data[0]);
@@ -97,19 +84,15 @@ bool TaskParallel::run() {
     }
   }
 
-  // Определить глобальный максимум, чтобы все процессы знали максимальное число
   unsigned int global_max = 0;
   boost::mpi::all_reduce(world, local_max, global_max, boost::mpi::maximum<unsigned int>());
 
-  // Определяем количество бит в максимальном числе
   int num_bits = 0;
   const int MAX_BITS = static_cast<int>(sizeof(unsigned int) * 8);
   while (num_bits < MAX_BITS && (global_max >> num_bits) > 0) {
     num_bits++;
   }
 
-  // Поразрядная сортировка локальных данных
-  // Реализация стандартная, как была в последовательном случае, но только для local_data
   {
     std::vector<int> output(local_data.size());
     for (int bit = 0; bit < num_bits; ++bit) {
@@ -133,43 +116,25 @@ bool TaskParallel::run() {
     }
   }
 
-  // Восстановим знаковые биты
   for (auto& num : local_data) {
     num ^= 0x80000000;
   }
 
-  // Теперь у каждого процесса есть локально отсортированная часть.
-  // Соберём все отсортированные части на процесс 0 для слияния.
-  // Сначала процесс 0 соберет все в один массив.
-
   std::vector<int> recv_buf;
-  // Сначала соберём поэлементно размеры, но они у нас уже известны (send_counts)
-  // Соберём данные обратно на процесс 0
   if (rank == 0) {
     recv_buf.resize(n);
-    // Скопируем свою часть
     std::copy(local_data.begin(), local_data.end(), recv_buf.begin());
-    // Получаем данные от остальных процессов
     for (int proc = 1; proc < size; ++proc) {
       world.recv(proc, 1, &recv_buf[displs[proc]], send_counts[proc]);
     }
   } else {
-    // Отправляем свою часть на 0
     world.send(0, 1, local_data.data(), send_counts[rank]);
   }
 
   if (rank == 0) {
-    // На процессе 0 есть все отсортированные блоки, нужно слить их в один массив.
-    // Простой подход: последовательно сливать массивы.
-
-    // У нас есть recv_buf, разбитый на скомпонованные сегменты:
-    // Отрезки: [0:send_counts[0]), [displs[1]:displs[1]+send_counts[1]), ...
-    // Сольём их всех:
     std::vector<int> final_result;
-    // Начинаем с первого блока
     final_result.insert(final_result.end(), recv_buf.begin(), recv_buf.begin() + send_counts[0]);
 
-    // Функция для слияния двух отсортированных массивов
     auto merge_two = [](const std::vector<int>& a, const std::vector<int>& b) {
       std::vector<int> merged;
       merged.reserve(a.size() + b.size());
@@ -191,13 +156,11 @@ bool TaskParallel::run() {
       return merged;
     };
 
-    // Сливаем по очереди оставшиеся блоки
     for (int proc = 1; proc < size; ++proc) {
       std::vector<int> next_block(recv_buf.begin() + displs[proc], recv_buf.begin() + displs[proc] + send_counts[proc]);
       final_result = merge_two(final_result, next_block);
     }
 
-    // final_result теперь содержит полностью отсортированный массив
     res = std::move(final_result);
   }
 
@@ -206,7 +169,6 @@ bool TaskParallel::run() {
 
 bool TaskParallel::post_processing() {
   internal_order_test();
-  // Только процесс 0 записывает результат
   if (world.rank() == 0) {
     int* output_ = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(res.begin(), res.end(), output_);
@@ -240,44 +202,36 @@ bool TaskSequential::pre_processing() {
 bool TaskSequential::run() {
   internal_order_test();
 
-  // Инвертирование знакового бита для всех чисел
   for (auto& num : input_) {
     num ^= 0x80000000;
   }
 
-  // Найти максимальное число для определения количества бит
   auto max_num = static_cast<unsigned int>(input_[0]);
   for (const auto& num : input_) {
     if (static_cast<unsigned int>(num) > max_num) {
       max_num = static_cast<unsigned int>(num);
     }
   }
-  // Определить количество бит в максимальном числе
   int num_bits = 0;
   const int MAX_BITS = sizeof(unsigned int) * 8;
   while (num_bits < MAX_BITS && (max_num >> num_bits) > 0) {
     num_bits++;
   }
 
-  // Инициализация вспомогательного массива
   std::vector<int> output(input_.size());
 
-  // Поразрядная сортировка
   for (int bit = 0; bit < num_bits; ++bit) {
     int zero_count = 0;
 
-    // Подсчёт нулевых битов на текущем разряде
     for (const auto& num : input_) {
       if (((static_cast<unsigned int>(num) >> bit) & 1) == 0) {
         zero_count++;
       }
     }
 
-    // Индексы для размещения чисел
     int zero_index = 0;
     int one_index = zero_count;
 
-    // Размещение чисел в output на основе текущего бита
     for (const auto& num : input_) {
       if (((static_cast<unsigned int>(num) >> bit) & 1) == 0) {
         output[zero_index++] = num;
@@ -286,11 +240,9 @@ bool TaskSequential::run() {
       }
     }
 
-    // Копирование отсортированных данных обратно в input_ для следующей итерации
     input_ = output;
   }
 
-  // Восстановление исходных значений путём инвертирования знакового бита
   for (auto& num : input_) {
     num ^= 0x80000000;
   }

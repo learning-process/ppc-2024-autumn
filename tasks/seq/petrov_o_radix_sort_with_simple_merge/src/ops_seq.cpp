@@ -31,44 +31,36 @@ bool TestTaskSequential::pre_processing() {
 bool TestTaskSequential::run() {
   internal_order_test();
 
-  // Инвертирование знакового бита для всех чисел
   for (auto& num : input_) {
     num ^= 0x80000000;
   }
 
-  // Найти максимальное число для определения количества бит
   auto max_num = static_cast<unsigned int>(input_[0]);
   for (const auto& num : input_) {
     if (static_cast<unsigned int>(num) > max_num) {
       max_num = static_cast<unsigned int>(num);
     }
   }
-  // Определить количество бит в максимальном числе
   int num_bits = 0;
   const int MAX_BITS = sizeof(unsigned int) * 8;
   while (num_bits < MAX_BITS && (max_num >> num_bits) > 0) {
     num_bits++;
   }
 
-  // Инициализация вспомогательного массива
   std::vector<int> output(input_.size());
 
-  // Поразрядная сортировка
   for (int bit = 0; bit < num_bits; ++bit) {
     int zero_count = 0;
 
-    // Подсчёт нулевых битов на текущем разряде
     for (const auto& num : input_) {
       if (((static_cast<unsigned int>(num) >> bit) & 1) == 0) {
         zero_count++;
       }
     }
 
-    // Индексы для размещения чисел
     int zero_index = 0;
     int one_index = zero_count;
 
-    // Размещение чисел в output на основе текущего бита
     for (const auto& num : input_) {
       if (((static_cast<unsigned int>(num) >> bit) & 1) == 0) {
         output[zero_index++] = num;
@@ -77,11 +69,9 @@ bool TestTaskSequential::run() {
       }
     }
 
-    // Копирование отсортированных данных обратно в input_ для следующей итерации
     input_ = output;
   }
 
-  // Восстановление исходных значений путём инвертирования знакового бита
   for (auto& num : input_) {
     num ^= 0x80000000;
   }
