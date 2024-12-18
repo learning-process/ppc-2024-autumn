@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 std::vector<int> koshkin_n_linear_histogram_stretch_mpi::getRandomImage(int sz) {
   std::mt19937 gen(42);
   std::uniform_int_distribution<int> dist(0, 255);
@@ -53,16 +51,17 @@ bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskSequential::run() {
 
   int size = image_input.size();
   image_output.resize(size);
-  int Imin = 255, Imax = 0;
+  int Imin = 255;
+  int Imax = 0;
 
   std::vector<int> I(size / 3);
   for (int i = 0, k = 0; i < size; i += 3, ++k) {
-    int R = image_input[i];
-    int G = image_input[i + 1];
-    int B = image_input[i + 2];
+    int r = image_input[i];
+    int g = image_input[i + 1];
+    int b = image_input[i + 2];
 
-    // ¬ычисление ¤ркости
-    I[k] = static_cast<int>(0.299 * R + 0.587 * G + 0.114 * B);
+    I[k] = static_cast<int>(0.299 * static_cast<double>(r) + 0.587 * static_cast<double>(g) +
+                            0.114 * static_cast<double>(b));
 
     if (I[k] < Imin) Imin = I[k];
     if (I[k] > Imax) Imax = I[k];
@@ -152,37 +151,40 @@ bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel::run() {
 
   int local_pixels = pixels_per_process + (world.rank() < extra_pixels ? 1 : 0);
 
-  std::vector<int> displacements(world.size(), 0);
+  std::vector<int> offset(world.size(), 0);
   std::vector<int> send_counts(world.size(), 0);
 
   if (world.rank() == 0) {
     for (int proc = 0; proc < world.size(); ++proc) {
       send_counts[proc] = (pixels_per_process + (proc < extra_pixels ? 1 : 0)) * 3;
       if (proc > 0) {
-        displacements[proc] = displacements[proc - 1] + send_counts[proc - 1];
+        offset[proc] = offset[proc - 1] + send_counts[proc - 1];
       }
     }
   }
 
   broadcast(world, send_counts.data(), send_counts.size(), 0);
-  broadcast(world, displacements.data(), displacements.size(), 0);
+  broadcast(world, offset.data(), offset.size(), 0);
 
   std::vector<int> local_input(local_pixels * 3);
-  boost::mpi::scatterv(world, image_input.data(), send_counts, displacements, local_input.data(), local_pixels * 3, 0);
+  boost::mpi::scatterv(world, image_input.data(), send_counts, offset, local_input.data(), local_pixels * 3, 0);
 
-  int local_Imin = 255, local_Imax = 0;
+  int local_Imin = 255;
+  int local_Imax = 0;
   std::vector<int> local_I(local_pixels);
   for (int i = 0, k = 0; i < local_pixels * 3; i += 3, ++k) {
     int R = local_input[i];
     int G = local_input[i + 1];
     int B = local_input[i + 2];
 
-    local_I[k] = static_cast<int>(0.299 * R + 0.587 * G + 0.114 * B);
+    local_I[k] = static_cast<int>(0.299 * static_cast<double>(R) + 0.587 * static_cast<double>(G) +
+                                  0.114 * static_cast<double>(B));
     local_Imin = std::min(local_Imin, local_I[k]);
     local_Imax = std::max(local_Imax, local_I[k]);
   }
 
-  int global_Imin, global_Imax;
+  int global_Imin;
+  int global_Imax;
   boost::mpi::all_reduce(world, local_Imin, global_Imin, boost::mpi::minimum<int>());
   boost::mpi::all_reduce(world, local_Imax, global_Imax, boost::mpi::maximum<int>());
 
@@ -207,7 +209,7 @@ bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel::run() {
     image_output.resize(size);
   }
 
-  boost::mpi::gatherv(world, local_output.data(), local_pixels * 3, image_output.data(), send_counts, displacements, 0);
+  boost::mpi::gatherv(world, local_output.data(), local_pixels * 3, image_output.data(), send_counts, offset, 0);
 
   return true;
 }

@@ -3,8 +3,6 @@
 #include <random>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 std::vector<int> koshkin_n_linear_histogram_stretch_seq::getRandomImage(int sz) {
   std::mt19937 gen(42);
   std::uniform_int_distribution<int> dist(0, 255);
@@ -51,9 +49,10 @@ bool koshkin_n_linear_histogram_stretch_seq::TestTaskSequential::run() {
   // и значения каждого цвета пикселя передано в вектор вида выше
   int size = image_input.size();
   image_output.resize(size);
-  int Imin = 255, Imax = 0;  // Минимальная яркость / Максимальная яркость
+  int Imin = 255;  // Минимальная яркость
+  int Imax = 0;    // Максимальная яркость
 
-  // Перевод RGB в яркость (luminance) по стандартной формуле I=0.299⋅R+0.587⋅G+0.114⋅B
+  // Перевод RGB в яркость (luminance) по стандартной формуле
   // Расчёт яркостей и нахождение Imin, Imax
   std::vector<int> I(size / 3);  // Массив яркостей
   for (int i = 0, k = 0; i < size; i += 3, ++k) {
@@ -62,7 +61,8 @@ bool koshkin_n_linear_histogram_stretch_seq::TestTaskSequential::run() {
     int B = image_input[i + 2];
 
     // Вычисление яркости
-    I[k] = static_cast<int>(0.299 * R + 0.587 * G + 0.114 * B);
+    I[k] = static_cast<int>(0.299 * static_cast<double>(R) + 0.587 * static_cast<double>(G) +
+                            0.114 * static_cast<double>(B));
 
     if (I[k] < Imin) Imin = I[k];
     if (I[k] > Imax) Imax = I[k];
