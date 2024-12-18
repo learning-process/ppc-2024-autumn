@@ -76,12 +76,7 @@ struct CRSMatrixChunk {
     }
   } offsets;
 
-  struct Storage {
-    std::vector<index_type_mut> row_pointers;
-    std::vector<index_type_mut> col_indices;
-    std::vector<std::remove_const_t<T>> data;
-  };
-  std::optional<Storage> storage{std::nullopt};
+  std::optional<CRSMatrix<std::remove_const_t<T>>> storage{std::nullopt};
 
   static CRSMatrixChunk from(std::span<index_type> row_pointers_, std::span<index_type> col_indices_,
                              std::span<T> data_, size_t cols_, const std::pair<index_type, index_type>& roff,
@@ -226,9 +221,6 @@ class TaskParallel : public TaskCommon<T> {
       partial_res.row_pointers[row + 1 - roff] = partial_res.data.size();
     }
 
-    if (world.rank() == 0) {
-      res_partials.clear();
-    }
     boost::mpi::gather(world, partial_res, res_partials, 0);
 
     return true;
