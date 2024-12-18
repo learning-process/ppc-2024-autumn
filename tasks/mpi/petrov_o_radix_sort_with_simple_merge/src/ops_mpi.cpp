@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <cmath>
-#include <iostream>
 #include <limits>
 
 namespace petrov_o_radix_sort_with_simple_merge_mpi {

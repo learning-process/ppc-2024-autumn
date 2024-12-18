@@ -2,9 +2,7 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <memory>
 #include <random>
-#include <vector>
 
 #include "mpi/petrov_o_radix_sort_with_simple_merge/include/ops_mpi.hpp"
 

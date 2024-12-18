@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <memory>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/petrov_o_radix_sort_with_simple_merge/include/ops_seq.hpp"

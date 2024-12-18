@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <memory>
-#include <vector>
 
 #include "seq/petrov_o_radix_sort_with_simple_merge/include/ops_seq.hpp"
 
@@ -92,4 +90,38 @@ TEST(petrov_o_radix_sort_with_simple_merge_seq, DuplicateElementsTest) {
   std::vector<int> expected = in;
   std::sort(expected.begin(), expected.end());
   ASSERT_EQ(expected, out);
+}
+
+TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest) {
+  std::vector<int> in;
+  std::vector<int> out;
+  const size_t array_size = 1000;
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-1000000, 1000000);
+
+  in.resize(array_size);
+  for (size_t i = 0; i < array_size; ++i) {
+    in[i] = dist(gen);
+  }
+
+  out.resize(in.size(), 0);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_TRUE(testTaskSequential.validation());
+  ASSERT_TRUE(testTaskSequential.pre_processing());
+  ASSERT_TRUE(testTaskSequential.run());
+  ASSERT_TRUE(testTaskSequential.post_processing());
+
+  std::vector<int> expected = in;
+  std::sort(expected.begin(), expected.end());
+  ASSERT_EQ(expected, out) << "Sorted array does not match the expected result.";
 }
