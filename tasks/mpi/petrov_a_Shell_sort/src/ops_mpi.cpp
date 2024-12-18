@@ -3,6 +3,7 @@
 #include <mpi.h>
 
 #include <algorithm>
+#include <cstring>
 #include <iostream>
 #include <vector>
 
@@ -17,7 +18,7 @@ bool TestTaskMPI::pre_processing() {
   const unsigned char* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
 
   data_.resize(input_size);
-  std::memcpy(data_.data(), raw_data, input_size * sizeof(int));
+  memcpy(data_.data(), raw_data, input_size * sizeof(int));
 
   return !data_.empty();
 }
@@ -42,9 +43,11 @@ bool TestTaskMPI::run() {
 
 bool TestTaskMPI::post_processing() {
   if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
-    std::vector<int>& output_data = taskData->outputs[0];
     size_t output_size = taskData->outputs_count[0];
-    std::copy(data_.begin(), data_.begin() + std::min(output_size, data_.size()), output_data.begin());
+    unsigned char* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
+
+    memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
+
   } else {
     return false;
   }
