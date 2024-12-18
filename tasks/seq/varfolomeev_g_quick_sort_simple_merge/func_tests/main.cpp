@@ -50,7 +50,7 @@ TEST(varfolomeev_g_quick_sort_simple_merge_seq, Test_getAntisortedVecor_func) {
   int start = -50;
   std::vector<int> vec = varfolomeev_g_quick_sort_simple_merge_seq::getAntisorted_seq(size, start);
   EXPECT_EQ(vec.size(), size);
-  for (int i = 0; i < vec.size() - 1; i++) {
+  for (int i = 0; i < (int)vec.size() - 1; i++) {
     EXPECT_LE(vec[i + 1], vec[i]);
   }
   for (int value : vec) {
