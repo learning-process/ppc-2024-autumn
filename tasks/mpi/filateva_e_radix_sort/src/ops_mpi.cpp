@@ -29,7 +29,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   int kol = 10;
   int raz = 10;
   std::vector<int> local_ans;
-  
+
   boost::mpi::broadcast(world, size, 0);
   if (world.rank() == 0) {
     local_ans.resize(size);
