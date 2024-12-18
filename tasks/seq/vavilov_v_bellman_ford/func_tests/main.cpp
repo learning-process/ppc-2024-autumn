@@ -8,7 +8,9 @@
 TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_1) {
   std::vector<int> edges = {0, 1, 10, 0, 2, 5, 1, 2, 2, 1, 3, 1, 2, 1, 3, 2, 3, 9, 2, 4, 2, 3, 4, 4};
   std::vector<int> output(5);
-  unsigned int vertices = 5, edges_count = 8, source = 0;
+  unsigned int vertices = 5;
+  unsigned int edges_count = 8;
+  unsigned int source = 0;
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count.emplace_back(vertices);
@@ -31,7 +33,9 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_1) {
 TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_2) {
   std::vector<int> edges = {0, 1, -1, 0, 2, 4, 1, 2, 3, 1, 3, 2, 2, 3, 5, 3, 4, -3};
   std::vector<int> output(5);
-  unsigned int vertices = 5, edges_count = 6, source = 0;
+  unsigned int vertices = 5;
+  unsigned int edges_count = 6;
+  unsigned int source = 0;
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count.emplace_back(vertices);
@@ -54,7 +58,9 @@ TEST(vavilov_v_bellman_ford_seq, ValidInputWithMultiplePaths_2) {
 TEST(vavilov_v_bellman_ford_seq, DisconnectedGraph) {
   std::vector<int> edges = {0, 1, 4, 0, 2, 1, 1, 3, 2};
   std::vector<int> output(5);
-  int vertices = 5, edges_count = 3, source = 0;
+  unsigned int vertices = 5;
+  unsigned int edges_count = 3;
+  unsigned int source = 0;
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count.emplace_back(vertices);
@@ -77,7 +83,9 @@ TEST(vavilov_v_bellman_ford_seq, DisconnectedGraph) {
 TEST(vavilov_v_bellman_ford_seq, NegativeCycle) {
   std::vector<int> edges = {0, 1, 1, 1, 2, -1, 2, 0, -1};
   std::vector<int> output(3);
-  unsigned int vertices = 3, edges_count = 3, source = 0;
+  unsigned int vertices = 3;
+  unsigned int edges_count = 3;
+  unsigned int source = 0;
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count.emplace_back(vertices);
@@ -96,7 +104,9 @@ TEST(vavilov_v_bellman_ford_seq, NegativeCycle) {
 TEST(vavilov_v_bellman_ford_seq, SingleVertexGraph) {
   std::vector<int> edges = {};
   std::vector<int> output(1, 0);
-  unsigned int vertices = 1, edges_count = 0, source = 0;
+  unsigned int vertices = 1;
+  unsigned int edges_count = 0;
+  unsigned int source = 0;
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs_count.emplace_back(vertices);
