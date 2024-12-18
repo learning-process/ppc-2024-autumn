@@ -57,7 +57,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_100_with_random) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 1; i < res.size(); i++) {
+  for (size_t i = 1; i < res.size(); i++) {
     ASSERT_LE(res[i - 1], res[i]);
   }
 }
@@ -82,7 +82,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_1000_with_random) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 1; i < res.size(); i++) {
+  for (size_t i = 1; i < res.size(); i++) {
     ASSERT_LE(res[i - 1], res[i]);
   }
 }
@@ -107,7 +107,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_5000_with_random) {
   ASSERT_TRUE(testTaskSequential.run());
   ASSERT_TRUE(testTaskSequential.post_processing());
 
-  for (int i = 1; i < res.size(); i++) {
+  for (size_t i = 1; i < res.size(); i++) {
     ASSERT_LE(res[i - 1], res[i]);
   }
 }
