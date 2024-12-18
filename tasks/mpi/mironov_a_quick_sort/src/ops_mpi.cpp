@@ -4,7 +4,7 @@
 #include <thread>
 #include <utility>
 
-//#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 using namespace std;
@@ -16,13 +16,13 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::pre_processing() {
 #ifdef DEBUG
     cout << "Delta " << delta << endl;
 #endif
-    input_ = std::vector < int>(delta * world.size(), std::numeric_limits<int>::max());
+    input_ = std::vector<int>(delta * world.size(), std::numeric_limits<int>::max());
     result_ = std::vector<int>(taskData->inputs_count[0]);
     int* it = reinterpret_cast<int*>(taskData->inputs[0]);
 #ifdef DEBUG
     cout << "sz " << input_.size() << " " << result_.size() << endl;
 #endif
-    for(size_t i = 0; i < taskData->inputs_count[0]; ++i) {
+    for (size_t i = 0; i < taskData->inputs_count[0]; ++i) {
       input_[i] = it[i];
     }
   }
@@ -37,14 +37,14 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::validation() {
   return true;
 }
 
-static void merge(std::vector<int>& vec1, std::vector<int>& vec2) {
+static void merge(std::vector<int>& vec1, std::vector<int>& vec2, int start, int end) {
   std::vector<int> res;
-  res.reserve(vec1.size() + vec2.size());
-  
-  int ptr1 = 0;
-  int ptr2 = 0;
+  res.reserve(vec1.size() + end - start + 1);
 
-  while (ptr1 < vec1.size() && ptr2 < vec2.size()) {
+  int ptr1 = 0;
+  int ptr2 = start;
+
+  while (ptr1 < vec1.size() && ptr2 <= end) {
     if (vec1[ptr1] <= vec2[ptr2]) {
       res.push_back(vec1[ptr1++]);
     } else {
@@ -54,7 +54,7 @@ static void merge(std::vector<int>& vec1, std::vector<int>& vec2) {
   while (ptr1 < vec1.size()) {
     res.push_back(vec1[ptr1++]);
   }
-  while (ptr2 < vec2.size()) {
+  while (ptr2 <= end) {
     res.push_back(vec2[ptr2++]);
   }
   vec1 = std::move(res);
@@ -83,82 +83,46 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::run() {
 
   broadcast(world, delta, 0);
 
-  if (world.rank() == 0) {
-    // probably better to use isend
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
-  };
+  std::vector<int> local_input(delta);
+  std::vector<int> merged;
 
-  std::vector<int> local_input;
-  if (world.rank() == 0) {
-    local_input = std::vector<int>(input_.begin(), input_.begin() + delta);
-  } else {
-    local_input.resize(delta);
-    world.recv(0, 0, local_input.data(), delta);
-  }
-  // cout << "Stage 1 " <<  world.rank() << endl;
+  scatter(world, input_.data(), local_input.data(), delta, 0);
   quickSort(local_input, 0, delta - 1);
-  int world_sz = world.size();
 
   if (world.rank() == 0) {
-    if (world_sz == 1) {
-      result_ = std::move(local_input);
-      return true;
-    }
-    int curr_rank = 1;
-    std::vector<int> vec2;
-    while (curr_rank < world_sz) {
-
-      vec2.resize(local_input.size());
-#ifdef DEBUG
-      cout << "recv: " << curr_rank << " " << vec2.size() << " " << local_input.size() << " " << world.rank() << endl;
-#endif
-      world.recv(curr_rank, 0, vec2.data(), local_input.size());
-      merge(local_input, vec2);
-#ifdef DEBUG  
-      cout << "MERGED " << local_input.size() << endl;
-#endif
-      curr_rank <<= 1;
-    }
-    result_ = std::move(local_input);
-
-  } else {
-    int rank = world.rank();
-    int curr_rank = world.rank();
-    int need_rank = 1;
-
-    std::vector<int> vec2;
-
-    while (!(curr_rank % 2)) {
-      vec2.resize(local_input.size());
-      if (rank + need_rank < world_sz) {
-        world.recv(rank + need_rank, 0, vec2.data(), local_input.size());
-        merge(local_input, vec2);
-#ifdef DEBUG 
-        cout << "Abort: " << rank + need_rank << " " << local_input.size() << " " << world.rank() << endl;
-        cout << "MERGED_$ " << local_input.size() << " " << world.rank() << endl;
-#endif
-      }
-      else
-      {
-        local_input.resize(local_input.size() * 2, std::numeric_limits<int>::max());
-      }
-      need_rank <<= 1;
-      curr_rank >>= 1;
-    }
-#ifdef DEBUG 
-    if (world.rank() == 4)
-    {
-      cout << "WOWWW: " << need_rank << " " << curr_rank << endl;
-    }
-    int c = world.rank() - need_rank;
- 
-    cout << "C: " << c << " " << local_input.size() << " " << world.rank() << endl;
-#endif
-    world.send(world.rank() - need_rank, 0, local_input.data(), local_input.size());
+    merged.resize(input_.size());
   }
 
+  boost::mpi::gather(world, local_input.data(), local_input.size(), merged.data(), 0);
+  if (world.rank() == 0) {
+#ifdef DEBUG
+
+    for (auto x : merged) {
+      std::cout << x << " ";
+    }
+    std::cout << " 1231 " << std::endl;
+    
+    for (auto x : result_) {
+      std::cout << x << " ";
+    }
+    std::cout << " 1231wwW " << std::endl;
+#endif  // DEBUG
+    result_ = std::move(local_input);
+    for (int i = 1; i < world.size(); ++i) {
+#ifdef DEBUG
+      std::cout << "! " << i * delta << " " << (i + 1) * delta - 1 << std::endl;
+#endif  // DEBUG
+
+      
+      merge(result_, merged, i * delta, (i + 1) * delta - 1);
+    }
+#ifdef DEBUG
+    for (auto x : result_) {
+      std::cout << x << " ";
+    }
+    std::cout << " 1231wwweqweW " << std::endl;
+#endif  // DEBUG
+  }
   return true;
 }
 
@@ -166,9 +130,6 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     int* it = reinterpret_cast<int*>(taskData->outputs[0]);
-#ifdef DEBUG  
-    cout << "OUTPUT: " <<  taskData->outputs_count[0] << " " << result_.size() << endl;
-#endif
     std::copy(result_.begin(), result_.begin() + taskData->outputs_count[0], it);
   }
   return true;
