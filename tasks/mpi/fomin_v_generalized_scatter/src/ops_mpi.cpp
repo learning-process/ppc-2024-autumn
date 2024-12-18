@@ -21,11 +21,9 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
   return vec;
 }
 
-int fomin_v_generalized_scatter::GeneralizedScatterTestParallel::generalized_scatter(const void* sendbuf, int sendcount,
-                                                                                     MPI_Datatype sendtype,
-                                                                                     void* recvbuf, int recvcount,
-                                                                                     MPI_Datatype recvtype, int root,
-                                                                                     MPI_Comm comm) {
+int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
+                                                     void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
+                                                     MPI_Comm comm) {
   boost::mpi::communicator world;
   int rank = world.rank();
   int size = world.size();
