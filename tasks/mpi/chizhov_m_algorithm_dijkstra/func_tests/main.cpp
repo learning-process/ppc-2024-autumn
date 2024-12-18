@@ -3,17 +3,20 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <iomanip>
+#include <random>
 #include <vector>
 
 #include "mpi/chizhov_m_algorithm_dijkstra/include/ops_mpi.hpp"
 void chizhov_m_dijkstra_mpi::generateMatrix(std::vector<std::vector<int>> &w, int n) {
-  srand(time(0));
+  std::random_device dev;
+  std::mt19937 gen(dev());
   for (int i = 0; i < n; i++) {
     for (int j = 0; j < n; j++) {
       if (i == j) {
         w[i][j] = 0;
       } else {
-        int val = rand() % 10 + 1;
+        int val = gen() % 10 + 1;
         w[i][j] = val;
         w[j][i] = val;
       }
