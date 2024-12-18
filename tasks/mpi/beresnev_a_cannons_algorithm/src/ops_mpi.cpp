@@ -8,16 +8,6 @@
 #include <string>
 #include <vector>
 
-// static void print_matrix(const std::vector<double>& matrix, int N) {
-//   for (int i = 0; i < N; ++i) {
-//     for (int j = 0; j < N; ++j) {
-//       std::cout << matrix[i * N + j] << " ";
-//     }
-//     std::cout << std::endl;
-//   }
-//   std::cout << "f" << std::endl;
-// }
-
 static int find_compatible_q(int size, int N) {
   int q = std::floor(std::sqrt(size));
   while (q > 0) {
@@ -125,13 +115,11 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::validation() {
       n_ = reinterpret_cast<int*>(taskData->inputs[2])[0];
     }
     s_ = n_ * n_;
-    // std::cerr << n_ << std::endl;
     return n_ > 0 && taskData->inputs_count[2] == 1 && taskData->inputs_count[0] == taskData->inputs_count[1] &&
            static_cast<int>(taskData->inputs_count[1]) == s_ && taskData->inputs[0] != nullptr &&
            taskData->inputs[1] != nullptr && taskData->outputs[0] != nullptr &&
            static_cast<int>(taskData->outputs_count[0]) == s_;
   }
-  // std::cerr << world.rank() << std::endl;
   return true;
 }
 
@@ -159,9 +147,6 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
   rank = my_world.rank();
   size = my_world.size();
 
-  /*boost::mpi::broadcast(my_world, n_, 0);
-  boost::mpi::broadcast(my_world, s_, 0);*/
-
   std::vector<double> scatter_A(s_);
   std::vector<double> scatter_B(s_);
   if (rank == 0) {
@@ -173,8 +158,6 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
         index += K * K;
       }
     }
-    // print_matrix(scatter_A, N);
-    // print_matrix(scatter_B, N);
   }
 
   std::vector<double> local_A(K * K);
@@ -187,7 +170,6 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
 
   int row = rank / q;
   int col = rank % q;
-  my_world.barrier();
 
   int send_rank_A = row * q + (col + q - 1) % q;
   int recv_rank_A = row * q + (col + 1) % q;
@@ -201,7 +183,6 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
   int send_rank_B = col + q * ((row + q - 1) % q);
   int recv_rank_B = col + q * ((row + 1) % q);
 
-  // Проверка допустимости индексов
   if (send_rank_B >= size || recv_rank_B >= size) {
     std::cerr << "Invalid rank for send or receive: send_rank=" << send_rank_B << ", recv_rank=" << recv_rank_B
               << std::endl;
@@ -226,7 +207,6 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     local_A = temp;
   }
 
-  my_world.barrier();
   for (int i = 0; i < col; ++i) {
     boost::mpi::request send_request1;
     boost::mpi::request recv_request1;
@@ -276,10 +256,8 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
   }
 
   boost::mpi::gather(my_world, local_C.data(), local_C.size(), unfinished_C, 0);
-  // std::cout << my_world.size() << std::endl;
   if (rank == 0) {
     rearrange_matrix(unfinished_C, res_, n_, K, q);
-    // print_matrix(res_, n_);
   }
   return true;
 }
