@@ -70,7 +70,7 @@ TEST(zinoviev_a_readers_and_writers_mpi, Test_Different_Input_Sizes) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 200;
-    global_vec = zinoviev_a_readers_and_writers_mpi::getRandomVector(count_size_vector);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
