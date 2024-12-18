@@ -162,7 +162,7 @@ TEST(vavilov_v_bellman_ford_mpi, NegativeCycle) {
   std::vector<int> matrix = {0, 1, 0, 0, 0, -1, -1, 0, 0};
   std::vector<int> output(3);
   int vertices = 3;
-  int edges_count = 3; 
+  int edges_count = 3;
   int source = 0;
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
