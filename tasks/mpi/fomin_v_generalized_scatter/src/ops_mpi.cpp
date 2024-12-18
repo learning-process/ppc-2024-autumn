@@ -42,21 +42,19 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   if (rank == root) {
     const char* send_ptr = static_cast<const char*>(sendbuf);
     for (int child = 0; child < size; ++child) {
-      if (child == root) continue;  // Root doesn't send to itself
-      int chunk_size = recvcount * datatype_size;
-      int offset = child * chunk_size;
+      if (child == root) continue;
+      int offset = child * recvcount * datatype_size;
       MPI_Send(send_ptr + offset, recvcount, sendtype, child, 0, comm);
     }
-    // Copy root's chunk to recvbuf
+    // Root copies its own data
     int root_offset = root * recvcount * datatype_size;
     memcpy(recvbuf, send_ptr + root_offset, recvcount * datatype_size);
   } else {
     char* recv_ptr = static_cast<char*>(recvbuf);
     MPI_Status status;
-    // Receive chunk from parent
+    // Receive data from parent
     MPI_Recv(recv_ptr, recvcount, recvtype, parent, 0, comm, &status);
-
-    // Send chunk to children if any
+    // Send data to children if any
     if (left_child < size) {
       MPI_Send(recv_ptr, recvcount, recvtype, left_child, 0, comm);
     }
