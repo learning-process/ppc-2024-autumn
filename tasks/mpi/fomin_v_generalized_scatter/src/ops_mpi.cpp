@@ -24,14 +24,14 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
 int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                                                      void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
                                                      MPI_Comm comm) {
-  boost::mpi::communicator world;
-  int rank = world.rank();
-  int size = world.size();
+  int rank, size;
+  MPI_Comm_rank(comm, &rank);
+  MPI_Comm_size(comm, &size);
 
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
 
-  if (sendcount != size * recvcount) {
+  if (rank == root && sendcount != size * recvcount) {
     return MPI_ERR_COUNT;
   }
 
@@ -39,33 +39,43 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int left_child = 2 * rank + 1;
   int right_child = 2 * rank + 2;
 
+  // Buffer for temporary storage in non-root processes
+  char* temp_buffer = (rank == root) ? nullptr : new char[sendcount * datatype_size];
+
   if (rank == root) {
+    // Copy the root's data to its recvbuf
     const char* send_ptr = static_cast<const char*>(sendbuf);
-    // Send data to each child
-    for (int child = 0; child < size; ++child) {
-      if (child == root) continue;
-      int offset = child * recvcount * datatype_size;
-      MPI_Send(send_ptr + offset, recvcount, sendtype, child, 0, comm);
-    }
-    // Root copies its own data
-    int root_offset = root * recvcount * datatype_size;
-    memcpy(recvbuf, send_ptr + root_offset, recvcount * datatype_size);
-  } else {
-    char* recv_ptr = static_cast<char*>(recvbuf);
-    MPI_Status status;
-    // Receive data from parent
-    MPI_Recv(recv_ptr, recvcount, recvtype, parent, 0, comm, &status);
-    // Send data to children if any
+    memcpy(recvbuf, send_ptr + rank * recvcount * datatype_size, recvcount * datatype_size);
+
+    // Send data to children
     if (left_child < size) {
-      int child_offset = recvcount * datatype_size;
-      MPI_Send(recv_ptr + child_offset, recvcount, recvtype, left_child, 0, comm);
+      MPI_Send(send_ptr + left_child * recvcount * datatype_size, (size - left_child) * recvcount * datatype_size,
+               sendtype, left_child, 0, comm);
     }
     if (right_child < size) {
-      int child_offset = 2 * recvcount * datatype_size;
-      MPI_Send(recv_ptr + child_offset, recvcount, recvtype, right_child, 0, comm);
+      MPI_Send(send_ptr + right_child * recvcount * datatype_size, (size - right_child) * recvcount * datatype_size,
+               sendtype, right_child, 0, comm);
+    }
+  } else {
+    // Receive data from parent
+    MPI_Status status;
+    MPI_Recv(temp_buffer, sendcount * datatype_size, sendtype, parent, 0, comm, &status);
+
+    // Copy the rank's data to its recvbuf
+    memcpy(recvbuf, temp_buffer + rank * recvcount * datatype_size, recvcount * datatype_size);
+
+    // Forward data to children
+    if (left_child < size) {
+      MPI_Send(temp_buffer + left_child * recvcount * datatype_size, (size - left_child) * recvcount * datatype_size,
+               sendtype, left_child, 0, comm);
+    }
+    if (right_child < size) {
+      MPI_Send(temp_buffer + right_child * recvcount * datatype_size, (size - right_child) * recvcount * datatype_size,
+               sendtype, right_child, 0, comm);
     }
   }
 
+  delete[] temp_buffer;
   return MPI_SUCCESS;
 }
 
