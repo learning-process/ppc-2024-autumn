@@ -15,7 +15,7 @@ bool TestTaskMPI::pre_processing() {
   }
 
   size_t input_size = taskData->inputs_count[0];
-  const unsigned char* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
+  const auto unsigned char* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
 
   data_.resize(input_size);
   memcpy(data_.data(), raw_data, input_size * sizeof(int));
@@ -44,7 +44,7 @@ bool TestTaskMPI::run() {
 bool TestTaskMPI::post_processing() {
   if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
     size_t output_size = taskData->outputs_count[0];
-    unsigned char* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
+    auto unsigned char* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
 
     memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
 
