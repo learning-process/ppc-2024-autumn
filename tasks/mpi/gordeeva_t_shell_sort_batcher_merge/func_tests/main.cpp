@@ -34,20 +34,20 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_Empty_Output) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
   const int size = 0;
-  
+
   std::vector<int> input_vec;
   std::vector<int> result_parallel(size);
-  
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  
+
   if (world.rank() == 0) {
     input_vec = gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::rand_vec(size, 0, 1000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
     taskDataPar->inputs_count = {size};
   }
-  
+
   gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel testPar(taskDataPar);
-  
+
   ASSERT_FALSE(testPar.validation());
  }
 
