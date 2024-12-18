@@ -58,6 +58,12 @@ bool BellmanFordSeq::validation() {
     return false;
   }
 
+  for (size_t i = 0; i < V; ++i) {
+    if (input_matrix[i * V + i] == 0) {
+      return false;
+    }
+  }
+
   return true;
 }
 
