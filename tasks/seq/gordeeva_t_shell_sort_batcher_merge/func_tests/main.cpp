@@ -21,7 +21,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_Zero_Value) {
   taskDataSeq->outputs_count.emplace_back(res.size());
 
   ASSERT_FALSE(testTaskSequential.validation());
-
 }
 
 TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_Empty_Output) {
@@ -48,7 +47,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_100_with_random) {
 
   taskDataSeq->inputs_count.emplace_back(sz_vec);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vect.data()));
-
 
   std::vector<int> res(sz_vec, 0);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));

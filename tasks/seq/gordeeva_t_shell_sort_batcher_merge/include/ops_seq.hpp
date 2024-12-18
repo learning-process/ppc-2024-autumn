@@ -6,7 +6,7 @@
 #include "core/task/include/task.hpp"
 
 namespace gordeeva_t_shell_sort_batcher_merge_seq {
-	
+
 void shellSort(std::vector<int>& arr, int arr_length);
 
 class TestTaskSequential : public ppc::core::Task {
