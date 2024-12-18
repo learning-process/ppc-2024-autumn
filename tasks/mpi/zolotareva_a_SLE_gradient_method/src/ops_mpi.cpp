@@ -1,33 +1,35 @@
-// Copyright 2023 Nesterov Alexander
-// здесь писать саму задачу
 #include "mpi/zolotareva_a_SLE_gradient_method/include/ops_mpi.hpp"
+
+#include <mpi.h>
 
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <boost/serialization/vector.hpp>
 #include <cmath>
+#include <numeric>
 #include <seq/zolotareva_a_SLE_gradient_method/include/ops_seq.hpp>
 #include <vector>
 
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  n_ = static_cast<int>(taskData->inputs_count[1]);
-  if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) {
+  if (static_cast<int>(taskData->inputs_count[0]) < 0 || static_cast<int>(taskData->inputs_count[1]) < 0 ||
+      static_cast<int>(taskData->outputs_count[0]) < 0)
     return false;
-  }
-  if (int(taskData->inputs_count[0]) != n_ * n_ || int(taskData->inputs_count[1]) != n_) {
-    return false;
-  }
-  if (int(taskData->outputs_count[0]) != n_) {
-    return false;
-  }
+  if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) return false;
 
+  if (static_cast<int>(taskData->inputs_count[0]) !=
+      (static_cast<int>(taskData->inputs_count[1]) * static_cast<int>(taskData->inputs_count[1])))
+    return false;
+
+  if (static_cast<int>(taskData->outputs_count[0]) != taskData->inputs_count[1]) return false;
+
+  // проверка симметрии и положительной определённости
   const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
 
-  return is_positive_and_simm(A, n_);
+  return is_positive_and_simm(A, static_cast<int>(taskData->inputs_count[1]));
 }
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
+  n_ = static_cast<int>(taskData->inputs_count[1]);
   A_.resize(n_ * n_);
   b_.resize(n_);
   x_.resize(n_, 0.0);
@@ -46,7 +48,7 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::pre_processing
 
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  x_ = conjugate_gradient(A_, b_, x_, n_);
+  conjugate_gradient(A_, b_, x_, n_);
   return true;
 }
 
@@ -60,20 +62,22 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::post_processin
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    n_ = static_cast<int>(taskData->inputs_count[1]);
-    if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) {
+    if (static_cast<int>(taskData->inputs_count[0]) < 0 || static_cast<int>(taskData->inputs_count[1]) < 0 ||
+        static_cast<int>(taskData->outputs_count[0]) < 0)
       return false;
-    }
-    if (int(taskData->inputs_count[0]) != n_ * n_ || int(taskData->inputs_count[1]) != n_) {
+    if (taskData->inputs_count.size() < 2 || taskData->inputs.size() < 2 || taskData->outputs.empty()) return false;
+
+    if (static_cast<int>(taskData->inputs_count[0]) !=
+        (static_cast<int>(taskData->inputs_count[1]) * static_cast<int>(taskData->inputs_count[1])))
       return false;
-    }
-    if (int(taskData->outputs_count[0]) != n_) {
-      return false;
-    }
+
+    if (static_cast<int>(taskData->outputs_count[0]) != taskData->inputs_count[1]) return false;
+
     // проверка симметрии и положительной определённости
     const auto* A = reinterpret_cast<const double*>(taskData->inputs[0]);
 
-    return zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::is_positive_and_simm(A, n_);
+    return zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::is_positive_and_simm(
+        A, static_cast<int>(taskData->inputs_count[1]));
   }
   return true;
 }
@@ -81,6 +85,7 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::validation() {
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
+    n_ = static_cast<int>(taskData->inputs_count[1]);
     const auto* input_matrix = reinterpret_cast<const double*>(taskData->inputs[0]);
     const auto* input_vector = reinterpret_cast<const double*>(taskData->inputs[1]);
     A_.resize(n_ * n_);
@@ -127,9 +132,19 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
     world.recv(0, 1, local_b_.data(), local_rows);
   }
 
-  x_.resize(local_rows, 0.0);
+  x_.assign(local_rows, 0.0);
   std::vector<double> r(local_b_);
   std::vector<double> p(r);
+
+  int local_rows_0 = base_rows + remainder;
+  std::vector<int> recvcounts(world_size, base_rows);
+  recvcounts[0] = local_rows_0;
+  std::vector<int> displs(world_size, 0);
+  for (int i = 1; i < world_size; ++i) {
+    displs[i] = displs[i - 1] + recvcounts[i - 1];
+  }
+
+  std::vector<double> global_p(n_);
   std::vector<double> Ap(local_rows);
 
   double rs_old = std::inner_product(r.begin(), r.end(), r.begin(), 0.0);
@@ -139,29 +154,11 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
   double threshold = (initial_res_norm == 0.0) ? 1e-12 : (1e-12 * initial_res_norm);
 
   for (int iter = 0; iter <= n_; ++iter) {
-    // собираем полный вектор p от всех процессов
-    std::vector<std::vector<double>> gathered_p;
-    boost::mpi::all_gather(world, p, gathered_p);
-
-    std::vector<double> global_p(n_);
-    {
-      int offset = 0;
-      int local_rows_0 = base_rows + remainder;
-      std::copy(gathered_p[0].begin(), gathered_p[0].end(), global_p.begin() + offset);
-      offset += local_rows_0;
-
-      for (int proc = 1; proc < world_size; ++proc) {
-        std::copy(gathered_p[proc].begin(), gathered_p[proc].end(), global_p.begin() + offset);
-        offset += base_rows;
-      }
-    }
+    MPI_Allgatherv(p.data(), local_rows, MPI_DOUBLE, global_p.data(), recvcounts.data(), displs.data(), MPI_DOUBLE,
+                   world);
 
     for (int i = 0; i < local_rows; ++i) {
-      double sum = 0.0;
-      for (int j = 0; j < n_; ++j) {
-        sum += local_A_[i * n_ + j] * global_p[j];
-      }
-      Ap[i] = sum;
+      Ap[i] = std::inner_product(&local_A_[i * n_], &local_A_[i * n_] + n_, global_p.begin(), 0.0);
     }
 
     double local_dot_pAp = std::inner_product(p.begin(), p.end(), Ap.begin(), 0.0);
@@ -215,18 +212,24 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::post_processing(
   return true;
 }
 
-std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::conjugate_gradient(
-    const std::vector<double>& A, const std::vector<double>& b, std::vector<double>& x, int N) {
-  double initial_res_norm = std::sqrt(dot_product(b, b, N));
+void zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::conjugate_gradient(const std::vector<double>& A,
+                                                                                     const std::vector<double>& b,
+                                                                                     std::vector<double>& x, int N) {
+  double initial_res_norm = 0.0;
+  dot_product(initial_res_norm, b, b, N);
+  initial_res_norm = std::sqrt(initial_res_norm);
   double threshold = initial_res_norm == 0.0 ? 1e-12 : (1e-12 * initial_res_norm);
 
   std::vector<double> r = b;  // начальный вектор невязки r = b - A*x0, x0 = 0
   std::vector<double> p = r;  // начальное направление поиска p = r
-  double rs_old = dot_product(r, r, N);
+  double rs_old = 0;
+  dot_product(rs_old, r, r, N);
 
   for (int s = 0; s <= N; ++s) {
-    std::vector<double> Ap = matrix_vector_mult(A, p, N);
-    double pAp = dot_product(p, Ap, N);
+    std::vector<double> Ap(N, 0.0);
+    matrix_vector_mult(A, p, Ap, N);
+    double pAp = 0.0;
+    dot_product(pAp, p, Ap, N);
     if (pAp == 0.0) break;
 
     double alpha = rs_old / pAp;
@@ -236,7 +239,8 @@ std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential:
       r[i] -= alpha * Ap[i];
     }
 
-    double rs_new = dot_product(r, r, N);
+    double rs_new = 0.0;
+    dot_product(rs_new, r, r, N);
     if (rs_new < threshold) {  // Проверка на сходимость
       break;
     }
@@ -247,29 +251,25 @@ std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential:
 
     rs_old = rs_new;
   }
-
-  return x;
 }
 
-double zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::dot_product(const std::vector<double>& vec1,
-                                                                                const std::vector<double>& vec2,
-                                                                                int n) {
-  double sum = 0.0;
+void zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::dot_product(double& sum,
+                                                                              const std::vector<double>& vec1,
+                                                                              const std::vector<double>& vec2, int n) {
   for (int i = 0; i < n; ++i) {
     sum += vec1[i] * vec2[i];
   }
-  return sum;
 }
 
-std::vector<double> zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::matrix_vector_mult(
-    const std::vector<double>& matrix, const std::vector<double>& vector, int n) {
-  std::vector<double> result(n, 0.0);
+void zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::matrix_vector_mult(const std::vector<double>& matrix,
+                                                                                     const std::vector<double>& vector,
+                                                                                     std::vector<double>& result,
+                                                                                     int n) {
   for (int i = 0; i < n; ++i) {
     for (int j = 0; j < n; ++j) {
       result[i] += matrix[i * n + j] * vector[j];
     }
   }
-  return result;
 }
 
 bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential::is_positive_and_simm(const double* A, int n) {

@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -7,7 +6,7 @@
 #include <vector>
 
 #include "mpi/zolotareva_a_SLE_gradient_method/include/ops_mpi.hpp"
-using namespace std;
+
 namespace zolotareva_a_SLE_gradient_method_mpi {
 void generateSLE(std::vector<double>& A, std::vector<double>& b, int n) {
   std::random_device rd;
@@ -34,7 +33,6 @@ void form(int n_) {
   std::vector<double> A(n * n);
   std::vector<double> b(n);
   std::vector<double> mpi_x(n);
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     generateSLE(A, b, n);
@@ -43,7 +41,7 @@ void form(int n_) {
     taskDataPar->inputs_count.push_back(n * n);
     taskDataPar->inputs_count.push_back(n);
     taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(mpi_x.data()));
-    taskDataPar->outputs_count.push_back(mpi_x.size());
+    taskDataPar->outputs_count.push_back(n);
   }
 
   zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -61,7 +59,7 @@ void form(int n_) {
     taskDataSeq->inputs_count.push_back(n * n);
     taskDataSeq->inputs_count.push_back(n);
     taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(seq_x.data()));
-    taskDataSeq->outputs_count.push_back(seq_x.size());
+    taskDataSeq->outputs_count.push_back(n);
 
     zolotareva_a_SLE_gradient_method_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -152,11 +150,26 @@ TEST(zolotareva_a_SLE_gradient_method_mpi, system_not_positive_definite) {
   zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel task(taskData);
   if (world.rank() == 0) {
     ASSERT_FALSE(task.validation());
-  } else {
-    ASSERT_TRUE(task.validation());
   }
 }
+TEST(zolotareva_a_SLE_gradient_method_mpi, zero_dimension) {
+  boost::mpi::communicator world;
+  std::vector<double> A;
+  std::vector<double> b;
+  std::vector<double> x;
 
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs_count.push_back(0);
+    taskData->inputs_count.push_back(0);
+    taskData->outputs_count.push_back(0);
+  }
+
+  zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel task(taskData);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(task.validation());
+  }
+}
 TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_3_random) { zolotareva_a_SLE_gradient_method_mpi::form(3); }
 TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_4_random) { zolotareva_a_SLE_gradient_method_mpi::form(4); }
 TEST(zolotareva_a_SLE_gradient_method_mpi, system_n_5_random) { zolotareva_a_SLE_gradient_method_mpi::form(5); }
