@@ -11,7 +11,7 @@
 
 using namespace zinoviev_a_readers_and_writers_mpi;
 
-std::vector<int> getRandomVector(int sz) {
+std::vector<int> getRandomVec(int sz) {
   static std::mt19937 gen(std::random_device{}());
   std::uniform_int_distribution<int> dist(0, 99);
   std::vector<int> vec(sz);
@@ -27,7 +27,7 @@ TEST(zinoviev_a_readers_and_writers_mpi, Test_Readers_Writers) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = getRandomVec(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
@@ -70,7 +70,7 @@ TEST(zinoviev_a_readers_and_writers_mpi, Test_Different_Input_Sizes) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 200;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = getRandomVec(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
