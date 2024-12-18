@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <mpi.h>
 
-#include <vector>
 #include <algorithm>
 #include <random>
+#include <vector>
 
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
@@ -43,15 +43,6 @@ TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
     EXPECT_EQ(output_data, expected_data);
   }
 }
-
-#include <gtest/gtest.h>
-#include <mpi.h>
-
-#include <algorithm>
-#include <random>
-#include <vector>
-
-#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
 TEST(petrov_a_Shell_sort_mpi, test_pipeline_run_mpi) {
   int rank, size;
