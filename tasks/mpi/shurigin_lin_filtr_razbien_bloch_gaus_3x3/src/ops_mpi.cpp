@@ -3,9 +3,6 @@
 #include <algorithm>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/vector.hpp>
-#include <functional>
-#include <iostream>
-#include <limits>
 #include <numeric>
 #include <vector>
 
