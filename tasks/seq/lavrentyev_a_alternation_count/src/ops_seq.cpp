@@ -10,7 +10,6 @@ bool lavrentyev_a_alternation_count_seq::TestTaskSequential::pre_processing() {
   return true;
 }
 
-
 bool lavrentyev_a_alternation_count_seq::TestTaskSequential::validation() {
   internal_order_test();
 
@@ -27,7 +26,6 @@ bool lavrentyev_a_alternation_count_seq::TestTaskSequential::validation() {
 
   return taskData->outputs_count[0] == 1;
 }
-
 
 bool lavrentyev_a_alternation_count_seq::TestTaskSequential::run() {
   internal_order_test();

@@ -49,44 +49,32 @@ bool lavrentyev_a_alternation_count_mpi::TestMPITaskParallel::pre_processing() {
   return true;
 }
 
-//bool lavrentyev_a_alternation_count_mpi::TestMPITaskParallel::validation() {
-//  internal_order_test();
-//  if (world.rank() == 0) {
-//    return taskData->outputs_count[0] == 1;
-//  }
-//  return true;
-//}
+
 bool lavrentyev_a_alternation_count_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  // Проверка на корректность данных на всех процессах
   if (world.rank() == 0) {
-    // Проверяем, что количество выходных данных равно 1
     if (taskData->outputs_count[0] != 1) {
-      return false;  // Если выходных данных не один, то это ошибка
+      return false;
     }
 
-    // Проверяем корректность входных данных
     auto input_size = taskData->inputs_count[0];
     auto* input_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
-    // Проверка на пустые данные
     if (input_size == 0 || input_ptr == nullptr) {
-      return false;  // Если входных данных нет или указатель пустой, ошибка
+      return false;
     }
 
-    // Проверка на некорректные данные (например, если все элементы равны 0)
     for (size_t i = 0; i < input_size; i++) {
       if (input_ptr[i] != 0) {
-        return true;  // Если хотя бы один элемент не равен 0, данные считаются валидными
+        return true;
       }
     }
-    return false;  // Если все элементы равны 0, это некорректные данные
+    return false;
   }
 
-  return true;  // Для других процессов возвращаем true, так как они не проверяют входные данные
+  return true;
 }
-
 
 bool lavrentyev_a_alternation_count_mpi::TestMPITaskParallel::run() {
   internal_order_test();
