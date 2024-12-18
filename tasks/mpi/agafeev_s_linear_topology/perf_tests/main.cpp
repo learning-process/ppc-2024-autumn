@@ -5,33 +5,30 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/agafeev_s_linear_topology/include/lintop_mpi.hpp"
 
-template <typename T>
-static std::vector<T> create_RandomVector(int size) {
-  auto rand_gen = std::mt19937(std::time(nullptr));
-  std::vector<T> vec(size);
-  for (unsigned int i = 0; i < vec.size(); ++i) vec[i] = rand_gen() % 200 - 100;
-
-  return vec;
-}
+namespace agafeev_s_linear_topology {}  // namespace agafeev_s_linear_topology
 
 TEST(agafeev_s_linear_topology, test_pipeline_run) {
-  const int n = 5000 * 4000;
   boost::mpi::communicator world;
-  // Credate Data
-  std::vector<int> in_matrix(n);
-  std::vector<int> out(1, 0);
+  int sender = 0;
+  int receiver = 1;
+  std::vector<int> right_route = agafeev_s_linear_topology::calculating_Route(sender, receiver);
+  bool out = false;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    in_matrix = create_RandomVector<int>(n);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
-    taskData->inputs_count.emplace_back(in_matrix.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskData->outputs_count.emplace_back(out.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&sender));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&receiver));
+
+  if (world.rank() == sender) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(right_route.data()));
+    taskData->inputs_count.emplace_back(right_route.size());
+  } else {
+    if (world.rank() == receiver) {
+      taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out));
+      taskData->outputs_count.emplace_back(1);
+    }
   }
 
-  auto testTaskMpi = std::make_shared<agafeev_s_linear_topology::LinearTopology<int>>(taskData);
+  auto testTaskMpi = std::make_shared<agafeev_s_linear_topology::LinearTopology>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -45,30 +42,34 @@ TEST(agafeev_s_linear_topology, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskMpi);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
+  if (world.rank() == receiver) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_TRUE(out[0]);
+    ASSERT_TRUE(out);
   }
 }
 
 TEST(agafeev_s_linear_topology, test_task_run) {
-  const int n = 5000 * 4000;
   boost::mpi::communicator world;
-  // Credate Data
-  std::vector<int> in_matrix(n);
-  std::vector<int> out(1, 0);
+  int sender = 0;
+  int receiver = 1;
+  std::vector<int> right_route = agafeev_s_linear_topology::calculating_Route(sender, receiver);
+  bool out = false;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    in_matrix = create_RandomVector<int>(n);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_matrix.data()));
-    taskData->inputs_count.emplace_back(in_matrix.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskData->outputs_count.emplace_back(out.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&sender));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&receiver));
+
+  if (world.rank() == sender) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(right_route.data()));
+    taskData->inputs_count.emplace_back(right_route.size());
+  } else {
+    if (world.rank() == receiver) {
+      taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&out));
+      taskData->outputs_count.emplace_back(1);
+    }
   }
 
-  auto testTaskMpi = std::make_shared<agafeev_s_linear_topology::LinearTopology<int>>(taskData);
+  auto testTaskMpi = std::make_shared<agafeev_s_linear_topology::LinearTopology>(taskData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -82,8 +83,8 @@ TEST(agafeev_s_linear_topology, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskMpi);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
+  if (world.rank() == receiver) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_TRUE(out[0]);
+    ASSERT_TRUE(out);
   }
 }

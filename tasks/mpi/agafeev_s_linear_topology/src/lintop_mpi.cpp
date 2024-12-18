@@ -1,99 +1,84 @@
 #include "mpi/agafeev_s_linear_topology/include/lintop_mpi.hpp"
 
 #include <algorithm>
-#include <chrono>
-#include <iostream>
 
 namespace agafeev_s_linear_topology {
 
-template <typename T>
-bool LinearTopology<T>::validation() {
+std::vector<int> calculating_Route(int a, int b) {
+  std::vector<int> vec;
+  if (a < b)
+    for (int i = a; i <= b; i++) vec.push_back(i);
+  else
+    for (int i = a; i >= b; i--) vec.push_back(i);
+
+  return vec;
+}
+
+bool LinearTopology::validation() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    return (taskData->outputs_count[0] == 1 && (taskData->inputs_count[0] > 0));
+  sender_ = *reinterpret_cast<int*>(taskData->inputs[0]);
+  receiver_ = *reinterpret_cast<int*>(taskData->inputs[1]);
+
+  return ((sender_ >= 0) && (receiver_ >= 0) && (sender_ < world.size()) && (receiver_ < world.size()));
+}
+
+bool LinearTopology::pre_processing() {
+  internal_order_test();
+
+  if (world.rank() == sender_) {
+    auto* temp_ptr = reinterpret_cast<int*>(taskData->inputs[2]);
+    perfect_way_.insert(perfect_way_.begin(), temp_ptr, temp_ptr + taskData->inputs_count[0]);
   }
 
   return true;
 }
 
-template <typename T>
-bool LinearTopology<T>::pre_processing() {
+bool LinearTopology::run() {
   internal_order_test();
 
-  if (world.size() == 1) return true;
-
-  if (world.rank() == 0) {
-    auto* temp_ptr = reinterpret_cast<T*>(taskData->inputs[0]);
-    data_.insert(data_.begin(), temp_ptr, temp_ptr + taskData->inputs_count[0]);
+  if ((sender_ < receiver_ && (world.rank() < sender_ || world.rank() > receiver_))) {
+    return true;
   }
 
-  return true;
-}
-
-template <typename T>
-bool LinearTopology<T>::run() {
-  internal_order_test();
-
-  unsigned int w_rank = world.rank();
-  unsigned int w_size = world.size();
-  unsigned int data_size = 0;
-
-  if (w_size == 1) return true;
-
-  if (w_rank == 0) {
-    data_size = taskData->inputs_count[0];
+  if (sender_ == receiver_) {
+    result_ = true;
+    return true;
   }
 
-  // data_.resize(data_size);
+  int mini = std::min(sender_, receiver_);
+  int maxi = std::max(sender_, receiver_);
 
-  boost::mpi::broadcast(world, data_size, 0);
-
-  if (w_rank == 0) {
-    ranks_vec_.push_back(0);
-    world.send(1, 0, ranks_vec_);
-    world.send(1, 1, data_);
-  } else {
-    world.recv(w_rank - 1, 0, ranks_vec_);
-    world.recv(w_rank - 1, 1, data_);
-
-    ranks_vec_.push_back(w_rank);
-
-    if (w_rank != w_size - 1) {
-      world.send(w_rank + 1, 0, ranks_vec_);
-      world.send(w_rank + 1, 1, data_);
+  if (world.rank() <= maxi && world.rank() >= mini) {
+    int route_value = (receiver_ - sender_) / abs(receiver_ - sender_);
+    if (world.rank() == sender_) {
+      ranks_vec_.push_back(world.rank());
+      world.send(world.rank() + route_value, 0, ranks_vec_);
+      world.send(world.rank() + route_value, 1, perfect_way_);
+    } else {
+      world.recv(world.rank() - route_value, 0, ranks_vec_);
+      world.recv(world.rank() - route_value, 1, perfect_way_);
+      ranks_vec_.push_back(world.rank());
+      if (world.rank() != receiver_) {
+        world.send(world.rank() + route_value, 0, ranks_vec_);
+        world.send(world.rank() + route_value, 1, perfect_way_);
+      } else if (ranks_vec_ == perfect_way_)
+        result_ = true;
     }
   }
 
-  if (w_rank == w_size - 1) {
-    bool corr_order = std::is_sorted(ranks_vec_.begin(), ranks_vec_.end()) && ranks_vec_.size() == w_size;
-    result_ = corr_order;
-    world.send(0, 4, result_);
-  }
-
-  if (w_rank == 0) {
-    world.recv(w_size - 1, 4, result_);
-  }
-
   return true;
 }
 
-template <typename T>
-bool LinearTopology<T>::post_processing() {
+bool LinearTopology::post_processing() {
   internal_order_test();
 
-  if (world.size() == 1) {
-    result_ = true;
-  }
-
-  if (world.rank() == 0) {
-    reinterpret_cast<bool*>(taskData->outputs[0])[0] = result_;
+  if (world.rank() == receiver_) {
+    bool* output_data_ptr = reinterpret_cast<bool*>(taskData->outputs[0]);
+    output_data_ptr[0] = result_;
   }
 
   return true;
 }
-
-template class LinearTopology<int>;
-template class LinearTopology<double>;
 
 }  // namespace agafeev_s_linear_topology
