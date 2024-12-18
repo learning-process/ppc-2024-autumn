@@ -1,11 +1,14 @@
 #include "mpi/fomin_v_generalized_scatter/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <random>
 #include <string>
 #include <vector>
+
 
 using namespace std::chrono_literals;
 
@@ -19,51 +22,52 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
   return vec;
 }
 
-int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
-                                                     void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
-                                                     MPI_Comm comm) {
-  int rank;
-  int size;
-  MPI_Comm_rank(comm, &rank);
-  MPI_Comm_size(comm, &size);
-
-  int parent = (rank == root) ? MPI_PROC_NULL : (rank - 1) / 2;
+int generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount,
+                        MPI_Datatype recvtype, int root, MPI_Comm comm) {
+  boost::mpi::communicator world;
+  int rank = world.rank();
+  int size = world.size();
 
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
-
-  if (sendcount == 0 && recvcount == 0) {
-    return MPI_SUCCESS;  // Immediately return for zero counts
-  }
 
   if (sendcount != size * recvcount) {
     return MPI_ERR_COUNT;
   }
 
-  if (size == 1) {
-    // Single process, copy sendbuf to recvbuf directly
-    if (sendbuf != nullptr) {
-      memcpy(recvbuf, sendbuf, recvcount * datatype_size);
-    } else {
-      return MPI_ERR_BUFFER;
+  int parent = (rank == root) ? MPI_PROC_NULL : (rank - 1) / 2;
+  int left_child = 2 * rank + 1;
+  int right_child = 2 * rank + 2;
+
+  if (rank == root) {
+    const char* send_ptr = static_cast<const char*>(sendbuf);
+    char* recv_ptr = static_cast<char*>(recvbuf);
+
+    for (int child = 0; child < size; ++child) {
+      if (child == root) continue;  // Root doesn't send to itself
+      int chunk_size = recvcount * datatype_size;
+      int offset = child * chunk_size;
+      if (child == left_child || child == right_child) {
+        MPI_Send(send_ptr + offset, recvcount, sendtype, child, 0, comm);
+      }
     }
+
+    // Copy root's chunk to recvbuf
+    int root_offset = root * recvcount * datatype_size;
+    memcpy(recv_ptr, send_ptr + root_offset, recvcount * datatype_size);
   } else {
-    if (rank == root) {
-      const char* send_ptr = static_cast<const char*>(sendbuf);
-      // Ensure sendbuf is not null
-      if (send_ptr == nullptr) {
-        return MPI_ERR_BUFFER;
-      }
-      for (int dest = 0; dest < size; ++dest) {
-        if (dest == root) continue;
-        int offset = dest * recvcount * datatype_size;
-        MPI_Send(send_ptr + offset, recvcount, sendtype, dest, 0, comm);
-      }
-      // Copy data for root itself
-      int root_offset = root * recvcount * datatype_size;
-      memcpy(recvbuf, send_ptr + root_offset, recvcount * datatype_size);
-    } else {
-      MPI_Recv(recvbuf, recvcount, recvtype, parent, 0, comm, MPI_STATUS_IGNORE);
+    char* recv_ptr = static_cast<char*>(recvbuf);
+    MPI_Status status;
+
+    // Receive chunk from parent
+    MPI_Recv(recv_ptr, recvcount, recvtype, parent, 0, comm, &status);
+
+    // Send chunk to children if any
+    if (left_child < size) {
+      MPI_Send(recv_ptr, recvcount, recvtype, left_child, 0, comm);
+    }
+    if (right_child < size) {
+      MPI_Send(recv_ptr, recvcount, recvtype, right_child, 0, comm);
     }
   }
 
@@ -85,10 +89,9 @@ bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::validation() {
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::run() {
   internal_order_test();
-  int rank;
-  int size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  boost::mpi::communicator world;
+  int rank = world.rank();
+  int size = world.size();
   int root = 0;
 
   int sendcount = taskData->inputs_count[0];
