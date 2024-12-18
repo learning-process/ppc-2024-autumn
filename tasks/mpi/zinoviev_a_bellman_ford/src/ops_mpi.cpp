@@ -7,7 +7,9 @@
 #include <boost/serialization/vector.hpp>
 #include <vector>
 
-void zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::toCRS(const int* input_matrix) {
+namespace zinoviev_a_bellman_ford_mpi {
+
+void BellmanFordMPIMPI::toCRS(const int* input_matrix) {
   row_ptr.push_back(0);
   for (size_t i = 0; i < V; ++i) {
     for (size_t j = 0; j < V; ++j) {
@@ -20,83 +22,7 @@ void zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::toCRS(const int* input_matr
   }
 }
 
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::pre_processing() {
-  internal_order_test();
-  auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
-  V = taskData->inputs_count[0];
-  E = taskData->inputs_count[1];
-
-  toCRS(input_matrix);
-
-  shortest_paths.resize(V, INF);
-  shortest_paths[0] = 0;
-  return true;
-}
-
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::validation() {
-  internal_order_test();
-  return taskData->inputs_count[0] < taskData->inputs_count[1] &&
-         taskData->inputs_count[0] == taskData->outputs_count[0];
-}
-
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::Iteration(std::vector<int>& paths) {
-  bool changed = false;
-  for (size_t i = 0; i < V; ++i) {
-    for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
-      int v = columns[j];
-      int weight = values[j];
-      if (paths[i] != INF && paths[i] + weight < paths[v]) {
-        paths[v] = paths[i] + weight;
-        changed = true;
-      }
-    }
-  }
-  return changed;
-}
-
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::check_negative_cycle() {
-  for (size_t i = 0; i < V; ++i) {
-    for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
-      int v = columns[j];
-      int weight = values[j];
-      if (shortest_paths[i] != INF && shortest_paths[i] + weight < shortest_paths[v]) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::run() {
-  internal_order_test();
-
-  bool changed = false;
-  for (size_t i = 0; i < V - 1; ++i) {
-    changed = Iteration(shortest_paths);
-    if (!changed) break;
-  }
-
-  if (check_negative_cycle()) {
-    return false;
-  }
-
-  for (size_t i = 0; i < V; ++i) {
-    if (shortest_paths[i] == INF) shortest_paths[i] = 0;
-  }
-  return true;
-}
-
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPISeq::post_processing() {
-  internal_order_test();
-  for (size_t i = 0; i < V; ++i) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = shortest_paths[i];
-  }
-  return true;
-}
-
-// MPI Implementation
-
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::pre_processing() {
+bool BellmanFordMPIMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -115,7 +41,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::pre_processing() {
   return true;
 }
 
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::validation() {
+bool BellmanFordMPIMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     return taskData->inputs_count[0] < taskData->inputs_count[1] &&
@@ -124,7 +50,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::validation() {
   return true;
 }
 
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::Iteration(std::vector<int>& paths) {
+bool BellmanFordMPIMPI::Iteration(std::vector<int>& paths) {
   bool changed = false;
   std::vector<int> start_paths = paths;
   int rank = world.rank();
@@ -171,7 +97,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::Iteration(std::vector<int>&
   return changed;
 }
 
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::check_negative_cycle() {
+bool BellmanFordMPIMPI::check_negative_cycle() {
   for (size_t i = 0; i < V; ++i) {
     for (int j = row_ptr[i]; j < row_ptr[i + 1]; ++j) {
       int v = columns[j];
@@ -184,7 +110,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::check_negative_cycle() {
   return false;
 }
 
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::run() {
+bool BellmanFordMPIMPI::run() {
   internal_order_test();
 
   bool changed = false;
@@ -206,7 +132,7 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::run() {
   return true;
 }
 
-bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::post_processing() {
+bool BellmanFordMPIMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     for (size_t i = 0; i < V; ++i) {
@@ -214,4 +140,6 @@ bool zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI::post_processing() {
     }
   }
   return true;
+}
+
 }
