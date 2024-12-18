@@ -2,18 +2,25 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/filateva_e_radix_sort/include/ops_seq.hpp"
 
+namespace filateva_e_radix_sort_seq {
+
 void GeneratorVector(std::vector<int> &vec) {
   int max_z = 100000;
   int min_z = -100000;
+  std::random_device dev;
+  std::mt19937 gen(dev());
   for (unsigned long i = 0; i < vec.size(); i++) {
-    vec[i] = rand() % (max_z - min_z + 1) + min_z;
+    vec[i] = gen() % (max_z - min_z + 1) + min_z;
   }
 }
+
+}  // namespace filateva_e_radix_sort_seq
 
 TEST(filateva_e_radix_sort_seq, test_pipeline_run) {
   int size = 200000;
@@ -21,7 +28,7 @@ TEST(filateva_e_radix_sort_seq, test_pipeline_run) {
   std::vector<int> answer(size);
   std::vector<int> tResh;
 
-  GeneratorVector(vec);
+  filateva_e_radix_sort_seq::GeneratorVector(vec);
   tResh = vec;
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -66,7 +73,7 @@ TEST(filateva_e_radix_sort_seq, test_task_run) {
   std::vector<int> answer(size);
   std::vector<int> tResh;
 
-  GeneratorVector(vec);
+  filateva_e_radix_sort_seq::GeneratorVector(vec);
   tResh = vec;
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();

@@ -7,13 +7,19 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/filateva_e_radix_sort/include/ops_mpi.hpp"
 
+namespace filateva_e_radix_sort_mpi {
+
 void GeneratorVector(std::vector<int> &vec) {
   int max_z = 100000;
   int min_z = -100000;
+  std::random_device dev;
+  std::mt19937 gen(dev());
   for (unsigned long i = 0; i < vec.size(); i++) {
-    vec[i] = rand() % (max_z - min_z + 1) + min_z;
+    vec[i] = gen() % (max_z - min_z + 1) + min_z;
   }
 }
+
+}  // namespace filateva_e_radix_sort_mpi
 
 TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -28,7 +34,7 @@ TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
     vec.resize(size);
     answer.resize(size);
 
-    GeneratorVector(vec);
+    filateva_e_radix_sort_mpi::GeneratorVector(vec);
     tResh = vec;
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vec.data()));
@@ -77,7 +83,7 @@ TEST(filateva_e_radix_sort_mpi, test_task_run) {
     vec.resize(size);
     answer.resize(size);
 
-    GeneratorVector(vec);
+    filateva_e_radix_sort_mpi::GeneratorVector(vec);
     tResh = vec;
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(vec.data()));

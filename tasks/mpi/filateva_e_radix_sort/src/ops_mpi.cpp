@@ -2,9 +2,7 @@
 #include "mpi/filateva_e_radix_sort/include/ops_mpi.hpp"
 
 #include <boost/serialization/vector.hpp>
-#include <limits>
 #include <list>
-#include <string>
 #include <vector>
 
 bool filateva_e_radix_sort_mpi::RadixSort::pre_processing() {
@@ -30,17 +28,15 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   internal_order_test();
   int kol = 10;
   int raz = 10;
-  int delta;
-  int ost;
   std::vector<int> local_ans;
+  
   boost::mpi::broadcast(world, size, 0);
   if (world.rank() == 0) {
-    delta = (world.size() == 1) ? 0 : arr.size() / (world.size() - 1);
-    ost = (world.size() == 1) ? arr.size() : arr.size() % (world.size() - 1);
     local_ans.resize(size);
   }
-  boost::mpi::broadcast(world, delta, 0);
-  boost::mpi::broadcast(world, ost, 0);
+
+  int delta = (world.size() == 1) ? 0 : size / (world.size() - 1);
+  int ost = (world.size() == 1) ? size : size % (world.size() - 1);
 
   int local_size = (world.rank() == 0) ? ost : delta;
   std::vector<std::list<int>> radix_list(kol);
