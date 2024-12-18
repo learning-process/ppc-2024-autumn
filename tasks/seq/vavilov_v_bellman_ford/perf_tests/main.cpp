@@ -10,7 +10,7 @@
 
 std::vector<std::tuple<int, int, int>> generate_linear_graph(int num_vertices) {
   std::vector<std::tuple<int, int, int>> edges;
-  edges.reserve(num_vertices - 1);  // Резервируем память для всех элементов заранее
+  edges.reserve(num_vertices - 1);
   for (int i = 0; i < num_vertices - 1; ++i) {
     edges.emplace_back(i, i + 1, i + 1);
   }
