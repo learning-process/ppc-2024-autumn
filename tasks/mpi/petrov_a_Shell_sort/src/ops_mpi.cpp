@@ -13,9 +13,11 @@ bool TestTaskMPI::pre_processing() {
     return false;
   }
 
-  const std::vector<int>& input_data = taskData->inputs[0];
   size_t input_size = taskData->inputs_count[0];
-  data_ = input_data;
+  const unsigned char* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
+
+  data_.resize(input_size);
+  std::memcpy(data_.data(), raw_data, input_size * sizeof(int));
 
   return !data_.empty();
 }
