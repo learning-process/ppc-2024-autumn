@@ -4,5 +4,5 @@ message( STATUS "-- " ${Project_ID} )
 
 if(USE_OMP)
     add_executable( ${Project_ID} main.cpp )
-    target_link_libraries(${Project_ID} PUBLIC ${OpenMP_libomp_LIBRARY})
+    target_link_libraries(${Project_ID} PUBLIC OpenMP::OpenMP_CXX)
 endif()
