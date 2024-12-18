@@ -178,9 +178,9 @@ TEST(chernykh_a_multidimensional_integral_simpson_seq, min_step_not_multiple_of_
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_seq, min_step_less_than_two_fails_validation) {
-  auto func = [](const std::vector<double>& args) -> double { return (2 * args[0]) + (3 * args[1]); };
-  std::vector<std::pair<double, double>> bounds = {};
-  std::pair<int, int> step_range = {2, 1000};
+  auto func = [](const std::vector<double>& args) -> double { return std::exp(args[0] + args[1]); };
+  std::vector<std::pair<double, double>> bounds = {{0.0, 1.0}, {0.0, 1.0}};
+  std::pair<int, int> step_range = {0, 1000};
   double tolerance = 1e-4;
   chernykh_a_multidimensional_integral_simpson_seq::run_invalid_task(func, bounds, step_range, tolerance);
 }
