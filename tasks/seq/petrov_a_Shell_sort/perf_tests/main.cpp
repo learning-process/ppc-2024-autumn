@@ -8,7 +8,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/petrov_a_Shell_sort/include/ops_seq.hpp"
 
-TEST(petrov_a_Shell_sort_seq, pipeline_run) {
+TEST(petrov_a_Shell_sort_seq, test_pipeline_run) {
   int vector_size = 10000;
   std::vector<int> data(vector_size);
   int current = vector_size;
@@ -40,8 +40,8 @@ TEST(petrov_a_Shell_sort_seq, pipeline_run) {
   EXPECT_EQ(data, result_data);
 }
 
-TEST(petrov_a_Shell_sort_seq, pipeline_run_random_data) {
-  int vector_size = 1000;
+TEST(petrov_a_Shell_sort_seq, test_task_run) {
+  int vector_size = 10000;
   std::vector<int> data(vector_size);
   std::generate(data.begin(), data.end(), []() { return rand() % 1000; });
   std::vector<int> result_data(vector_size);

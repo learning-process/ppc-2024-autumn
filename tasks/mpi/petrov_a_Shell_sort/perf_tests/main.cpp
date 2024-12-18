@@ -10,7 +10,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
-TEST(petrov_a_Shell_sort_mpi, pipeline_run) {
+TEST(petrov_a_Shell_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   int vector_size = 10000;
   std::vector<int> data(vector_size);
@@ -52,7 +52,7 @@ TEST(petrov_a_Shell_sort_mpi, pipeline_run) {
   }
 }
 
-TEST(petrov_a_Shell_sort_mpi, task_run) {
+TEST(petrov_a_Shell_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
   int vector_size = 10000;
   std::vector<int> data(vector_size);
