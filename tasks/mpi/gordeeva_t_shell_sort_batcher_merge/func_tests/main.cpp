@@ -49,7 +49,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_Empty_Output) {
   gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel testPar(taskDataPar);
 
   ASSERT_FALSE(testPar.validation());
- }
+}
 
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_100_with_random) {
   boost::mpi::environment env;
