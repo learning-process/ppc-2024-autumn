@@ -14,7 +14,6 @@ std::vector<double> sobel_filter(const std::vector<double>& image_vector, int h,
 
   const double sobel_y[3][3] = {{-1.0, -2.0, -1.0}, {0.0, 0.0, 0.0}, {1.0, 2.0, 1.0}};
 
-  // Применение фильтра Собеля
   for (int y = 1; y < h - 1; ++y) {
     for (int x = 1; x < w - 1; ++x) {
       double gx = 0.0;

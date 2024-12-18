@@ -32,24 +32,23 @@ TEST(veliev_e_sobel_operator_seq, Teststart) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  
- /* std::cout << std::fixed << std::setprecision(3);
-  for (int i = 0; i < h; ++i) {
-    for (int j = 0; j < w; ++j) {
-      std::cout << std::setw(8) << in[i * w + j];
-    }
-    std::cout << std::endl;
-  }
 
-  std::cout << std::endl;
+  /* std::cout << std::fixed << std::setprecision(3);
+   for (int i = 0; i < h; ++i) {
+     for (int j = 0; j < w; ++j) {
+       std::cout << std::setw(8) << in[i * w + j];
+     }
+     std::cout << std::endl;
+   }
 
-  for (int i = 0; i < h; ++i) {
-    for (int j = 0; j < w; ++j) {
-      std::cout << std::setw(8) << out[i * w + j];
-    }
-    std::cout << std::endl;
-  }*/
+   std::cout << std::endl;
 
+   for (int i = 0; i < h; ++i) {
+     for (int j = 0; j < w; ++j) {
+       std::cout << std::setw(8) << out[i * w + j];
+     }
+     std::cout << std::endl;
+   }*/
 
   for (size_t i = 0; i < out.size(); i++) ASSERT_NEAR(out[i], outex[i], 1e-10);
 }
@@ -170,22 +169,22 @@ TEST(veliev_e_sobel_operator_seq, Teststart3) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
- /* std::cout << std::fixed << std::setprecision(3);
-  for (int i = 0; i < h; ++i) {
-    for (int j = 0; j < w; ++j) {
-      std::cout << std::setw(8) << in[i * w + j];
-    }
-    std::cout << std::endl;
-  }
+  /* std::cout << std::fixed << std::setprecision(3);
+   for (int i = 0; i < h; ++i) {
+     for (int j = 0; j < w; ++j) {
+       std::cout << std::setw(8) << in[i * w + j];
+     }
+     std::cout << std::endl;
+   }
 
-  std::cout << std::endl;
+   std::cout << std::endl;
 
-  for (int i = 0; i < h; ++i) {
-    for (int j = 0; j < w; ++j) {
-      std::cout << std::setw(8) << out[i * w + j];
-    }
-    std::cout << std::endl;
-  }*/
+   for (int i = 0; i < h; ++i) {
+     for (int j = 0; j < w; ++j) {
+       std::cout << std::setw(8) << out[i * w + j];
+     }
+     std::cout << std::endl;
+   }*/
 
   for (size_t i = 0; i < out.size(); i++) ASSERT_NEAR(out[i], outex[i], 0.001);
 }
@@ -223,22 +222,22 @@ TEST(veliev_e_sobel_operator_seq, Teststart4) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
 
- /* std::cout << std::fixed << std::setprecision(3);
-  for (int i = 0; i < h; ++i) {
-    for (int j = 0; j < w; ++j) {
-      std::cout << std::setw(8) << in[i * w + j];
-    }
-    std::cout << std::endl;
-  }
+  /* std::cout << std::fixed << std::setprecision(3);
+   for (int i = 0; i < h; ++i) {
+     for (int j = 0; j < w; ++j) {
+       std::cout << std::setw(8) << in[i * w + j];
+     }
+     std::cout << std::endl;
+   }
 
-  std::cout << std::endl;
+   std::cout << std::endl;
 
-  for (int i = 0; i < h; ++i) {
-    for (int j = 0; j < w; ++j) {
-      std::cout << std::setw(8) << out[i * w + j];
-    }
-    std::cout << std::endl;
-  }*/
+   for (int i = 0; i < h; ++i) {
+     for (int j = 0; j < w; ++j) {
+       std::cout << std::setw(8) << out[i * w + j];
+     }
+     std::cout << std::endl;
+   }*/
 
   for (size_t i = 0; i < out.size(); i++) ASSERT_NEAR(out[i], outex[i], 0.001);
 }

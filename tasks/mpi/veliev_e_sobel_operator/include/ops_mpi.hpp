@@ -3,9 +3,9 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <array>
 #include <cstdint>
 #include <cstring>
 #include <memory>
