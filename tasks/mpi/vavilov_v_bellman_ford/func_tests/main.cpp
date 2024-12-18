@@ -6,6 +6,31 @@
 
 namespace mpi = boost::mpi;
 
+TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths_seq) {
+  mpi::communicator world;
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  std::vector<int> matrix = {0, 10, 5, 0, 0, 0, 0, 2, 1, 0, 0, 3, 0, 9, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0};
+  std::vector<int> output(5);
+  int vertices = 5, edges_count = 8, source = 0;
+  taskDataPar->inputs_count.emplace_back(vertices);
+  taskDataPar->inputs_count.emplace_back(edges_count);
+  taskDataPar->inputs_count.emplace_back(source);
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
+  taskDataPar->outputs_count.emplace_back(output.size());
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  if (world.rank() == 0) {
+    vavilov_v_bellman_ford_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_TRUE(testMpiTaskSequential.validation());
+    ASSERT_TRUE(testMpiTaskSequential.pre_processing());
+    ASSERT_TRUE(testMpiTaskSequential.run());
+    ASSERT_TRUE(testMpiTaskSequential.post_processing());
+
+    std::vector<int> expected_output = {0, 8, 5, 9, 7};
+    EXPECT_EQ(output, expected_output);
+  }
+}
+
 TEST(vavilov_v_bellman_ford_mpi, ValidInputWithMultiplePaths) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
