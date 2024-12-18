@@ -1,8 +1,8 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/gordeeva_t_shell_sort_batcher_merge/include/ops_seq.hpp"
 
-#include <thread>
 #include <random>
+#include <thread>
 
 using namespace std::chrono_literals;
 
@@ -26,7 +26,7 @@ std::vector<int> gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::ra
 
 bool gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
-  
+
   int sz = taskData->inputs_count[0];
   auto* input_tmp = reinterpret_cast<int32_t*>(taskData->inputs[0]);
   input_.resize(sz);
@@ -53,7 +53,6 @@ bool gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::run() {
   /*for (int i = 0; i < input_.size(); i++) {
     std::cout << input_[i] << " ";
   }
-  
   std::cout << std::endl;*/
 
   shellSort(input_, input_.size());
@@ -61,12 +60,6 @@ bool gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::run() {
   for (int i = 0; i < input_.size(); i++) {
     res_[i] = input_[i];
   }
-
-   /*for (int i = 0; i < input_.size(); i++) {
-    std::cout << input_[i] << " ";
-  }
-
-  std::cout << std::endl;*/
 
   return true;
 }

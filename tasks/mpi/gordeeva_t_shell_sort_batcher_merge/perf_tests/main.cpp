@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/gordeeva_t_shell_sort_batcher_merge/include/ops_mpi.hpp"
 
-TEST(gordeeva_t_shell_sort_batcher_merge_mpi_test, test_pipeline_run) {
+TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   const int size = 500;
 
@@ -55,7 +55,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi_test, test_pipeline_run) {
   }
 }
 
-TEST(gordeeva_t_shell_sort_batcher_merge_mpi_test, test_task_run) {
+TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_task_run) {
   boost::mpi::communicator world;
   const int size = 500;
 

@@ -7,7 +7,7 @@
 
 namespace gordeeva_t_shell_sort_batcher_merge_seq {
 	
-	void shellSort(std::vector<int>& arr, int arr_length);
+void shellSort(std::vector<int>& arr, int arr_length);
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -16,7 +16,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  
+
   static std::vector<int> rand_vec(int size, int down = -100, int upp = 100);
 
  private:

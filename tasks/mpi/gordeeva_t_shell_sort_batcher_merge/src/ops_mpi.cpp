@@ -73,7 +73,7 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::post_proces
 
 void gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::batcher_merge(size_t rank1, size_t rank2,
                                                                                  std::vector<int>& local_input_local) {
-  int rank = world.rank();
+  size_t rank = world.rank();
   std::vector<int> received_data;
 
   if (rank == rank1) {
@@ -123,9 +123,9 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::validation() 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
   size_t rank = world.rank();
   size_t size = world.size();
-  
+
   size_t sz_mpi_local = 0;
-  boost::mpi::broadcast(world, sz_mpi, 0); 
+  boost::mpi::broadcast(world, sz_mpi, 0);
   sz_mpi_local = sz_mpi;
 
   size_t delta = sz_mpi_local / size;
@@ -136,12 +136,6 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
   for (size_t i = 0; i < ost; ++i) {
     sz_rk[i]++;
   }
-
- /* if (rank == 0) {
-    std::cout << "[MY2] sz_rk: ";
-    for (auto sz : sz_rk) std::cout << sz << " ";
-    std::cout << std::endl;
-  }*/
 
   if (rank != 0) {
     input_.resize(sz_mpi_local);
