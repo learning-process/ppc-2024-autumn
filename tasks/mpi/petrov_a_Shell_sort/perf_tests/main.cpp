@@ -1,88 +1,93 @@
 #include <gtest/gtest.h>
-#include <mpi.h>
 
 #include <algorithm>
-#include <random>
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/timer.hpp>
+#include <memory>
 #include <vector>
 
+#include "core/perf/include/perf.hpp"
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
-TEST(petrov_a_Shell_sort_mpi, test_task_run_mpi) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+TEST(petrov_a_Shell_sort, pipeline_run) {
+  boost::mpi::communicator world;
+  int vector_size = 10000;
+  std::vector<int> data(vector_size);
+  std::vector<int> result_data;
 
-  const size_t size = 10000;
-  std::vector<int> input_data(size);
-  std::vector<int> output_data(size);
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  if (rank == 0) {
-    std::mt19937 rng(123);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (size_t i = 0; i < size; ++i) {
-      input_data[i] = dist(rng);
-    }
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
+  taskDataPar->inputs_count.emplace_back(1);
+
+  if (world.rank() == 0) {
+    int current = vector_size;
+    std::generate(data.begin(), data.end(), [&current]() { return current--; });
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+    taskDataPar->inputs_count.emplace_back(data.size());
+
+    result_data.resize(vector_size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+    taskDataPar->outputs_count.emplace_back(result_data.size());
   }
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.push_back(reinterpret_cast<void*>(input_data.data()));
-  taskData->inputs_count.push_back(size);
-  taskData->outputs.push_back(reinterpret_cast<void*>(output_data.data()));
-  taskData->outputs_count.push_back(size);
+  auto taskParallel = std::make_shared<petrov_a_Shell_sort::petrov_a_Shell_sort_mpi>(taskDataPar);
 
-  petrov_a_Shell_sort_mpi::TestTaskMPI task(taskData);
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.validation());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
 
-  if (rank == 0) {
-    std::vector<int> expected_data = input_data;
-    std::sort(expected_data.begin(), expected_data.end());
-    EXPECT_EQ(output_data, expected_data);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    std::sort(data.begin(), data.end());
+    EXPECT_EQ(data, result_data);
   }
 }
 
-TEST(petrov_a_Shell_sort_mpi, test_pipeline_run_mpi) {
-  int rank, size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  MPI_Comm_size(MPI_COMM_WORLD, &size);
+TEST(petrov_a_Shell_sort, task_run) {
+  boost::mpi::communicator world;
+  int vector_size = 10000;
+  std::vector<int> data(vector_size);
+  std::vector<int> result_data;
 
-  const int total_elements = 10000;
-  const int elements_per_proc = total_elements / size;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  std::vector<int> global_data(total_elements);
-  std::vector<int> local_data(elements_per_proc);
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
+  taskDataPar->inputs_count.emplace_back(1);
 
-  if (rank == 0) {
-    std::mt19937 rng(123);
-    std::uniform_int_distribution<int> dist(-1000, 1000);
-    for (int i = 0; i < total_elements; ++i) {
-      global_data[i] = dist(rng);
-    }
+  if (world.rank() == 0) {
+    int current = vector_size;
+    std::generate(data.begin(), data.end(), [&current]() { return current--; });
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+    taskDataPar->inputs_count.emplace_back(data.size());
+
+    result_data.resize(vector_size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+    taskDataPar->outputs_count.emplace_back(result_data.size());
   }
 
-  MPI_Scatter(global_data.data(), elements_per_proc, MPI_INT, local_data.data(), elements_per_proc, MPI_INT, 0,
-              MPI_COMM_WORLD);
+  auto taskParallel = std::make_shared<petrov_a_Shell_sort::petrov_a_Shell_sort_mpi>(taskDataPar);
 
-  petrov_a_Shell_sort_mpi::TestTaskMPI task(nullptr);
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.push_back(reinterpret_cast<void*>(local_data.data()));
-  taskData->inputs_count.push_back(local_data.size());
-  taskData->outputs.push_back(reinterpret_cast<void*>(local_data.data()));
-  taskData->outputs_count.push_back(local_data.size());
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
 
-  task = petrov_a_Shell_sort_mpi::TestTaskMPI(taskData);
-
-  ASSERT_TRUE(task.pre_processing());
-  ASSERT_TRUE(task.run());
-  ASSERT_TRUE(task.post_processing());
-
-  MPI_Gather(local_data.data(), elements_per_proc, MPI_INT, global_data.data(), elements_per_proc, MPI_INT, 0,
-             MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    EXPECT_TRUE(std::is_sorted(global_data.begin(), global_data.end()));
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    std::sort(data.begin(), data.end());
+    EXPECT_EQ(data, result_data);
   }
 }
