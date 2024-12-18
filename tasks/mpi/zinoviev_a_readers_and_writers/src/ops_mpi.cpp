@@ -25,7 +25,7 @@ bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::pre_pr
 bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] != 0);
+  return (taskData->outputs_count[0] == 1 && taskData->inputs_count[0] > 0);
 }
 
 bool zinoviev_a_readers_and_writers_mpi::ReadersWritersMPITaskSequential::run() {
