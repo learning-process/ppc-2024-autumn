@@ -41,6 +41,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   if (rank == root) {
     const char* send_ptr = static_cast<const char*>(sendbuf);
+    // Send data to each child
     for (int child = 0; child < size; ++child) {
       if (child == root) continue;
       int offset = child * recvcount * datatype_size;
@@ -56,10 +57,12 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
     MPI_Recv(recv_ptr, recvcount, recvtype, parent, 0, comm, &status);
     // Send data to children if any
     if (left_child < size) {
-      MPI_Send(recv_ptr, recvcount, recvtype, left_child, 0, comm);
+      int child_offset = recvcount * datatype_size;
+      MPI_Send(recv_ptr + child_offset, recvcount, recvtype, left_child, 0, comm);
     }
     if (right_child < size) {
-      MPI_Send(recv_ptr, recvcount, recvtype, right_child, 0, comm);
+      int child_offset = 2 * recvcount * datatype_size;
+      MPI_Send(recv_ptr + child_offset, recvcount, recvtype, right_child, 0, comm);
     }
   }
 
