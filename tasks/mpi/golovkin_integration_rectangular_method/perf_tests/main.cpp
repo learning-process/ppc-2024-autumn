@@ -1,4 +1,4 @@
-// Golovkin Maksim
+// Golovkin Maksim Task#1
 
 #include <gtest/gtest.h>
 
@@ -18,7 +18,6 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0);
 
-  // Создание TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = 0.0;
   double b = 5.0;
