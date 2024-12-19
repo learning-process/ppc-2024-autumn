@@ -126,6 +126,9 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
 
   quickSort(local_);
 
+    for (auto& req : reqs) {
+      req.wait();
+    }
   auto merge = [](std::vector<T>& first, std::vector<T>& second) {
     std::vector<T> temp(first.size() + second.size());
     size_t i = 0, j = 0, k = 0;
