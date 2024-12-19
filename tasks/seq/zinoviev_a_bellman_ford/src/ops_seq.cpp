@@ -40,6 +40,7 @@ bool BellmanFordSeq::validation() {
   size_t E_actual = 0;
 
   auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+
   for (size_t i = 0; i < V * V; ++i) {
     if (input_matrix[i] != 0) {
       E_actual++;
@@ -50,18 +51,27 @@ bool BellmanFordSeq::validation() {
     return false;
   }
 
-  if (V >= E_actual) {
-    return false;
+  for (size_t i = 0; i < V - 1; ++i) {
+    bool has_outgoing = false;
+    for (size_t j = 0; j < V; ++j) {
+      if (input_matrix[i * V + j] != 0) {
+        has_outgoing = true;
+        break;
+      }
+    }
+    if (!has_outgoing) {
+      return false;
+    }
+  }
+
+  for (size_t i = 0; i < V; ++i) {
+    if (input_matrix[i * V + i] != 0) {
+      return false;
+    }
   }
 
   if (V != taskData->outputs_count[0]) {
     return false;
-  }
-
-  for (size_t i = 0; i < V; ++i) {
-    if (input_matrix[i * V + i] == 0) {
-      return false;
-    }
   }
 
   return true;
