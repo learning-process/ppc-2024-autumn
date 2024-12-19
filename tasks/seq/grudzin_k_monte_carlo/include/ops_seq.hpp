@@ -2,9 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
-#include <boost/serialization/vector.hpp>
+#include <array>
 #include <memory>
 #include <numeric>
 #include <random>

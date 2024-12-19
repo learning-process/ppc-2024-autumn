@@ -1,14 +1,13 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
+#include <array>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/grudzin_k_monte_carlo/include/ops_seq.hpp"
 
 TEST(grudzin_k_monte_carlo_seq, test_pipeline_run) {
-  boost::mpi::communicator world;
   const int dimensions = 3;
   int N = 5000000;
   std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
@@ -24,32 +23,30 @@ TEST(grudzin_k_monte_carlo_seq, test_pipeline_run) {
   MC1_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_par));
   MC1_Data->outputs_count.emplace_back(1);
 
-  auto testMpiTaskMyRealization = std::make_shared<grudzin_k_montecarlo_seq::MonteCarloSeq<dimensions>>(MC1_Data, f);
-  ASSERT_EQ(testMpiTaskMyRealization->validation(), true);
-  testMpiTaskMyRealization->pre_processing();
-  testMpiTaskMyRealization->run();
-  testMpiTaskMyRealization->post_processing();
+  // Create Task
+  auto testTaskSequential = std::make_shared<grudzin_k_montecarlo_seq::MonteCarloSeq<dimensions>>(MC1_Data, f);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 20;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->num_running = 10;
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskMyRealization);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_LE(abs(result_par - result_seq) / result_seq, 1e-1);
-  }
+  ppc::core::Perf::print_perf_statistic(perfResults);
+  EXPECT_LE(abs(result_par - result_seq) / result_seq, 1e-1);
 }
 
 TEST(grudzin_k_monte_carlo_mpi, test_task_run) {
-  boost::mpi::communicator world;
   const int dimensions = 3;
   int N = 5000000;
   std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
@@ -64,26 +61,26 @@ TEST(grudzin_k_monte_carlo_mpi, test_task_run) {
   MC1_Data->inputs_count.emplace_back(1);
   MC1_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_par));
   MC1_Data->outputs_count.emplace_back(1);
-  auto testMpiTaskMyRealization = std::make_shared<grudzin_k_montecarlo_seq::MonteCarloSeq<dimensions>>(MC1_Data, f);
-  ASSERT_EQ(testMpiTaskMyRealization->validation(), true);
-  testMpiTaskMyRealization->pre_processing();
-  testMpiTaskMyRealization->run();
-  testMpiTaskMyRealization->post_processing();
+
+  // Create Task
+  auto testTaskSequential = std::make_shared<grudzin_k_montecarlo_seq::MonteCarloSeq<dimensions>>(MC1_Data, f);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 20;
-  const boost::mpi::timer current_timer;
-  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+  perfAttr->num_running = 10;
+  const auto t0 = std::chrono::high_resolution_clock::now();
+  perfAttr->current_timer = [&] {
+    auto current_time_point = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    return static_cast<double>(duration) * 1e-9;
+  };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskMyRealization);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_LE(abs(result_par - result_seq) / result_seq, 1e-1);
-  }
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
+  EXPECT_LE(abs(result_par - result_seq) / result_seq, 1e-1);
 }

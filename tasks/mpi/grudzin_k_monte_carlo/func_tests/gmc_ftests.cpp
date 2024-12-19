@@ -12,8 +12,8 @@ std::vector<double> GenDimDistr(int dim) {
   std::uniform_real_distribution<> dist(-5.0, 5.0);
   std::vector<double> tmp;
   for (int i = 0; i < dim; ++i) {
-    int start = dist(rnd);
-    int finish = dist(rnd);
+    double start = dist(rnd);
+    double finish = dist(rnd);
     if (finish < start) std::swap(start, finish);
     tmp.emplace_back(start);
     tmp.emplace_back(finish);
@@ -273,7 +273,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_EXP) {
 TEST(grudzin_k_monte_carlo_mpi, Test_Poly) {
   boost::mpi::communicator world;
   const int dimensions = 3;
-  int N = 10000;
+  int N = 100000;
   std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
     return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2];
   };

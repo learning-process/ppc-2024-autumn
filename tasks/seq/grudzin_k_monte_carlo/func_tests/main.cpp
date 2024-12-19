@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
+#include <array>
 #include <vector>
 
 #include "seq/grudzin_k_monte_carlo/include/ops_seq.hpp"
@@ -12,8 +11,8 @@ std::vector<double> GenDimDistr(int dim) {
   std::uniform_real_distribution<> dist(-5.0, 5.0);
   std::vector<double> tmp;
   for (int i = 0; i < dim; ++i) {
-    int start = dist(rnd);
-    int finish = dist(rnd);
+    double start = dist(rnd);
+    double finish = dist(rnd);
     if (finish < start) std::swap(start, finish);
     tmp.emplace_back(start);
     tmp.emplace_back(finish);
@@ -23,7 +22,7 @@ std::vector<double> GenDimDistr(int dim) {
 
 double CalcEtalon(std::vector<double> &dim) {
   double ans = 1;
-  for (size_t i = 0; i < dim.size(); ++i) {
+  for (size_t i = 0; i < dim.size(); i += 2) {
     ans *= dim[i + 1] - dim[i];
   }
   return ans;
@@ -50,7 +49,7 @@ TEST(grudzin_k_monte_carlo_seq, Test_1Dim) {
   MC2.pre_processing();
   MC2.run();
   MC2.post_processing();
-  EXPECT_LE(abs(etalon - result_seq) / result_seq, 1e-1);
+  EXPECT_LE(abs(etalon - result_seq) / etalon, 1e-1);
 }
 
 TEST(grudzin_k_monte_carlo_seq, Test_2Dim) {
@@ -60,7 +59,6 @@ TEST(grudzin_k_monte_carlo_seq, Test_2Dim) {
   std::vector<double> dim = grudzin_k_montecarlo_seq::GenDimDistr(dimensions);
   double etalon = grudzin_k_montecarlo_seq::CalcEtalon(dim);
   double result_seq = 0;
-
   std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
   MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
   MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
@@ -74,7 +72,7 @@ TEST(grudzin_k_monte_carlo_seq, Test_2Dim) {
   MC2.pre_processing();
   MC2.run();
   MC2.post_processing();
-  EXPECT_LE(abs(etalon - result_seq) / result_seq, 1e-1);
+  EXPECT_LE(abs(etalon - result_seq) / etalon, 1e-1);
 }
 
 TEST(grudzin_k_monte_carlo_seq, Test_3Dim) {
@@ -97,7 +95,33 @@ TEST(grudzin_k_monte_carlo_seq, Test_3Dim) {
   MC2.pre_processing();
   MC2.run();
   MC2.post_processing();
-  EXPECT_LE(abs(etalon - result_seq) / result_seq, 1e-1);
+  EXPECT_LE(abs(etalon - result_seq) / etalon, 1e-1);
+}
+
+TEST(grudzin_k_monte_carlo_seq, Test_3Dim_UnusualFunction) {
+  const int dimensions = 3;
+  int N = 10000;
+  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
+    return std::exp(x[0] + x[1] + x[2]);
+  };
+  // precalculated result by online calculator
+  std::vector<double> dim = {0, 1, 0, 1, 0, 1};
+  double etalon = 5.07321411177285;
+  double result_seq = 0;
+  std::shared_ptr<ppc::core::TaskData> MC2_Data = std::make_shared<ppc::core::TaskData>();
+  MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(dim.data()));
+  MC2_Data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
+  MC2_Data->inputs_count.emplace_back(dimensions);
+  MC2_Data->inputs_count.emplace_back(1);
+  MC2_Data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&result_seq));
+  MC2_Data->outputs_count.emplace_back(1);
+
+  grudzin_k_montecarlo_seq::MonteCarloSeq<dimensions> MC2(MC2_Data, f);
+  ASSERT_EQ(MC2.validation(), true);
+  MC2.pre_processing();
+  MC2.run();
+  MC2.post_processing();
+  EXPECT_LE(abs(etalon - result_seq) / etalon, 1e-1);
 }
 
 TEST(grudzin_k_monte_carlo_seq, Test_3Dim_2k) {
@@ -121,7 +145,7 @@ TEST(grudzin_k_monte_carlo_seq, Test_3Dim_2k) {
   MC2.pre_processing();
   MC2.run();
   MC2.post_processing();
-  EXPECT_LE(abs(etalon - result_seq) / result_seq, 1e-1);
+  EXPECT_LE(abs(etalon - result_seq) / etalon, 1e-1);
 }
 
 TEST(grudzin_k_monte_carlo_seq, Test_3Dim_prime) {
@@ -145,7 +169,7 @@ TEST(grudzin_k_monte_carlo_seq, Test_3Dim_prime) {
   MC2.pre_processing();
   MC2.run();
   MC2.post_processing();
-  EXPECT_LE(abs(etalon - result_seq) / result_seq, 1e-1);
+  EXPECT_LE(abs(etalon - result_seq) / etalon, 1e-1);
 }
 
 TEST(grudzin_k_monte_carlo_seq, Empty_Out) {
