@@ -37,7 +37,7 @@ TEST(morozov_e_mult_sparse_matrix, test_pipeline_run) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size());
@@ -64,7 +64,7 @@ TEST(morozov_e_mult_sparse_matrix, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
     ans[i] = std::vector(ptr, ptr + matrixB.size());
   }
@@ -103,7 +103,7 @@ TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size());
@@ -130,7 +130,7 @@ TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
     ans[i] = std::vector(ptr, ptr + matrixB.size());
   }

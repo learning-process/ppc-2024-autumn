@@ -34,7 +34,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_columnsA_notEqual_rowsB_1) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size());
@@ -74,7 +74,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_columnsA_notEqual_rowsB_2) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size());
@@ -114,7 +114,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_columnsAns_notEqual_columnsB)
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size());
@@ -154,7 +154,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_rowssAns_notEqual_rowsB) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size() + 1);
@@ -194,7 +194,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main) {
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
   }
   taskData->outputs_count.emplace_back(out.size());
@@ -206,7 +206,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (int i = 0; i < out.size(); ++i) {
+  for (size_t i = 0; i < out.size(); ++i) {
     double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
     ans[i] = std::vector(ptr, ptr + matrixB.size());
   }
