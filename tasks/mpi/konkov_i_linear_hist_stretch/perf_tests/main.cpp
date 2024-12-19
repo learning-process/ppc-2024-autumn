@@ -17,7 +17,7 @@ TEST(konkov_i_LinearHistStretchPerformance, StretchLargeImage) {
   if (rank == 0) {
     image_data = new int[image_size];
     for (int i = 0; i < image_size; ++i) {
-      image_data[i] = rand() % 256;  // Случайные значения от 0 до 255
+      image_data[i] = rand() % 256;
     }
   }
 
