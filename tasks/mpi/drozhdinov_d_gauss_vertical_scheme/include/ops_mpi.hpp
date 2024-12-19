@@ -13,8 +13,6 @@
 
 #include "core/task/include/task.hpp"
 
-
-
 namespace drozhdinov_d_gauss_vertical_scheme_mpi {
 int mkLinCoordddm(int x, int y, int xSize);
 double myrnd(double value);
