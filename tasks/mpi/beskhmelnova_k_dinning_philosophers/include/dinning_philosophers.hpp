@@ -27,13 +27,6 @@ class DiningPhilosophersMPI : public ppc::core::Task {
 
   bool check_deadlock() noexcept;
 
- private:
-  boost::mpi::communicator world;
-  State state;
-  int left_neighbor, right_neighbor;
-  std::default_random_engine generator;
-  std::uniform_int_distribution<int> distribution;
-
   void think();
   void eat();
   void request_forks();
@@ -41,5 +34,13 @@ class DiningPhilosophersMPI : public ppc::core::Task {
 
   void resolve_deadlock();
   bool check_for_termination();
+
+  State state;
+
+ private:
+  boost::mpi::communicator world;
+  int left_neighbor, right_neighbor;
+  std::default_random_engine generator;
+  std::uniform_int_distribution<int> distribution;
 };
 }  // namespace beskhmelnova_k_dining_philosophers
