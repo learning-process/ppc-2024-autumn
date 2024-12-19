@@ -156,6 +156,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::pre_processing() {
       input_.push_back((int)(i / col));
     }
   }
+  res_.clear();
   return true;
 }
 
@@ -184,18 +185,21 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
   broadcast(world, delta, 0);
   broadcast(world, ost_point, 0);
   if (rank == 0) {
-    for (int i = 1; i < ost_point; i++) {
-      world.send(i, 0, input_.data() + i * (delta) + i * 2, delta + 2);
+    if (world.size() != 1) {
+      for (int i = 1; i < ost_point; i++) {
+        world.send(i, 0, input_.data() + i * (delta) + i * 2, delta + 2);
+      }
+      for (int i = ost_point; i < world.size(); i++) {
+        world.send(i, 0, input_.data() + i * (delta) + (ost_point)*2, delta);
+      }
+      if (ost_point > 0) delta += 2;
     }
-    for (int i = ost_point; i < world.size(); i++) {
-      world.send(i, 0, input_.data() + i * (delta) + (ost_point) * 2, delta);
-    }
-    if (ost_point > 0) delta += 2;
   } else {
     delta += 2 * (int)(rank < ost_point);
     input_ = std::vector<int>(delta);
     world.recv(0, 0, input_.data(), delta);
   }
+
   local_input_ = std::vector<Point>(delta / 2);
 
   for (size_t i = 0; i < delta; i += 2) {
@@ -322,6 +326,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::post_processing() {
     taskData->outputs_count[0] = res_.size();
     auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
     std::copy(res_.begin(), res_.end(), output_data);
+    res_.clear();
     return true;
   }
   return true;

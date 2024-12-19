@@ -12,7 +12,6 @@ size_t FindMinAngle(vladimirova_j_jarvis_method_seq::Point* A, vladimirova_j_jar
   double min_angle = 550;
   int reg_x = A->x - (B->x);
   int reg_y = -(A->y - B->y);  // y идет вниз
-  std::cout << " TEK " << B->x << ", " << B->y << std::endl;
   for (size_t i = 0; i < vec.size(); i++) {
     vladimirova_j_jarvis_method_seq::Point* C = &vec[i];
     if (C->x < 0) continue;
@@ -25,12 +24,10 @@ size_t FindMinAngle(vladimirova_j_jarvis_method_seq::Point* A, vladimirova_j_jar
       double BC_length = std::sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
       double length = BA_length * BC_length;
       double angle = (double)(tmp_x * reg_x + tmp_y * reg_y);
-      std::cout << angle << " " << BA_length << ", " << BC_length << ", " << length << std::endl;
       if (length == 0)
         angle = 0;
       else
         angle = (double)(tmp_x * reg_x + tmp_y * reg_y) / (length);
-      std::cout << angle << "* " << vec[i].x << ", " << vec[i].y << std::endl;
       if (angle < min_angle) {
         min_angle = angle;
         min_angle_point = i;
@@ -54,6 +51,7 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::pre_processing() {
       input_.push_back(vladimirova_j_jarvis_method_seq::Point((int)(i % col), (int)(i / col)));
     }
   }
+  res_.clear();
   return true;
 }
 
@@ -61,16 +59,12 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
   if (!(taskData->inputs_count[1] > 0 && taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0)) return false;
-  std::cout << taskData->inputs_count[1] << ',' << taskData->inputs_count[0] << ',' << taskData->outputs_count[0]
-            << std::endl;
 
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   size_t c = 0;
   for (size_t i = 0; i < taskData->inputs_count[0] * taskData->inputs_count[1]; i++) {
     if ((int)(tmp_ptr[i]) != 255) c++;
-    std::cout << (int)(tmp_ptr[i]) << ", ";
   }
-  std::cout << std::endl;
   return (c > 2);
 }
 
@@ -85,7 +79,6 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
     if (A->y != input_[i].y) break;
     A = &input_[i];
   }
-  std::cout << " TOCHKA " << A->x << ' ' << A->y << std::endl;
   vladimirova_j_jarvis_method_seq::Point* first = A;
   // работа
   // vladimirova_j_jarvis_method_seq::Point tmp = vladimirova_j_jarvis_method_seq::Point((int)row, (int)col);
@@ -109,15 +102,7 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
 
   B = &tmp;
   A = &tmp;
-  std::cout << "ans \n {";
-  for (size_t i = 0; i < res_.size(); i += 2) {
-    std::cout << '(';
-    std::cout << res_[i];
-    std::cout << ',';
-    std::cout << res_[i + 1];
-    std::cout << "), ";
-  }
-  std::cout << '}' << std::endl;
+
   return true;
 }
 

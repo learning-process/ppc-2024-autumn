@@ -13,8 +13,6 @@ TEST(Sequential, Test_10_0) {
   std::vector<int> ans = ans_data_10_0;
   std::vector<int> out(ans.size());
 
-  for (auto i : data_10_0) std::cout << i << ". ";
-  std::cout << std::endl;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
@@ -29,9 +27,6 @@ TEST(Sequential, Test_10_0) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-
-  for (size_t i = 0; i < taskDataSeq->outputs_count[0]; i++) std::cout << out[i] << ". ";
-  std::cout << std::endl;
 
   ASSERT_EQ(ans, out);
 }
