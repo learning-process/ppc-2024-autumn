@@ -18,7 +18,6 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int res{};
   std::vector<int> data_;
 };
 

@@ -26,7 +26,7 @@ TEST(mpi_zaytsev_bitwise_sort_evenodd_Batcher_perf_test, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 1200000;  // Adjust vector size as needed
+    count_size_vector = 1200000;
     global_vec = getRandomVector(count_size_vector);
     global_result.resize(global_vec.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
@@ -55,7 +55,6 @@ TEST(mpi_zaytsev_bitwise_sort_evenodd_Batcher_perf_test, test_pipeline_run) {
   }
 }
 
-// Test for task run performance
 TEST(mpi_zaytsev_bitwise_sort_evenodd_Batcher_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
@@ -64,7 +63,7 @@ TEST(mpi_zaytsev_bitwise_sort_evenodd_Batcher_perf_test, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 1200000;  // Adjust vector size as needed
+    count_size_vector = 1200000;
     global_vec = getRandomVector(count_size_vector);
     global_result.resize(global_vec.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
