@@ -79,7 +79,7 @@ morozov_e_mult_sparse_matrix::convertToBasicMatrixs(const std::vector<double>& d
   for (int i = 0; i < rowsA; ++i) {
     std::vector<double> v(col_indA.size() - 1, 0);
     for (size_t j = 0; j < col_indA.size() - 1; ++j) {
-      for (size_t ind = col_indA[j]; ind < col_indA[j + 1]; ++ind) {
+      for (int ind = col_indA[j]; ind < col_indA[j + 1]; ++ind) {
         if (row_indA[ind] == i) {
           v[j] = dA[ind];
         }
