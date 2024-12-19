@@ -1,9 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 #include "core/task/include/task.hpp"
 
