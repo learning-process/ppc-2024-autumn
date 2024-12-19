@@ -25,9 +25,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, BasicSortTest) {
     taskData->inputs_count.emplace_back(in.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
-  } else {
-    taskData->inputs_count.emplace_back(0);
-    taskData->outputs_count.emplace_back(0);
   }
 
   TaskParallel testTaskParallel(taskData);
@@ -63,9 +60,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, NegativeNumbersTest) {
     taskData->inputs_count.emplace_back(in.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
-  } else {
-    taskData->inputs_count.emplace_back(0);
-    taskData->outputs_count.emplace_back(0);
   }
 
   TaskParallel testTaskParallel(taskData);
@@ -101,9 +95,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, ReverseSortedTest) {
     taskData->inputs_count.emplace_back(in.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
-  } else {
-    taskData->inputs_count.emplace_back(0);
-    taskData->outputs_count.emplace_back(0);
   }
 
   TaskParallel testTaskParallel(taskData);
@@ -139,9 +130,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, DuplicateElementsTest) {
     taskData->inputs_count.emplace_back(in.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
-  } else {
-    taskData->inputs_count.emplace_back(0);
-    taskData->outputs_count.emplace_back(0);
   }
 
   TaskParallel testTaskParallel(taskData);
@@ -187,9 +175,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, RandomValuesTest) {
     taskData->inputs_count.emplace_back(in.size());
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskData->outputs_count.emplace_back(out.size());
-  } else {
-    taskData->inputs_count.emplace_back(0);
-    taskData->outputs_count.emplace_back(0);
   }
 
   TaskParallel testTaskParallel(taskData);

@@ -36,9 +36,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, test_pipeline_run_mpi) {
     taskDataMPI->inputs_count.emplace_back(in.size());
     taskDataMPI->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataMPI->outputs_count.emplace_back(out.size());
-  } else {
-    taskDataMPI->inputs_count.emplace_back(0);
-    taskDataMPI->outputs_count.emplace_back(0);
   }
 
   auto testTaskParallel = std::make_shared<TaskParallel>(taskDataMPI);
@@ -93,9 +90,6 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi, test_task_run_mpi) {
     taskDataMPI->inputs_count.emplace_back(in.size());
     taskDataMPI->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataMPI->outputs_count.emplace_back(out.size());
-  } else {
-    taskDataMPI->inputs_count.emplace_back(0);
-    taskDataMPI->outputs_count.emplace_back(0);
   }
 
   auto testTaskParallel = std::make_shared<TaskParallel>(taskDataMPI);
