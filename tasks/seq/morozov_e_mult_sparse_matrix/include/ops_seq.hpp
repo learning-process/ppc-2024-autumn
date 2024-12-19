@@ -10,7 +10,7 @@ double scalMultOfVectors(const std::vector<double> &vA, const std::vector<double
 std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> convertToBasicMatrixs(
     const std::vector<double> &dA, const std::vector<int> &row_indA, const std::vector<int> &col_indA,
     const std::vector<double> &dB, const std::vector<int> &row_indB, const std::vector<int> &col_indB, int rowsA,
-    int columnsA, int rowsB, int columnsB, std::vector<std::vector<double>> &res);
+    int columnsA, int rowsB, int columnsB);
 void convertToCCS(const std::vector<std::vector<double>> &matrix, std::vector<double> &values,
                   std::vector<int> &row_indices, std::vector<int> &col_pointers);
 class TestTaskSequential : public ppc::core::Task {

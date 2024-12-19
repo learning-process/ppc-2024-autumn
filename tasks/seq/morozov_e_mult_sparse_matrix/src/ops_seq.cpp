@@ -73,8 +73,7 @@ std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>>
 morozov_e_mult_sparse_matrix::convertToBasicMatrixs(const std::vector<double>& dA, const std::vector<int>& row_indA,
                                                     const std::vector<int>& col_indA, const std::vector<double>& dB,
                                                     const std::vector<int>& row_indB, const std::vector<int>& col_indB,
-                                                    int rowsA, int columnsA, int rowsB, int columnsB,
-                                                    std::vector<std::vector<double>>& res) {
+                                                    int rowsA, int columnsA, int rowsB, int columnsB) {
   std::vector<std::vector<double>> matrixA(rowsA, std::vector<double>(columnsA, 0));
   for (int i = 0; i < rowsA; ++i) {
     std::vector<double> v(col_indA.size() - 1, 0);
@@ -144,7 +143,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::pre_processing() {
     col_indB[i] = col_indB_ptr[i];
   }
   auto pairMatrix = morozov_e_mult_sparse_matrix::convertToBasicMatrixs(dA, row_indA, col_indA, dB, row_indB, col_indB,
-                                                                        rowsA, columnsA, rowsB, columnsB, ans);
+                                                                        rowsA, columnsA, rowsB, columnsB);
   ans.resize(rowsA, std::vector<double>(columnsB, 0));
   for (int i = 0; i < rowsA; ++i) {
     for (int j = 0; j < columnsB; ++j) {
@@ -167,7 +166,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::validation() {
 
 bool morozov_e_mult_sparse_matrix::TestTaskSequential::run() {
   internal_order_test();
-  convertToBasicMatrixs(dA, row_indA, col_indA, dB, row_indB, col_indB, rowsA, columnsA, rowsB, columnsB, ans);
+  convertToBasicMatrixs(dA, row_indA, col_indA, dB, row_indB, col_indB, rowsA, columnsA, rowsB, columnsB);
   return true;
 }
 
