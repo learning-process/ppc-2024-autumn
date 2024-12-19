@@ -7,6 +7,29 @@
 
 #include "mpi/lavrentyev_a_alternation_count/include/ops_mpi.hpp"
 
+TEST(Parallel_Operations_MPI, Test_empty_vector) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+
+  // Create data
+  std::vector<int> global_out(1, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataMpi->inputs_count.emplace_back(global_vec.size());
+    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_out.data()));
+    taskDataMpi->outputs_count.emplace_back(global_out.size());
+  }
+
+  // Create Task
+  lavrentyev_a_alternation_count_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
+
 TEST(Parallel_Operations_MPI, Test_invalid_vector_single_element) {
   boost::mpi::communicator world;
   std::vector<int> global_vec = {1};
