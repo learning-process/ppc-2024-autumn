@@ -176,6 +176,26 @@ TEST(chernykh_a_multidimensional_integral_simpson_mpi, cubic_2d_integration) {
   chernykh_a_mis_mpi::run_valid_task(func, bounds, step_range, tolerance);
 }
 
+TEST(chernykh_a_multidimensional_integral_simpson_mpi, empty_bounds_fails_validation) {
+  auto func = [](const chernykh_a_mis_mpi::func_args_t &args) -> double {
+    return args[0] + (2 * args[1]) + (3 * args[2]);
+  };
+  chernykh_a_mis_mpi::bounds_t bounds = {};
+  chernykh_a_mis_mpi::step_range_t step_range = {2, 100};
+  double tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_invalid_task(func, bounds, step_range, tolerance);
+}
+
+TEST(chernykh_a_multidimensional_integral_simpson_mpi, incorrect_bounds_fails_validation) {
+  auto func = [](const chernykh_a_mis_mpi::func_args_t &args) -> double {
+    return (args[0] * args[0]) + (args[1] * args[1]);
+  };
+  chernykh_a_mis_mpi::bounds_t bounds = {{0.0, 2.0}, {4.0, 3.0}};
+  chernykh_a_mis_mpi::step_range_t step_range = {2, 100};
+  double tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_invalid_task(func, bounds, step_range, tolerance);
+}
+
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, incorrect_step_range_fails_validation) {
   auto func = [](const chernykh_a_mis_mpi::func_args_t &args) -> double {
     return std::sin(args[0]) * std::cos(args[1]);
