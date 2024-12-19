@@ -12,9 +12,10 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
   int size = world.size();
 
   int root = 0;
-  const int data_size = size * 10;
+  const int recvcount = 10;
+  const int data_size = size * recvcount;
   int* sendbuf = nullptr;
-  auto* recvbuf = new int[10];
+  auto* recvbuf = new int[recvcount];
 
   if (rank == root) {
     sendbuf = new int[data_size];
@@ -23,19 +24,21 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
     }
   }
 
-  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 10, MPI_INT, root,
+  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, recvcount, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
-  int expected[10];
-  for (int i = 0; i < 10; ++i) {
-    expected[i] = rank * 10 + i;
+  int expected[recvcount];
+  for (int i = 0; i < recvcount; ++i) {
+    expected[i] = rank * recvcount + i;
   }
 
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < recvcount; ++i) {
     EXPECT_EQ(recvbuf[i], expected[i]);
   }
 
-  delete[] sendbuf;
+  if (sendbuf != nullptr) {
+    delete[] sendbuf;
+  }
   delete[] recvbuf;
 }
 
@@ -45,9 +48,10 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
   int size = world.size();
 
   int root = 0;
-  const int data_size = size * 10;
+  const int recvcount = 10; 
+  const int data_size = size * recvcount; 
   float* sendbuf = nullptr;
-  auto* recvbuf = new float[10];
+  auto* recvbuf = new float[recvcount];
 
   if (rank == root) {
     sendbuf = new float[data_size];
@@ -56,19 +60,22 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
     }
   }
 
-  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_FLOAT, recvbuf, 10, MPI_FLOAT, root,
+  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_FLOAT, recvbuf, recvcount, MPI_FLOAT, root,
                                                    MPI_COMM_WORLD);
 
-  float expected[10];
-  for (int i = 0; i < 10; ++i) {
-    expected[i] = static_cast<float>(rank * 10 + i);
+  float expected[recvcount];
+  for (int i = 0; i < recvcount; ++i) {
+    expected[i] = static_cast<float>(rank * recvcount + i);
   }
 
-  for (int i = 0; i < 10; ++i) {
-    EXPECT_FLOAT_EQ(recvbuf[i], expected[i]);
+  for (int i = 0; i < recvcount; ++i) {
+    
+    EXPECT_NEAR(recvbuf[i], expected[i], 1e-5);
   }
 
-  delete[] sendbuf;
+  if (sendbuf != nullptr) {
+    delete[] sendbuf;
+  }
   delete[] recvbuf;
 }
 
@@ -78,9 +85,10 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
   int size = world.size();
 
   int root = 0;
-  const int data_size = size * 10;
+  const int recvcount = 10;                // Количество элементов, которые получает каждый процесс
+  const int data_size = size * recvcount;  // Общий размер данных
   double* sendbuf = nullptr;
-  auto* recvbuf = new double[10];
+  auto* recvbuf = new double[recvcount];
 
   if (rank == root) {
     sendbuf = new double[data_size];
@@ -89,15 +97,15 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
     }
   }
 
-  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_DOUBLE, recvbuf, 10, MPI_DOUBLE, root,
+  fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_DOUBLE, recvbuf, recvcount, MPI_DOUBLE, root,
                                                    MPI_COMM_WORLD);
 
-  double expected[10];
-  for (int i = 0; i < 10; ++i) {
-    expected[i] = static_cast<double>(rank * 10 + i);
+  double expected[recvcount];
+  for (int i = 0; i < recvcount; ++i) {
+    expected[i] = static_cast<double>(rank * recvcount + i);
   }
 
-  for (int i = 0; i < 10; ++i) {
+  for (int i = 0; i < recvcount; ++i) {
     EXPECT_DOUBLE_EQ(recvbuf[i], expected[i]);
   }
 
