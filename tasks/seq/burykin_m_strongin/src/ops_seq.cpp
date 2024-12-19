@@ -10,7 +10,7 @@ double StronginOptimization::strongin_method(double x0, double x1, double eps) {
 
   double lipshM;
   double lipshm;
-  int interval = 0;
+  size_t interval = 0;
 
   while (true) {
     lipshM = 0.0;
@@ -21,7 +21,7 @@ double StronginOptimization::strongin_method(double x0, double x1, double eps) {
     lipshm = 2.0 * (lipshM > 0.0 ? lipshM : 1.0);
 
     double R = -std::numeric_limits<double>::infinity();
-    for (int i = 0; i < x.size() - 1; ++i) {
+    for (size_t i = 0; i < x.size() - 1; ++i) {
       double tempR = lipshm * (x[i + 1] - x[i]) + std::pow((y[i + 1] - y[i]), 2) / (lipshm * (x[i + 1] - x[i])) -
                      2.0 * (y[i + 1] + y[i]);
       if (tempR > R) {
