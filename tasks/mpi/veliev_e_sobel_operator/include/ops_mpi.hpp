@@ -6,6 +6,7 @@
 #include <array>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <cmath>
 #include <cstdint>
 #include <cstring>
 #include <memory>
