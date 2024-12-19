@@ -188,7 +188,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       world.send(i, 0, input_.data() + i * (delta) + i * 2, delta + 2);
     }
     for (int i = ost_point; i < world.size(); i++) {
-      world.send(i, 0, input_.data() + i * (delta) + (ost_point)*2, delta);
+      world.send(i, 0, input_.data() + i * (delta) + (ost_point) * 2, delta);
     }
     if (ost_point > 0) delta += 2;
   } else {
