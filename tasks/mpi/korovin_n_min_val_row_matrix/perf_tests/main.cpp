@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/korovin_n_min_val_row_matrix/include/ops_mpi.hpp"
 
-TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
+TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_min;
@@ -54,7 +54,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->task_run(perfAttr, perfResults);
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
@@ -64,7 +64,7 @@ TEST(korovin_n_min_val_row_matrix_mpi, test_pipeline_run_min) {
   }
 }
 
-TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run_min) {
+TEST(korovin_n_min_val_row_matrix_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
   std::vector<int32_t> global_min;
