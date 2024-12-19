@@ -9,7 +9,7 @@ class LinearHistogramStretch {
   bool validation() const;
   bool pre_processing();
   bool run();
-  bool post_processing();
+  static bool post_processing();
 
  private:
   int image_size_;
