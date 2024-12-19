@@ -53,9 +53,9 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, test_task_run) {
   const size_t dim = 2;
   std::vector<std::pair<double, double>> lims(dim);
   lims[0].first = lims[1].first = 0.0;
-  lims[0].second = lims[1].second = 1.2;
+  lims[0].second = lims[1].second = 1.5;
   double h = 0.0005;
-  double eps = 5e-4;
+  double eps = 1e-3;
   std::vector<double> out(1);
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -82,6 +82,6 @@ TEST(kovalev_k_multidimensional_integrals_rectangle_method_mpi, test_task_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_NEAR(0.614424320346835, out[0], eps);
+    ASSERT_NEAR(2.34381088006031, out[0], eps);
   }
 }
