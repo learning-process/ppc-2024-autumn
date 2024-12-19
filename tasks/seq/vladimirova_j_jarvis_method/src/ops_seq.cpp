@@ -1,4 +1,3 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/vladimirova_j_jarvis_method/include/ops_seq.hpp"
 
 #include <cmath>

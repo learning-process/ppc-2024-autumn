@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/vladimirova_j_jarvis_method/include/ops_mpi.hpp"
 
 #include <algorithm>
