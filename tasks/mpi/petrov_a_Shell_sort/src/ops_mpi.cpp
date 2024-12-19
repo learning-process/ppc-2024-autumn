@@ -69,7 +69,6 @@ bool TestTaskMPI::run() {
   return true;
 }
 
-
 bool TestTaskMPI::post_processing() {
   size_t output_size = taskData->outputs_count[0];
   auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
