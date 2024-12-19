@@ -32,12 +32,11 @@ class DiningPhilosophersMPI : public ppc::core::Task {
   void request_forks();
   void release_forks();
 
-  void resolve_deadlock();
-  bool check_for_termination();
-
   State state;
 
  private:
+  void resolve_deadlock();
+  bool check_for_termination();
   boost::mpi::communicator world;
   int left_neighbor, right_neighbor;
   std::default_random_engine generator;

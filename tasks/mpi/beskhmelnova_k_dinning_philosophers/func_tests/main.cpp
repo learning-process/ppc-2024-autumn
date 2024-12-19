@@ -158,37 +158,6 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_with_8_philosophers) {
   }
 }
 
-TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_resolve_deadlock) {
-  boost::mpi::communicator world;
-
-  int num_philosophers = world.size();
-
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.push_back(num_philosophers);
-
-  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
-
-  if (dining_task.validation()) {
-    ASSERT_TRUE(dining_task.pre_processing());
-    while (!dining_task.check_for_termination()) {
-      dining_task.think();
-      dining_task.request_forks();
-      dining_task.eat();
-      dining_task.release_forks();
-      if (dining_task.check_deadlock()) {
-        dining_task.resolve_deadlock();
-      }
-    }
-    ASSERT_TRUE(dining_task.post_processing());
-    bool deadlock_detected = dining_task.check_deadlock();
-    if (world.rank() == 0) {
-      ASSERT_FALSE(deadlock_detected);
-    }
-  } else {
-    GTEST_SKIP();
-  }
-}
-
 TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_think_function) {
   boost::mpi::communicator world;
 
@@ -203,6 +172,7 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_think_function) {
     ASSERT_TRUE(dining_task.pre_processing());
     dining_task.think();
     ASSERT_EQ(dining_task.state, beskhmelnova_k_dining_philosophers::THINKING);
+    ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
   } else {
     GTEST_SKIP();
@@ -223,13 +193,14 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_eat_function) {
     ASSERT_TRUE(dining_task.pre_processing());
     dining_task.eat();
     ASSERT_EQ(dining_task.state, beskhmelnova_k_dining_philosophers::EATING);
+    ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
   } else {
     GTEST_SKIP();
   }
 }
 
-TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_release_forks_function) {
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_request_forks_function) {
   boost::mpi::communicator world;
 
   int num_philosophers = world.size();
@@ -243,6 +214,7 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_release_forks_function) {
     ASSERT_TRUE(dining_task.pre_processing());
     dining_task.request_forks();
     ASSERT_EQ(dining_task.state, beskhmelnova_k_dining_philosophers::HUNGRY);
+    ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
   } else {
     GTEST_SKIP();
@@ -265,6 +237,7 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_release_forks_function) {
     ASSERT_EQ(dining_task.state, beskhmelnova_k_dining_philosophers::EATING);
     dining_task.release_forks();
     ASSERT_EQ(dining_task.state, beskhmelnova_k_dining_philosophers::THINKING);
+    ASSERT_TRUE(dining_task.run());
     ASSERT_TRUE(dining_task.post_processing());
   } else {
     GTEST_SKIP();
