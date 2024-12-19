@@ -66,7 +66,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test4) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_max.data()));
     taskDataSeq->outputs_count.emplace_back(global_max.size());
     sedova_o_max_of_vector_elements_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskParallel.validation(), true);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
   }
 }
 
