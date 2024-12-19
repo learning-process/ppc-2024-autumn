@@ -5,15 +5,14 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <memory>
-#include <numeric>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace zaytsev_bitwise_sort_evenodd_Batcher {
+
+void radix_sort(std::vector<int>& data, int min_value, int max_value);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:

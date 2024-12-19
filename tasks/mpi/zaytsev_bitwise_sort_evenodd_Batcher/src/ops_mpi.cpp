@@ -4,6 +4,39 @@
 #include <algorithm>
 #include <vector>
 
+void zaytsev_bitwise_sort_evenodd_Batcher::radix_sort(std::vector<int>& data, int min_value, int max_value) {
+  std::vector<int> buffer(data.size());
+
+  int max_bits = 0;
+  while (max_value > 0) {
+    max_value >>= 1;
+    ++max_bits;
+  }
+
+  for (int bit = 0; bit < max_bits; ++bit) {
+    size_t zero_count = 0;
+
+    for (int num : data) {
+      if ((num & (1 << bit)) == 0) {
+        buffer[zero_count++] = num;
+      }
+    }
+    for (int num : data) {
+      if ((num & (1 << bit)) != 0) {
+        buffer[zero_count++] = num;
+      }
+    }
+
+    data = buffer;
+  }
+
+  if (min_value < 0) {
+    for (int& num : data) {
+      num += min_value;
+    }
+  }
+}
+
 bool zaytsev_bitwise_sort_evenodd_Batcher::TestMPITaskSequential::pre_processing() {
   internal_order_test();
 
@@ -35,37 +68,8 @@ bool zaytsev_bitwise_sort_evenodd_Batcher::TestMPITaskSequential::run() {
   }
 
   int max_value = *std::max_element(data_.begin(), data_.end());
-  int max_bits = 0;
-  while (max_value > 0) {
-    max_value >>= 1;
-    ++max_bits;
-  }
 
-  std::vector<int> buffer(data_.size());
-
-  for (int bit = 0; bit < max_bits; ++bit) {
-    size_t zero_count = 0;
-
-    for (int num : data_) {
-      if ((num & (1 << bit)) == 0) {
-        buffer[zero_count++] = num;
-      }
-    }
-
-    for (int num : data_) {
-      if ((num & (1 << bit)) != 0) {
-        buffer[zero_count++] = num;
-      }
-    }
-
-    data_ = buffer;
-  }
-
-  if (min_value < 0) {
-    for (int& num : data_) {
-      num += min_value;
-    }
-  }
+  radix_sort(data_, min_value, max_value);
 
   return true;
 }
@@ -139,35 +143,11 @@ bool zaytsev_bitwise_sort_evenodd_Batcher::TestMPITaskParallel::run() {
     num -= global_min;
   }
 
-  std::vector<int> buffer(local_data.size());
   int max_value = local_data.empty() ? 0 : *std::max_element(local_data.begin(), local_data.end());
   int global_max_value = 0;
   MPI_Allreduce(&max_value, &global_max_value, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
-  int max_bits = 0;
-  while (global_max_value > 0) {
-    global_max_value >>= 1;
-    ++max_bits;
-  }
-
-  for (int bit = 0; bit < max_bits; ++bit) {
-    size_t zero_count = 0;
-    for (int num : local_data) {
-      if ((num & (1 << bit)) == 0) {
-        buffer[zero_count++] = num;
-      }
-    }
-    for (int num : local_data) {
-      if ((num & (1 << bit)) != 0) {
-        buffer[zero_count++] = num;
-      }
-    }
-    local_data = buffer;
-  }
-
-  for (int& num : local_data) {
-    num += global_min;
-  }
+  radix_sort(local_data, global_min, global_max_value);
 
   for (int step = 0; step < world_size; ++step) {
     int neighbor;
