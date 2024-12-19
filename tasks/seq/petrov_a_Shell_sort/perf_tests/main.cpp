@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <memory>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
