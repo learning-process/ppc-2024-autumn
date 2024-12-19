@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <cmath>
 #include <algorithm>
 #include <array>
 #include <cstdint>
