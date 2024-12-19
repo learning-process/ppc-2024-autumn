@@ -173,7 +173,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, different_sizes) {
 TEST(khovansky_d_ribbon_vertical_scheme_mpi, fixed_matrix_test) {
   boost::mpi::communicator world;
 
-  //int rows_count = 3;
+  // int rows_count = 3;
   int columns_count = 3;
 
   std::vector<int> input_matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -207,7 +207,7 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, fixed_matrix_test) {
 TEST(khovansky_d_ribbon_vertical_scheme_mpi, fixed_matrix_test_seq) {
   boost::mpi::communicator world;
 
-  //int rows_count = 3;
+  // int rows_count = 3;
   int columns_count = 3;
 
   std::vector<int> input_matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};

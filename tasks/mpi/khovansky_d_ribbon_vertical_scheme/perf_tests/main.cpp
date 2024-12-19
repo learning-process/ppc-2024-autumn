@@ -172,12 +172,12 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_fixed_matrix_test) {
   input_matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
   input_vector = {1, 2, 3};
 
-  //int rows_count;
+  // int rows_count;
   int columns_count;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    //rows_count = 3;
+    // rows_count = 3;
     columns_count = 3;
 
     output_vector.resize(columns_count, 0);
