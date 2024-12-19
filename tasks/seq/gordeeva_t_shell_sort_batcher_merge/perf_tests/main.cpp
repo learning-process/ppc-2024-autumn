@@ -31,7 +31,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_pipeline_run) {
   };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
