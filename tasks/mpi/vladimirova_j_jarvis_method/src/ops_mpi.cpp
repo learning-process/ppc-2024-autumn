@@ -190,7 +190,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
         world.send(i, 0, input_.data() + i * (delta) + i * 2, delta + 2);
       }
       for (int i = ost_point; i < world.size(); i++) {
-        int sdvig = (ost_point) * 2;
+        int sdvig = (ost_point)*2;
         world.send(i, 0, input_.data() + i * (delta) + sdvig, delta);
       }
       if (ost_point > 0) delta += 2;
@@ -203,7 +203,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
 
   local_input_ = std::vector<Point>(delta / 2);
 
-  for (size_t i = 0; i < delta; i += 2) {
+  for (int i = 0; i < delta; i += 2) {
     local_input_[i / 2] = (Point(input_[i], input_[i + 1]));
   }
 
