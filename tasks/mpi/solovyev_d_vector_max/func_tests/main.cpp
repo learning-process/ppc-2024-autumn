@@ -2,12 +2,11 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <iostream>
 #include <random>
 #include <vector>
 
 #include "mpi/solovyev_d_vector_max/include/header.hpp"
-
+namespace solovyev_d_vector_max_mpi {
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -17,29 +16,26 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-
+}  // namespace solovyev_d_vector_max_mpi
 TEST(solovyev_d_vector_max_mpi, Test_Max) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> global_max(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::cerr << "1 " << world.rank() << std::endl;
   if (world.rank() == 0) {
     const int count_size_vector = 240;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = solovyev_d_vector_max_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));
     taskDataPar->outputs_count.emplace_back(global_max.size());
   }
-  std::cerr << "2 " << world.rank() << std::endl;
   solovyev_d_vector_max_mpi::VectorMaxMPIParallel VectorMaxMPIParallel(taskDataPar);
   ASSERT_EQ(VectorMaxMPIParallel.validation(), true);
   VectorMaxMPIParallel.pre_processing();
   VectorMaxMPIParallel.run();
   VectorMaxMPIParallel.post_processing();
-  std::cerr << "3 " << world.rank() << std::endl;
   if (world.rank() == 0) {
     // Create data
     std::vector<int32_t> reference_max(1, 0);
@@ -71,7 +67,7 @@ TEST(solovyev_d_vector_max_mpi, Test_Max_2) {
 
   if (world.rank() == 0) {
     const int count_size_vector = 120;
-    global_vec = getRandomVector(count_size_vector);
+    global_vec = solovyev_d_vector_max_mpi::getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_max.data()));

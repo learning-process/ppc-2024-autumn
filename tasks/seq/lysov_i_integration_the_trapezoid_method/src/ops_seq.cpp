@@ -1,6 +1,5 @@
 #include "seq/lysov_i_integration_the_trapezoid_method/include/ops_seq.hpp"
 
-#include <thread>
 using namespace std::chrono_literals;
 bool lysov_i_integration_the_trapezoid_method_seq::TestTaskSequential::validation() {
   internal_order_test();

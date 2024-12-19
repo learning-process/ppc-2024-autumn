@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
 
 bool lysov_i_integration_the_trapezoid_method_mpi::TestMPITaskSequential::validation() {
