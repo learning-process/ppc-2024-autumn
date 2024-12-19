@@ -5,7 +5,7 @@
 using namespace std::chrono_literals;
 
 int sozonov_i_gaussian_method_horizontal_strip_scheme_seq::extended_matrix_rank(int n, int m, std::vector<double> a) {
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
 
   int rank = m;
   for (int i = 0; i < m; ++i) {
@@ -30,7 +30,7 @@ int sozonov_i_gaussian_method_horizontal_strip_scheme_seq::extended_matrix_rank(
 }
 
 int sozonov_i_gaussian_method_horizontal_strip_scheme_seq::determinant(int n, int m, std::vector<double> a) {
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
   double det = 1;
 
   for (int i = 0; i < m; ++i) {
