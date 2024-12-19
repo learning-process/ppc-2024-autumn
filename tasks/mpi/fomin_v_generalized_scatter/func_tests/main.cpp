@@ -76,11 +76,24 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_FLOAT, recvbuf, recvcount, MPI_FLOAT, root,
                                                    MPI_COMM_WORLD);
 
+  // Generate pre-order traversal rank order
+  std::vector<int> pre_order_rank;
+  fomin_v_generalized_scatter::pre_order(0, size, pre_order_rank);
+
+  // Find the position of the current rank in pre-order rank order
+  auto it = std::find(pre_order_rank.begin(), pre_order_rank.end(), rank);
+  int position = std::distance(pre_order_rank.begin(), it);
+
+  // Set expected starting index
+  int expected_start = position * recvcount;
+
+  // Set expected values
   float expected[recvcount];
   for (int i = 0; i < recvcount; ++i) {
-    expected[i] = static_cast<float>(rank * recvcount + i);
+    expected[i] = static_cast<float>(expected_start + i);
   }
 
+  // Verify received data against expected data
   for (int i = 0; i < recvcount; ++i) {
     EXPECT_NEAR(recvbuf[i], expected[i], 1e-5);
   }
@@ -97,8 +110,8 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
   int size = world.size();
 
   int root = 0;
-  const int recvcount = 10;                // Количество элементов, которые получает каждый процесс
-  const int data_size = size * recvcount;  // Общий размер данных
+  const int recvcount = 10;
+  const int data_size = size * recvcount;
   double* sendbuf = nullptr;
   auto* recvbuf = new double[recvcount];
 
@@ -112,11 +125,24 @@ TEST(fomin_v_generalized_scatter, ScatterDoubles) {
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_DOUBLE, recvbuf, recvcount, MPI_DOUBLE, root,
                                                    MPI_COMM_WORLD);
 
+  // Generate pre-order traversal rank order
+  std::vector<int> pre_order_rank;
+  fomin_v_generalized_scatter::pre_order(0, size, pre_order_rank);
+
+  // Find the position of the current rank in pre-order rank order
+  auto it = std::find(pre_order_rank.begin(), pre_order_rank.end(), rank);
+  int position = std::distance(pre_order_rank.begin(), it);
+
+  // Set expected starting index
+  int expected_start = position * recvcount;
+
+  // Set expected values
   double expected[recvcount];
   for (int i = 0; i < recvcount; ++i) {
-    expected[i] = static_cast<double>(rank * recvcount + i);
+    expected[i] = static_cast<double>(expected_start + i);
   }
 
+  // Verify received data against expected data
   for (int i = 0; i < recvcount; ++i) {
     EXPECT_DOUBLE_EQ(recvbuf[i], expected[i]);
   }
