@@ -14,8 +14,7 @@ double function5(std::vector<double> input) { return -(sin(input[0]) * cos(input
 double function6(std::vector<double> input) { return (-3 * pow(input[1], 2) * sin(5 * input[0])) / 2; };
 
 void TestOfValidation(double (*function)(std::vector<double>), std::vector<unsigned int>& count,
-                      std::vector<std::pair<double, double>>& limits, std::vector<unsigned int>& intervals,
-                      double answer) {
+                      std::vector<std::pair<double, double>>& limits, std::vector<unsigned int>& intervals) {
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
@@ -67,8 +66,7 @@ TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_validation_count_of_variab
   std::vector<std::pair<double, double>> limits = {{2.5, 4.5}, {1.0, 3.2}};
   std::vector<unsigned int> intervals = {1000, 1000};
 
-  TestOfValidation(function1, count, limits, intervals,
-                   (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfValidation(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_validation_size_numbers_of_intervals) {
@@ -76,8 +74,7 @@ TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_validation_size_numbers_of
   std::vector<std::pair<double, double>> limits = {{2.5, 4.5}, {1.0, 3.2}};
   std::vector<unsigned int> intervals = {1000};
 
-  TestOfValidation(function1, count, limits, intervals,
-                   (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfValidation(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_validation_size_limits) {
@@ -85,8 +82,7 @@ TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_validation_size_limits) {
   std::vector<std::pair<double, double>> limits = {{2.5, 4.5}};
   std::vector<unsigned int> intervals = {1000, 1000};
 
-  TestOfValidation(function1, count, limits, intervals,
-                   (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfValidation(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_functionality_1) {

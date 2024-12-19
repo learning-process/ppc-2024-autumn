@@ -16,8 +16,7 @@ double function5(std::vector<double> input) { return -(sin(input[0]) * cos(input
 double function6(std::vector<double> input) { return (-3 * pow(input[1], 2) * sin(5 * input[0])) / 2; };
 
 void TestOfValidation(double (*function)(std::vector<double>), std::vector<unsigned int>& count,
-                      std::vector<std::pair<double, double>>& limits, std::vector<unsigned int>& intervals,
-                      double answer) {
+                      std::vector<std::pair<double, double>>& limits, std::vector<unsigned int>& intervals) {
   boost::mpi::communicator world;
 
   std::vector<double> out(1, 0.0);
@@ -89,8 +88,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_count_of_variab
     count = std::vector<unsigned int>{3};
   }
 
-  TestOfValidation(function1, count, limits, intervals,
-                   (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfValidation(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_size_numbers_of_intervals) {
@@ -106,8 +104,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_size_numbers_of
     count = std::vector<unsigned int>{2};
   }
 
-  TestOfValidation(function1, count, limits, intervals,
-                   (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfValidation(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_size_limits) {
@@ -123,8 +120,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_size_limits) {
     count = std::vector<unsigned int>{2};
   }
 
-  TestOfValidation(function1, count, limits, intervals,
-                   (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfValidation(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_1) {
