@@ -32,7 +32,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   MPI_Type_size(sendtype, &datatype_size);
 
   // Calculate subtree sizes
-  int* subtree_sizes = new int[size];
+  auto* subtree_sizes = new int[size];
   for (int i = size - 1; i >= 0; --i) {
     subtree_sizes[i] = 1;
     if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
@@ -48,8 +48,9 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int left_child = 2 * rank + 1;
   int right_child = 2 * rank + 2;
 
-  char* temp_buffer = nullptr;
+  auto* temp_buffer = nullptr;
   if (rank != root) {
+    // Allocate buffer for receiving data from the parent
     temp_buffer = new char[subtree_sizes[rank] * recvcount * datatype_size];
   }
 
@@ -61,16 +62,16 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
     // Send data to left child
     if (left_child < size) {
-      int left_offset = recvcount * datatype_size;
-      int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
-      MPI_Send(send_ptr + left_offset, left_data_size / datatype_size, sendtype, left_child, 0, comm);
+      int left_offset = recvcount;  // Start immediately after root's data
+      int left_data_size = subtree_sizes[left_child] * recvcount;
+      MPI_Send(send_ptr + left_offset * datatype_size, left_data_size, sendtype, left_child, 0, comm);
     }
 
     // Send data to right child
     if (right_child < size) {
-      int right_offset = (recvcount + subtree_sizes[left_child] * recvcount) * datatype_size;
-      int right_data_size = subtree_sizes[right_child] * recvcount * datatype_size;
-      MPI_Send(send_ptr + right_offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
+      int right_offset = recvcount + subtree_sizes[left_child] * recvcount;
+      int right_data_size = subtree_sizes[right_child] * recvcount;
+      MPI_Send(send_ptr + right_offset * datatype_size, right_data_size, sendtype, right_child, 0, comm);
     }
   } else {
     // Receive data from parent
@@ -82,15 +83,15 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
     // Forward data to left child
     if (left_child < size) {
-      int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
-      MPI_Send(temp_buffer + recvcount * datatype_size, left_data_size / datatype_size, sendtype, left_child, 0, comm);
+      int left_data_size = subtree_sizes[left_child] * recvcount;
+      MPI_Send(temp_buffer + recvcount * datatype_size, left_data_size, sendtype, left_child, 0, comm);
     }
 
     // Forward data to right child
     if (right_child < size) {
-      int right_data_size = subtree_sizes[right_child] * recvcount * datatype_size;
-      int offset = recvcount * datatype_size + subtree_sizes[left_child] * recvcount * datatype_size;
-      MPI_Send(temp_buffer + offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
+      int offset = recvcount + subtree_sizes[left_child] * recvcount;
+      int right_data_size = subtree_sizes[right_child] * recvcount;
+      MPI_Send(temp_buffer + offset * datatype_size, right_data_size, sendtype, right_child, 0, comm);
     }
   }
 
