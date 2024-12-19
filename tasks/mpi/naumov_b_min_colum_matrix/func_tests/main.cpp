@@ -8,7 +8,7 @@
 
 static std::vector<int> getRandomVector(int size) {
   std::vector<int> vec(size);
-  for (int& element : vec) {
+  for (int &element : vec) {
     element = rand() % 201 - 100;
   }
   return vec;
@@ -48,10 +48,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column) {
   if (world.rank() == 0) {
     global_matrix = getRandomVector(cols * rows);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_minima.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_minima.data()));
     taskDataPar->outputs_count.emplace_back(global_minima.size());
   }
 
@@ -64,10 +64,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column) {
   if (world.rank() == 0) {
     std::vector<int> reference_minima(cols, std::numeric_limits<int>::max());
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_minima.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_minima.data()));
     taskDataSeq->outputs_count.emplace_back(reference_minima.size());
 
     naumov_b_min_colum_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
@@ -92,10 +92,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_10_40) {
   if (world.rank() == 0) {
     global_matrix = getRandomVector(cols * rows);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_minima.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_minima.data()));
     taskDataPar->outputs_count.emplace_back(global_minima.size());
   }
 
@@ -108,10 +108,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_10_40) {
   if (world.rank() == 0) {
     std::vector<int> reference_minima(cols, std::numeric_limits<int>::max());
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_minima.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_minima.data()));
     taskDataSeq->outputs_count.emplace_back(reference_minima.size());
 
     naumov_b_min_colum_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
@@ -136,10 +136,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_40_10) {
   if (world.rank() == 0) {
     global_matrix = getRandomVector(cols * rows);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_minima.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_minima.data()));
     taskDataPar->outputs_count.emplace_back(global_minima.size());
   }
 
@@ -152,10 +152,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_40_10) {
   if (world.rank() == 0) {
     std::vector<int> reference_minima(cols, std::numeric_limits<int>::max());
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_minima.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_minima.data()));
     taskDataSeq->outputs_count.emplace_back(reference_minima.size());
 
     naumov_b_min_colum_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
@@ -180,10 +180,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_Large_Matrix) {
   if (world.rank() == 0) {
     global_matrix = getRandomVector(cols * rows);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_minima.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_minima.data()));
     taskDataPar->outputs_count.emplace_back(global_minima.size());
   }
 
@@ -196,10 +196,10 @@ TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column_Large_Matrix) {
   if (world.rank() == 0) {
     std::vector<int> reference_minima(cols, std::numeric_limits<int>::max());
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
     taskDataSeq->inputs_count.emplace_back(rows);
     taskDataSeq->inputs_count.emplace_back(cols);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_minima.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_minima.data()));
     taskDataSeq->outputs_count.emplace_back(reference_minima.size());
 
     naumov_b_min_colum_matrix_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
