@@ -12,7 +12,25 @@ using namespace std::chrono_literals;
 
 std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::ShellSort(std::vector<int>& vec) {
   size_t n = vec.size();
-  for (size_t gap = n / 2; gap > 0; gap /= 2) {
+
+  std::vector<size_t> Sedgwick_gaps;
+
+  size_t a = 0;
+  while (true) {
+    size_t gap;
+    if (a % 2 == 0) {
+      gap = 9 * static_cast<size_t>(pow(2, a)) - 9 * static_cast<size_t>(pow(2, a / 2)) + 1;
+    } else {
+      gap = 8 * static_cast<size_t>(pow(2, a)) - 6 * static_cast<size_t>(pow(2, (a + 1) / 2)) + 1;
+    }
+
+    if (gap >= n) break;
+    Sedgwick_gaps.push_back(gap);
+    a++;
+  }
+  for (int k = Sedgwick_gaps.size() - 1; k >= 0; --k) {
+    size_t gap = Sedgwick_gaps[k];
+
     for (size_t i = gap; i < n; i++) {
       int temp = vec[i];
       size_t j;
@@ -24,6 +42,7 @@ std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::ShellSort(std::vector<i
   }
   return vec;
 }
+
 std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::merge(std::vector<int>& vec1, std::vector<int>& vec2) {
   std::vector<int> result;
   std::merge(vec1.begin(), vec1.end(), vec2.begin(), vec2.end(), std::back_inserter(result));
@@ -80,25 +99,30 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::validation() {
 bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   int rank = world.rank();
-  size_t delta = 0;
-  size_t extra = 0;
+  int delta = 0;
+  int extra = 0;
   int size = input_.size();
+  broadcast(world, size, 0);
+
   std::vector<int> sizes_vec;
 
+  delta = size / world.size();
+  extra = size % world.size();
+
   if (world.rank() == 0) {
-    delta = input_.size() / world.size();
-    extra = input_.size() % world.size();
-    sizes_vec = std::vector<int>(world.size(), delta);
+    sizes_vec.resize(world.size(), delta);
     for (int i = 0; i < extra; i++) {
       sizes_vec[i] += 1;
     }
   }
-  broadcast(world, size, 0);
-  local_input_ = std::vector<int>(delta + (rank < extra ? 1 : 0));
+  local_input_.resize(delta + (rank < extra ? 1 : 0));
+  if (world.rank() == 0) {
+    scatterv(world, input_, sizes_vec, local_input_.data(), 0);
+  } else {
+    scatterv(world, local_input_.data(), local_input_.size(), 0);
+  }
 
   local_input_ = ShellSort(local_input_);
-
-  scatterv(world, input_, sizes_vec, local_input_.data(), 0);
 
   std::vector<std::vector<int>> sorted_inputs;
 
