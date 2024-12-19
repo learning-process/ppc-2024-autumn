@@ -63,30 +63,54 @@ TEST(naumov_b_min_colum_matrix_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  const int rows = 100;
+  const int rows = 1000;
   const int cols = 100;
 
-  std::vector<std::vector<int>> matrix = getRandomMatrix(rows, cols);
+  // Генерация данных только на rank 0
+  std::vector<int> flatMatrix;
+  std::vector<int> outputResults;
 
   if (world.rank() == 0) {
-    std::vector<int> flatMatrix(rows * cols);
+    std::vector<std::vector<int>> matrix = getRandomMatrix(rows, cols);
+    flatMatrix.resize(rows * cols);
+    outputResults.resize(cols);
+
+    // Заполняем flatMatrix
     for (int i = 0; i < rows; ++i) {
       std::copy(matrix[i].begin(), matrix[i].end(), flatMatrix.begin() + i * cols);
     }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(flatMatrix.data()));
     taskDataPar->inputs_count = {rows, cols};
-
-    std::vector<int> output_results(cols);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_results.data()));
-    taskDataPar->outputs_count = {static_cast<uint32_t>(output_results.size())};
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputResults.data()));
+    taskDataPar->outputs_count = {static_cast<uint32_t>(cols)};
   }
 
+  // Создаем и запускаем задачу
   auto testMpiTaskParallel = std::make_shared<naumov_b_min_colum_matrix_mpi::TestMPITaskParallel>(taskDataPar);
 
+  // Валидация данных
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
 
+  // Выполнение задачи
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
+
+  // Синхронизация процессов
+  MPI_Barrier(world);
+
+  // Проверка результатов на rank 0
+  if (world.rank() == 0) {
+    for (int col = 0; col < cols; ++col) {
+      int expectedMin = std::numeric_limits<int>::max();
+      for (int row = 0; row < rows; ++row) {
+        expectedMin = std::min(expectedMin, flatMatrix[row * cols + col]);
+      }
+      EXPECT_EQ(outputResults[col], expectedMin);
+    }
+  }
+
+  // Завершаем корректно
+  MPI_Barrier(world);
 }

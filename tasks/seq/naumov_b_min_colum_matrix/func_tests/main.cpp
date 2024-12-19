@@ -30,6 +30,34 @@ TEST(naumov_b_min_colum_matrix_seq, Test_Min_Column_Values) {
   delete[] output_data;
 }
 
+TEST(naumov_b_min_colum_matrix_seq, Test_Negative_Values) {
+  const int rows = 4;
+  const int cols = 4;
+  std::vector<int> input_data = {-1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16};
+
+  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs_count = {rows, cols};
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_data.data()));
+
+  int *output_data = new int[cols];
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_data));
+  taskDataSeq->outputs_count.emplace_back(cols);
+
+  naumov_b_min_colum_matrix_seq::TestTaskSequential TestTaskSequential(taskDataSeq);
+  ASSERT_EQ(TestTaskSequential.validation(), true);
+  TestTaskSequential.pre_processing();
+  TestTaskSequential.run();
+  TestTaskSequential.post_processing();
+
+  // Проверяем минимальные значения для каждого столбца
+  EXPECT_EQ(output_data[0], -13);
+  EXPECT_EQ(output_data[1], -14);
+  EXPECT_EQ(output_data[2], -15);
+  EXPECT_EQ(output_data[3], -16);
+
+  delete[] output_data;
+}
+
 TEST(naumov_b_min_colum_matrix_seq, Test_Equal_Elements) {
   std::vector<int> input_data = {5, 5, 5, 5, 5, 5, 5, 5, 5};
 

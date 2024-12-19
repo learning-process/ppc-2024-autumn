@@ -14,6 +14,28 @@ static std::vector<int> getRandomVector(int size) {
   return vec;
 }
 
+TEST(naumov_b_min_colum_matrix_mpi, Test_Empty_Matrix) {
+  const size_t rows = 0;
+  const size_t cols = 0;
+  std::vector<int> global_matrix(rows * cols);
+  std::vector<int> global_minima(cols);
+
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  // Заполняем TaskData пустыми данными
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+  taskDataPar->inputs_count.emplace_back(rows);
+  taskDataPar->inputs_count.emplace_back(cols);
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_minima.data()));
+  taskDataPar->outputs_count.emplace_back(global_minima.size());
+
+  naumov_b_min_colum_matrix_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
 TEST(naumov_b_min_colum_matrix_mpi, Test_Min_Column) {
   boost::mpi::communicator world;
   const int rows = 40;
