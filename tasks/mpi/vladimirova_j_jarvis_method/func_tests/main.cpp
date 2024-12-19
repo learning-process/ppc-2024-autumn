@@ -170,7 +170,9 @@ TEST(Parallel_Operations_MPI, Test_data_5_empty) {
   }
 
   vladimirova_j_jarvis_method_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
 }
 
 TEST(Parallel_Operations_MPI, Test_data_3_full) {

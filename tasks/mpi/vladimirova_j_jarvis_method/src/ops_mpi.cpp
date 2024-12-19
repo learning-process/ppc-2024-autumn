@@ -189,8 +189,9 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       for (int i = 1; i < ost_point; i++) {
         world.send(i, 0, input_.data() + i * (delta) + i * 2, delta + 2);
       }
-      for (int i = ost_point; i < world.size(); i++) {
-        int sdvig = (ost_point) * 2;
+      for (int i = ost_point + (int)(ost_point == 0); i < world.size(); i++) {
+        // std::cout << "\n\n\n PROC " << rank << " "<< i<<" "<<ost_point<<" " << delta + 2 << std::endl;
+        int sdvig = (ost_point)*2;
         world.send(i, 0, input_.data() + i * (delta) + sdvig, delta);
       }
       if (ost_point > 0) delta += 2;
@@ -198,6 +199,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
   } else {
     delta += 2 * (int)(rank < ost_point);
     input_ = std::vector<int>(delta);
+    // std::cout << "\n\n\n PROC " << rank<<delta << std::endl;
     world.recv(0, 0, input_.data(), delta);
   }
 
@@ -206,7 +208,6 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
   for (int i = 0; i < delta; i += 2) {
     local_input_[i / 2] = (Point(input_[i], input_[i + 1]));
   }
-
   // распределение данных
 
   Point B = Point(-1, -1);
