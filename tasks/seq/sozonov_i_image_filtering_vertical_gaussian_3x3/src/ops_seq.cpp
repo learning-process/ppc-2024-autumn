@@ -21,7 +21,7 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential::pr
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check input and output count
-  return taskData->inputs_count[0] = taskData->outputs_count[0] = taskData->inputs_count[1] * taskData->inputs_count[2];
+  return taskData->inputs_count[0] > 0;
 }
 
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential::run() {
