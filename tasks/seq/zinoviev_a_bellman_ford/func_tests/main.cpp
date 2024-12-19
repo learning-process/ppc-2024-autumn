@@ -1,4 +1,4 @@
-// Copyright 2023 Nesterov Alexander
+та// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -23,7 +23,7 @@ TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
   task.post_processing();
 
   std::vector<int> expected = {0, 1, 2, 3};
-  ASSERT_EQ(shortest_paths, expected);
+  ASSERT_EQ(shortest_paths, expected);  // Expected shortest paths
 }
 
 TEST(zinoviev_a_bellman_ford, Test_Medium_Graph) {
