@@ -2,10 +2,8 @@
 
 #include "seq/golovkin_linear_image_filtering_with_block_partitioning/include/ops_seq.hpp"
 
-#include <algorithm>
-#include <numeric>
-
 using namespace golovkin_linear_image_filtering_with_block_partitioning;
+using namespace std;
 
 bool SimpleIntSEQ::validation() {
   internal_order_test();
@@ -48,13 +46,13 @@ bool SimpleIntSEQ::run() {
 bool SimpleIntSEQ::post_processing() {
   internal_order_test();
   auto* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
-  std::copy(processed_data_.begin(), processed_data_.end(), output_data);
+  copy(processed_data_.begin(), processed_data_.end(), output_data);
   return true;
 }
 
 void SimpleIntSEQ::applyGaussianFilterToBlock(int blockRowStart, int blockColStart, int blockSize) {
-  for (int r = blockRowStart; r < std::min(blockRowStart + blockSize, rows - 1); ++r) {
-    for (int c = blockColStart; c < std::min(blockColStart + blockSize, cols - 1); ++c) {
+  for (int r = blockRowStart; r < min(blockRowStart + blockSize, rows - 1); ++r) {
+    for (int c = blockColStart; c < min(blockColStart + blockSize, cols - 1); ++c) {
       int sum = 0;
       for (int kr = -1; kr <= 1; ++kr) {
         for (int kc = -1; kc <= 1; ++kc) {

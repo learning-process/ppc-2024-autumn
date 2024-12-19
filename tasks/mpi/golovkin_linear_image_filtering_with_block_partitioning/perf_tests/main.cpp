@@ -1,21 +1,16 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <boost/mpi/timer.hpp>
-#include <numeric>
-#include <random>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
 #include "mpi/golovkin_linear_image_filtering_with_block_partitioning/include/ops_mpi.hpp"
 
-static std::vector<int> generate_random_image(int width, int height, int seed = 123) {
-  std::mt19937 gen(seed);
-  std::uniform_int_distribution<int> dist(0, 255);
-  std::vector<int> img(width * height);
+using namespace std;
+
+static vector<int> generate_random_image(int width, int height, int seed = 123) {
+  mt19937 gen(seed);
+  uniform_int_distribution<int> dist(0, 255);
+  vector<int> img(width * height);
   for (auto &val : img) {
     val = dist(gen);
   }
@@ -27,9 +22,9 @@ static std::vector<int> generate_random_image(int width, int height, int seed = 
     boost::mpi::communicator world;                                                                                  \
     int width = (W);                                                                                                 \
     int height = (H);                                                                                                \
-    std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();                         \
-    std::vector<int> input_data;                                                                                     \
-    std::vector<int> output_data;                                                                                    \
+    shared_ptr<ppc::core::TaskData> taskData = make_shared<ppc::core::TaskData>();                         \
+    vector<int> input_data;                                                                                     \
+    vector<int> output_data;                                                                                    \
     if (world.size() < 5 || world.rank() >= 4) {                                                                     \
       input_data = generate_random_image(width, height);                                                             \
       output_data.resize(width *height, 0);                                                                          \
@@ -45,13 +40,13 @@ static std::vector<int> generate_random_image(int width, int height, int seed = 
       taskData->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));                                  \
       taskData->outputs_count.push_back(output_data.size() * sizeof(int));                                           \
     }                                                                                                                \
-    auto task = std::make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData); \
-    auto perfAttr = std::make_shared<ppc::core::PerfAttr>();                                                         \
+    auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData); \
+    auto perfAttr = make_shared<ppc::core::PerfAttr>();                                                         \
     perfAttr->num_running = num_runs;                                                                                \
     boost::mpi::timer current_timer;                                                                                 \
     perfAttr->current_timer = [&]() { return current_timer.elapsed(); };                                             \
-    auto perfResults = std::make_shared<ppc::core::PerfResults>();                                                   \
-    auto perfAnalyzer = std::make_shared<ppc::core::Perf>(task);                                                     \
+    auto perfResults = make_shared<ppc::core::PerfResults>();                                                   \
+    auto perfAnalyzer = make_shared<ppc::core::Perf>(task);                                                     \
     perfAnalyzer->perf_method(perfAttr, perfResults);                                                                \
     if (world.size() < 5 || world.rank() >= 4) {                                                                     \
       ppc::core::Perf::print_perf_statistic(perfResults);                                                            \

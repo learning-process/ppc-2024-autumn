@@ -2,15 +2,15 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <numeric>
 #include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 #include "seq/golovkin_linear_image_filtering_with_block_partitioning/include/ops_seq.hpp"
 
-static void gaussian_filter_seq_block(const std::vector<int>& input, int rows, int cols, std::vector<int>& output,
+using namespace std;
+
+static void gaussian_filter_seq_block(const vector<int>& input, int rows, int cols, vector<int>& output,
                                       int block_size) {
   const int kernel[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
   output.assign(rows * cols, 0);
@@ -34,16 +34,16 @@ static void gaussian_filter_seq_block(const std::vector<int>& input, int rows, i
   }
 }
 
-static std::vector<int> generate_test_image(int rows, int cols) {
-  std::vector<int> image(rows * cols);
-  std::iota(image.begin(), image.end(), 0);
+static vector<int> generate_test_image(int rows, int cols) {
+  vector<int> image(rows * cols);
+  iota(image.begin(), image.end(), 0);
   return image;
 }
 
-static std::vector<int> generate_random_image(int rows, int cols, int seed = 123) {
-  std::mt19937 gen(seed);
-  std::uniform_int_distribution<int> dist(0, 255);
-  std::vector<int> image(rows * cols);
+static vector<int> generate_random_image(int rows, int cols, int seed = 123) {
+  mt19937 gen(seed);
+  uniform_int_distribution<int> dist(0, 255);
+  vector<int> image(rows * cols);
   for (auto& val : image) val = dist(gen);
   return image;
 }
@@ -51,13 +51,13 @@ static std::vector<int> generate_random_image(int rows, int cols, int seed = 123
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterSmall) {
   int rows = 5;
   int cols = 5;
-  std::vector<int> input = generate_test_image(rows, cols);
-  std::vector<int> expected_output;
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> input = generate_test_image(rows, cols);
+  vector<int> expected_output;
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 2);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
@@ -79,13 +79,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterRandom) {
   int rows = 10;
   int cols = 10;
-  std::vector<int> input = generate_random_image(rows, cols);
-  std::vector<int> expected_output;
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> input = generate_random_image(rows, cols);
+  vector<int> expected_output;
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 4);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
@@ -107,13 +107,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterSmallImage) {
   int rows = 3;
   int cols = 3;
-  std::vector<int> input = generate_test_image(rows, cols);
-  std::vector<int> expected_output = {1, 2, 3, 2, 4, 6, 3, 6, 9};
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> input = generate_test_image(rows, cols);
+  vector<int> expected_output = {1, 2, 3, 2, 4, 6, 3, 6, 9};
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
@@ -135,13 +135,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterMaxPixelValues) {
   int rows = 5;
   int cols = 5;
-  std::vector<int> input(rows * cols, 255);
-  std::vector<int> expected_output(rows * cols, 255);
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> input(rows * cols, 255);
+  vector<int> expected_output(rows * cols, 255);
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
@@ -163,13 +163,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterMinPixelValues) {
   int rows = 5;
   int cols = 5;
-  std::vector<int> input(rows * cols, 0);
-  std::vector<int> expected_output(rows * cols, 0);
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> input(rows * cols, 0);
+  vector<int> expected_output(rows * cols, 0);
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
@@ -191,14 +191,14 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterSharpEdges) {
   int rows = 5;
   int cols = 5;
-  std::vector<int> input = {0,   0,   0,   255, 255, 0, 0, 0,   255, 255, 0, 0, 0,
+  vector<int> input = {0,   0,   0,   255, 255, 0, 0, 0,   255, 255, 0, 0, 0,
                             255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 0, 0};
-  std::vector<int> expected_output = {1,   1,   2,   128, 128, 1, 2, 3,   128, 128, 2, 3, 4,
+  vector<int> expected_output = {1,   1,   2,   128, 128, 1, 2, 3,   128, 128, 2, 3, 4,
                                       128, 128, 128, 128, 128, 2, 2, 128, 128, 128, 3, 3};
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
@@ -220,13 +220,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterRandomImage) {
   int rows = 10;
   int cols = 10;
-  std::vector<int> input = generate_random_image(rows, cols);
-  std::vector<int> expected_output(rows * cols, 0);
-  std::vector<int> actual_output(rows * cols, 0);
+  vector<int> input = generate_random_image(rows, cols);
+  vector<int> expected_output(rows * cols, 0);
+  vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(input.size());
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));

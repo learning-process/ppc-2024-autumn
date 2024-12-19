@@ -1,7 +1,12 @@
 // Golovkin Maksim Task3
+#include <algorithm>
 #include <boost/mpi.hpp>
-#include <memory>
+#include <boost/mpi/timer.hpp>
+#include <numeric>
+#include <random>
 #include <vector>
+#include <cmath>
+#include <memory>
 
 #include "core/task/include/task.hpp"
 
