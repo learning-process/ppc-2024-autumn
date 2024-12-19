@@ -5,7 +5,7 @@
 
 #include "seq/zinoviev_a_bellman_ford/include/ops_seq.hpp"
 
-TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
+TEST(zinoviev_a_bellman_ford, Test_Small_Graph_seq) {
   std::vector<int> graph = {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   std::vector<int> shortest_paths(4, 0);
 

@@ -7,7 +7,7 @@
 
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
-TEST(zinoviev_a_bellman_ford, Test_Small_Graph) {
+TEST(zinoviev_a_bellman_ford, Test_Small_Graph_mpi) {
   boost::mpi::communicator world;
   std::vector<int> graph = {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
   std::vector<int> shortest_paths(4, 0);
