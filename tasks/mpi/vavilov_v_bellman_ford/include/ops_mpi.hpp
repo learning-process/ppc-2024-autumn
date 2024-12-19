@@ -8,7 +8,6 @@
 #include <boost/serialization/vector.hpp>
 #include <limits>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
