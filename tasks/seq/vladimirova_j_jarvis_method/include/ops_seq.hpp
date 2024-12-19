@@ -7,22 +7,22 @@
 #include "core/task/include/task.hpp"
 
 namespace vladimirova_j_jarvis_method_seq {
-	struct Point {
-		int x, y;
-	};
+struct Point {
+  int x, y;
+};
 
-	class TestTaskSequential : public ppc::core::Task {
-	 public:
-	  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-	  bool pre_processing() override;
-	  bool validation() override;
-	  bool run() override;
-	  bool post_processing() override;
+class TestTaskSequential : public ppc::core::Task {
+ public:
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)){}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	 private:
-		 std::vector<Point> input_{};
-		 std::vector<int> res_{};
-		size_t col=0, row=0;
-	};
+ private:
+  std::vector<Point> input_{};
+  std::vector<int> res_{};
+  size_t col = 0, row = 0;
+};
 
 }  // namespace vladimirova_j_jarvis_method_seq
