@@ -28,6 +28,10 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::validation() {
 }
 
 static void merge(std::vector<int>& vec, int start, int end, int* res) {
+  if (res == nullptr) {
+    return;
+  }
+
   int ptr1 = 0;
   int ptr2 = start;
   int free = 0;
@@ -71,7 +75,6 @@ static void quickSort(std::vector<int>& arr, int start, int end) {
 
 bool mironov_a_quick_sort_mpi::QuickSortMPI::run() {
   internal_order_test();
-  int* res = nullptr;
 
   broadcast(world, delta, 0);
 
@@ -80,19 +83,15 @@ bool mironov_a_quick_sort_mpi::QuickSortMPI::run() {
   scatter(world, input_.data(), local_input.data(), delta, 0);
   quickSort(local_input, 0, delta - 1);
 
-  if (world.rank() == 0) {
-    res = new int[input_.size()];
-  }
-
   boost::mpi::gather(world, local_input.data(), local_input.size(), result_.data(), 0);
   if (world.rank() == 0) {
+    int* res = new int[input_.size()];
     for (int i = 1; i < world.size(); ++i) {
       merge(result_, i * delta, (i + 1) * delta - 1, res);
     }
-  }
-  if (world.rank() == 0) {
     delete[] res;
   }
+
   return true;
 }
 
