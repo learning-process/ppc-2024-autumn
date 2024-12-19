@@ -23,7 +23,7 @@ std::vector<int> get_random_vector(int sz) {
 }  // namespace mironov_a_quick_sort_seq
 
 TEST(mironov_a_quick_sort_seq, Test_sort_1) {
-  const int count = 10000;
+  const int count = 20;
   std::vector<int> gold(count);
 
   // Create data
@@ -35,14 +35,14 @@ TEST(mironov_a_quick_sort_seq, Test_sort_1) {
   }
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
 
   // Create Task
-  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(taskDataSeq);
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
   ASSERT_EQ(QuickSortSequential.validation(), true);
   QuickSortSequential.pre_processing();
   QuickSortSequential.run();
@@ -51,7 +51,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_1) {
 }
 
 TEST(mironov_a_quick_sort_seq, Test_sort_2) {
-  const int count = 500;
+  const int count = 30000;
   std::vector<int> gold(count);
 
   // Create data
@@ -61,14 +61,14 @@ TEST(mironov_a_quick_sort_seq, Test_sort_2) {
   std::vector<int> out(count);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
 
   // Create Task
-  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential_(taskDataSeq);
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential_(seqTask);
   ASSERT_EQ(QuickSortSequential_.validation(), true);
   QuickSortSequential_.pre_processing();
   QuickSortSequential_.run();
@@ -77,7 +77,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_2) {
 }
 
 TEST(mironov_a_quick_sort_seq, Test_sort_3) {
-  const int count = 400;
+  const int count = 5000;
   std::vector<int> gold(count);
 
   // Create data
@@ -87,14 +87,92 @@ TEST(mironov_a_quick_sort_seq, Test_sort_3) {
   std::vector<int> out(count);
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
 
   // Create Task
-  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(taskDataSeq);
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
+  ASSERT_EQ(QuickSortSequential.validation(), true);
+  QuickSortSequential.pre_processing();
+  QuickSortSequential.run();
+  QuickSortSequential.post_processing();
+  ASSERT_EQ(gold, out);
+}
+
+TEST(mironov_a_quick_sort_seq, Test_sort_4) {
+  const int count = 1024;
+  std::vector<int> gold(count);
+
+  // Create data
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  gold = in;
+  std::sort(gold.begin(), gold.end());
+  std::vector<int> out(count);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
+  ASSERT_EQ(QuickSortSequential.validation(), true);
+  QuickSortSequential.pre_processing();
+  QuickSortSequential.run();
+  QuickSortSequential.post_processing();
+  ASSERT_EQ(gold, out);
+}
+
+TEST(mironov_a_quick_sort_seq, Test_sort_5) {
+  const int count = 10;
+  std::vector<int> gold(count);
+
+  // Create data
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  gold = in;
+  std::sort(gold.begin(), gold.end());
+  std::vector<int> out(count);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
+  ASSERT_EQ(QuickSortSequential.validation(), true);
+  QuickSortSequential.pre_processing();
+  QuickSortSequential.run();
+  QuickSortSequential.post_processing();
+  ASSERT_EQ(gold, out);
+}
+
+TEST(mironov_a_quick_sort_seq, Test_sort_6) {
+  const int count = 1;
+  std::vector<int> gold(count);
+
+  // Create data
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  gold = in;
+  std::sort(gold.begin(), gold.end());
+  std::vector<int> out(count);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
   ASSERT_EQ(QuickSortSequential.validation(), true);
   QuickSortSequential.pre_processing();
   QuickSortSequential.run();
@@ -108,13 +186,13 @@ TEST(mironov_a_quick_sort_seq, Test_wrong_input) {
   std::vector<int> out;
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
 
   // Create Task
-  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(taskDataSeq);
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
   ASSERT_EQ(QuickSortSequential.validation(), false);
 }

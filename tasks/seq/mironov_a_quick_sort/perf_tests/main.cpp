@@ -21,14 +21,14 @@ TEST(mironov_a_quick_sort_seq, test_pipeline_run) {
   std::sort(gold.begin(), gold.end());
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> seqData = std::make_shared<ppc::core::TaskData>();
+  seqData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqData->inputs_count.emplace_back(in.size());
+  seqData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<mironov_a_quick_sort_seq::QuickSortSequential>(taskDataSeq);
+  auto seqTask = std::make_shared<mironov_a_quick_sort_seq::QuickSortSequential>(seqData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -44,7 +44,7 @@ TEST(mironov_a_quick_sort_seq, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(seqTask);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(gold, out);
@@ -64,14 +64,14 @@ TEST(mironov_a_quick_sort_seq, test_task_run) {
   std::sort(gold.begin(), gold.end());
 
   // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  std::shared_ptr<ppc::core::TaskData> seqData = std::make_shared<ppc::core::TaskData>();
+  seqData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqData->inputs_count.emplace_back(in.size());
+  seqData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqData->outputs_count.emplace_back(out.size());
 
   // Create Task
-  auto testTaskSequential = std::make_shared<mironov_a_quick_sort_seq::QuickSortSequential>(taskDataSeq);
+  auto seqTask = std::make_shared<mironov_a_quick_sort_seq::QuickSortSequential>(seqData);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -87,7 +87,7 @@ TEST(mironov_a_quick_sort_seq, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   // Create Perf analyzer
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(seqTask);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(gold, out);

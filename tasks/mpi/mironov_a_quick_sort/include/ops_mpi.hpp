@@ -28,7 +28,7 @@ class QuickSortMPI : public ppc::core::Task {
   std::vector<int> input_;
   std::vector<int> result_;
 
-  unsigned int delta = 0u;
+  unsigned int delta;
   boost::mpi::communicator world;
 };
 
