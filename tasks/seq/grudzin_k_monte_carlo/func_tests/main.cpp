@@ -32,7 +32,9 @@ double CalcEtalon(std::vector<double> &dim) {
 TEST(grudzin_k_monte_carlo_seq, Test_1Dim) {
   const int dimensions = 1;
   int N = 10000;
-  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
+  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
+    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+  };
   std::vector<double> dim = grudzin_k_montecarlo_seq::GenDimDistr(dimensions);
   double etalon = grudzin_k_montecarlo_seq::CalcEtalon(dim);
   double result_seq = 0;
@@ -55,7 +57,9 @@ TEST(grudzin_k_monte_carlo_seq, Test_1Dim) {
 TEST(grudzin_k_monte_carlo_seq, Test_2Dim) {
   const int dimensions = 2;
   int N = 10000;
-  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
+  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
+    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+  };
   std::vector<double> dim = grudzin_k_montecarlo_seq::GenDimDistr(dimensions);
   double etalon = grudzin_k_montecarlo_seq::CalcEtalon(dim);
   double result_seq = 0;
@@ -78,7 +82,9 @@ TEST(grudzin_k_monte_carlo_seq, Test_2Dim) {
 TEST(grudzin_k_monte_carlo_seq, Test_3Dim) {
   const int dimensions = 3;
   int N = 10000;
-  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
+  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
+    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+  };
   std::vector<double> dim = grudzin_k_montecarlo_seq::GenDimDistr(dimensions);
   double etalon = grudzin_k_montecarlo_seq::CalcEtalon(dim);
   double result_seq = 0;
@@ -127,7 +133,9 @@ TEST(grudzin_k_monte_carlo_seq, Test_3Dim_UnusualFunction) {
 TEST(grudzin_k_monte_carlo_seq, Test_3Dim_2k) {
   const int dimensions = 3;
   int N = 1 << 13;
-  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
+  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
+    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+  };
   std::vector<double> dim = grudzin_k_montecarlo_seq::GenDimDistr(dimensions);
   double etalon = grudzin_k_montecarlo_seq::CalcEtalon(dim);
   double result_seq = 0;
@@ -151,7 +159,9 @@ TEST(grudzin_k_monte_carlo_seq, Test_3Dim_2k) {
 TEST(grudzin_k_monte_carlo_seq, Test_3Dim_prime) {
   const int dimensions = 3;
   int N = 100003;
-  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) { return 1.0; };
+  std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
+    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+  };
   std::vector<double> dim = grudzin_k_montecarlo_seq::GenDimDistr(dimensions);
   double etalon = grudzin_k_montecarlo_seq::CalcEtalon(dim);
   double result_seq = 0;
