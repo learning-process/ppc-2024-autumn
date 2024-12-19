@@ -48,7 +48,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int left_child = 2 * rank + 1;
   int right_child = 2 * rank + 2;
 
-  auto* temp_buffer = nullptr;
+  char* temp_buffer = nullptr;
   if (rank != root) {
     // Allocate buffer for receiving data from the parent
     temp_buffer = new char[subtree_sizes[rank] * recvcount * datatype_size];
@@ -95,7 +95,9 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
     }
   }
 
-  delete[] temp_buffer;
+  if (temp_buffer != nullptr) {
+    delete[] temp_buffer;
+  }
   delete[] subtree_sizes;
   return MPI_SUCCESS;
 }
