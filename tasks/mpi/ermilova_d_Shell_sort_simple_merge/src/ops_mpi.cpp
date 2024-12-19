@@ -79,35 +79,30 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::validation() {
 
 bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  int rank = world.rank();
   size_t delta = 0;
   size_t extra = 0;
+  int size = input_.size();
+  std::vector<int> sizes_vec;
 
   if (world.rank() == 0) {
     delta = input_.size() / world.size();
     extra = input_.size() % world.size();
-  }
-
-  broadcast(world, delta, 0);
-
-  if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + delta * proc + extra, delta);
+    sizes_vec = std::vector<int>(world.size(), delta);
+    for (int i = 0; i < extra; i++) {
+      sizes_vec[i] += 1;
     }
   }
-
-  local_input_ = std::vector<int>(delta);
-
-  if (world.rank() == 0) {
-    local_input_ = std::vector<int>(input_.begin(), input_.begin() + delta + extra);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
+  broadcast(world, size, 0);
+  local_input_ = std::vector<int>(delta + (rank < extra ? 1 : 0));
 
   local_input_ = ShellSort(local_input_);
 
+  scatterv(world, input_, sizes_vec, local_input_.data(), 0);
+
   std::vector<std::vector<int>> sorted_inputs;
 
-  boost::mpi::gather(world, local_input_, sorted_inputs, 0);
+  gather(world, local_input_, sorted_inputs, 0);
 
   if (world.rank() == 0) {
     std::vector<int> merge_vec;
