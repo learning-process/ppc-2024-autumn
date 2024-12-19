@@ -10,7 +10,7 @@ TEST(tyshkevich_a_monte_carlo_seq, test_pipeline_run) {
   double precision = 1000000;
   double left_bound = 0.0;
   double right_bound = 1.0;
-  double result;
+  double result = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -45,7 +45,7 @@ TEST(tyshkevich_a_monte_carlo_seq, test_task_run) {
   double precision = 1000000;
   double left_bound = 0.0;
   double right_bound = 1.0;
-  double result;
+  double result = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 

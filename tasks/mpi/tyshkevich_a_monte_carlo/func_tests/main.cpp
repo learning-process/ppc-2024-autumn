@@ -12,7 +12,7 @@ namespace tyshkevich_a_monte_carlo_mpi {
 void test(std::function<double(const std::vector<double>&)> function, double exp_res, int dimensions = 3,
           double precision = 100000, double left_bound = 0.0, double right_bound = 1.0) {
   boost::mpi::communicator world;
-  double result;
+  double result = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
