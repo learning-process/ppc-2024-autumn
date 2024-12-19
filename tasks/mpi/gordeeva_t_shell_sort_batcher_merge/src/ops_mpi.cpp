@@ -62,10 +62,6 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::run() {
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::post_processing() {
-  if (taskData->outputs.empty()) {
-    throw std::runtime_error("Invalid output data in post_processing.");
-  }
-
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
   std::copy(res_.begin(), res_.end(), output_matr);
   return true;
