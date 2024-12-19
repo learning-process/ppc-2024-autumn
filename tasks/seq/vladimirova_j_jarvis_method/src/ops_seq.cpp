@@ -4,44 +4,14 @@
 #include <thread>
 
 using namespace std::chrono_literals;
-/*
-size_t FindMinAngle(vladimirova_j_jarvis_method_seq::Point* A, vladimirova_j_jarvis_method_seq::Point* B,
-    std::vector< vladimirova_j_jarvis_method_seq::Point> vec) {
-    size_t min_angle_point = vec.size()+1;
-    double min_angle = 0;
-    int reg_x = B->x -(A->x);
-    int reg_y = -(B->y - A->y);//y идет вниз
-    std::cout << " TEK " << A->x << ", " << A->y<<std::endl;
-    for (size_t i = 0; i < vec.size(); i++) {
-        if ((A == &vec[i]) || (B == &vec[i])) continue;
-        int tmp_x = (vec[i].x - A->x);
-        int tmp_y = -(vec[i].y -A->y);
-        if ((vec[i].x >= 0)&&(reg_x * tmp_y - reg_y * tmp_x > 0)) {
-            double AB_length = std::sqrt(reg_x* reg_x + reg_y* reg_y);
-            double AC_length = std::sqrt(tmp_x* tmp_x + tmp_y* tmp_y);
-            double length = AB_length * AC_length;
-            double angle;;
-            if (length == 0) angle = 100 / AC_length;
-            else angle = (double)(tmp_x * reg_x + tmp_y * reg_y) / (length);
-            std::cout << angle << "* " << vec[i].x << ", " << vec[i].y << std::endl;
-            if (angle > min_angle){ //сравниваем КОСИНУСЫ!!!
-                min_angle = angle;
-                min_angle_point = i;
-            }
-        }
-    }
 
-    return min_angle_point;
-}
-
-*/
 namespace vladimirova_j_jarvis_method_seq {
 size_t FindMinAngle(vladimirova_j_jarvis_method_seq::Point* A, vladimirova_j_jarvis_method_seq::Point* B,
                     std::vector<vladimirova_j_jarvis_method_seq::Point> vec) {
   size_t min_angle_point = vec.size() + 1;
   double min_angle = 550;
   int reg_x = A->x - (B->x);
-  int reg_y = -(A->y - B->y);  // y идет вниз
+  int reg_y = -(A->y - B->y);  // y РёРґРµС‚ РІРЅРёР·
   std::cout << " TEK " << B->x << ", " << B->y << std::endl;
   for (size_t i = 0; i < vec.size(); i++) {
     vladimirova_j_jarvis_method_seq::Point* C = &vec[i];
@@ -106,10 +76,10 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::validation() {
 
 bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
   internal_order_test();
-  // поиск нижней левой точки
+  // РїРѕРёСЃРє РЅРёР¶РЅРµР№ Р»РµРІРѕР№ С‚РѕС‡РєРё
   // x0 y0 x1 y1  x2 y2
   vladimirova_j_jarvis_method_seq::Point* A = &input_[input_.size() - 1];
-  // последняя точка итак самая нижняя, надо найти самую правую
+  // РїРѕСЃР»РµРґРЅВ¤В¤ С‚РѕС‡РєР° РёС‚Р°Рє СЃР°РјР°В¤ РЅРёР¶РЅВ¤В¤, РЅР°РґРѕ РЅР°Р№С‚Рё СЃР°РјСѓСЋ РїСЂР°РІСѓСЋ
 
   for (size_t i = input_.size() - 1; i >= 0; i--) {  // y1
     if (A->y != input_[i].y) break;
@@ -117,7 +87,7 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
   }
   std::cout << " TOCHKA " << A->x << ' ' << A->y << std::endl;
   vladimirova_j_jarvis_method_seq::Point* first = A;
-  // работа
+  // СЂР°Р±РѕС‚Р°
   // vladimirova_j_jarvis_method_seq::Point tmp = vladimirova_j_jarvis_method_seq::Point((int)row, (int)col);
   vladimirova_j_jarvis_method_seq::Point tmp = vladimirova_j_jarvis_method_seq::Point(-1, A->y);
   // vladimirova_j_jarvis_method_seq::Point * B = &tmp;

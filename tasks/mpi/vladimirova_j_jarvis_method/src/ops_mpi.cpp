@@ -35,7 +35,7 @@ size_t FindMinAngle(Point* A, Point* B, std::vector<Point> vec) {
   size_t min_angle_point = vec.size() + 1;
   double min_angle = 550;
   int reg_x = A->x - (B->x);
-  int reg_y = -(A->y - B->y);  // y идет вниз
+  int reg_y = -(A->y - B->y);  // y РёРґРµС‚ РІРЅРёР·
   for (size_t i = 0; i < vec.size(); i++) {
     Point* C = &vec[i];
     if (C->x < 0) continue;
@@ -93,17 +93,17 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::validation() {
 
 bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  // поиск нижней левой точки
+  // РїРѕРёСЃРє РЅРёР¶РЅРµР№ Р»РµРІРѕР№ С‚РѕС‡РєРё
   // x0 y0 x1 y1  x2 y2
   Point* A = &input_[input_.size() - 1];
-  // последняя точка итак самая нижняя, надо найти самую правую
+  // РїРѕСЃР»РµРґРЅСЏСЏ С‚РѕС‡РєР° РёС‚Р°Рє СЃР°РјР°СЏ РЅРёР¶РЅСЏСЏ, РЅР°РґРѕ РЅР°Р№С‚Рё СЃР°РјСѓСЋ РїСЂР°РІСѓСЋ
 
   for (size_t i = input_.size() - 1; i >= 0; i--) {  // y1
     if (A->y != input_[i].y) break;
     A = &input_[i];
   }
   Point* first = A;
-  // работа
+  // СЂР°Р±РѕС‚Р°
   // vladimirova_j_jarvis_method_seq::Point tmp = vladimirova_j_jarvis_method_seq::Point((int)row, (int)col);
   Point tmp = Point(-1, A->y);
   // vladimirova_j_jarvis_method_seq::Point * B = &tmp;
@@ -202,7 +202,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
     local_input_[i / 2] = (Point(input_[i], input_[i + 1]));
   }
 
-  // распределение данных
+  // СЂР°СЃРїСЂРµРґРµР»РµРЅРёРµ РґР°РЅРЅС‹С…
 
   Point B = Point(-1, -1);
   Point C = Point(-1, -1);
@@ -232,7 +232,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       double min_angle = 1000;
       send_data = {reg_x, reg_y, B.x, B.y, true};
       for (int i = 1; i < world.size(); i++) world.send(i, 0, send_data.data(), 5);
-      // cвоя часть
+      // cРІРѕСЏ С‡Р°СЃС‚СЊ
       for (size_t i = 0; i < local_input_.size(); i++) {
         Point tmp = local_input_[i];
         if (tmp == B) {
@@ -263,7 +263,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       A = B;
       B = C;
       reg_x = A.x - (B.x);
-      reg_y = -(A.y - B.y);  // y идет вниз
+      reg_y = -(A.y - B.y);  // y РёРґРµС‚ РІРЅРёР·
     } while (first != B);
     send_data[4] = false;
     for (int i = 1; i < world.size(); i++) world.send(i, 0, send_data.data(), 5);
