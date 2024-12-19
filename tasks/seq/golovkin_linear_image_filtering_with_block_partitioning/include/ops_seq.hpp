@@ -2,10 +2,10 @@
 
 #include <algorithm>
 #include <memory>
+#include <numeric>
 #include <string>
 #include <utility>
 #include <vector>
-#include <numeric>
 
 #include "core/task/include/task.hpp"
 

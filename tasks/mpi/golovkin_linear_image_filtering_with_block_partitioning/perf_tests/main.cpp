@@ -17,41 +17,41 @@ static vector<int> generate_random_image(int width, int height, int seed = 123) 
   return img;
 }
 
-#define PERF_TEST_IMAGE(test_name, W, H, num_runs, perf_method)                                                      \
-  TEST(golovkin_linear_image_filtering_with_block_partitioning_perf_mpi, test_name) {                                \
-    boost::mpi::communicator world;                                                                                  \
-    int width = (W);                                                                                                 \
-    int height = (H);                                                                                                \
-    shared_ptr<ppc::core::TaskData> taskData = make_shared<ppc::core::TaskData>();                                   \
-    vector<int> input_data;                                                                                          \
-    vector<int> output_data;                                                                                         \
-    if (world.size() < 5 || world.rank() >= 4) {                                                                     \
-      input_data = generate_random_image(width, height);                                                             \
-      output_data.resize(width *height, 0);                                                                          \
-      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));                                    \
-      taskData->inputs_count.push_back(input_data.size() * sizeof(int));                                             \
-                                                                                                                     \
-      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&width));                                               \
-      taskData->inputs_count.push_back(sizeof(int));                                                                 \
-                                                                                                                     \
-      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&height));                                              \
-      taskData->inputs_count.push_back(sizeof(int));                                                                 \
-                                                                                                                     \
-      taskData->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));                                  \
-      taskData->outputs_count.push_back(output_data.size() * sizeof(int));                                           \
-    }                                                                                                                \
-    auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);      \
-    auto perfAttr = make_shared<ppc::core::PerfAttr>();                                                              \
-    perfAttr->num_running = num_runs;                                                                                \
-    boost::mpi::timer current_timer;                                                                                 \
-    perfAttr->current_timer = [&]() { return current_timer.elapsed(); };                                             \
-    auto perfResults = make_shared<ppc::core::PerfResults>();                                                        \
-    auto perfAnalyzer = make_shared<ppc::core::Perf>(task);                                                          \
-    perfAnalyzer->perf_method(perfAttr, perfResults);                                                                \
-    if (world.size() < 5 || world.rank() >= 4) {                                                                     \
-      ppc::core::Perf::print_perf_statistic(perfResults);                                                            \
-      ASSERT_LE(perfResults->time_sec, ppc::core::PerfResults::MAX_TIME);                                            \
-    }                                                                                                                \
+#define PERF_TEST_IMAGE(test_name, W, H, num_runs, perf_method)                                                 \
+  TEST(golovkin_linear_image_filtering_with_block_partitioning_perf_mpi, test_name) {                           \
+    boost::mpi::communicator world;                                                                             \
+    int width = (W);                                                                                            \
+    int height = (H);                                                                                           \
+    shared_ptr<ppc::core::TaskData> taskData = make_shared<ppc::core::TaskData>();                              \
+    vector<int> input_data;                                                                                     \
+    vector<int> output_data;                                                                                    \
+    if (world.size() < 5 || world.rank() >= 4) {                                                                \
+      input_data = generate_random_image(width, height);                                                        \
+      output_data.resize(width *height, 0);                                                                     \
+      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));                               \
+      taskData->inputs_count.push_back(input_data.size() * sizeof(int));                                        \
+                                                                                                                \
+      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&width));                                          \
+      taskData->inputs_count.push_back(sizeof(int));                                                            \
+                                                                                                                \
+      taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&height));                                         \
+      taskData->inputs_count.push_back(sizeof(int));                                                            \
+                                                                                                                \
+      taskData->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));                             \
+      taskData->outputs_count.push_back(output_data.size() * sizeof(int));                                      \
+    }                                                                                                           \
+    auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData); \
+    auto perfAttr = make_shared<ppc::core::PerfAttr>();                                                         \
+    perfAttr->num_running = num_runs;                                                                           \
+    boost::mpi::timer current_timer;                                                                            \
+    perfAttr->current_timer = [&]() { return current_timer.elapsed(); };                                        \
+    auto perfResults = make_shared<ppc::core::PerfResults>();                                                   \
+    auto perfAnalyzer = make_shared<ppc::core::Perf>(task);                                                     \
+    perfAnalyzer->perf_method(perfAttr, perfResults);                                                           \
+    if (world.size() < 5 || world.rank() >= 4) {                                                                \
+      ppc::core::Perf::print_perf_statistic(perfResults);                                                       \
+      ASSERT_LE(perfResults->time_sec, ppc::core::PerfResults::MAX_TIME);                                       \
+    }                                                                                                           \
   }
 
 PERF_TEST_IMAGE(SmallImagePerf, 100, 80, 5, pipeline_run)

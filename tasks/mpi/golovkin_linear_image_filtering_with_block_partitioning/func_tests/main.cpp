@@ -441,8 +441,8 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, ZeroImageTest) {
 
   int width = 8;
   int height = 8;
-
-  vector<int> input(width * height, 0); 
+  
+  vector<int> input(width * height, 0);
   vector<int> output(width * height, 0);
 
   auto taskData = make_shared<ppc::core::TaskData>();
