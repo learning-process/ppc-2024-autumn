@@ -225,9 +225,9 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
     local_B = temp_B;
   }
 
-  for (int iter = 0; iter < q; ++iter) {
-    multiply_blocks(local_A, local_B, local_C, K);
+  multiply_blocks(local_A, local_B, local_C, K);
 
+  for (int iter = 0; iter < q - 1; ++iter) {
     boost::mpi::request send_request2;
     boost::mpi::request recv_request2;
 
@@ -253,6 +253,8 @@ bool beresnev_a_cannons_algorithm_mpi::TestMPITaskParallel::run() {
 
     local_A = temp_A;
     local_B = temp_B;
+
+    multiply_blocks(local_A, local_B, local_C, K);
   }
 
   boost::mpi::gather(my_world, local_C.data(), local_C.size(), unfinished_C, 0);
