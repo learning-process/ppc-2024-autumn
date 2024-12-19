@@ -54,7 +54,7 @@ TEST(Parallel_Operations_MPI, Test_data_10_1) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(ans_data_10_1[0], otv[0]);
+  if (world.rank() == 0) ASSERT_EQ(ans_data_10_1[0], otv[0]);
 }
 
 TEST(Parallel_Operations_MPI, Test_data_10_2) {
@@ -78,7 +78,7 @@ TEST(Parallel_Operations_MPI, Test_data_10_2) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(ans_data_10_2[0], otv[0]);
+  if (world.rank() == 0) ASSERT_EQ(ans_data_10_2[0], otv[0]);
 }
 
 TEST(Parallel_Operations_MPI, Test_data_5_0) {
@@ -102,7 +102,7 @@ TEST(Parallel_Operations_MPI, Test_data_5_0) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(ans_data_5_0[0], otv[0]);
+  if (world.rank() == 0) ASSERT_EQ(ans_data_5_0[0], otv[0]);
 }
 
 TEST(Parallel_Operations_MPI, Test_data_5_1) {
@@ -126,7 +126,7 @@ TEST(Parallel_Operations_MPI, Test_data_5_1) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(ans_data_5_1[0], otv[0]);
+  if (world.rank() == 0) ASSERT_EQ(ans_data_5_1[0], otv[0]);
 }
 
 TEST(Parallel_Operations_MPI, Test_data_5_2) {
@@ -150,7 +150,7 @@ TEST(Parallel_Operations_MPI, Test_data_5_2) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(ans_data_5_2[0], otv[0]);
+  if (world.rank() == 0) ASSERT_EQ(ans_data_5_2[0], otv[0]);
 }
 
 TEST(Parallel_Operations_MPI, Test_data_5_empty) {
@@ -196,7 +196,7 @@ TEST(Parallel_Operations_MPI, Test_data_3_full) {
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
-  ASSERT_EQ(ans_data_3_full[0], otv[0]);
+  if (world.rank() == 0) ASSERT_EQ(ans_data_3_full[0], otv[0]);
 }
 
 TEST(Parallel_Operations_MPI, Test_10_0_s) {
