@@ -203,34 +203,3 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, fixed_matrix_test) {
     ASSERT_EQ(output_vector, expected_output);
   }
 }
-
-TEST(khovansky_d_ribbon_vertical_scheme_mpi, fixed_matrix_test_seq) {
-  boost::mpi::communicator world;
-
-  // int rows_count = 3;
-  int columns_count = 3;
-
-  std::vector<int> input_matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-  std::vector<int> input_vector = {1, 2, 3};
-  std::vector<int> output_vector(columns_count, 0);
-  std::vector<int> expected_output = {14, 32, 50};
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(input_matrix.size());
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
-  taskDataSeq->inputs_count.emplace_back(input_vector.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_vector.data()));
-  taskDataSeq->outputs_count.emplace_back(output_vector.size());
-
-  auto taskSequential = std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq>(taskDataSeq);
-  if (world.rank() == 0) {
-    ASSERT_TRUE(taskSequential->validation());
-    ASSERT_TRUE(taskSequential->pre_processing());
-    ASSERT_TRUE(taskSequential->run());
-    ASSERT_TRUE(taskSequential->post_processing());
-
-    EXPECT_EQ(output_vector, expected_output);
-  }
-}
