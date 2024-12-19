@@ -21,6 +21,13 @@ std::vector<int> fomin_v_generalized_scatter::getRandomVector(int sz) {
   return vec;
 }
 
+void fomin_v_generalized_scatter::pre_order(int rank, int size, std::vector<int>& order) {
+    if (rank >= size) return;
+    order.push_back(rank);
+    pre_order(2 * rank + 1, size, order);
+    pre_order(2 * rank + 2, size, order);
+}
+
 int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                                                      void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
                                                      MPI_Comm comm) {

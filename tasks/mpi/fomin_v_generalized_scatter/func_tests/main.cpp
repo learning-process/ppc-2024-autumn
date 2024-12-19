@@ -27,11 +27,24 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, recvcount, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
+  // Generate pre-order rank order
+  std::vector<int> pre_order_rank;
+  fomin_v_generalized_scatter::pre_order(0, size, pre_order_rank);
+
+  // Find the position of the current rank in pre-order rank order
+  auto it = std::find(pre_order_rank.begin(), pre_order_rank.end(), rank);
+  int position = std::distance(pre_order_rank.begin(), it);
+
+  // Set expected starting index
+  int expected_start = position * recvcount;
+
+  // Set expected values
   int expected[recvcount];
   for (int i = 0; i < recvcount; ++i) {
-    expected[i] = rank * recvcount + i;
+    expected[i] = expected_start + i;
   }
 
+  // Verify received data against expected data
   for (int i = 0; i < recvcount; ++i) {
     EXPECT_EQ(recvbuf[i], expected[i]);
   }
@@ -48,8 +61,8 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
   int size = world.size();
 
   int root = 0;
-  const int recvcount = 10; 
-  const int data_size = size * recvcount; 
+  const int recvcount = 10;
+  const int data_size = size * recvcount;
   float* sendbuf = nullptr;
   auto* recvbuf = new float[recvcount];
 
@@ -69,7 +82,6 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
   }
 
   for (int i = 0; i < recvcount; ++i) {
-    
     EXPECT_NEAR(recvbuf[i], expected[i], 1e-5);
   }
 

@@ -16,6 +16,8 @@ namespace fomin_v_generalized_scatter {
 
 // Declaration of getRandomVector function
 std::vector<int> getRandomVector(int sz);
+// Declaration of Function to record the rank order
+void pre_order(int rank, int size, std::vector<int>& order);
 // Declaration of generalized_scatter function
 int generalized_scatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvbuf, int recvcount,
                         MPI_Datatype recvtype, int root, MPI_Comm comm);
