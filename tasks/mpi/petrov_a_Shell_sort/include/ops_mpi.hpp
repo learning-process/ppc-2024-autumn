@@ -17,8 +17,6 @@ class TestTaskMPI : public ppc::core::Task {
 
  private:
   std::vector<int> data_;
-
-  void compareAndSwap(int i, int j);
 };
 
 }  // namespace petrov_a_Shell_sort_mpi

@@ -43,7 +43,7 @@ TEST(petrov_a_Shell_sort_seq, test_pipeline_run) {
 TEST(petrov_a_Shell_sort_seq, test_task_run) {
   int vector_size = 10000;
   std::vector<int> data(vector_size);
-  std::generate(data.begin(), data.end(), []() { return rand() % 1000; });
+  std::generate(data.begin(), data.end(), []() { return (rand() % 1000) - 500; });
   std::vector<int> result_data(vector_size);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
