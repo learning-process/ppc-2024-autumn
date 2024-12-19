@@ -44,11 +44,11 @@ bool kalyakina_a_trapezoidal_integration_seq::TrapezoidalIntegrationTask::pre_pr
   internal_order_test();
 
   limits = std::vector<std::pair<double, double>>(taskData->inputs_count[1]);
-  std::pair<double, double>* it1 = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[1]);
+  auto* it1 = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[1]);
   std::copy(it1, it1 + taskData->inputs_count[1], limits.begin());
 
   number_of_intervals = std::vector<unsigned int>(taskData->inputs_count[2]);
-  unsigned int* it2 = reinterpret_cast<unsigned int*>(taskData->inputs[2]);
+  auto* it2 = reinterpret_cast<unsigned int*>(taskData->inputs[2]);
   std::copy(it2, it2 + taskData->inputs_count[2], number_of_intervals.begin());
 
   result = 0.0;
@@ -59,13 +59,9 @@ bool kalyakina_a_trapezoidal_integration_seq::TrapezoidalIntegrationTask::pre_pr
 bool kalyakina_a_trapezoidal_integration_seq::TrapezoidalIntegrationTask::validation() {
   internal_order_test();
 
-  if ((taskData->inputs_count[0] != 1) ||
-      (reinterpret_cast<unsigned int*>(taskData->inputs[0])[0] != taskData->inputs_count[1]) ||
-      (taskData->inputs_count[1] != taskData->inputs_count[2]) || (taskData->outputs_count[0] != 1)) {
-    return false;
-  }
-
-  return true;
+  return !((taskData->inputs_count[0] != 1) ||
+           (reinterpret_cast<unsigned int*>(taskData->inputs[0])[0] != taskData->inputs_count[1]) ||
+           (taskData->inputs_count[1] != taskData->inputs_count[2]) || (taskData->outputs_count[0] != 1));
 }
 
 bool kalyakina_a_trapezoidal_integration_seq::TrapezoidalIntegrationTask::run() {

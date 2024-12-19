@@ -45,11 +45,11 @@ bool kalyakina_a_trapezoidal_integration_mpi::TrapezoidalIntegrationTaskParallel
 
   if (world.rank() == 0) {
     limits = std::vector<std::pair<double, double>>(taskData->inputs_count[1]);
-    std::pair<double, double>* it1 = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[1]);
+    auto* it1 = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[1]);
     std::copy(it1, it1 + taskData->inputs_count[1], limits.begin());
 
     number_of_intervals = std::vector<unsigned int>(taskData->inputs_count[2]);
-    unsigned int* it2 = reinterpret_cast<unsigned int*>(taskData->inputs[2]);
+    auto* it2 = reinterpret_cast<unsigned int*>(taskData->inputs[2]);
     std::copy(it2, it2 + taskData->inputs_count[2], number_of_intervals.begin());
 
     result = 0.0;
@@ -63,11 +63,9 @@ bool kalyakina_a_trapezoidal_integration_mpi::TrapezoidalIntegrationTaskParallel
 
   if (world.rank() == 0) {
     // Check count elements of input and output
-    if ((taskData->inputs_count[0] != 1) ||
-        (reinterpret_cast<unsigned int*>(taskData->inputs[0])[0] != taskData->inputs_count[1]) ||
-        (taskData->inputs_count[1] != taskData->inputs_count[2]) || (taskData->outputs_count[0] != 1)) {
-      return false;
-    }
+    return !((taskData->inputs_count[0] != 1) ||
+             (reinterpret_cast<unsigned int*>(taskData->inputs[0])[0] != taskData->inputs_count[1]) ||
+             (taskData->inputs_count[1] != taskData->inputs_count[2]) || (taskData->outputs_count[0] != 1));
   }
 
   return true;
@@ -108,8 +106,8 @@ bool kalyakina_a_trapezoidal_integration_mpi::TrapezoidalIntegrationTaskParallel
     }
   }
 
-  boost::mpi::scatter(world, &count_of_points[0], &local_count_of_points, 1, 0);
-  boost::mpi::scatter(world, &first_point_numbers[0], &local_first_point_numbers, 1, 0);
+  boost::mpi::scatter(world, count_of_points.data(), &local_count_of_points, 1, 0);
+  boost::mpi::scatter(world, first_point_numbers.data(), &local_first_point_numbers, 1, 0);
 
   for (unsigned int i = 0; i < local_count_of_points; i++) {
     std::vector<double> point = GetPointFromNumber(local_first_point_numbers + i);
