@@ -16,7 +16,7 @@ bool TestTaskMPI::pre_processing() {
   data_.resize(input_size);
   memcpy(data_.data(), raw_data, input_size * sizeof(int));
 
-  return true;
+  return true; 
 }
 
 bool TestTaskMPI::validation() {
