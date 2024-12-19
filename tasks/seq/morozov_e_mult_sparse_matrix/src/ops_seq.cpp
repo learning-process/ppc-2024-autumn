@@ -5,8 +5,8 @@
 
 using namespace std::chrono_literals;
 void morozov_e_mult_sparse_matrix::printMatrix(std::vector<std::vector<double>> m) {
-  for (int i = 0; i < m.size(); ++i) {
-    for (int j = 0; j < m[0].size(); ++j) {
+  for (size_t i = 0; i < m.size(); ++i) {
+    for (size_t j = 0; j < m[0].size(); ++j) {
       std::cout << m[i][j] << " ";
     }
     std::cout << "\n";
@@ -63,7 +63,7 @@ void morozov_e_mult_sparse_matrix::convertToCCS(const std::vector<std::vector<do
 }
 double morozov_e_mult_sparse_matrix::scalMultOfVectors(const std::vector<double>& vA, const std::vector<double>& vB) {
   double ans = 0;
-  for (int i = 0; i < vA.size(); ++i) {
+  for (size_t i = 0; i < vA.size(); ++i) {
     ans += vA[i] * vB[i];
   }
   return ans;
@@ -78,8 +78,8 @@ morozov_e_mult_sparse_matrix::convertToBasicMatrixs(const std::vector<double>& d
   std::vector<std::vector<double>> matrixA(rowsA, std::vector<double>(columnsA, 0));
   for (int i = 0; i < rowsA; ++i) {
     std::vector<double> v(col_indA.size() - 1, 0);
-    for (int j = 0; j < col_indA.size() - 1; ++j) {
-      for (int ind = col_indA[j]; ind < col_indA[j + 1]; ++ind) {
+    for (size_t j = 0; j < col_indA.size() - 1; ++j) {
+      for (size_t ind = col_indA[j]; ind < col_indA[j + 1]; ++ind) {
         if (row_indA[ind] == i) {
           v[j] = dA[ind];
         }
@@ -88,7 +88,7 @@ morozov_e_mult_sparse_matrix::convertToBasicMatrixs(const std::vector<double>& d
     matrixA[i] = v;
   }
   std::vector<std::vector<double>> matrixB(columnsB, std::vector<double>(rowsB, 0));
-  for (int i = 0; i < col_indB.size() - 1; ++i) {
+  for (size_t i = 0; i < col_indB.size() - 1; ++i) {
     std::vector<double> v(rowsB, 0);
     for (int ind = col_indB[i]; ind < col_indB[i + 1]; ++ind) {
       v[row_indB[ind]] = dB[ind];
@@ -173,8 +173,8 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::run() {
 
 bool morozov_e_mult_sparse_matrix::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < ans.size(); ++i) {
-    for (int j = 0; j < ans[i].size(); ++j) {
+  for (size_t i = 0; i < ans.size(); ++i) {
+    for (size_t j = 0; j < ans[i].size(); ++j) {
       reinterpret_cast<double*>(taskData->outputs[i])[j] = ans[i][j];
     }
   }
