@@ -70,11 +70,7 @@ bool BellmanFordSeq::validation() {
     }
   }
 
-  if (V != taskData->outputs_count[0]) {
-    return false;
-  }
-
-  return true;
+  return V == taskData->outputs_count[0];
 }
 
 bool BellmanFordSeq::Iteration(std::vector<int>& paths) {
