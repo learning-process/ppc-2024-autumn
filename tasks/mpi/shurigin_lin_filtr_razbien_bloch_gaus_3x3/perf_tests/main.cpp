@@ -32,28 +32,18 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Pipeline_Run) {
   std::vector<int> global_result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows;
-  int num_cols;
+  int num_rows = 100;
+  int num_cols = 100;
 
   if (world.rank() == 0) {
-    num_rows = 100;
-    num_cols = 100;
-
     global_matrix = shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::getRandomMatrix(num_rows, num_cols);
-
     global_result.resize(num_rows * num_cols);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_rows));
-    taskDataPar->inputs_count.emplace_back(1);
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_cols));
-    taskDataPar->inputs_count.emplace_back(1);
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+    taskDataPar->inputs = {reinterpret_cast<uint8_t*>(global_matrix.data()), reinterpret_cast<uint8_t*>(&num_rows),
+                           reinterpret_cast<uint8_t*>(&num_cols)};
+    taskDataPar->inputs_count = {static_cast<unsigned int>(global_matrix.size()), 1u, 1u};
+    taskDataPar->outputs = {reinterpret_cast<uint8_t*>(global_result.data())};
+    taskDataPar->outputs_count = {static_cast<unsigned int>(global_result.size())};
   }
 
   auto taskParallel = std::make_shared<shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::TaskMpi>(taskDataPar);
@@ -68,27 +58,19 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Pipeline_Run) {
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
 
-    std::vector<int> seq_result(global_result.size(), 0);
-
+    std::vector<int> seq_result(global_result.size());
     auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_rows));
-    taskDataSeq->inputs_count.emplace_back(1);
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_cols));
-    taskDataSeq->inputs_count.emplace_back(1);
-
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+    taskDataSeq->inputs = taskDataPar->inputs;
+    taskDataSeq->inputs_count = taskDataPar->inputs_count;
+    taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(seq_result.data())};
+    taskDataSeq->outputs_count = {static_cast<unsigned int>(seq_result.size())};
 
     auto taskSequential = std::make_shared<shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::TaskSeq>(taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
@@ -109,28 +91,18 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Task_Run) {
   std::vector<int> global_result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows;
-  int num_cols;
+  int num_rows = 100;
+  int num_cols = 100;
 
   if (world.rank() == 0) {
-    num_rows = 100;
-    num_cols = 100;
-
     global_matrix = shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::getRandomMatrix(num_rows, num_cols);
-
     global_result.resize(num_rows * num_cols);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataPar->inputs_count.emplace_back(global_matrix.size());
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_rows));
-    taskDataPar->inputs_count.emplace_back(1);
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_cols));
-    taskDataPar->inputs_count.emplace_back(1);
-
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-    taskDataPar->outputs_count.emplace_back(global_result.size());
+    taskDataPar->inputs = {reinterpret_cast<uint8_t*>(global_matrix.data()), reinterpret_cast<uint8_t*>(&num_rows),
+                           reinterpret_cast<uint8_t*>(&num_cols)};
+    taskDataPar->inputs_count = {static_cast<unsigned int>(global_matrix.size()), 1u, 1u};
+    taskDataPar->outputs = {reinterpret_cast<uint8_t*>(global_result.data())};
+    taskDataPar->outputs_count = {static_cast<unsigned int>(global_result.size())};
   }
 
   auto taskParallel = std::make_shared<shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::TaskMpi>(taskDataPar);
@@ -145,27 +117,19 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Task_Run) {
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
 
-    std::vector<int> seq_result(global_result.size(), 0);
-
+    std::vector<int> seq_result(global_result.size());
     auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(global_matrix.size());
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_rows));
-    taskDataSeq->inputs_count.emplace_back(1);
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_cols));
-    taskDataSeq->inputs_count.emplace_back(1);
-
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_result.data()));
-    taskDataSeq->outputs_count.emplace_back(seq_result.size());
+    taskDataSeq->inputs = taskDataPar->inputs;
+    taskDataSeq->inputs_count = taskDataPar->inputs_count;
+    taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(seq_result.data())};
+    taskDataSeq->outputs_count = {static_cast<unsigned int>(seq_result.size())};
 
     auto taskSequential = std::make_shared<shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::TaskSeq>(taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
