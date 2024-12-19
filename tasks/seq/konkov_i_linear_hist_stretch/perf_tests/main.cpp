@@ -29,7 +29,7 @@ TEST(konkov_i_LinearHistStretchPerformance, StretchLargeImage) {
   lht.run();
   auto end = std::chrono::high_resolution_clock::now();
 
-  if (!lht.post_processing()) {
+  if (!konkov_i_linear_hist_stretch::LinearHistogramStretch::post_processing()) {
     std::cerr << "Post-processing failed for large image." << std::endl;
     GTEST_SKIP();
   }
