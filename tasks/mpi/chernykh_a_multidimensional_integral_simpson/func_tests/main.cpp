@@ -13,7 +13,7 @@ namespace chernykh_a_multidimensional_integral_simpson_mpi {
 void run_valid_task(func_nd_t func, bounds_t &bounds, step_range_t &step_range, double tolerance) {
   auto world = boost::mpi::communicator();
 
-  double par_output = 0.0;
+  auto par_output = 0.0;
   auto par_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
@@ -33,7 +33,7 @@ void run_valid_task(func_nd_t func, bounds_t &bounds, step_range_t &step_range, 
   ASSERT_TRUE(par_task.post_processing());
 
   if (world.rank() == 0) {
-    double seq_output = 0.0;
+    auto seq_output = 0.0;
     auto seq_task_data = std::make_shared<ppc::core::TaskData>();
     seq_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
     seq_task_data->inputs_count.emplace_back(1);
@@ -59,7 +59,7 @@ void run_invalid_task(func_nd_t func, bounds_t &bounds, step_range_t &step_range
   auto world = boost::mpi::communicator();
 
   if (world.rank() == 0) {
-    double par_output = 0.0;
+    auto par_output = 0.0;
     auto par_task_data = std::make_shared<ppc::core::TaskData>();
     par_task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(bounds.data()));
     par_task_data->inputs_count.emplace_back(bounds.size());

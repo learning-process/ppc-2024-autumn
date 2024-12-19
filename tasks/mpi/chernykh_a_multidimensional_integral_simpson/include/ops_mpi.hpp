@@ -54,8 +54,9 @@ class ParallelTask : public ppc::core::Task {
   step_range_t step_range;
   double tolerance{};
   double result{};
-
   boost::mpi::communicator world;
+
+  bound_t get_chunk_bound(int dim) const;
 };
 
 }  // namespace chernykh_a_multidimensional_integral_simpson_mpi

@@ -10,7 +10,7 @@
 namespace chernykh_a_multidimensional_integral_simpson_seq {
 
 void run_valid_task(func_nd_t func, bounds_t& bounds, step_range_t& step_range, double tolerance, double want) {
-  double output = 0.0;
+  auto output = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
@@ -33,7 +33,7 @@ void run_valid_task(func_nd_t func, bounds_t& bounds, step_range_t& step_range, 
 }
 
 void run_invalid_task(func_nd_t func, bounds_t& bounds, step_range_t& step_range, double tolerance) {
-  double output = 0.0;
+  auto output = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));

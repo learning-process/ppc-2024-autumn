@@ -17,7 +17,7 @@ double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps) 
 
   for (int step_index = 1; step_index < num_steps; ++step_index) {
     double func_arg = lower_bound + (step_index * step_size);
-    int weight = (step_index % 2 == 0) ? 2 : 4;
+    auto weight = (step_index % 2 == 0) ? 2 : 4;
     result += weight * func(func_arg);
   }
 
@@ -27,8 +27,8 @@ double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps) 
 double integrate_nd(const func_nd_t &func, func_args_t &func_args, const bounds_t &bounds,
                     const step_range_t &step_range, double tolerance, int dim) {
   auto [min_steps, max_steps] = step_range;
-  double prev_steps_result = 0.0;
-  double curr_steps_result = 0.0;
+  auto prev_steps_result = 0.0;
+  auto curr_steps_result = 0.0;
 
   for (int num_steps = min_steps; num_steps <= max_steps; num_steps *= 2) {
     prev_steps_result = curr_steps_result;
@@ -134,23 +134,17 @@ bool ParallelTask::run() {
   boost::mpi::broadcast(world, step_range, 0);
   boost::mpi::broadcast(world, tolerance, 0);
   boost::mpi::broadcast(world, func_args, 0);
-  int dim = int(bounds.size()) - 1;
 
-  auto [lower_bound, upper_bound] = bounds[dim];
-  double chunk_size = (upper_bound - lower_bound) / world.size();
-  bound_t chunk_bound = {
-      lower_bound + (chunk_size * world.rank()),
-      lower_bound + (chunk_size * (world.rank() + 1)),
-  };
-
+  auto dim = int(bounds.size()) - 1;
+  auto chunk_bound = get_chunk_bound(dim);
   auto [min_steps, max_steps] = step_range;
-  bool is_converged = false;
-  double curr_steps_result = 0.0;
-  double prev_steps_result = 0.0;
+  auto is_converged = false;
+  auto curr_steps_result = 0.0;
+  auto prev_steps_result = 0.0;
 
   for (int num_steps = min_steps; !is_converged; num_steps *= 2) {
     prev_steps_result = curr_steps_result;
-    double chunk_result = integrate_1d(
+    auto chunk_result = integrate_1d(
         [&](double func_arg) -> double {
           func_args[dim] = func_arg;
           return (dim == 0) ? func(func_args) : integrate_nd(func, func_args, bounds, step_range, tolerance, dim - 1);
@@ -180,6 +174,12 @@ bool ParallelTask::post_processing() {
     *reinterpret_cast<double *>(taskData->outputs[0]) = result;
   }
   return true;
+}
+
+bound_t ParallelTask::get_chunk_bound(int dim) const {
+  auto [lower_bound, upper_bound] = bounds[dim];
+  double chunk_size = (upper_bound - lower_bound) / world.size();
+  return bound_t{lower_bound + (chunk_size * world.rank()), lower_bound + (chunk_size * (world.rank() + 1))};
 }
 
 }  // namespace chernykh_a_multidimensional_integral_simpson_mpi

@@ -14,7 +14,7 @@ double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps) 
 
   for (int step_index = 1; step_index < num_steps; ++step_index) {
     double func_arg = lower_bound + (step_index * step_size);
-    int weight = (step_index % 2 == 0) ? 2 : 4;
+    auto weight = (step_index % 2 == 0) ? 2 : 4;
     result += weight * func(func_arg);
   }
 
@@ -24,8 +24,8 @@ double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps) 
 double integrate_nd(const func_nd_t &func, func_args_t &func_args, const bounds_t &bounds,
                     const step_range_t &step_range, double tolerance, int dim) {
   auto [min_steps, max_steps] = step_range;
-  double prev_steps_result = 0.0;
-  double curr_steps_result = 0.0;
+  auto prev_steps_result = 0.0;
+  auto curr_steps_result = 0.0;
 
   for (int num_steps = min_steps; num_steps <= max_steps; num_steps *= 2) {
     prev_steps_result = curr_steps_result;
