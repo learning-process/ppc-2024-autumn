@@ -29,22 +29,34 @@ TEST(konkov_i_LinearHistStretchTest, InvalidImageData) {
 }
 
 TEST(konkov_i_LinearHistStretchTest, AllPixelsSameValueMPI) {
-  const int image_size = 100;
-  int image_data[image_size];
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  for (int i = 0; i < image_size; ++i) {
-    image_data[i] = 128;
+  const int image_size = 100;
+  int* image_data = nullptr;
+
+  if (rank == 0) {
+    image_data = new int[image_size];
+    for (int i = 0; i < image_size; ++i) {
+      image_data[i] = 128;
+    }
   }
 
   konkov_i_linear_hist_stretch::LinearHistogramStretch lht(image_size, image_data);
 
-  ASSERT_TRUE(lht.validation());
+  if (rank == 0) {
+    ASSERT_TRUE(lht.validation());
+  }
+
   ASSERT_TRUE(lht.pre_processing());
   ASSERT_TRUE(lht.run());
   ASSERT_TRUE(lht.post_processing());
 
-  for (int i = 0; i < image_size; ++i) {
-    EXPECT_EQ(image_data[i], 128);
+  if (rank == 0) {
+    for (int i = 0; i < image_size; ++i) {
+      EXPECT_EQ(image_data[i], 128);
+    }
+    delete[] image_data;
   }
 }
 
@@ -64,7 +76,10 @@ TEST(konkov_i_LinearHistStretchTest, NegativeValuesMPI) {
 
   konkov_i_linear_hist_stretch::LinearHistogramStretch lht(image_size, image_data);
 
-  ASSERT_TRUE(lht.validation());
+  if (rank == 0) {
+    ASSERT_TRUE(lht.validation());
+  }
+
   ASSERT_TRUE(lht.pre_processing());
   ASSERT_TRUE(lht.run());
   ASSERT_TRUE(lht.post_processing());
