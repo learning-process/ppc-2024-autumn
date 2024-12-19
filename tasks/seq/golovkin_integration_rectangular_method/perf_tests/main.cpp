@@ -1,13 +1,6 @@
 // Golovkin Maksims Task#1
 #include <gtest/gtest.h>
 
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"

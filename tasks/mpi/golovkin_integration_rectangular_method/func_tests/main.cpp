@@ -4,9 +4,6 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <cmath>
-#include <stdexcept>
-#include <vector>
 
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 

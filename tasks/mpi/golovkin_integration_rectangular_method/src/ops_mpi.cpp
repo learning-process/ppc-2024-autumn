@@ -1,15 +1,7 @@
 // Golovkin Maksim Task#1
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
-#include <algorithm>
 #include <boost/mpi.hpp>
-#include <chrono>
-#include <functional>
-#include <numeric>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
 
 using namespace golovkin_integration_rectangular_method;
 using namespace std::chrono_literals;

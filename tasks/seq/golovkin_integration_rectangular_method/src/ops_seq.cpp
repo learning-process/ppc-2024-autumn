@@ -2,11 +2,6 @@
 
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 
-#include <cmath>
-#include <iostream>
-#include <stdexcept>
-#include <vector>
-
 using namespace golovkin_integration_rectangular_method;
 
 IntegralCalculator::IntegralCalculator(const std::shared_ptr<ppc::core::TaskData>& taskData)
