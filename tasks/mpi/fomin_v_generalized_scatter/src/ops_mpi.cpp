@@ -38,8 +38,10 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
 
+  // Initialize subtree_sizes with zero
+  int* subtree_sizes = new int[size]();
+
   // Calculate subtree sizes
-  int* subtree_sizes = new int[size];
   for (int i = size - 1; i >= 0; --i) {
     subtree_sizes[i] = 1;
     if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
@@ -83,7 +85,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   } else {
     // Receive data from parent
     MPI_Status status;
-    MPI_Recv(temp_buffer, subtree_sizes[rank] * recvcount * datatype_size, sendtype, parent, 0, comm, &status);
+    MPI_Recv(temp_buffer, subtree_sizes[rank] * recvcount, sendtype, parent, 0, comm, &status);
 
     // Copy data for the current process
     memcpy(recvbuf, temp_buffer, recvcount * datatype_size);
