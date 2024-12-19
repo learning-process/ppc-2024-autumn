@@ -299,14 +299,10 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::run() {
       world.recv(0, 0, &posB, 1);
       world.recv(0, 0, local_input_A.data(), sizeA);
       world.recv(0, 0, local_input_B.data(), sizeA);
-      // std::cout << world.rank() << "\n";
-      // morozov_e_mult_sparse_matrix::printVector(local_input_A);
-      // morozov_e_mult_sparse_matrix::printVector(local_input_B);
       double value = morozov_e_mult_sparse_matrix::scalMultOfVectors(local_input_A, local_input_B);
       world.send(0, 0, &posA, 1);
       world.send(0, 0, &posB, 1);
       world.send(0, 0, &value, 1);
-      // ans[posA][posB] = value;
     }
     if (world.rank() < countVectorsForMult % world.size()) {
       int posA, posB;
@@ -316,9 +312,6 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::run() {
       world.recv(0, 0, &posB, 1);
       world.recv(0, 0, local_input_A.data(), sizeA);
       world.recv(0, 0, local_input_B.data(), sizeA);
-      // std::cout << world.rank() << "\n";
-      // morozov_e_mult_sparse_matrix::printVector(local_input_A);
-      // morozov_e_mult_sparse_matrix::printVector(local_input_B);
       double value = morozov_e_mult_sparse_matrix::scalMultOfVectors(local_input_A, local_input_B);
       world.send(0, 0, &posA, 1);
       world.send(0, 0, &posB, 1);
