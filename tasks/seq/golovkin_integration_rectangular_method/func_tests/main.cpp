@@ -2,6 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include <memory>
+#include <vector>
+
 #include "core/task/include/task.hpp"
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 using namespace golovkin_integration_rectangular_method;

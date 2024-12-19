@@ -1,11 +1,15 @@
 // Golovkin Maksims Task#1
 #include <gtest/gtest.h>
 
+#include <memory>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
 #include "seq/golovkin_integration_rectangular_method/include/ops_seq.hpp"
 
 using namespace golovkin_integration_rectangular_method;
+using namespace std;
 using ppc::core::Perf;
 using ppc::core::TaskData;
 
@@ -14,8 +18,8 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   const double b = 1.0;
   const double epsilon = 0.01;
   const double expected_result = 1.0 / 3.0;
-  std::vector<double> in = {a, b, epsilon};
-  std::vector<double> out(1, 0.0);
+  vector<double> in = {a, b, epsilon};
+  vector<double> out(1, 0.0);
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -31,15 +35,15 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
 
   perfAttr->num_running = 10;
-  const auto t0 = std::chrono::high_resolution_clock::now();
+  const auto t0 = chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
-    auto current_time_point = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    auto current_time_point = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
 
-  auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(integralCalculatorTask);
+  auto perfResults = make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = make_shared<ppc::core::Perf>(integralCalculatorTask);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
@@ -51,10 +55,10 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
   const double epsilon = 0.01;
   const double expected_result = 1.0 / 3.0;
 
-  std::vector<double> in = {a, b, epsilon};
-  std::vector<double> out(1, 0.0);
+  vector<double> in = {a, b, epsilon};
+  vector<double> out(1, 0.0);
 
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  auto taskDataSeq = make_shared<ppc::core::TaskData>();
 
   for (const auto& value : in) {
     auto* value_ptr = new double(value);
@@ -65,14 +69,14 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto integralCalculatorTask = std::make_shared<IntegralCalculator>(taskDataSeq);
+  auto integralCalculatorTask = make_shared<IntegralCalculator>(taskDataSeq);
 
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  auto perfAttr = make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const auto t0 = std::chrono::high_resolution_clock::now();
+  const auto t0 = chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
-    auto current_time_point = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
+    auto current_time_point = chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
 

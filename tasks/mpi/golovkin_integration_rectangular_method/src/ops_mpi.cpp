@@ -4,7 +4,6 @@
 #include <boost/mpi.hpp>
 
 using namespace golovkin_integration_rectangular_method;
-using namespace std::chrono_literals;
 
 bool MPIIntegralCalculator::validation() {
   internal_order_test();

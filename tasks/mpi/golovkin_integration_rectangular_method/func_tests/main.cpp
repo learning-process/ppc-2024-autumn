@@ -2,16 +2,21 @@
 #define _USE_MATH_DEFINES
 #include <gtest/gtest.h>
 
+#include <memory>
+#include <vector>
+
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 
+using namespace std;
+
 TEST(golovkin_integration_rectangular_method, test_constant_function) {
   boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
+  vector<double> computed_result(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = 10.0;
   int partition_count = 10000;
@@ -35,7 +40,7 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
   if (world.size() < 5 || world.rank() >= 4) {
     std::vector<double> expected_result(1, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -56,9 +61,9 @@ TEST(golovkin_integration_rectangular_method, test_constant_function) {
 }
 TEST(golovkin_integration_rectangular_method, test_linear_function) {
   boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
+  vector<double> computed_result(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = 5.0;
   int partition_count = 10000;
@@ -83,9 +88,9 @@ TEST(golovkin_integration_rectangular_method, test_linear_function) {
   parallel_task.post_processing();
 
   if (world.size() < 5 || world.rank() >= 4) {
-    std::vector<double> expected_result(1, 0);
+    vector<double> expected_result(1, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -109,9 +114,9 @@ TEST(golovkin_integration_rectangular_method, test_linear_function) {
 
 TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
   boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
+  vector<double> computed_result(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
   double lower_limit = -3.0;
   double upper_limit = 3.0;
   int partition_count = 50000;
@@ -135,9 +140,9 @@ TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
   parallel_task.run();
   parallel_task.post_processing();
   if (world.size() < 5 || world.rank() >= 4) {
-    std::vector<double> expected_result(1, 0);
+    vector<double> expected_result(1, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -161,9 +166,9 @@ TEST(golovkin_integration_rectangular_method, test_quadratic_function) {
 
 TEST(golovkin_integration_rectangular_method, test_sine_function) {
   boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
+  vector<double> computed_result(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = M_PI;
   int partition_count = 50000;
@@ -188,9 +193,9 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
   parallel_task.post_processing();
 
   if (world.size() < 5 || world.rank() >= 4) {
-    std::vector<double> expected_result(1, 0);
+    vector<double> expected_result(1, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -214,9 +219,9 @@ TEST(golovkin_integration_rectangular_method, test_sine_function) {
 
 TEST(golovkin_integration_rectangular_method, test_cosine_function) {
   boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
+  vector<double> computed_result(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = M_PI / 2;
   int partition_count = 50000;
@@ -241,9 +246,9 @@ TEST(golovkin_integration_rectangular_method, test_cosine_function) {
   parallel_task.post_processing();
 
   if (world.size() < 5 || world.rank() >= 4) {
-    std::vector<double> expected_result(1, 0);
+    vector<double> expected_result(1, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));
@@ -267,9 +272,9 @@ TEST(golovkin_integration_rectangular_method, test_cosine_function) {
 
 TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   boost::mpi::communicator world;
-  std::vector<double> computed_result(1, 0);
+  vector<double> computed_result(1, 0);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
   double lower_limit = 0.0;
   double upper_limit = 1.0;
   int partition_count = 100000;
@@ -294,9 +299,9 @@ TEST(golovkin_integration_rectangular_method, test_exponential_function) {
   parallel_task.post_processing();
 
   if (world.size() < 5 || world.rank() >= 4) {
-    std::vector<double> expected_result(1, 0);
+    vector<double> expected_result(1, 0);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&lower_limit));
     taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&upper_limit));

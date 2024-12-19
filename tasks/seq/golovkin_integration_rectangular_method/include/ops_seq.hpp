@@ -4,6 +4,7 @@
 
 #include <memory>
 #include <vector>
+#include <chrono>
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
