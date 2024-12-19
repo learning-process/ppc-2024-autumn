@@ -21,8 +21,6 @@ bool LinearHistogramStretch::pre_processing() {
 
   MPI_Scatter(image_data_, local_size_, MPI_INT, local_data_, local_size_, MPI_INT, 0, MPI_COMM_WORLD);
 
-  calculate_local_min_max();
-
   int local_min = *std::min_element(local_data_, local_data_ + local_size_);
   int local_max = *std::max_element(local_data_, local_data_ + local_size_);
   MPI_Allreduce(&local_min, &global_min_, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
