@@ -54,16 +54,12 @@ TEST(MonteCarloIntegrationTaskParallel, test_task_run) {
   testMpiTaskParallel->set_num_points(1000000);
   testMpiTaskParallel->set_function([](double x) { return x * x; });
 
-  // std::cout << "Rank " << world.rank() << " is validating." << std::endl;
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
 
-  // std::cout << "Rank " << world.rank() << " is pre-processing." << std::endl;
   testMpiTaskParallel->pre_processing();
 
-  // std::cout << "Rank " << world.rank() << " is running." << std::endl;
   testMpiTaskParallel->run();
 
-  // std::cout << "Rank " << world.rank() << " is post-processing." << std::endl;
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -74,11 +70,9 @@ TEST(MonteCarloIntegrationTaskParallel, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
 
-  // std::cout << "Rank " << world.rank() << " is processing pipeline." << std::endl;
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
-    // std::cout << "Rank " << world.rank() << " is printing performance statistics." << std::endl;
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
 }
