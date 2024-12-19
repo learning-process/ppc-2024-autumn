@@ -170,8 +170,12 @@ bool zaytsev_bitwise_sort_evenodd_Batcher::TestMPITaskParallel::run() {
   }
 
   for (int step = 0; step < world_size; ++step) {
-    int neighbor = (step % 2 == 0) ? ((world_rank % 2 == 0) ? world_rank + 1 : world_rank - 1)
-                                   : ((world_rank % 2 == 0) ? world_rank - 1 : world_rank + 1);
+    int neighbor;
+    if (step % 2 == 0) {
+      neighbor = (world_rank % 2 == 0) ? world_rank + 1 : world_rank - 1;
+    } else {
+      neighbor = (world_rank % 2 == 0) ? world_rank - 1 : world_rank + 1;
+    }
 
     if (neighbor >= 0 && neighbor < world_size) {
       std::vector<int> neighbor_data(local_size);
