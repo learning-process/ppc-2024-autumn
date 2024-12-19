@@ -53,8 +53,6 @@ bool LinearHistogramStretch::post_processing() {
   return true;
 }
 
-void LinearHistogramStretch::calculate_local_min_max() {}
-
 void LinearHistogramStretch::stretch_pixels() {
   for (int i = 0; i < local_size_; ++i) {
     if (global_max_ - global_min_ == 0) continue;

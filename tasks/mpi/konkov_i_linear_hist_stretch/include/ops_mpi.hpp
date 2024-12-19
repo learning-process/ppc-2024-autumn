@@ -23,7 +23,6 @@ class LinearHistogramStretch {
   int global_min_;
   int global_max_;
 
-  void calculate_local_min_max();
   void stretch_pixels();
 };
 
