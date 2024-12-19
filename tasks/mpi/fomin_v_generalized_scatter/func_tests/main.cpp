@@ -49,9 +49,7 @@ TEST(fomin_v_generalized_scatter, ScatterIntegers) {
     EXPECT_EQ(recvbuf[i], expected[i]);
   }
 
-  if (sendbuf != nullptr) {
-    delete[] sendbuf;
-  }
+  delete[] sendbuf;
   delete[] recvbuf;
 }
 
@@ -98,9 +96,7 @@ TEST(fomin_v_generalized_scatter, ScatterFloats) {
     EXPECT_NEAR(recvbuf[i], expected[i], 1e-5);
   }
 
-  if (sendbuf != nullptr) {
-    delete[] sendbuf;
-  }
+  delete[] sendbuf;
   delete[] recvbuf;
 }
 
