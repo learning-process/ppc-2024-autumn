@@ -8,26 +8,7 @@
 
 std::vector<int> ermilova_d_Shell_sort_simple_merge_seq::ShellSort(std::vector<int>& vec) {
   size_t n = vec.size();
-
-  std::vector<size_t> Sedgwick_gaps;
-
-  size_t a = 0;
-  while (true) {
-    size_t gap;
-    if (a % 2 == 0) {
-      gap = 9 * static_cast<size_t>(pow(2, a)) - 9 * static_cast<size_t>(pow(2, a / 2)) + 1;
-    } else {
-      gap = 8 * static_cast<size_t>(pow(2, a)) - 6 * static_cast<size_t>(pow(2, (a + 1) / 2)) + 1;
-    }
-
-    if (gap >= n) break;
-    Sedgwick_gaps.push_back(gap);
-    a++;
-  }
-
-  for (int k = Sedgwick_gaps.size() - 1; k >= 0; --k) {
-    size_t gap = Sedgwick_gaps[k];
-
+  for (size_t gap = n / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < n; i++) {
       int temp = vec[i];
       size_t j;
