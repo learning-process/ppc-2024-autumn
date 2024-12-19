@@ -5,8 +5,6 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/agafeev_s_linear_topology/include/lintop_mpi.hpp"
 
-namespace agafeev_s_linear_topology {}  // namespace agafeev_s_linear_topology
-
 TEST(agafeev_s_linear_topology, test_pipeline_run) {
   boost::mpi::communicator world;
   int sender = 0;

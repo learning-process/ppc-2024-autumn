@@ -1,7 +1,5 @@
 #include "mpi/agafeev_s_linear_topology/include/lintop_mpi.hpp"
 
-#include <algorithm>
-
 namespace agafeev_s_linear_topology {
 
 std::vector<int> calculating_Route(int a, int b) {
