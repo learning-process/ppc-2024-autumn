@@ -11,7 +11,7 @@ TEST(grudzin_k_monte_carlo_seq, test_pipeline_run) {
   const int dimensions = 3;
   int N = 5000000;
   std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
-    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+    { return 0.0 * (x[0] + x[1] + x[2]) + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
   std::vector<double> dim = {0, 1, 0, 1, 0, 1};
@@ -52,7 +52,7 @@ TEST(grudzin_k_monte_carlo_mpi, test_task_run) {
   const int dimensions = 3;
   int N = 5000000;
   std::function<double(std::array<double, dimensions> &)> f = [](std::array<double, dimensions> &x) {
-    return 0.0 * (x[0] + x[1] + x[2]) + 1;
+    { return 0.0 * (x[0] + x[1] + x[2]) + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
   std::vector<double> dim = {0, 1, 0, 1, 0, 1};
