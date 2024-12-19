@@ -2,6 +2,7 @@
 
 #include <mpi.h>
 
+#include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <vector>
@@ -72,8 +73,11 @@ bool TestTaskMPI::run() {
         }
       }
 
+      std::vector<int> merged_data(local_n * size + remainder);
       std::merge(data_.begin(), data_.begin() + local_n * size, remainder_data.begin(), remainder_data.end(),
-                 data_.begin());
+                 merged_data.begin());
+
+      data_ = merged_data;
     }
 
     for (int gap = n / 2; gap > 0; gap /= 2) {
