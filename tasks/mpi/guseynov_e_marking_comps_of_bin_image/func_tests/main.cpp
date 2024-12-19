@@ -7,6 +7,58 @@
 
 #include "mpi/guseynov_e_marking_comps_of_bin_image/include/ops_mpi.hpp"
 
+void checkNeighbors(const std::vector<int>& matrix, int rows, int cols) {
+    // Направления: (dx, dy)
+    std::vector<std::pair<int, int>> directions = {
+        {0, 1},   // вправо
+        {0, -1},  // влево
+        {1, 0},   // вниз
+        {-1, 0},  // вверх
+        {-1, 1},   // по диагонали вниз вправо
+        {1, -1}  // по диагонали вверх влево
+    };
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            int currentIndex = i * cols + j;
+            int currentValue = matrix[currentIndex];
+
+            // Пропускаем элемент, если он равен 1
+            if (currentValue == 1) {
+                continue;
+            }
+
+            bool shouldPrint = false;
+
+            // Проверяем соседей
+            for (const auto& dir : directions) {
+                int newRow = i + dir.first;
+                int newCol = j + dir.second;
+
+                // Проверяем границы матрицы
+                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                    int neighborIndex = newRow * cols + newCol;
+                    int neighborValue = matrix[neighborIndex];
+
+                    // Если сосед не равен текущему элементу и не равен 1
+                    if (neighborValue != currentValue && neighborValue != 1) {
+                        shouldPrint = true;
+                        break; // Достаточно одного такого соседа
+                    }
+                }
+            }
+
+            // Если условие выполнено, выводим элемент с запятой
+            if (shouldPrint) {
+                std::cout << "[" << i<< ", " << j << ", " << currentValue << "]" ;
+            }
+        }
+    }
+    std::cout << std::endl; // Завершаем строку
+}
+
+
+
 std::vector<int> getRandomBinImage(int r, int c) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -120,8 +172,8 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, fixed_test_2) {
 
 TEST(guseynov_e_marking_comps_of_bin_image_mpi, random_tes_100x100) {
   boost::mpi::communicator world;
-  const int rows = 15;
-  const int cols = 15;
+  const int rows = 20;
+  const int cols = 20;
   std::vector<int> image;
   std::vector<int> global_labeled_image(rows * cols);
   // Create TaskData
@@ -163,12 +215,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, random_tes_100x100) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
 
-    for (int i = 0; i < rows; i++){
-      for (int j = 0; j < cols; j++){
-        std::cout << global_labeled_image[i * cols + j] << " ";
-      }
-      std::cout << "\n";
-    }
     std::cout << "\n";
     for (int i = 0; i < rows; i++){
       for (int j = 0; j < cols; j++){
@@ -176,6 +222,19 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, random_tes_100x100) {
       }
       std::cout << "\n";
     }
+      std::cout << "\n";
+          checkNeighbors(reference_labeled_image, rows, cols);
+
+    for (int i = 0; i < rows; i++){
+      for (int j = 0; j < cols; j++){
+        std::cout << global_labeled_image[i * cols + j] << " ";
+      }
+      std::cout << "\n";
+    }
+    
+
+    checkNeighbors(global_labeled_image, rows, cols);
+
     ASSERT_EQ(reference_labeled_image, global_labeled_image);
   }
 }
