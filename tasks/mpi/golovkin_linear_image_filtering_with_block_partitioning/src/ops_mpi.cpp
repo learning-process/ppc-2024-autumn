@@ -157,8 +157,7 @@ void SimpleBlockMPI::applyGaussianFilter() {
   }
 
   for (int r = 0; r < local_height_; r++) {
-    copy(result.begin() + r * width_, result.begin() + (r + 1) * width_,
-              local_data_.begin() + (r + halo_up) * width_);
+    copy(result.begin() + r * width_, result.begin() + (r + 1) * width_, local_data_.begin() + (r + halo_up) * width_);
   }
 }
 

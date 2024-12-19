@@ -22,9 +22,9 @@ static vector<int> generate_random_image(int width, int height, int seed = 123) 
     boost::mpi::communicator world;                                                                                  \
     int width = (W);                                                                                                 \
     int height = (H);                                                                                                \
-    shared_ptr<ppc::core::TaskData> taskData = make_shared<ppc::core::TaskData>();                         \
-    vector<int> input_data;                                                                                     \
-    vector<int> output_data;                                                                                    \
+    shared_ptr<ppc::core::TaskData> taskData = make_shared<ppc::core::TaskData>();                                   \
+    vector<int> input_data;                                                                                          \
+    vector<int> output_data;                                                                                         \
     if (world.size() < 5 || world.rank() >= 4) {                                                                     \
       input_data = generate_random_image(width, height);                                                             \
       output_data.resize(width *height, 0);                                                                          \
@@ -40,13 +40,13 @@ static vector<int> generate_random_image(int width, int height, int seed = 123) 
       taskData->outputs.push_back(reinterpret_cast<uint8_t *>(output_data.data()));                                  \
       taskData->outputs_count.push_back(output_data.size() * sizeof(int));                                           \
     }                                                                                                                \
-    auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData); \
-    auto perfAttr = make_shared<ppc::core::PerfAttr>();                                                         \
+    auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);      \
+    auto perfAttr = make_shared<ppc::core::PerfAttr>();                                                              \
     perfAttr->num_running = num_runs;                                                                                \
     boost::mpi::timer current_timer;                                                                                 \
     perfAttr->current_timer = [&]() { return current_timer.elapsed(); };                                             \
-    auto perfResults = make_shared<ppc::core::PerfResults>();                                                   \
-    auto perfAnalyzer = make_shared<ppc::core::Perf>(task);                                                     \
+    auto perfResults = make_shared<ppc::core::PerfResults>();                                                        \
+    auto perfAnalyzer = make_shared<ppc::core::Perf>(task);                                                          \
     perfAnalyzer->perf_method(perfAttr, perfResults);                                                                \
     if (world.size() < 5 || world.rank() >= 4) {                                                                     \
       ppc::core::Perf::print_perf_statistic(perfResults);                                                            \

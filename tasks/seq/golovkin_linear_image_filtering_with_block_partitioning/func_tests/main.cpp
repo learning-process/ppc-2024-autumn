@@ -192,9 +192,9 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
   int rows = 5;
   int cols = 5;
   vector<int> input = {0,   0,   0,   255, 255, 0, 0, 0,   255, 255, 0, 0, 0,
-                            255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 0, 0};
+                       255, 255, 255, 255, 255, 0, 0, 255, 255, 255, 0, 0};
   vector<int> expected_output = {1,   1,   2,   128, 128, 1, 2, 3,   128, 128, 2, 3, 4,
-                                      128, 128, 128, 128, 128, 2, 2, 128, 128, 128, 3, 3};
+                                 128, 128, 128, 128, 128, 2, 2, 128, 128, 128, 3, 3};
   vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);

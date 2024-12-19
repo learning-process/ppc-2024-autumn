@@ -401,11 +401,11 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, VeryLargeImageTest
   int width = 500;
   int height = 500;
 
-  std::vector<int> input(width * height);
-  std::iota(input.begin(), input.end(), 0);
-  std::vector<int> output(width * height, 0);
+  vector<int> input(width * height);
+  iota(input.begin(), input.end(), 0);
+  vector<int> output(width * height, 0);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
     taskData->inputs_count.push_back(input.size() * sizeof(int));
@@ -420,14 +420,14 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, VeryLargeImageTest
     taskData->outputs_count.push_back(output.size() * sizeof(int));
   }
 
-  auto task = std::make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
+  auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected;
+    vector<int> expected;
     gauss_3x3(input, width, height, &expected);
     ASSERT_EQ(output.size(), expected.size());
     for (size_t i = 0; i < output.size(); i++) {
@@ -442,10 +442,10 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, ZeroImageTest) {
   int width = 8;
   int height = 8;
 
-  std::vector<int> input(width * height, 0); 
-  std::vector<int> output(width * height, 0);
+  vector<int> input(width * height, 0); 
+  vector<int> output(width * height, 0);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
     taskData->inputs_count.push_back(input.size() * sizeof(int));
@@ -460,7 +460,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, ZeroImageTest) {
     taskData->outputs_count.push_back(output.size() * sizeof(int));
   }
 
-  auto task = std::make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
+  auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
@@ -479,13 +479,13 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, NegativePixelsTest
   int width = 5;
   int height = 5;
 
-  std::vector<int> input(width * height);
+  vector<int> input(width * height);
   for (int i = 0; i < width * height; i++) {
     input[i] = -i;
   }
-  std::vector<int> output(width * height, 0);
+  vector<int> output(width * height, 0);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  auto taskData = make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
     taskData->inputs_count.push_back(input.size() * sizeof(int));
@@ -500,14 +500,14 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, NegativePixelsTest
     taskData->outputs_count.push_back(output.size() * sizeof(int));
   }
 
-  auto task = std::make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
+  auto task = make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
-    std::vector<int> expected;
+    vector<int> expected;
     gauss_3x3(input, width, height, &expected);
     ASSERT_EQ(output.size(), expected.size());
     for (size_t i = 0; i < output.size(); i++) {
