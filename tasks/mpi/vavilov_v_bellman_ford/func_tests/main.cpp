@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>
-
 #include <random>
 
 #include "mpi/vavilov_v_bellman_ford/include/ops_mpi.hpp"
@@ -32,7 +31,7 @@ TEST(vavilov_v_bellman_ford_mpi, Random_1) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   int vertices = 100;
   int edges_count = 15;
   int source = 0;
@@ -72,7 +71,7 @@ TEST(vavilov_v_bellman_ford_mpi, Random_2) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   int vertices = 200;
   int edges_count = 50;
   int source = 0;
@@ -112,7 +111,7 @@ TEST(vavilov_v_bellman_ford_mpi, Random_3) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  
+
   int vertices = 500;
   int edges_count = 100;
   int source = 0;
