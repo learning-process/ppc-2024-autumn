@@ -31,20 +31,15 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
 
-  // Calculate the number of processes in the subtree rooted at each process
-  auto* subtree_sizes = new int[size];
-  for (int i = 0; i < size; ++i) {
-    subtree_sizes[i] = 1;  // Each process has at least itself in its subtree
-  }
-  for (int i = size - 1; i > 0; --i) {
-    int parent = (i - 1) / 2;
-    subtree_sizes[parent] += subtree_sizes[i];
+  // Calculate subtree sizes
+  int* subtree_sizes = new int[size];
+  for (int i = size - 1; i >= 0; --i) {
+    subtree_sizes[i] = 1;
+    if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
+    if (2 * i + 2 < size) subtree_sizes[i] += subtree_sizes[2 * i + 2];
   }
 
-  // Determine the number of processes in the subtree of the root
-  int root_subtree_size = subtree_sizes[root];
-
-  if (rank == root && sendcount != root_subtree_size * recvcount) {
+  if (rank == root && sendcount != subtree_sizes[root] * recvcount) {
     delete[] subtree_sizes;
     return MPI_ERR_COUNT;
   }
@@ -53,37 +48,49 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int left_child = 2 * rank + 1;
   int right_child = 2 * rank + 2;
 
-  // Buffer for temporary storage in non-root processes
-  char* temp_buffer = (rank == root) ? nullptr : new char[recvcount * datatype_size];
+  char* temp_buffer = nullptr;
+  if (rank != root) {
+    temp_buffer = new char[subtree_sizes[rank] * recvcount * datatype_size];
+  }
 
   if (rank == root) {
     const char* send_ptr = static_cast<const char*>(sendbuf);
-    // Copy root's data to its recvbuf
-    memcpy(recvbuf, send_ptr + (rank - root) * recvcount * datatype_size, recvcount * datatype_size);
 
-    // Send data to children
+    // Copy root's data
+    memcpy(recvbuf, send_ptr, recvcount * datatype_size);
+
+    // Send data to left child
     if (left_child < size) {
-      int offset = subtree_sizes[left_child] * recvcount * datatype_size;
-      MPI_Send(send_ptr + offset, subtree_sizes[left_child] * recvcount, sendtype, left_child, 0, comm);
+      int left_offset = recvcount * datatype_size;
+      int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
+      MPI_Send(send_ptr + left_offset, left_data_size / datatype_size, sendtype, left_child, 0, comm);
     }
+
+    // Send data to right child
     if (right_child < size) {
-      int offset = (subtree_sizes[left_child] + subtree_sizes[right_child]) * recvcount * datatype_size;
-      MPI_Send(send_ptr + offset, subtree_sizes[right_child] * recvcount, sendtype, right_child, 0, comm);
+      int right_offset = (recvcount + subtree_sizes[left_child] * recvcount) * datatype_size;
+      int right_data_size = subtree_sizes[right_child] * recvcount * datatype_size;
+      MPI_Send(send_ptr + right_offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
     }
   } else {
     // Receive data from parent
     MPI_Status status;
-    MPI_Recv(temp_buffer, recvcount * datatype_size, sendtype, parent, 0, comm, &status);
+    MPI_Recv(temp_buffer, subtree_sizes[rank] * recvcount, sendtype, parent, 0, comm, &status);
 
-    // Copy the received data to recvbuf
+    // Copy data for the current process
     memcpy(recvbuf, temp_buffer, recvcount * datatype_size);
 
-    // Forward data to children
+    // Forward data to left child
     if (left_child < size) {
-      MPI_Send(temp_buffer, recvcount * datatype_size, sendtype, left_child, 0, comm);
+      int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
+      MPI_Send(temp_buffer + recvcount * datatype_size, left_data_size / datatype_size, sendtype, left_child, 0, comm);
     }
+
+    // Forward data to right child
     if (right_child < size) {
-      MPI_Send(temp_buffer, recvcount * datatype_size, sendtype, right_child, 0, comm);
+      int right_data_size = subtree_sizes[right_child] * recvcount * datatype_size;
+      int offset = recvcount * datatype_size + subtree_sizes[left_child] * recvcount * datatype_size;
+      MPI_Send(temp_buffer + offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
     }
   }
 
