@@ -157,9 +157,10 @@ TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
   int size = world.size();
 
   int root = 0;
-  const int data_size = size * 10;
+  const int recvcount = 10;
+  const int data_size = size * recvcount;
   int* sendbuf = nullptr;
-  auto* recvbuf = new int[10];
+  auto* recvbuf = new int[recvcount];
 
   if (rank == root) {
     sendbuf = new int[data_size];
@@ -171,12 +172,25 @@ TEST(fomin_v_generalized_scatter, NonPowerOfTwoProcesses) {
   fomin_v_generalized_scatter::generalized_scatter(sendbuf, data_size, MPI_INT, recvbuf, 10, MPI_INT, root,
                                                    MPI_COMM_WORLD);
 
-  int expected[10];
-  for (int i = 0; i < 10; ++i) {
-    expected[i] = rank * 10 + i;
+  // Generate pre-order traversal rank order
+  std::vector<int> pre_order_rank;
+  fomin_v_generalized_scatter::pre_order(0, size, pre_order_rank);
+
+  // Find the position of the current rank in pre_order_rank
+  auto it = std::find(pre_order_rank.begin(), pre_order_rank.end(), rank);
+  int position = std::distance(pre_order_rank.begin(), it);
+
+  // Set expected starting index
+  int expected_start = position * recvcount;
+
+  // Set expected values
+  int expected[recvcount];
+  for (int i = 0; i < recvcount; ++i) {
+    expected[i] = expected_start + i;
   }
 
-  for (int i = 0; i < 10; ++i) {
+  // Verify received data against expected data
+  for (int i = 0; i < recvcount; ++i) {
     EXPECT_EQ(recvbuf[i], expected[i]);
   }
 
