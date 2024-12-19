@@ -24,34 +24,63 @@ bool TestTaskMPI::validation() {
     return false;
   }
 
-  if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
-    return false;
-  }
-
   return true;
 }
 
 bool TestTaskMPI::run() {
-  int n = data_.size();
+  MPI_Comm comm = MPI_COMM_WORLD;
+  int rank, size;
 
-  for (int gap = n / 2; gap > 0; gap /= 2) {
-    for (int i = gap; i < n; ++i) {
-      int temp = data_[i];
+  MPI_Comm_rank(comm, &rank);
+  MPI_Comm_size(comm, &size);
+
+  int n = data_.size();
+  int local_n = n / size;
+  std::vector<int> local_data(local_n);
+
+  MPI_Scatter(data_.data(), local_n, MPI_INT, local_data.data(), local_n, MPI_INT, 0, comm);
+
+  for (int gap = local_n / 2; gap > 0; gap /= 2) {
+    for (int i = gap; i < local_n; ++i) {
+      int temp = local_data[i];
       int j;
-      for (j = i; j >= gap && data_[j - gap] > temp; j -= gap) {
-        data_[j] = data_[j - gap];
+      for (j = i; j >= gap && local_data[j - gap] > temp; j -= gap) {
+        local_data[j] = local_data[j - gap];
       }
-      data_[j] = temp;
+      local_data[j] = temp;
     }
   }
+
+  MPI_Gather(local_data.data(), local_n, MPI_INT, data_.data(), local_n, MPI_INT, 0, comm);
+
+  if (rank == 0) {
+    for (int gap = n / 2; gap > 0; gap /= 2) {
+      for (int i = gap; i < n; ++i) {
+        int temp = data_[i];
+        int j;
+        for (j = i; j >= gap && data_[j - gap] > temp; j -= gap) {
+          data_[j] = data_[j - gap];
+        }
+        data_[j] = temp;
+      }
+    }
+  }
+
   return true;
 }
+
 
 bool TestTaskMPI::post_processing() {
   size_t output_size = taskData->outputs_count[0];
   auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
   memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
-  return true;
+  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+    return false;
+  }
+
+  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
+    return true;
+  }
 }
 
 }  // namespace petrov_a_Shell_sort_mpi
