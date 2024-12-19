@@ -2,12 +2,11 @@
 #define _USE_MATH_DEFINES
 #include <gtest/gtest.h>
 
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
 #include <cmath>
 #include <memory>
 #include <vector>
-
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
 
 #include "mpi/golovkin_integration_rectangular_method/include/ops_mpi.hpp"
 

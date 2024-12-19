@@ -2,10 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include <boost/mpi/timer.hpp>
 #include <memory>
 #include <vector>
-
-#include <boost/mpi/timer.hpp>
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
@@ -35,8 +34,7 @@ TEST(golovkin_integration_rectangular_method, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  auto testMpiTaskParallel =
-      make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);
+  auto testMpiTaskParallel = make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);
   testMpiTaskParallel->set_function([](double x) { return x + 2.0; });
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
@@ -79,8 +77,7 @@ TEST(golovkin_integration_rectangular_method, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_result.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);
+  auto testMpiTaskParallel = make_shared<golovkin_integration_rectangular_method::MPIIntegralCalculator>(taskDataPar);
   testMpiTaskParallel->set_function([](double x) { return x + 2.0; });
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
