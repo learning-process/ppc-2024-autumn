@@ -1,14 +1,14 @@
 #include <gtest/gtest.h>
-#include <mpi.h>
 
-#include "mpi/konkov_i_linear_hist_stretch/include/ops_mpi.hpp"
+#include "seq/konkov_i_linear_hist_stretch/include/ops_seq.hpp"
 
 TEST(konkov_i_LinearHistStretchTest, ValidImageData) {
   const int image_size = 100;
   int image_data[image_size];
-  // Initialize image_data with sample values
+
+  // »нициализаци€ изображени€ с произвольными значени€ми
   for (int i = 0; i < image_size; ++i) {
-    image_data[i] = rand() % 256;  // Random values between 0 and 255
+    image_data[i] = rand() % 256;  // —лучайные значени€ от 0 до 255
   }
 
   konkov_i_linear_hist_stretch::LinearHistogramStretch lht(image_size, image_data);
@@ -17,6 +17,12 @@ TEST(konkov_i_LinearHistStretchTest, ValidImageData) {
   ASSERT_TRUE(lht.pre_processing());
   ASSERT_TRUE(lht.run());
   ASSERT_TRUE(lht.post_processing());
+
+  // ѕроверка, что все значени€ пикселей наход€тс€ в диапазоне [0, 255]
+  for (int i = 0; i < image_size; ++i) {
+    EXPECT_GE(image_data[i], 0);
+    EXPECT_LE(image_data[i], 255);
+  }
 }
 
 TEST(konkov_i_LinearHistStretchTest, InvalidImageData) {
@@ -28,12 +34,13 @@ TEST(konkov_i_LinearHistStretchTest, InvalidImageData) {
   ASSERT_FALSE(lht.validation());
 }
 
-TEST(konkov_i_LinearHistStretchTest, AllPixelsSameValueMPI) {
+TEST(konkov_i_LinearHistStretchTest, AllPixelsSameValueSeq) {
   const int image_size = 100;
   int image_data[image_size];
 
+  // »нициализаци€ всех пикселей одинаковым значением
   for (int i = 0; i < image_size; ++i) {
-    image_data[i] = 128;
+    image_data[i] = 128;  // ¬се пиксели равны 128
   }
 
   konkov_i_linear_hist_stretch::LinearHistogramStretch lht(image_size, image_data);
@@ -48,18 +55,12 @@ TEST(konkov_i_LinearHistStretchTest, AllPixelsSameValueMPI) {
   }
 }
 
-TEST(konkov_i_LinearHistStretchTest, NegativeValuesMPI) {
-  int rank;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-
+TEST(konkov_i_LinearHistStretchTest, NegativeValuesSeq) {
   const int image_size = 100;
-  int* image_data = nullptr;
+  int image_data[image_size];
 
-  if (rank == 0) {
-    image_data = new int[image_size];
-    for (int i = 0; i < image_size; ++i) {
-      image_data[i] = -100 + i;
-    }
+  for (int i = 0; i < image_size; ++i) {
+    image_data[i] = -100 + i;
   }
 
   konkov_i_linear_hist_stretch::LinearHistogramStretch lht(image_size, image_data);
@@ -69,11 +70,8 @@ TEST(konkov_i_LinearHistStretchTest, NegativeValuesMPI) {
   ASSERT_TRUE(lht.run());
   ASSERT_TRUE(lht.post_processing());
 
-  if (rank == 0) {
-    for (int i = 0; i < image_size; ++i) {
-      EXPECT_GE(image_data[i], 0);
-      EXPECT_LE(image_data[i], 255);
-    }
-    delete[] image_data;
+  for (int i = 0; i < image_size; ++i) {
+    EXPECT_GE(image_data[i], 0);
+    EXPECT_LE(image_data[i], 255);
   }
 }

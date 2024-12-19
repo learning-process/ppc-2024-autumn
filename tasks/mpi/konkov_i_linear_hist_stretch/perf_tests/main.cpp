@@ -12,11 +12,13 @@ TEST(konkov_i_LinearHistStretchPerformance, StretchLargeImage) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int image_size = 1000000;
+  const int image_size = 1000000;
   int* image_data = nullptr;
   if (rank == 0) {
     image_data = new int[image_size];
-    // Initialize image_data with sample values
+    for (int i = 0; i < image_size; ++i) {
+      image_data[i] = rand() % 256;  // Случайные значения от 0 до 255
+    }
   }
 
   konkov_i_linear_hist_stretch::LinearHistogramStretch lht(image_size, image_data);

@@ -10,7 +10,7 @@ LinearHistogramStretch::LinearHistogramStretch(int image_size, int* image_data)
     : image_size_(image_size), image_data_(image_data) {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
   MPI_Comm_size(MPI_COMM_WORLD, &size_);
-  local_size_ = image_size / size_;
+  local_size_ = image_size_ / size_;
   local_data_ = new int[local_size_];
 }
 
@@ -44,6 +44,9 @@ bool LinearHistogramStretch::post_processing() {
   MPI_Gather(local_data_, local_size_, MPI_INT, stretched_image, local_size_, MPI_INT, 0, MPI_COMM_WORLD);
 
   if (rank_ == 0) {
+    for (int i = 0; i < image_size_; ++i) {
+      image_data_[i] = stretched_image[i];
+    }
     delete[] stretched_image;
   }
   delete[] local_data_;
