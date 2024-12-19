@@ -27,11 +27,12 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 
   return true;
 }
+
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   int num_processes = world.size();
   int rank = world.rank();
 
-  std::cout << "Run proc " << world.rank() << "\n";
+  // std::cout << "Run proc " << world.rank() << "\n";
   int local_num_points = num_points_ / num_processes;
 
   double local_sum = 0.0;
@@ -45,10 +46,11 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
 
   integral_value_ = (global_sum / num_points_) * (b_ - a_);
 
-  std::cout << "Rank " << rank << " finished processing." << std::endl;
+  // std::cout << "Rank " << rank << " finished processing." << std::endl;
 
   return true;
 }
+
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::post_processing() {
   if (world.rank() == 0) {
     reinterpret_cast<double*>(taskData->outputs[0])[0] = integral_value_;
