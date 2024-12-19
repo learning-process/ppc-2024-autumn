@@ -76,7 +76,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_1_5) {
   size_t value = 20;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -(int)value);
+  std::vector<int32_t> global_max(1, -20);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -99,7 +99,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_10_10) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -147,7 +147,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_100_100) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -195,7 +195,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_1000_1000) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -243,7 +243,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_10_100) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -291,7 +291,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_100_10) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -339,7 +339,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_500_10) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -387,7 +387,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_10_500) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -435,7 +435,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_50_2) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -483,7 +483,7 @@ TEST(sedova_o_max_of_vector_elements_mpi, Test_10_2) {
   size_t value = 30;
   boost::mpi::communicator world;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_max(1, -((int)(value)));
+  std::vector<int32_t> global_max(1, -30);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
