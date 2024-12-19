@@ -17,7 +17,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   int res_{};
-  std::vector<int> input_{};
+  std::vector<int> input_;
 };
 
 }  // namespace sedova_o_max_of_vector_elements_seq
