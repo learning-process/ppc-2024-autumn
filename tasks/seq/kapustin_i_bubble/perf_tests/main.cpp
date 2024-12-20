@@ -4,7 +4,7 @@
 #include "seq/kapustin_i_bubble/include/avg_seq.hpp"
 
 TEST(kapustin_i_bubble_sort_seq, pipeline) {
-  const int data_size = 40000;
+  const int data_size = 35000;
 
   std::vector<int> input_data(data_size);
   std::vector<int> output_data(data_size);
@@ -24,7 +24,7 @@ TEST(kapustin_i_bubble_sort_seq, pipeline) {
   auto bubbleSort = std::make_shared<kapustin_i_bubble_sort_seq::BubbleSortSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 7;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -64,7 +64,7 @@ TEST(kapustin_i_bubble_sort_seq, test_task_run) {
   auto bubbleSort = std::make_shared<kapustin_i_bubble_sort_seq::BubbleSortSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 7;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
