@@ -6,7 +6,7 @@
 #include "seq/gordeeva_t_shell_sort_batcher_merge/include/ops_seq.hpp"
 
 TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_pipeline_run) {
-  const int sz_vec = 500;
+  const int sz_vec = 3000000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -41,7 +41,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_pipeline_run) {
 }
 
 TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_task_run) {
-  const int sz_vec = 700;
+  const int sz_vec = 3000000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -57,7 +57,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_task_run) {
   taskDataSeq->outputs_count.emplace_back(res.size());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 30;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -66,7 +66,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, test_task_run) {
   };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);

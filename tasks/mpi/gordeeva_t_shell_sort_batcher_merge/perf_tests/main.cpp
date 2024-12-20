@@ -8,7 +8,7 @@
 
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int size = 500;
+  const int size = 3000000;
 
   std::vector<int> input_values;
   std::vector<int> output_values(size, 0);
@@ -56,7 +56,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_pipeline_run) {
 
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int size = 500;
+  const int size = 3000000;
 
   std::vector<int> input_values;
   std::vector<int> output_values(size, 0);
