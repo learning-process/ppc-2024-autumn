@@ -29,7 +29,7 @@ TEST(muhina_m_shell_sort_mpi, run_pipeline) {
   int count_size_vector;
 
   if (world.rank() == 0) {
-    count_size_vector = 10000;
+    count_size_vector = 1000000;
     const int min_val = 0;
     const int max_val = 100;
     global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count_size_vector, min_val, max_val);
@@ -74,7 +74,7 @@ TEST(muhina_m_shell_sort_mpi, run_task) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   int count_size_vector;
   if (world.rank() == 0) {
-    count_size_vector = 1000;
+    count_size_vector = 1000000;
     const int min_val = 0;
     const int max_val = 100;
     global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count_size_vector, min_val, max_val);

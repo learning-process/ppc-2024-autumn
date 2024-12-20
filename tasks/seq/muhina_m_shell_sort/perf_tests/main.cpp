@@ -21,7 +21,7 @@ std::vector<int> Get_Random_Vector(int sz, int min_value, int max_value) {
 }  // namespace muhina_m_shell_sort_mpi
 
 TEST(muhina_m_shell_sort, test_pipeline_run) {
-  const int count = 2000000;
+  const int count = 1000000;
   const int min_val = 0;
   const int max_val = 100;
   std::vector<int> in = muhina_m_shell_sort_mpi::Get_Random_Vector(count, min_val, max_val);

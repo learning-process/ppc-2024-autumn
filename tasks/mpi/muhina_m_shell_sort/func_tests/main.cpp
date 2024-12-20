@@ -240,3 +240,173 @@ TEST(muhina_m_shell_sort, Test_Sort_RepeatingValues) {
     ASSERT_EQ(reference_min, out);
   }
 }
+
+TEST(muhina_m_shell_sort, Test_Sort_10_Elements) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count = 10;
+    const int min_val = -100;
+    const int max_val = 100;
+    global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count, min_val, max_val);
+    out.resize(global_vec.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  muhina_m_shell_sort_mpi::ShellSortMPIParallel ShellSortMPIParalle(taskDataPar);
+  ASSERT_EQ(ShellSortMPIParalle.validation(), true);
+  ShellSortMPIParalle.pre_processing();
+  ShellSortMPIParalle.run();
+  ShellSortMPIParalle.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> reference_min(global_vec.size(), 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+
+    muhina_m_shell_sort_mpi::ShellSortMPISequential ShellSortMPISequential(taskDataSeq);
+    ASSERT_EQ(ShellSortMPISequential.validation(), true);
+    ShellSortMPISequential.pre_processing();
+    ShellSortMPISequential.run();
+    ShellSortMPISequential.post_processing();
+
+    ASSERT_EQ(reference_min, out);
+  }
+}
+
+TEST(muhina_m_shell_sort, Test_Sort_20_Elements) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count = 20;
+    const int min_val = -100;
+    const int max_val = 100;
+    global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count, min_val, max_val);
+    out.resize(global_vec.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  muhina_m_shell_sort_mpi::ShellSortMPIParallel ShellSortMPIParalle(taskDataPar);
+  ASSERT_EQ(ShellSortMPIParalle.validation(), true);
+  ShellSortMPIParalle.pre_processing();
+  ShellSortMPIParalle.run();
+  ShellSortMPIParalle.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> reference_min(global_vec.size(), 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+
+    muhina_m_shell_sort_mpi::ShellSortMPISequential ShellSortMPISequential(taskDataSeq);
+    ASSERT_EQ(ShellSortMPISequential.validation(), true);
+    ShellSortMPISequential.pre_processing();
+    ShellSortMPISequential.run();
+    ShellSortMPISequential.post_processing();
+
+    ASSERT_EQ(reference_min, out);
+  }
+}
+TEST(muhina_m_shell_sort, Test_Sort_50_Elements) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count = 50;
+    const int min_val = -100;
+    const int max_val = 100;
+    global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count, min_val, max_val);
+    out.resize(global_vec.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  muhina_m_shell_sort_mpi::ShellSortMPIParallel ShellSortMPIParalle(taskDataPar);
+  ASSERT_EQ(ShellSortMPIParalle.validation(), true);
+  ShellSortMPIParalle.pre_processing();
+  ShellSortMPIParalle.run();
+  ShellSortMPIParalle.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> reference_min(global_vec.size(), 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+
+    muhina_m_shell_sort_mpi::ShellSortMPISequential ShellSortMPISequential(taskDataSeq);
+    ASSERT_EQ(ShellSortMPISequential.validation(), true);
+    ShellSortMPISequential.pre_processing();
+    ShellSortMPISequential.run();
+    ShellSortMPISequential.post_processing();
+
+    ASSERT_EQ(reference_min, out);
+  }
+}
+TEST(muhina_m_shell_sort, Test_Sort_150_Elements) {
+  boost::mpi::communicator world;
+  std::vector<int> global_vec;
+  std::vector<int32_t> out;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count = 150;
+    const int min_val = -100;
+    const int max_val = 100;
+    global_vec = muhina_m_shell_sort_mpi::Get_Random_Vector(count, min_val, max_val);
+    out.resize(global_vec.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataPar->inputs_count.emplace_back(global_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  muhina_m_shell_sort_mpi::ShellSortMPIParallel ShellSortMPIParalle(taskDataPar);
+  ASSERT_EQ(ShellSortMPIParalle.validation(), true);
+  ShellSortMPIParalle.pre_processing();
+  ShellSortMPIParalle.run();
+  ShellSortMPIParalle.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int32_t> reference_min(global_vec.size(), 0);
+
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(global_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_min.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_min.size());
+
+    muhina_m_shell_sort_mpi::ShellSortMPISequential ShellSortMPISequential(taskDataSeq);
+    ASSERT_EQ(ShellSortMPISequential.validation(), true);
+    ShellSortMPISequential.pre_processing();
+    ShellSortMPISequential.run();
+    ShellSortMPISequential.post_processing();
+
+    ASSERT_EQ(reference_min, out);
+  }
+}
