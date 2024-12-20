@@ -23,10 +23,6 @@ bool isCounterClockwise(const std::pair<int8_t, int8_t>& p1, const std::pair<int
   return (p2.first - p1.first) * (p3.second - p1.second) > (p2.second - p1.second) * (p3.first - p1.first);
 }
 
-double angle(const std::pair<int8_t, int8_t>& p0, const std::pair<int8_t, int8_t>& p) {
-  return atan2(p.second - p0.second, p.first - p0.first);
-}
-
 void sortPoints(std::vector<int8_t>& points) {
   int n = points.size() / 2;
   std::pair<int8_t, int8_t> p0(points[0], points[n]);

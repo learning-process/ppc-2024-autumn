@@ -1,7 +1,6 @@
 #pragma once
 #include <algorithm>
 #include <random>
-#include <vector>
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_graham_scan_seq {

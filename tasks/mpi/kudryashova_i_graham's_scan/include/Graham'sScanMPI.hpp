@@ -3,7 +3,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <random>
-#include <vector>
 
 #include "core/task/include/task.hpp"
 namespace kudryashova_i_graham_scan_mpi {

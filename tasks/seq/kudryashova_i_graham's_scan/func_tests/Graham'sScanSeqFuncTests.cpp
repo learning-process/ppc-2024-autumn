@@ -202,3 +202,20 @@ TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_check_empty_vertex) {
   kudryashova_i_graham_scan_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
+
+TEST(kudryashova_i_graham_scan_seq, seq_graham_scan_test_1_vertex) {
+  std::vector<int8_t> global_vector;
+  std::vector<int8_t> vector_x = {1};
+  std::vector<int8_t> vector_y = {1};
+  std::vector<int8_t> result(3, 0);
+  global_vector.reserve(vector_x.size() + vector_y.size());
+  global_vector.insert(global_vector.end(), vector_x.begin(), vector_x.end());
+  global_vector.insert(global_vector.end(), vector_y.begin(), vector_y.end());
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_vector.data()));
+  taskDataSeq->inputs_count.emplace_back(global_vector.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+  taskDataSeq->outputs_count.emplace_back(result.size());
+  kudryashova_i_graham_scan_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}
