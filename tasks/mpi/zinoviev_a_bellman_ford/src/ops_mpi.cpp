@@ -116,6 +116,8 @@ bool BellmanFordMPIMPI::run() {
   bool changed = false;
   for (size_t i = 0; i < V - 1; ++i) {
     changed = Iteration(shortest_paths);
+    boost::mpi::broadcast(world, shortest_paths, 0);
+
     if (!changed) break;
   }
 
@@ -124,6 +126,8 @@ bool BellmanFordMPIMPI::run() {
       if (shortest_paths[i] == INF) shortest_paths[i] = 0;
     }
   }
+
+  boost::mpi::broadcast(world, shortest_paths, 0);
 
   if (world.rank() == 0) {
     return !check_negative_cycle();
