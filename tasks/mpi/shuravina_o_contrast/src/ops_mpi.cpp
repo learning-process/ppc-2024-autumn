@@ -1,8 +1,8 @@
+#include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
+
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <limits>
-
-#include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
 
 namespace shuravina_o_contrast {
 

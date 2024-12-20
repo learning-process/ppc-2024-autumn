@@ -1,6 +1,6 @@
-#include <algorithm>
-
 #include "seq/shuravina_o_contrast/include/ops_seq.hpp"
+
+#include <algorithm>
 
 namespace shuravina_o_contrast {
 
