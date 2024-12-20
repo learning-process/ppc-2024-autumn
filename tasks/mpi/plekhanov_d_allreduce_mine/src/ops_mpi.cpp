@@ -11,7 +11,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::pre_processing() {
   columnCount = taskData->inputs_count[1];
   rowCount = taskData->inputs_count[2];
 
-  auto* tempPtr = reinterpret_cast<int*>(taskData->inputs[0]);
+  auto *tempPtr = reinterpret_cast<int *>(taskData->inputs[0]);
   inputData_.assign(tempPtr, tempPtr + taskData->inputs_count[0]);
 
   resultData_.resize(columnCount, 0);
@@ -53,7 +53,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::run() {
 bool plekhanov_d_allreduce_mine_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   for (int i = 0; i < columnCount; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = countAboveMin_[i];
+    reinterpret_cast<int *>(taskData->outputs[0])[i] = countAboveMin_[i];
   }
   return true;
 }
@@ -68,7 +68,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskBoostParallel::pre_processing() 
 
   if (world.rank() == 0) {
     // init vectors
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    auto *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
     inputData_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
   } else {
     inputData_ = std::vector<int>(columnCount * rowCount, 0);
@@ -137,7 +137,7 @@ bool plekhanov_d_allreduce_mine_mpi::TestMPITaskBoostParallel::post_processing()
   internal_order_test();
   if (world.rank() == 0) {
     for (int i = 0; i < columnCount; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = count_greater[i];
+      reinterpret_cast<int *>(taskData->outputs[0])[i] = count_greater[i];
     }
   }
   return true;

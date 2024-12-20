@@ -53,6 +53,4 @@ class TestMPITaskBoostParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-
 }  // namespace plekhanov_d_allreduce_mine_mpi
-
