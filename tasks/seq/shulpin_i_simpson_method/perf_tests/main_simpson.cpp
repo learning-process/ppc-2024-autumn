@@ -9,7 +9,7 @@
 
 constexpr double ESTIMATE = 1e-2;
 
-TEST(shulpin_simpson_method, pipeline_run) {
+TEST(shulpin_simpson_method_seq, pipeline_run) {
   double a = 0.0;
   double b = 1.0;
   double c = 0.0;
@@ -60,7 +60,7 @@ TEST(shulpin_simpson_method, pipeline_run) {
   ASSERT_NEAR(global_integral, ref_integral, ESTIMATE);
 }
 
-TEST(shulpin_simpson_method, task_run) {
+TEST(shulpin_simpson_method_seq, task_run) {
   double a = 0.0;
   double b = 1.0;
   double c = 0.0;

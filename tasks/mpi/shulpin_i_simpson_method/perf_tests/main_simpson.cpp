@@ -11,7 +11,7 @@
 
 constexpr double ESTIMATE = 1e-2;
 
-TEST(shulpin_simpson_method, pipeline_run) {
+TEST(shulpin_simpson_method_MPI, pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
@@ -88,7 +88,7 @@ TEST(shulpin_simpson_method, pipeline_run) {
   }
 }
 
-TEST(shulpin_simpson_method, task_run) {
+TEST(shulpin_simpson_method_MPI, task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
