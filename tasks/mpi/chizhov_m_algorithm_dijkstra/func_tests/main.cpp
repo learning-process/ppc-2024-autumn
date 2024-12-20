@@ -275,7 +275,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Negative_Value) {
   boost::mpi::communicator world;
   int size = 3;
   int st = 0;
-  
+
   std::vector<std::vector<int>> matrix = {{0, 2, 5}, {4, 0, 2}, {3, -1, 0}};
   std::vector<int> res(size, 0);
   // Create TaskData
