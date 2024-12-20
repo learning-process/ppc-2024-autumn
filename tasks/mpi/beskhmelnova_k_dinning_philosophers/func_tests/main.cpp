@@ -243,3 +243,28 @@ TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_release_forks_function) {
     GTEST_SKIP();
   }
 }
+
+TEST(beskhmelnova_k_dinning_philosophers_mpi, Test_resolve_deadlock_function) {
+  boost::mpi::communicator world;
+
+  int num_philosophers = world.size();
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.push_back(num_philosophers);
+
+  beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<int> dining_task(taskData);
+
+  if (dining_task.validation()) {
+    ASSERT_TRUE(dining_task.validation());
+    ASSERT_TRUE(dining_task.pre_processing());
+    ASSERT_TRUE(dining_task.run());
+    ASSERT_TRUE(dining_task.post_processing());
+    bool deadlock_detected = dining_task.check_deadlock();
+    if (world.rank() == 0) {
+      if (deadlock_detected) dining_task.resolve_deadlock();
+      ASSERT_FALSE(deadlock_detected);
+    }
+  } else {
+    GTEST_SKIP();
+  }
+}

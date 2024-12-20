@@ -26,6 +26,7 @@ class DiningPhilosophersMPI : public ppc::core::Task {
   bool post_processing() override;
 
   bool check_deadlock() noexcept;
+  void resolve_deadlock();
 
   void think();
   void eat();
@@ -35,7 +36,6 @@ class DiningPhilosophersMPI : public ppc::core::Task {
   State state;
 
  private:
-  void resolve_deadlock();
   bool check_for_termination();
   boost::mpi::communicator world;
   int left_neighbor, right_neighbor;
