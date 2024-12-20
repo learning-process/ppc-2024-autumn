@@ -26,10 +26,10 @@ bool SobelEdgeDetectionSeq::validation() {
     return false;
   }
 
-  size_t input_size = taskData->width * taskData->height;
-  size_t output_size = taskData->width * taskData->height;
+  size_t input_size = taskData->inputs_count[0];
+  size_t output_size = taskData->outputs_count[0];
 
-  if (taskData->inputs_count[0] != input_size || taskData->outputs_count[0] != output_size) {
+  if (input_size != output_size) {
     std::cerr << "Error: Mismatch in input/output buffer sizes." << std::endl;
     return false;
   }
@@ -37,20 +37,15 @@ bool SobelEdgeDetectionSeq::validation() {
   return true;
 }
 
-bool SobelEdgeDetectionSeq::pre_processing(TaskData* task_data) {
-  if (task_data == nullptr) {
+bool SobelEdgeDetectionSeq::pre_processing() {
+  if (taskData == nullptr) {
     std::cerr << "Error: task_data is nullptr before processing!" << std::endl;
     return false;
   }
 
-  if (!validation()) {
-    return false;
-  }
+  gradient_x.resize(taskData->inputs_count[0]);
+  gradient_y.resize(taskData->inputs_count[0]);
 
-  gradient_x.resize(task_data->width * task_data->height);
-  gradient_y.resize(task_data->width * task_data->height);
-
-  taskData = task_data;
   return true;
 }
 
@@ -59,14 +54,19 @@ bool SobelEdgeDetectionSeq::run() {
     std::cerr << "Error: task_data is nullptr in run." << std::endl;
     return false;
   }
-  std::cout << "Running Sobel edge detection..." << std::endl;
-  std::cout << "Task data is valid: "
-            << "Width: " << taskData->width << ", Height: " << taskData->height
-            << ", Inputs: " << taskData->inputs.size() << ", Outputs: " << taskData->outputs.size() << std::endl;
-  size_t width = taskData->width;
-  size_t height = taskData->height;
+
   uint8_t* input_image = taskData->inputs[0];
   uint8_t* output_image = taskData->outputs[0];
+
+  // Check if the buffers are valid
+  if (input_image == nullptr || output_image == nullptr) {
+    std::cerr << "Error: Input or output image buffer is null." << std::endl;
+    return false;
+  }
+
+  std::cout << "Running Sobel edge detection..." << std::endl;
+  size_t width = taskData->inputs_count[0];
+  size_t height = taskData->inputs_count[0];
 
   int sobel_x[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   int sobel_y[3][3] = {{1, 2, 1}, {0, 0, 0}, {-1, -2, -1}};
@@ -99,7 +99,14 @@ bool SobelEdgeDetectionSeq::post_processing() {
     return false;
   }
 
-  for (size_t i = 0; i < taskData->outputs_count[0]; ++i) {
+  size_t output_size = taskData->outputs_count[0];
+
+  if (output_size == 0) {
+    std::cerr << "Error: Output buffer is empty." << std::endl;
+    return false;
+  }
+
+  for (size_t i = 0; i < output_size; ++i) {
     if (taskData->outputs[0][i] == 0) {
       std::cerr << "Error: Invalid output value at index " << i << "." << std::endl;
       return false;

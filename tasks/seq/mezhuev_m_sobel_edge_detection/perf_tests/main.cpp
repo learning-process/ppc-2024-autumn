@@ -4,67 +4,78 @@
 #include <cmath>
 #include <cstdlib>
 #include <vector>
+#include "core/perf/include/perf.hpp"
 
 #include "seq/mezhuev_m_sobel_edge_detection/include/seq.hpp"
 
-TEST(mezhuev_m_sobel_edge_detection, PreProcessingMismatchedInputsAndOutputs) {
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq sobel_edge_detection_seq;
+TEST(SobelEdgeDetectionSeqTest, RunPerformanceMultipleExecutions) {
+  auto task_data = std::make_shared<ppc::core::TaskData>();
+  size_t image_size = 1000;
+  task_data->inputs_count.push_back(image_size);
+  task_data->outputs_count.push_back(image_size);
 
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq::TaskData task_data;
-  task_data.width = 5;
-  task_data.height = 5;
-  task_data.inputs_count.push_back(25);
-  task_data.outputs_count.push_back(24);
+  uint8_t* input_image = new uint8_t[image_size * image_size]{0};
+  uint8_t* output_image = new uint8_t[image_size * image_size]{0};
 
-  task_data.inputs.push_back(new uint8_t[25]{0});
-  task_data.outputs.push_back(new uint8_t[25]{0});
+  task_data->inputs.push_back(input_image);
+  task_data->outputs.push_back(output_image);
 
-  sobel_edge_detection_seq.setTaskData(&task_data);
+  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq sobel_edge_detection_seq(task_data);
 
-  EXPECT_FALSE(sobel_edge_detection_seq.pre_processing(&task_data));
+  const int num_iterations = 5;
+  double total_duration = 0;
 
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
+  for (int i = 0; i < num_iterations; ++i) {
+    auto start_time = std::chrono::high_resolution_clock::now();
+    EXPECT_TRUE(sobel_edge_detection_seq.run());
+    auto end_time = std::chrono::high_resolution_clock::now();
+    total_duration += std::chrono::duration<double>(end_time - start_time).count();
+  }
+
+  double avg_duration = total_duration / num_iterations;
+  std::cout << "Average execution time for " << num_iterations << " iterations: " << avg_duration << " seconds."
+            << std::endl;
+
+  EXPECT_LT(avg_duration, 5.0);
+
+  delete[] input_image;
+  delete[] output_image;
 }
 
-TEST(mezhuev_m_sobel_edge_detection, PreProcessingValidInputs) {
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq sobel_edge_detection_seq;
+TEST(SobelEdgeDetectionSeqTest, RunPerformanceDifferentSizes) {
+  const std::vector<size_t> image_sizes = {100, 500, 1000};
+  const int num_iterations = 3;
+  double total_duration = 0;
 
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq::TaskData task_data;
-  task_data.width = 5;
-  task_data.height = 5;
-  task_data.inputs_count.push_back(25);
-  task_data.outputs_count.push_back(25);
+  for (size_t size : image_sizes) {
+    std::cout << "Running Sobel edge detection for image size " << size << "x" << size << "..." << std::endl;
 
-  task_data.inputs.push_back(new uint8_t[25]{0});
-  task_data.outputs.push_back(new uint8_t[25]{0});
+    auto task_data = std::make_shared<ppc::core::TaskData>();
+    task_data->inputs_count.push_back(size);
+    task_data->outputs_count.push_back(size);
 
-  sobel_edge_detection_seq.setTaskData(&task_data);
+    uint8_t* input_image = new uint8_t[size * size]{0};
+    uint8_t* output_image = new uint8_t[size * size]{0};
 
-  EXPECT_TRUE(sobel_edge_detection_seq.pre_processing(&task_data));
+    task_data->inputs.push_back(input_image);
+    task_data->outputs.push_back(output_image);
 
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
-}
+    mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq sobel_edge_detection_seq(task_data);
 
-TEST(mezhuev_m_sobel_edge_detection, RunPerformance) {
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq sobel_edge_detection_seq;
+    for (int i = 0; i < num_iterations; ++i) {
+      auto start_time = std::chrono::high_resolution_clock::now();
+      EXPECT_TRUE(sobel_edge_detection_seq.run());
+      auto end_time = std::chrono::high_resolution_clock::now();
+      total_duration += std::chrono::duration<double>(end_time - start_time).count();
+    }
 
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq::TaskData task_data;
-  task_data.width = 5;
-  task_data.height = 5;
-  task_data.inputs_count.push_back(25);
-  task_data.outputs_count.push_back(25);
+    double avg_duration = total_duration / (num_iterations * image_sizes.size());
+    std::cout << "Average execution time for image size " << size << "x" << size << ": " << avg_duration << " seconds."
+              << std::endl;
 
-  task_data.inputs.push_back(new uint8_t[25]{0});
-  task_data.outputs.push_back(new uint8_t[25]{0});
+    EXPECT_LT(avg_duration, 5.0);
 
-  sobel_edge_detection_seq.setTaskData(&task_data);
-
-  EXPECT_TRUE(sobel_edge_detection_seq.pre_processing(&task_data));
-
-  EXPECT_TRUE(sobel_edge_detection_seq.run());
-
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
+    delete[] input_image;
+    delete[] output_image;
+  }
 }

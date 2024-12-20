@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
@@ -14,29 +15,21 @@
 
 namespace mezhuev_m_sobel_edge_detection {
 
-struct TaskData {
-  size_t width;
-  size_t height;
-  std::vector<uint8_t*> inputs;
-  std::vector<uint8_t*> outputs;
-  std::vector<size_t> inputs_count;
-  std::vector<size_t> outputs_count;
-};
-
-class SobelEdgeDetectionMPI {
+class SobelEdgeDetection : public ppc::core::Task {
  public:
-  SobelEdgeDetectionMPI(boost::mpi::communicator& world) : world(world) {}
+  SobelEdgeDetection(boost::mpi::communicator world_, std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)), world(world_) {}
 
-  bool validation();
-  bool pre_processing(TaskData* task_data);
-  bool run();
-  bool post_processing();
+  bool validation() override;
+  bool pre_processing() override;
+  bool run() override;
+  bool post_processing() override;
 
-  bool setTaskData(TaskData* task_data);
+  const std::vector<int>& get_gradient_x() const { return gradient_x; }
+  const std::vector<int>& get_gradient_y() const { return gradient_y; }
 
  private:
-  boost::mpi::communicator& world;
-  TaskData* taskData = nullptr;
+  boost::mpi::communicator world;
   std::vector<int> gradient_x;
   std::vector<int> gradient_y;
 };

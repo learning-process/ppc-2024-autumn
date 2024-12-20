@@ -7,138 +7,121 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/mezhuev_m_sobel_edge_detection/include/ops_mpi.hpp"
 
-TEST(mezhuev_m_sobel_edge_detection, TestPerformanceSmallImage) {
-  boost::mpi::environment env;
+TEST(mezhuev_m_sobel_edge_detection, perf_test_pipeline_run) {
   boost::mpi::communicator world;
 
-  int width = 64;
-  int height = 64;
+  int grid_size = std::sqrt(world.size());
+  if (grid_size * grid_size != world.size() || world.size() < 4) {
+    return;
+  }
 
-  mezhuev_m_sobel_edge_detection::TaskData task_data;
-  task_data.width = width;
-  task_data.height = height;
-  task_data.inputs_count.push_back(width * height);
-  task_data.outputs_count.push_back(width * height);
+  const int count = 2000000;
+  std::vector<uint8_t> input_data(count, 1);
+  std::vector<uint8_t> output_data(count);
 
-  task_data.inputs.push_back(new uint8_t[width * height]());
-  task_data.outputs.push_back(new uint8_t[width * height]());
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(input_data.data());
+  taskDataPar->inputs_count.emplace_back(input_data.size());
+  taskDataPar->outputs.emplace_back(output_data.data());
+  taskDataPar->outputs_count.emplace_back(output_data.size());
 
-  ASSERT_NE(task_data.inputs[0], nullptr) << "Input data was not properly initialized!";
-  ASSERT_NE(task_data.outputs[0], nullptr) << "Output data was not properly initialized!";
+  auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskDataPar);
 
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionMPI sobel(world);
+  ASSERT_TRUE(sobelEdgeTask->validation());
 
-  ASSERT_TRUE(sobel.setTaskData(&task_data)) << "setTaskData failed!";
-  ASSERT_TRUE(sobel.run()) << "Run failed!";
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto start = std::chrono::high_resolution_clock::now();
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(sobelEdgeTask);
 
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
+  for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
+    sobelEdgeTask->pre_processing();
+    sobelEdgeTask->run();
+    perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  }
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(true, true);
+  }
 
-  auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
+  sobelEdgeTask->post_processing();
 }
 
-TEST(mezhuev_m_sobel_edge_detection, TestPerformanceMediumImage) {
-  boost::mpi::environment env;
+TEST(mezhuev_m_sobel_edge_detection, perf_test_pre_processing) {
   boost::mpi::communicator world;
 
-  int width = 256;
-  int height = 256;
+  int grid_size = std::sqrt(world.size());
+  if (grid_size * grid_size != world.size() || world.size() < 4) {
+    return;
+  }
 
-  mezhuev_m_sobel_edge_detection::TaskData task_data;
-  task_data.width = width;
-  task_data.height = height;
-  task_data.inputs_count.push_back(width * height);
-  task_data.outputs_count.push_back(width * height);
+  const int count = 2000000;
+  std::vector<uint8_t> input_data(count, 1);
+  std::vector<uint8_t> output_data(count);
 
-  task_data.inputs.push_back(new uint8_t[width * height]());
-  task_data.outputs.push_back(new uint8_t[width * height]());
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(input_data.data());
+  taskDataPar->inputs_count.emplace_back(input_data.size());
+  taskDataPar->outputs.emplace_back(output_data.data());
+  taskDataPar->outputs_count.emplace_back(output_data.size());
 
-  ASSERT_NE(task_data.inputs[0], nullptr) << "Input data was not properly initialized!";
-  ASSERT_NE(task_data.outputs[0], nullptr) << "Output data was not properly initialized!";
+  auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskDataPar);
 
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionMPI sobel(world);
+  ASSERT_TRUE(sobelEdgeTask->validation());
 
-  ASSERT_TRUE(sobel.setTaskData(&task_data)) << "setTaskData failed!";
-  ASSERT_TRUE(sobel.run()) << "Run failed!";
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto start = std::chrono::high_resolution_clock::now();
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(sobelEdgeTask);
 
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
+  sobelEdgeTask->pre_processing();
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(true, true);
+  }
 }
 
-TEST(mezhuev_m_sobel_edge_detection, TestPerformanceLargeImage) {
-  boost::mpi::environment env;
+TEST(mezhuev_m_sobel_edge_detection, perf_test_run) {
   boost::mpi::communicator world;
 
-  int width = 512;
-  int height = 512;
+  int grid_size = std::sqrt(world.size());
+  if (grid_size * grid_size != world.size() || world.size() < 4) {
+    return;
+  }
 
-  mezhuev_m_sobel_edge_detection::TaskData task_data;
-  task_data.width = width;
-  task_data.height = height;
-  task_data.inputs_count.push_back(width * height);
-  task_data.outputs_count.push_back(width * height);
+  const int count = 2000000;
+  std::vector<uint8_t> input_data(count, 1);
+  std::vector<uint8_t> output_data(count);
 
-  task_data.inputs.push_back(new uint8_t[width * height]());
-  task_data.outputs.push_back(new uint8_t[width * height]());
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(input_data.data());
+  taskDataPar->inputs_count.emplace_back(input_data.size());
+  taskDataPar->outputs.emplace_back(output_data.data());
+  taskDataPar->outputs_count.emplace_back(output_data.size());
 
-  ASSERT_NE(task_data.inputs[0], nullptr) << "Input data was not properly initialized!";
-  ASSERT_NE(task_data.outputs[0], nullptr) << "Output data was not properly initialized!";
+  auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskDataPar);
 
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionMPI sobel(world);
+  ASSERT_TRUE(sobelEdgeTask->validation());
 
-  ASSERT_TRUE(sobel.setTaskData(&task_data)) << "setTaskData failed!";
-  ASSERT_TRUE(sobel.run()) << "Run failed!";
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  auto start = std::chrono::high_resolution_clock::now();
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(sobelEdgeTask);
 
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
+  sobelEdgeTask->run();
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
-  auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
-}
-
-TEST(mezhuev_m_sobel_edge_detection, TestPerformanceExtraLargeImage) {
-  boost::mpi::environment env;
-  boost::mpi::communicator world;
-
-  int width = 1024;
-  int height = 1024;
-
-  mezhuev_m_sobel_edge_detection::TaskData task_data;
-  task_data.width = width;
-  task_data.height = height;
-  task_data.inputs_count.push_back(width * height);
-  task_data.outputs_count.push_back(width * height);
-
-  task_data.inputs.push_back(new uint8_t[width * height]());
-  task_data.outputs.push_back(new uint8_t[width * height]());
-
-  ASSERT_NE(task_data.inputs[0], nullptr) << "Input data was not properly initialized!";
-  ASSERT_NE(task_data.outputs[0], nullptr) << "Output data was not properly initialized!";
-
-  mezhuev_m_sobel_edge_detection::SobelEdgeDetectionMPI sobel(world);
-
-  ASSERT_TRUE(sobel.setTaskData(&task_data)) << "setTaskData failed!";
-  ASSERT_TRUE(sobel.run()) << "Run failed!";
-
-  auto start = std::chrono::high_resolution_clock::now();
-
-  delete[] task_data.inputs[0];
-  delete[] task_data.outputs[0];
-
-  auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "Elapsed time: " << elapsed.count() << " seconds" << std::endl;
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    ASSERT_EQ(true, true);
+  }
 }
