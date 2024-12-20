@@ -155,7 +155,7 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
   int32_t offset = -1;
   uint32_t proc_size;
   std::vector<T> temp;
-  for (int32_t i = 0; i < world.size(); i++) {
+  for (int32_t i = 0; i <= world.size(); i++) {
     if (world.rank() % 2 == i % 2) {
       if (world.rank() - offset >= world.size() || world.rank() - offset < 0) {
         continue;
