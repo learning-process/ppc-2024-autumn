@@ -50,7 +50,7 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
       if (2 * i + 2 < size) subtree_sizes[i] += subtree_sizes[2 * i + 2];
     }
   }
-  boost::mpi::broadcast(world, subtree_sizes, root);
+  MPI_Bcast(subtree_sizes.data(), subtree_sizes.size(), MPI_INT, root, comm);
 
   // Check for consistency of sendcount and recvcount
   if (rank == root && sendcount != subtree_sizes[root] * recvcount) {
