@@ -1,12 +1,13 @@
 #pragma once
 
+#include <algorithm>
 #include <random>
 
 #include "core/task/include/task.hpp"
 
 namespace lopatin_i_quick_batcher_mergesort_seq {
 
-void heapSort(std::vector<int>& arr);
+void heapsort(std::vector<int>& arr);
 void quicksort(std::vector<int>& arr, int low, int high);
 int partition(std::vector<int>& arr, int low, int high);
 

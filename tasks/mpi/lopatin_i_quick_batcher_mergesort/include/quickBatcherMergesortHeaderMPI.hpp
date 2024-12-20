@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/status.hpp>
@@ -9,7 +10,7 @@
 
 namespace lopatin_i_quick_batcher_mergesort_mpi {
 
-void heapSort(std::vector<int>& arr);
+void heapsort(std::vector<int>& arr);
 void quicksort(std::vector<int>& arr, int low, int high);
 int partition(std::vector<int>& arr, int low, int high);
 
