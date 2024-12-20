@@ -2,7 +2,6 @@
 
 #include <boost/mpi/timer.hpp>
 #include <random>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_mpi.hpp"

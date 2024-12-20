@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <numeric>
 #include <random>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_seq.hpp"

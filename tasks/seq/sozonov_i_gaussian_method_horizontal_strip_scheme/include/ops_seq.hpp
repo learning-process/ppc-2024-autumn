@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
 #include "core/task/include/task.hpp"
 
 namespace sozonov_i_gaussian_method_horizontal_strip_scheme_seq {

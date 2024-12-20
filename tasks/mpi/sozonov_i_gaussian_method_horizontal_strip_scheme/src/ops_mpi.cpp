@@ -1,11 +1,5 @@
 #include "mpi/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <string>
-#include <thread>
-#include <vector>
-
 using namespace std::chrono_literals;
 
 int sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::extended_matrix_rank(int n, int m, std::vector<double> a) {
@@ -89,7 +83,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskSequentia
   rows = taskData->inputs_count[2];
 
   // Check matrix for a single solution
-  return taskData->inputs_count[0] > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
+  return taskData->inputs_count[0] > 1 && cols > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
          extended_matrix_rank(cols, rows, matrix) == rows;
 }
 
@@ -146,7 +140,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_mpi::TestMPITaskParallel:
     rows = taskData->inputs_count[2];
 
     // Check matrix for a single solution
-    return taskData->inputs_count[0] > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
+    return taskData->inputs_count[0] > 1 && cols > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
            extended_matrix_rank(cols, rows, matrix) == rows;
   }
   return true;
