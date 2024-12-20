@@ -261,3 +261,221 @@ TEST(GaussSeidel_Sequential, ValidationFailureTestZerosDiagonally) {
   GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
   ASSERT_FALSE(gaussSeidelSeq.validation());
 }
+
+// Тест 7: Валидация с корректными данными
+TEST(GaussSeidel_Sequential, ParallelValidationWithCorrectData) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  int N = 3;
+  double eps = 1e-6;
+
+  std::vector<double> A = {4, 1, 1, 2, 5, 1, 1, 1, 3};
+  std::vector<double> b = {6, 14, 8};
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+  taskDataSeq->inputs_count.emplace_back(N * N);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+  taskDataSeq->inputs_count.emplace_back(N);
+
+  std::vector<double> xSeq(N, 0.0);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(N);
+
+  GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
+  ASSERT_TRUE(gaussSeidelSeq.validation());
+}
+
+// Тест 8: Валидация параллельной версии с некорректными данными (недостаточный ранг)
+TEST(GaussSeidel_Sequential, ParallelValidationFailureInsufficientRank) {
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  int N = 3;
+  double eps = 1e-6;
+
+  // Матрица с недостаточным рангом
+  std::vector<double> A = {2, 4, 2, 4, 8, 4, 1, 2, 1};
+  std::vector<double> b = {4, 8, 2};
+
+  // Настройка данных для последовательной версии
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+  // Намеренно указываем неправильный размер
+  taskDataSeq->inputs_count.emplace_back(3 * 3);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+  taskDataSeq->inputs_count.emplace_back(3);
+
+  std::vector<double> xSeq(N, 0.0);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(N);
+
+  GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
+  ASSERT_FALSE(gaussSeidelSeq.validation());
+}
+
+// Тест 9: Случайная диагонально доминантная матрица M
+TEST(GaussSeidel, RandomDiagonallyDominantMatrixM) {
+  // Параметры теста
+  int N = 20;         // Размер матрицы
+  double eps = 1e-6;  // Точность вычислений
+
+  // Создаем генератор случайных чисел
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-10.0, 10.0);
+
+  // Создаем случайную диагонально доминантную матрицу
+  std::vector<double> A(N * N);
+  std::vector<double> b(N);
+
+  for (int i = 0; i < N; ++i) {
+    // Сумма абсолютных значений недиагональных элементов
+    double offDiagonalSum = 0.0;
+
+    for (int j = 0; j < N; ++j) {
+      if (i == j) continue;
+      A[i * N + j] = dis(gen);
+      offDiagonalSum += std::abs(A[i * N + j]);
+    }
+
+    // Диагональный элемент должен быть больше суммы остальных
+    A[i * N + i] = offDiagonalSum + std::abs(dis(gen));
+
+    // Случайный вектор b
+    b[i] = dis(gen);
+  }
+
+  // Создаем TaskData для последовательной версии
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  std::vector<double> xSeq(N, 0.0);
+
+  // Входные данные для последовательной задачи
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+  taskDataSeq->inputs_count.emplace_back(N * N);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+  taskDataSeq->inputs_count.emplace_back(N);
+
+  // Выходные данные для последовательной задачи
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(N);
+
+  // Создаем и запускаем последовательную задачу
+  GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
+  ASSERT_TRUE(gaussSeidelSeq.validation());
+  gaussSeidelSeq.pre_processing();
+  gaussSeidelSeq.run();
+  gaussSeidelSeq.post_processing();
+
+  // Дополнительная проверка: генерация случайной матрицы прошла успешно
+  ASSERT_NO_THROW({
+    // Проверка диагональной доминантности
+    for (int i = 0; i < N; ++i) {
+      double diagonalElement = std::abs(A[i * N + i]);
+      double offDiagonalSum = 0.0;
+      for (int j = 0; j < N; ++j) {
+        if (i != j) {
+          offDiagonalSum += std::abs(A[i * N + j]);
+        }
+      }
+      EXPECT_GT(diagonalElement, offDiagonalSum);
+    }
+  });
+}
+
+// Тест 10: Случайная диагонально доминантная матрица L
+TEST(GaussSeidel, RandomDiagonallyDominantMatrix) {
+  // Параметры теста
+  int N = 50;          // Размер матрицы
+  double eps = 1e-6;  // Точность вычислений
+
+  // Создаем генератор случайных чисел
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(-10.0, 10.0);
+
+  // Создаем случайную диагонально доминантную матрицу
+  std::vector<double> A(N * N);
+  std::vector<double> b(N);
+
+  for (int i = 0; i < N; ++i) {
+    // Сумма абсолютных значений недиагональных элементов
+    double offDiagonalSum = 0.0;
+
+    for (int j = 0; j < N; ++j) {
+      if (i == j) continue;
+      A[i * N + j] = dis(gen);
+      offDiagonalSum += std::abs(A[i * N + j]);
+    }
+
+    // Диагональный элемент должен быть больше суммы остальных
+    A[i * N + i] = offDiagonalSum + std::abs(dis(gen));
+
+    // Случайный вектор b
+    b[i] = dis(gen);
+  }
+
+  // Создаем TaskData для последовательной версии
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  std::vector<double> xSeq(N, 0.0);
+
+  // Входные данные для последовательной задачи
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+  taskDataSeq->inputs_count.emplace_back(1);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+  taskDataSeq->inputs_count.emplace_back(N * N);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+  taskDataSeq->inputs_count.emplace_back(N);
+
+  // Выходные данные для последовательной задачи
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(N);
+
+  // Создаем и запускаем последовательную задачу
+  GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
+  ASSERT_TRUE(gaussSeidelSeq.validation());
+  gaussSeidelSeq.pre_processing();
+  gaussSeidelSeq.run();
+  gaussSeidelSeq.post_processing();
+
+  // Дополнительная проверка: генерация случайной матрицы прошла успешно
+  ASSERT_NO_THROW({
+    // Проверка диагональной доминантности
+    for (int i = 0; i < N; ++i) {
+      double diagonalElement = std::abs(A[i * N + i]);
+      double offDiagonalSum = 0.0;
+      for (int j = 0; j < N; ++j) {
+        if (i != j) {
+          offDiagonalSum += std::abs(A[i * N + j]);
+        }
+      }
+      EXPECT_GT(diagonalElement, offDiagonalSum);
+    }
+  });
+}
