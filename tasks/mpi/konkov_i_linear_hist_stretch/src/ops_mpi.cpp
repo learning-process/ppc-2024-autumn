@@ -1,10 +1,10 @@
 #include "mpi/konkov_i_linear_hist_stretch/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <climits>
 #include <iostream>
 #include <limits>
 #include <numeric>
-#include <climits>
 
 namespace konkov_i_linear_hist_stretch {
 
