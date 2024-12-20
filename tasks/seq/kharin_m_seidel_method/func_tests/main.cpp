@@ -406,7 +406,7 @@ TEST(GaussSeidel, RandomDiagonallyDominantMatrixM) {
 // Тест 10: Случайная диагонально доминантная матрица L
 TEST(GaussSeidel, RandomDiagonallyDominantMatrix) {
   // Параметры теста
-  int N = 50;          // Размер матрицы
+  int N = 50;         // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
 
   // Создаем генератор случайных чисел
