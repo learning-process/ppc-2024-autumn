@@ -13,8 +13,6 @@ TEST(mezhuev_m_sobel_edge_detection, RunPerformanceMultipleExecutions) {
   size_t image_size = 1000;
   task_data->inputs_count.push_back(image_size);
   task_data->outputs_count.push_back(image_size);
-
-  // Использование std::make_unique для выделения памяти
   auto input_image = std::make_unique<uint8_t[]>(image_size * image_size);
   auto output_image = std::make_unique<uint8_t[]>(image_size * image_size);
 
@@ -34,7 +32,6 @@ TEST(mezhuev_m_sobel_edge_detection, RunPerformanceMultipleExecutions) {
   }
 
   double avg_duration = total_duration / num_iterations;
-            << std::endl;
 
   EXPECT_LT(avg_duration, 5.0);
 }
@@ -66,7 +63,6 @@ TEST(mezhuev_m_sobel_edge_detection, RunPerformanceDifferentSizes) {
     }
 
     double avg_duration = total_duration / (num_iterations * image_sizes.size());
-              << std::endl;
 
     EXPECT_LT(avg_duration, 5.0);
   }

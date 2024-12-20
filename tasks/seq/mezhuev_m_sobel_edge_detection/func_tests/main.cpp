@@ -162,7 +162,7 @@ TEST(mezhuev_m_sobel_edge_detection, PostProcessingTest_ValidOutputBuffer_WithZe
 
   size_t output_size = 5;
   task_data->outputs_count.push_back(output_size);
-  auto output_data = new uint8_t[output_size]{0, 255, 255, 0, 0};
+  auto* output_data = new uint8_t[output_size]{0, 255, 255, 0, 0};
 
   task_data->outputs.push_back(output_data);
 
@@ -178,7 +178,7 @@ TEST(mezhuev_m_sobel_edge_detection, PostProcessingTest_ValidOutputBuffer_WithNo
 
   size_t output_size = 5;
   task_data->outputs_count.push_back(output_size);
-  auto output_data = new uint8_t[output_size]{255, 255, 255, 255, 255};
+  auto* output_data = new uint8_t[output_size]{255, 255, 255, 255, 255};
 
   task_data->outputs.push_back(output_data);
 

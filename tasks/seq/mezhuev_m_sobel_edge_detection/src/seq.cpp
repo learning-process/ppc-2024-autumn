@@ -22,14 +22,7 @@ bool SobelEdgeDetectionSeq::validation() {
     return false;
   }
 
-  size_t input_size = taskData->inputs_count[0];
-  size_t output_size = taskData->outputs_count[0];
-
-  if (input_size != output_size) {
-    return false;
-  }
-
-  return true;
+  return taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool SobelEdgeDetectionSeq::pre_processing() {
