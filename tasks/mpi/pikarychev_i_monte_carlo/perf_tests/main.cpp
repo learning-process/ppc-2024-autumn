@@ -8,13 +8,11 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/pikarychev_i_monte_carlo/include/ops_mpi.hpp"
 
-// Тест для производительности параллельного выполнения Monte Carlo метода
 TEST(mpi_pikarychev_i_monte_carlo_perf_test, test_monte_carlo_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<double> global_result;
   std::vector<double> expected_result(1, 0.33335967263763133);
 
-  // Инициализация TaskData для параллельного выполнения
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     double a = 0.0;
@@ -35,13 +33,11 @@ TEST(mpi_pikarychev_i_monte_carlo_perf_test, test_monte_carlo_pipeline_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Настройка атрибутов производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Инициализация результатов производительности
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
@@ -51,13 +47,11 @@ TEST(mpi_pikarychev_i_monte_carlo_perf_test, test_monte_carlo_pipeline_run) {
   }
 }
 
-// Тест для производительности выполнения задачи Monte Carlo методом
 TEST(mpi_pikarychev_i_monte_carlo_perf_test, test_monte_carlo_task_run) {
   boost::mpi::communicator world;
   std::vector<double> global_result;
   std::vector<double> expected_result(1, 0.33335967263763133);
 
-  // Инициализация TaskData для выполнения задачи
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     double a = 0.0;
@@ -78,13 +72,11 @@ TEST(mpi_pikarychev_i_monte_carlo_perf_test, test_monte_carlo_task_run) {
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
 
-  // Настройка атрибутов производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Инициализация результатов производительности
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
