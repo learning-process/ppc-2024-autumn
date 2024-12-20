@@ -3,6 +3,7 @@
 #include <mpi.h>
 
 #include <algorithm>
+#include <boost/mpi.hpp>
 #include <functional>
 #include <iostream>
 #include <random>
@@ -38,22 +39,21 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
 
-  // Initialize subtree_sizes with zero
-  int* subtree_sizes = new(std::nothrow) int[size]();
-  if (!subtree_sizes) {
-      return MPI_ERR_INTERN;  // Memory allocation failure
-  }
+  // Use std::vector for safe memory management
+  std::vector<int> subtree_sizes(size, 0);
 
-  // Calculate subtree sizes
-  for (int i = size - 1; i >= 0; --i) {
-    subtree_sizes[i] = 1;
-    if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
-    if (2 * i + 2 < size) subtree_sizes[i] += subtree_sizes[2 * i + 2];
+  // Calculate subtree sizes on root and broadcast to all processes
+  if (rank == root) {
+    for (int i = size - 1; i >= 0; --i) {
+      subtree_sizes[i] = 1;
+      if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
+      if (2 * i + 2 < size) subtree_sizes[i] += subtree_sizes[2 * i + 2];
+    }
   }
+  boost::mpi::broadcast(world, subtree_sizes, root);
 
   // Check for consistency of sendcount and recvcount
   if (rank == root && sendcount != subtree_sizes[root] * recvcount) {
-    delete[] subtree_sizes;
     return MPI_ERR_COUNT;
   }
 
@@ -61,27 +61,15 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int left_child = 2 * rank + 1;
   int right_child = 2 * rank + 2;
 
-  char* temp_buffer = nullptr;
+  std::vector<char> temp_buffer;
   if (rank != root) {
-    // Allocate buffer for receiving data from the parent
-    temp_buffer = new(std::nothrow) char[subtree_sizes[rank] * recvcount * datatype_size];
-    if (!temp_buffer) {
-        delete[] subtree_sizes;
-        return MPI_ERR_INTERN;
-    }
+    temp_buffer.resize(subtree_sizes[rank] * recvcount * datatype_size);
   }
 
   if (rank == root) {
     const char* send_ptr = static_cast<const char*>(sendbuf);
-    if (sendbuf == nullptr || recvbuf == nullptr) {
-      delete[] subtree_sizes;
-      return MPI_ERR_BUFFER;  // Handle invalid buffer
-    }
-
-    // Copy root's data
     memcpy(recvbuf, send_ptr, recvcount * datatype_size);
 
-    // Send data to left and right children
     if (left_child < size) {
       int left_offset = recvcount * datatype_size;
       int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
@@ -94,31 +82,26 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
       MPI_Send(send_ptr + right_offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
     }
   } else {
-    // Receive data from parent
     MPI_Status status;
-    MPI_Recv(temp_buffer, subtree_sizes[rank] * recvcount, sendtype, parent, 0, comm, &status);
+    MPI_Recv(temp_buffer.data(), subtree_sizes[rank] * recvcount * datatype_size, MPI_CHAR, parent, 0, comm, &status);
 
-    // Copy data for the current process
-    memcpy(recvbuf, temp_buffer, recvcount * datatype_size);
+    memcpy(recvbuf, temp_buffer.data(), recvcount * datatype_size);
 
-    // Forward data to left and right children
     if (left_child < size) {
       int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
-      MPI_Send(temp_buffer + recvcount * datatype_size, left_data_size / datatype_size, sendtype, left_child, 0, comm);
+      MPI_Send(temp_buffer.data() + recvcount * datatype_size, left_data_size / datatype_size, sendtype, left_child, 0,
+               comm);
     }
 
     if (right_child < size) {
       int offset = (recvcount + subtree_sizes[left_child] * recvcount) * datatype_size;
       int right_data_size = subtree_sizes[right_child] * recvcount * datatype_size;
-      MPI_Send(temp_buffer + offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
+      MPI_Send(temp_buffer.data() + offset, right_data_size / datatype_size, sendtype, right_child, 0, comm);
     }
   }
 
-  delete[] subtree_sizes;
-  delete[] temp_buffer;
   return MPI_SUCCESS;
 }
-
 
 bool fomin_v_generalized_scatter::GeneralizedScatterTestParallel::pre_processing() {
   if (world.rank() == 0) {
