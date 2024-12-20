@@ -41,6 +41,11 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   std::vector<int> subtree_sizes(size, 0);
 
+  if (recvcount == 0) {
+    // No data to receive or send, return immediately
+    return MPI_SUCCESS;
+  }
+
   if (rank == root) {
     // Calculate subtree sizes
     for (int i = size - 1; i >= 0; --i) {
