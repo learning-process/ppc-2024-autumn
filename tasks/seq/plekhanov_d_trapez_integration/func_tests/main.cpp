@@ -40,14 +40,24 @@ void run_test(double a, double b, double epsilon, double expected_result, bool e
 
 TEST(plekhanov_d_trapez_integration_seq, test1) { plekhanov_d_trapez_integration_seq::run_test(1.45, 0, 0.01, -1.016); }
 
-TEST(plekhanov_d_trapez_integration_seq, test2) { plekhanov_d_trapez_integration_seq::run_test(0.0, 1.45, 1e-2, 1.016);}
+TEST(plekhanov_d_trapez_integration_seq, test2) {
+ plekhanov_d_trapez_integration_seq::run_test(0.0, 1.45, 1e-2, 1.016);
+}
 
-TEST(plekhanov_d_trapez_integration_seq, test3) {plekhanov_d_trapez_integration_seq::run_test(-1.45, 1.45, 0.01, 2.03);}
+TEST(plekhanov_d_trapez_integration_seq, test3) {
+  plekhanov_d_trapez_integration_seq::run_test(-1.45, 1.45, 0.01, 2.03);
+}
 
 TEST(plekhanov_d_trapez_integration_seq, test4) { plekhanov_d_trapez_integration_seq::run_test(1.45, 0, 0.01, -1.016); }
 
-TEST(plekhanov_d_trapez_integration_seq, test5) {plekhanov_d_trapez_integration_seq::run_test(0, 100.0, 0.01, 333333.333510);}
+TEST(plekhanov_d_trapez_integration_seq, test5) {
+  plekhanov_d_trapez_integration_seq::run_test(0, 100.0, 0.01, 333333.333510);
+}
 
-TEST(plekhanov_d_trapez_integration_seq, test6) {plekhanov_d_trapez_integration_seq::run_test(-10.0, 65.0, 0.01, 91875.001);}
+TEST(plekhanov_d_trapez_integration_seq, test6) {
+  plekhanov_d_trapez_integration_seq::run_test(-10.0, 65.0, 0.01, 91875.001);
+}
 
-TEST(plekhanov_d_trapez_integration_seq, test7) {plekhanov_d_trapez_integration_seq::run_test(-10.0, 10.0, 0.01, 666.66666);}
+TEST(plekhanov_d_trapez_integration_seq, test7) {
+  plekhanov_d_trapez_integration_seq::run_test(-10.0, 10.0, 0.01, 666.66666);
+}
