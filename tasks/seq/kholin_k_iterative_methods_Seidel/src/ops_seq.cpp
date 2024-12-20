@@ -162,7 +162,7 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t 
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], size_t num_rows,
+bool kholin_k_iterative_methods_Seidel_seq::CheckDiagPred(float matrix[], size_t num_rows,
                                                                               size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
