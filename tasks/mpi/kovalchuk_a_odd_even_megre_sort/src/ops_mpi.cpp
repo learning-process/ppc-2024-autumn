@@ -13,7 +13,8 @@ void batcher_merge(std::vector<int>& array, int start, int mid, int end) {
   int n = end - start;
   if (n <= 1) return;
 
-  std::vector<int> even_array, odd_array;
+  std::vector<int> even_array;
+  std::vector<int> odd_array;
   for (int i = start; i < end; ++i) {
     if (i % 2 == start % 2) {
       even_array.push_back(array[i]);
