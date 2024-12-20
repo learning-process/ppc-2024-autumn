@@ -154,7 +154,7 @@ TEST(kharin_m_seidel_method_tests_seq, ValidationFailureTestOutputCount) {
 }
 
 // Тест 5: Случайная диагонально доминантная матрица
-TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrix) {
+TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrixS) {
   // Параметры теста
   int N = 6;          // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
@@ -404,7 +404,7 @@ TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrixM) {
 }
 
 // Тест 10: Случайная диагонально доминантная матрица L
-TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrix) {
+TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrixL) {
   // Параметры теста
   int N = 50;         // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
