@@ -41,7 +41,7 @@ void run_test(double a, double b, double epsilon, double expected_result, bool e
 TEST(plekhanov_d_trapez_integration_seq, test1) { plekhanov_d_trapez_integration_seq::run_test(1.45, 0, 0.01, -1.016); }
 
 TEST(plekhanov_d_trapez_integration_seq, test2) {
- plekhanov_d_trapez_integration_seq::run_test(0.0, 1.45, 1e-2, 1.016);
+  plekhanov_d_trapez_integration_seq::run_test(0.0, 1.45, 1e-2, 1.016);
 }
 
 TEST(plekhanov_d_trapez_integration_seq, test3) {
