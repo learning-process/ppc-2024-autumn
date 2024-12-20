@@ -26,7 +26,7 @@ TEST(zinoviev_a_bellman_ford, Test_Small_Graph_mpi) {
   task.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int> expected = {0, 1, 0, 0};
+    std::vector<int> expected = {0, 1, 2, 3};
     ASSERT_EQ(shortest_paths, expected);
   }
 }
