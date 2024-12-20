@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <cmath>
 #include <functional>
 #include <random>
 #include <vector>
@@ -10,21 +11,31 @@
 #include "seq/sorokin_a_graham_algorithm/include/ops_seq.hpp"
 
 namespace sorokin_a_graham_algorithm_seq {
-std::vector<int> getrndvec(int n, int max, int min) {
-  std::uniform_real_distribution<double> unif(static_cast<double>(min), static_cast<double>(max));
+std::vector<int> getrndvec(int n, int radius) {
+  if (n % 2 != 0) {
+    throw std::invalid_argument("The number of elements n must be even.");
+  }
   std::random_device rand_dev;
   std::mt19937 rand_engine(rand_dev());
+  std::uniform_real_distribution<double> dist_radius(0.0, static_cast<double>(radius));
+  std::uniform_real_distribution<double> dist_angle(0.0, 2.0 * 3.14159265358979323846);
   std::vector<int> tmp(n);
-  for (int i = 0; i < n; i++) {
-    tmp[i] = unif(rand_engine);
+  for (int i = 0; i < n / 2; ++i) {
+    double r = dist_radius(rand_engine);
+    double theta = dist_angle(rand_engine);
+    double x = r * cos(theta);
+    double y = r * sin(theta);
+    tmp[2 * i] = static_cast<int>(x);
+    tmp[2 * i + 1] = static_cast<int>(y);
   }
+
   return tmp;
 }
 }  // namespace sorokin_a_graham_algorithm_seq
 
 TEST(sorokin_a_graham_algorithm_seq, Elem1000000) {
   // Create data
-  std::vector<int> in = sorokin_a_graham_algorithm_seq::getrndvec(2000000, -100, 100);
+  std::vector<int> in = sorokin_a_graham_algorithm_seq::getrndvec(2000000, 100);
   std::vector<int> out(in.size(), 0);
 
   // Create TaskData
@@ -57,7 +68,7 @@ TEST(sorokin_a_graham_algorithm_seq, Elem1000000) {
 
 TEST(sorokin_a_graham_algorithm_seq, Elem1000000task) {
   // Create data
-  std::vector<int> in = sorokin_a_graham_algorithm_seq::getrndvec(2000000, -100, 100);
+  std::vector<int> in = sorokin_a_graham_algorithm_seq::getrndvec(2000000, 100);
   std::vector<int> out(in.size(), 0);
 
   // Create TaskData
