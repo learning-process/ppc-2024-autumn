@@ -256,3 +256,43 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
     ASSERT_EQ(resSEQ, resMPI);
   }
 }
+
+TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_loop_graph) {
+  boost::mpi::communicator world;
+  const int V = 2;
+
+  std::vector<int> graph = {1, 1, 0, 2};
+
+  std::vector<int> resMPI(V, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
+    taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
+    taskDataPar->outputs_count.emplace_back(resMPI.size());
+  }
+
+  gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
+  if (world.rank() == 0)
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  else
+    ASSERT_TRUE(testMpiTaskParallel.validation());
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int> resSEQ(V, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
+    taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(V));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSEQ.data()));
+    taskDataSeq->outputs_count.emplace_back(resSEQ.size());
+
+    // Create Task
+    gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq testMpiTaskSequential(taskDataSeq);
+    ASSERT_FALSE(testMpiTaskSequential.validation());
+  }
+}

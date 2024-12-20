@@ -24,7 +24,6 @@ void gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::toCRS(const int*
 bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::pre_processing() {
   internal_order_test();
   auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
-  V = taskData->inputs_count[0];
 
   toCRS(input_matrix);
 
@@ -35,6 +34,13 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::pre_processing()
 
 bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::validation() {
   internal_order_test();
+  auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+  V = taskData->inputs_count[0];
+  size_t j = 0;
+  for (size_t i = 0; i < V; i++) {
+    if (input_matrix[i * V + j] != 0) return false;
+    j++;
+  }
   return taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->inputs_count[0] != 0;
 }
 
@@ -178,7 +184,6 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::pre_processing()
   internal_order_test();
   if (world.rank() == 0) {
     auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
-    V = taskData->inputs_count[0];
 
     toCRS(input_matrix);
   }
@@ -188,6 +193,13 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::pre_processing()
 bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
+    auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
+    V = taskData->inputs_count[0];
+    size_t j = 0;
+    for (size_t i = 0; i < V; i++) {
+      if (input_matrix[i * V + j] != 0) return false;
+      j++;
+    }
     return taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->inputs_count[0] != 0;
   }
   return true;
