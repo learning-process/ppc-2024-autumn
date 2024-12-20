@@ -17,8 +17,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::string input_{};
-  int res{};
+  std::string input_;
+  int res;
 };
 
 }  // namespace zolotareva_a_count_of_words_seq
