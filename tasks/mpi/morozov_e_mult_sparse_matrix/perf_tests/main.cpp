@@ -69,7 +69,7 @@ TEST(morozov_e_mult_sparse_matrix_perf_test, test_pipeline_run) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
     for (size_t i = 0; i < out.size(); ++i) {
-      double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
+      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
       ans[i] = std::vector(ptr, ptr + matrixB.size());
     }
     std::vector<std::vector<double>> check_result = {{2, 0, 6}, {0, 14, 0}, {4, 0, 12}};
@@ -139,7 +139,7 @@ TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
     for (size_t i = 0; i < out.size(); ++i) {
-      double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
+      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
       ans[i] = std::vector(ptr, ptr + matrixB.size());
     }
     std::vector<std::vector<double>> check_result = {{2, 0, 6}, {0, 14, 0}, {4, 0, 12}};

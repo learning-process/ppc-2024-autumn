@@ -113,7 +113,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::pre_processing() {
   col_indB_size = taskData->inputs_count[9];
   dA.resize(dA_size);
   for (int i = 0; i < dA_size; ++i) {
-    double* dA_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* dA_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     dA[i] = dA_ptr[i];
   }
   row_indA.resize(row_indA_size);
@@ -129,7 +129,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::pre_processing() {
 
   dB.resize(dB_size);
   for (int i = 0; i < dB_size; ++i) {
-    double* dB_ptr = reinterpret_cast<double*>(taskData->inputs[3]);
+    auto* dB_ptr = reinterpret_cast<double*>(taskData->inputs[3]);
     dB[i] = dB_ptr[i];
   }
   row_indB.resize(row_indB_size);

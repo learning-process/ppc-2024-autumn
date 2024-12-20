@@ -193,7 +193,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main1) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
     for (size_t i = 0; i < out.size(); ++i) {
-      double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
+      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
       ans[i] = std::vector(ptr, ptr + matrixB.size());
     }
     std::vector<std::vector<double>> check_result = {{2, 0, 6}, {0, 14, 0}, {4, 0, 12}};
@@ -249,7 +249,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main2) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
     for (size_t i = 0; i < out.size(); ++i) {
-      double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
+      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
       ans[i] = std::vector(ptr, ptr + matrixB[0].size());
     }
     ASSERT_EQ(matrixB, ans);
@@ -304,7 +304,7 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main3) {
   if (world.rank() == 0) {
     std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
     for (size_t i = 0; i < out.size(); ++i) {
-      double *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
+      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
       ans[i] = std::vector(ptr, ptr + matrixB[0].size());
     }
     std::vector<std::vector<double>> check_result = {{29, 0, 70}, {30, 12, 76}};

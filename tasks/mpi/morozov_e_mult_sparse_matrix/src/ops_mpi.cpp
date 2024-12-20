@@ -111,7 +111,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::pre_processing() {
   col_indB_size = taskData->inputs_count[9];
   dA.resize(dA_size);
   for (int i = 0; i < dA_size; ++i) {
-    double* dA_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* dA_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     dA[i] = dA_ptr[i];
   }
   row_indA.resize(row_indA_size);
@@ -127,7 +127,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::pre_processing() {
 
   dB.resize(dB_size);
   for (int i = 0; i < dB_size; ++i) {
-    double* dB_ptr = reinterpret_cast<double*>(taskData->inputs[3]);
+    auto* dB_ptr = reinterpret_cast<double*>(taskData->inputs[3]);
     dB[i] = dB_ptr[i];
   }
   row_indB.resize(row_indB_size);
@@ -195,7 +195,7 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::pre_processing() {
     col_indB_size = taskData->inputs_count[9];
     dA.resize(dA_size);
     for (int i = 0; i < dA_size; ++i) {
-      double* dA_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+      auto* dA_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
       dA[i] = dA_ptr[i];
     }
     row_indA.resize(row_indA_size);
@@ -211,7 +211,7 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::pre_processing() {
 
     dB.resize(dB_size);
     for (int i = 0; i < dB_size; ++i) {
-      double* dB_ptr = reinterpret_cast<double*>(taskData->inputs[3]);
+      auto* dB_ptr = reinterpret_cast<double*>(taskData->inputs[3]);
       dB[i] = dB_ptr[i];
     }
     row_indB.resize(row_indB_size);
@@ -244,7 +244,9 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::validation() {
 
 bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::run() {
   internal_order_test();
-  int sizeA, sizeB, countVectorsForMult;
+  int sizeA;
+  int sizeB;
+  int countVectorsForMult;
   if (world.rank() == 0) {
     sizeA = columnsA;
     sizeB = rowsB;
@@ -275,7 +277,8 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::run() {
     for (int i = 0; i < rowsA; ++i) {
       for (int j = 0; j < columnsB; ++j) {
         if (cur_status_vector % world.size() != 0) {
-          int posA, posB;
+          int posA;
+          int posB;
           double value;
           world.recv(cur_status_vector % world.size(), 0, &posA, 1);
           world.recv(cur_status_vector % world.size(), 0, &posB, 1);
@@ -292,7 +295,8 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::run() {
     // morozov_e_mult_sparse_matrix::printMatrix(ans);
   } else {
     for (int i = 0; i < countVectorsForMult / world.size(); ++i) {
-      int posA, posB;
+      int posA;
+      int posB;
       local_input_A = std::vector<double>(sizeA);
       local_input_B = std::vector<double>(sizeA);
       world.recv(0, 0, &posA, 1);
@@ -305,7 +309,8 @@ bool morozov_e_mult_sparse_matrix::TestMPITaskParallel::run() {
       world.send(0, 0, &value, 1);
     }
     if (world.rank() < countVectorsForMult % world.size()) {
-      int posA, posB;
+      int posA;
+      int posB;
       local_input_A = std::vector<double>(sizeA);
       local_input_B = std::vector<double>(sizeA);
       world.recv(0, 0, &posA, 1);
