@@ -26,7 +26,6 @@ class DiningPhilosophersMPI : public ppc::core::Task {
   bool post_processing() override;
 
   bool check_deadlock() noexcept;
-  void resolve_deadlock();
 
   void think();
   void eat();

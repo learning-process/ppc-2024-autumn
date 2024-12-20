@@ -29,7 +29,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() 
     request_forks();
     eat();
     release_forks();
-    if (check_deadlock()) resolve_deadlock();
+    if (check_deadlock()) return false;
   }
   return true;
 }
@@ -64,26 +64,6 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
   }
   boost::mpi::broadcast(world, deadlock, 0);
   return deadlock;
-}
-
-template <typename DataType>
-void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::resolve_deadlock() {
-  if (world.rank() == 0) {
-    int philosopher_to_release = std::rand() % world.size();
-    world.send(philosopher_to_release, 1, THINKING);
-  }
-  bool resolved = false;
-  while (!resolved) {
-    if (world.iprobe(0, 1)) {
-      State release_signal;
-      world.recv(0, 1, release_signal);
-      if (release_signal == THINKING) {
-        state = THINKING;
-        resolved = true;
-      }
-    }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
 }
 
 template <typename DataType>
