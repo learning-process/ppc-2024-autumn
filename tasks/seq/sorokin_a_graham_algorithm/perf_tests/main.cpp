@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include <numbers>
 #include <random>
 #include <vector>
 
@@ -18,7 +19,7 @@ std::vector<int> getrndvec(int n, int radius) {
   std::random_device rand_dev;
   std::mt19937 rand_engine(rand_dev());
   std::uniform_real_distribution<double> dist_radius(0.0, static_cast<double>(radius));
-  std::uniform_real_distribution<double> dist_angle(0.0, 2.0 * 3.14159265358979323846);
+  std::uniform_real_distribution<double> dist_angle(0.0, 2.0 * std::numbers::pi);
   std::vector<int> tmp(n);
   for (int i = 0; i < n / 2; ++i) {
     double r = dist_radius(rand_engine);
