@@ -2,6 +2,13 @@
 
 namespace lopatin_i_quick_batcher_mergesort_mpi {
 
+void heapSort(std::vector<int>& arr) {
+  std::make_heap(arr.begin(), arr.end());
+  for (auto i = arr.end(); i != arr.begin(); --i) {
+    std::pop_heap(arr.begin(), i);
+  }
+}
+
 void quicksort(std::vector<int>& arr, int low, int high) {
   if (low < high) {
     int pivotIndex = partition(arr, low, high);
@@ -135,7 +142,11 @@ bool TestMPITaskParallel::run() {
     }
   }
 
-  quicksort(localArray, 0, localArray.size() - 1);
+  if (sizeArray > 20) {
+    quicksort(localArray, 0, localArray.size() - 1);
+  } else {
+    heapSort(localArray);
+  }
 
   for (int oddEvenStep = 0; oddEvenStep < world.size(); oddEvenStep++) {
     int border = world.size();

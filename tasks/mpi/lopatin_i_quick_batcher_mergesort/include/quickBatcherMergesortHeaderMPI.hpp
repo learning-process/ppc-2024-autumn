@@ -9,6 +9,7 @@
 
 namespace lopatin_i_quick_batcher_mergesort_mpi {
 
+void heapSort(std::vector<int>& arr);
 void quicksort(std::vector<int>& arr, int low, int high);
 int partition(std::vector<int>& arr, int low, int high);
 
