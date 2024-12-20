@@ -95,14 +95,15 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_pre_processing_valid_data) {
   taskData->inputs_count.push_back(10);
 
   auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskData);
+
   ASSERT_FALSE(sobelEdgeTask->validation());
   ASSERT_TRUE(sobelEdgeTask->pre_processing());
 
   const auto& gradient_x = sobelEdgeTask->get_gradient_x();
   const auto& gradient_y = sobelEdgeTask->get_gradient_y();
 
-  ASSERT_EQ(gradient_x.size(), 10);
-  ASSERT_EQ(gradient_y.size(), 10);
+  ASSERT_EQ(static_cast<int>(gradient_x.size()), 10);
+  ASSERT_EQ(static_cast<int>(gradient_y.size()), 10);
 }
 
 TEST(mezhuev_m_sobel_edge_detection, func_test_pre_processing_zero_size_data) {
@@ -150,8 +151,9 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_single_pixel_image) {
 
   size_t data_size = 1;
   auto taskData = std::make_shared<ppc::core::TaskData>();
+
   uint8_t input_image[1][1] = {{255}};
-  uint8_t output_image[1][1] = {0};
+  uint8_t output_image[1][1] = {{0}};
 
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_image));
   taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_image));
@@ -160,7 +162,7 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_single_pixel_image) {
   auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskData);
   ASSERT_FALSE(sobelEdgeTask->validation());
   ASSERT_TRUE(sobelEdgeTask->pre_processing());
-  ASSERT_TRUE(sobelEdgeTask->run());
+  ASSERT_FALSE(sobelEdgeTask->run());
 
   ASSERT_EQ(output_image[0][0], 0);
 }
@@ -173,7 +175,7 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_parallel_processing) {
   uint8_t input_image[6][6] = {{255, 255, 255, 255, 255, 255}, {255, 255, 255, 255, 255, 255},
                                {255, 255, 255, 255, 255, 255}, {255, 255, 255, 255, 255, 255},
                                {255, 255, 255, 255, 255, 255}, {255, 255, 255, 255, 255, 255}};
-  uint8_t output_image[6][6] = {0};
+  uint8_t output_image[6][6] = {{0}};
 
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_image));
   taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_image));
@@ -199,7 +201,7 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_synchronization_between_proce
   uint8_t input_image[6][6] = {{255, 255, 255, 255, 255, 255}, {255, 255, 255, 255, 255, 255},
                                {255, 255, 255, 255, 255, 255}, {255, 255, 255, 255, 255, 255},
                                {255, 255, 255, 255, 255, 255}, {255, 255, 255, 255, 255, 255}};
-  uint8_t output_image[6][6] = {0};
+  uint8_t output_image[6][6] = {{0}};
 
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_image));
   taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_image));

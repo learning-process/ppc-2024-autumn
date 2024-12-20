@@ -9,8 +9,6 @@ namespace mezhuev_m_sobel_edge_detection {
 
 class SobelEdgeDetectionSeq : public ppc::core::Task {
  public:
-
-  SobelEdgeDetectionSeq() = default;
   explicit SobelEdgeDetectionSeq(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
 
   bool pre_processing() override;

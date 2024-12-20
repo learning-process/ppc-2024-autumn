@@ -17,7 +17,7 @@ namespace mezhuev_m_sobel_edge_detection {
 
 class SobelEdgeDetection : public ppc::core::Task {
  public:
-  SobelEdgeDetection(boost::mpi::communicator world_, std::shared_ptr<ppc::core::TaskData> taskData_)
+  SobelEdgeDetection(boost::mpi::communicator& world_, std::shared_ptr<ppc::core::TaskData> taskData_)
       : Task(std::move(taskData_)), world(world_) {}
 
   bool validation() override;

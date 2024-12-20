@@ -4,8 +4,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <vector>
-#include "core/perf/include/perf.hpp"
 
+#include "core/perf/include/perf.hpp"
 #include "seq/mezhuev_m_sobel_edge_detection/include/seq.hpp"
 
 TEST(SobelEdgeDetectionSeqTest, RunPerformanceMultipleExecutions) {
@@ -14,11 +14,11 @@ TEST(SobelEdgeDetectionSeqTest, RunPerformanceMultipleExecutions) {
   task_data->inputs_count.push_back(image_size);
   task_data->outputs_count.push_back(image_size);
 
-  uint8_t* input_image = new uint8_t[image_size * image_size]{0};
-  uint8_t* output_image = new uint8_t[image_size * image_size]{0};
+  auto input_image = std::make_unique<uint8_t[]>(image_size * image_size);
+  auto output_image = std::make_unique<uint8_t[]>(image_size * image_size);
 
-  task_data->inputs.push_back(input_image);
-  task_data->outputs.push_back(output_image);
+  task_data->inputs.push_back(input_image.get());
+  task_data->outputs.push_back(output_image.get());
 
   mezhuev_m_sobel_edge_detection::SobelEdgeDetectionSeq sobel_edge_detection_seq(task_data);
 
@@ -37,9 +37,6 @@ TEST(SobelEdgeDetectionSeqTest, RunPerformanceMultipleExecutions) {
             << std::endl;
 
   EXPECT_LT(avg_duration, 5.0);
-
-  delete[] input_image;
-  delete[] output_image;
 }
 
 TEST(SobelEdgeDetectionSeqTest, RunPerformanceDifferentSizes) {
@@ -54,8 +51,8 @@ TEST(SobelEdgeDetectionSeqTest, RunPerformanceDifferentSizes) {
     task_data->inputs_count.push_back(size);
     task_data->outputs_count.push_back(size);
 
-    uint8_t* input_image = new uint8_t[size * size]{0};
-    uint8_t* output_image = new uint8_t[size * size]{0};
+    auto input_image = new uint8_t[size * size]{0};
+    auto output_image = new uint8_t[size * size]{0};
 
     task_data->inputs.push_back(input_image);
     task_data->outputs.push_back(output_image);
