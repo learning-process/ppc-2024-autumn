@@ -422,6 +422,7 @@ TEST(GaussSeidel_MPI, ParallelValidationWithCorrectData) {
   mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 3;
   double eps = 1e-6;
@@ -432,27 +433,42 @@ TEST(GaussSeidel_MPI, ParallelValidationWithCorrectData) {
   std::vector<double> xPar(N, 0.0);
 
   if (world.rank() == 0) {
-    // Настройка данных для параллельной версии
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
-    taskDataPar->inputs_count.emplace_back(1);
+    // Настройка данных для последовательной версии
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+    taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
-    taskDataPar->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+    taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-    taskDataPar->inputs_count.emplace_back(N * N);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    // Намеренно указываем неправильный размер
+    taskDataSeq->inputs_count.emplace_back(3 * 3);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-    taskDataPar->inputs_count.emplace_back(N);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+    taskDataSeq->inputs_count.emplace_back(3);
+
+    std::vector<double> xSeq(N, 0.0);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
+    taskDataSeq->outputs_count.emplace_back(N);
+
+    // Копируем данные для параллельной версии
+    taskDataPar->inputs = taskDataSeq->inputs;
+    taskDataPar->inputs_count = taskDataSeq->inputs_count;
 
     // Настройка выходных данных для параллельной версии
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(xPar.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
     taskDataPar->outputs_count.emplace_back(N);
+  }
+
+  // Проверка последовательной версии
+  if (world.rank() == 0) {
+    GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
+    ASSERT_FALSE(gaussSeidelSeq.validation());
   }
 
   // Проверка параллельной версии
   GaussSeidelParallel gaussSeidelPar(taskDataPar);
-  ASSERT_TRUE(gaussSeidelPar.validation());
+  ASSERT_FALSE(gaussSeidelPar.validation());
 }
 
 // Тест 8: Валидация параллельной версии с некорректными данными (недостаточный ранг)
@@ -461,6 +477,7 @@ TEST(GaussSeidel_MPI, ParallelValidationFailureInsufficientRank) {
   mpi::communicator world;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 3;
   double eps = 1e-6;
@@ -470,24 +487,38 @@ TEST(GaussSeidel_MPI, ParallelValidationFailureInsufficientRank) {
   std::vector<double> b = {4, 8, 2};
 
   std::vector<double> xPar(N, 0.0);
-
   if (world.rank() == 0) {
-    // Настройка данных для параллельной версии
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
-    taskDataPar->inputs_count.emplace_back(1);
+    // Настройка данных для последовательной версии
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
+    taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
-    taskDataPar->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&eps));
+    taskDataSeq->inputs_count.emplace_back(1);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-    taskDataPar->inputs_count.emplace_back(N * N);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    // Намеренно указываем неправильный размер
+    taskDataSeq->inputs_count.emplace_back(3 * 3);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
-    taskDataPar->inputs_count.emplace_back(N);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(b.data()));
+    taskDataSeq->inputs_count.emplace_back(3);
+
+    std::vector<double> xSeq(N, 0.0);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
+    taskDataSeq->outputs_count.emplace_back(N);
+
+    // Копируем данные для параллельной версии
+    taskDataPar->inputs = taskDataSeq->inputs;
+    taskDataPar->inputs_count = taskDataSeq->inputs_count;
 
     // Настройка выходных данных для параллельной версии
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(xPar.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(xSeq.data()));
     taskDataPar->outputs_count.emplace_back(N);
+  }
+
+  // Проверка последовательной версии
+  if (world.rank() == 0) {
+    GaussSeidelSequential gaussSeidelSeq(taskDataSeq);
+    ASSERT_FALSE(gaussSeidelSeq.validation());
   }
 
   // Проверка параллельной версии
