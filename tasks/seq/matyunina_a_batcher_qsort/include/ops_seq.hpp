@@ -69,16 +69,21 @@ void matyunina_a_batcher_qsort_seq::quickSort(std::vector<T>& data) {
   std::stack<std::pair<uint32_t, uint32_t>> stack;
   stack.emplace(0, data.size() - 1);
 
+  uint32_t low;
+  uint32_t high;
+  T pivot;
+  uint32_t i;
+  std::pair<uint32_t, uint32_t> range;
   while (!stack.empty()) {
-    auto range = stack.top();
+    range = stack.top();
     stack.pop();
 
-    uint32_t low = range.first;
-    uint32_t high = range.second;
+    low = range.first;
+    high = range.second;
 
     if (low < high) {
-      T pivot = data[high];
-      uint32_t i = low;
+      pivot = data[high];
+      i = low;
 
       for (uint32_t j = low; j < high; j++) {
         if (data[j] <= pivot) {

@@ -114,8 +114,9 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
   if (world.rank() == 0) {
     local_.assign(global_.begin(), global_.begin() + local_size);
     uint32_t offset = local_size;
+    uint32_t send_size;
     for (int32_t proc = 1; proc < world.size(); proc++) {
-      uint32_t send_size = delta + (((uint32_t)proc < remainder) ? 1 : 0);
+      send_size = delta + (((uint32_t)proc < remainder) ? 1 : 0);
       reqs.emplace_back(world.isend(proc, proc, global_.data() + offset, send_size));
       offset += send_size;
     }
@@ -155,7 +156,8 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
   int32_t offset = -1;
   uint32_t proc_size;
   std::vector<T> temp;
-  for (int32_t i = 0; i <= world.size(); i++) {
+  int32_t merge_count = std::pow(std::ceil(log2(data_size)), 2);
+  for (int32_t i = 0; i <= merge_count; i++) {
     if (world.rank() % 2 == i % 2) {
       if (world.rank() - offset >= world.size() || world.rank() - offset < 0) {
         continue;
@@ -175,9 +177,24 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
     }
   }
 
-  std::vector<int32_t> sizes(world.size(), delta);
-  for (uint32_t i = 0; i < sizes.size(); i++) sizes[i] += ((i < remainder) ? 1 : 0);
-  gatherv(world, local_.data(), local_.size(), global_.data(), sizes, 0);
+  if (world.rank() == 0) {
+    reqs.clear();
+    std::copy(local_.begin(), local_.end(), global_.begin());
+
+    uint32_t offset = local_.size();
+    uint32_t recv_size;
+    for (int32_t proc = 1; proc < world.size(); proc++) {
+      recv_size = delta + (((uint32_t)proc < remainder) ? 1 : 0);
+      reqs.emplace_back(world.irecv(proc, proc, global_.data() + offset, recv_size));
+      offset += recv_size;
+    }
+
+    for (auto& req : reqs) {
+      req.wait();
+    }
+  } else {
+    world.isend(0, world.rank(), local_.data(), local_.size()).wait();
+  }
 
   return true;
 }
@@ -200,16 +217,20 @@ void matyunina_a_batcher_qsort_mpi::quickSort(std::vector<T>& data) {
   std::stack<std::pair<uint32_t, uint32_t>> stack;
   stack.emplace(0, data.size() - 1);
 
+  uint32_t low;
+  uint32_t high;
+  T pivot;
+  uint32_t i;
+  std::pair<uint32_t, uint32_t> range;
   while (!stack.empty()) {
-    auto range = stack.top();
+    range = stack.top();
     stack.pop();
 
-    uint32_t low = range.first;
-    uint32_t high = range.second;
-
+    low = range.first;
+    high = range.second;
     if (low < high) {
-      T pivot = data[high];
-      uint32_t i = low;
+      pivot = data[high];
+      i = low;
 
       for (uint32_t j = low; j < high; j++) {
         if (data[j] <= pivot) {

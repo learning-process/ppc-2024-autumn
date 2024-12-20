@@ -22,6 +22,28 @@ std::vector<int> generateRandomVector(size_t size, int min_value, int max_value)
   return in;
 }
 
+void run_test(std::vector<int32_t>& in) {
+  std::vector<int32_t> out(in.size());
+  std::vector<int32_t> sorted(in);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  matyunina_a_batcher_qsort_seq::TestTaskSequential<int32_t> testTaskSequential(taskData);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+
+  std::sort(sorted.begin(), sorted.end());
+  ASSERT_EQ(sorted, out);
+}
 }  // namespace matyunina_a_batcher_qsort_seq
 
 TEST(matyunina_a_batcher_qsort_seq, random_vector) {
@@ -29,123 +51,28 @@ TEST(matyunina_a_batcher_qsort_seq, random_vector) {
   int min = -500;
   int max = 500;
   std::vector<int32_t> in = matyunina_a_batcher_qsort_seq::generateRandomVector(size, min, max);
-  std::vector<int32_t> out(in.size());
-  std::vector<int32_t> sorted(in);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskData->inputs_count.emplace_back(in.size());
-
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskData->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  matyunina_a_batcher_qsort_seq::TestTaskSequential<int32_t> testTaskSequential(taskData);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
-  std::sort(sorted.begin(), sorted.end());
-  ASSERT_EQ(sorted, out);
+  matyunina_a_batcher_qsort_seq::run_test(in);
 }
 
 // Тест пустого вектора
 TEST(matyunina_a_batcher_qsort_seq, zero) {
   std::vector<int> in;
-  std::vector<int32_t> out(in.size());
-  std::vector<int32_t> sorted(in);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskData->inputs_count.emplace_back(in.size());
-
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskData->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  matyunina_a_batcher_qsort_seq::TestTaskSequential<int32_t> testTaskSequential(taskData);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
-  std::sort(sorted.begin(), sorted.end());
-  ASSERT_EQ(sorted, out);
+  matyunina_a_batcher_qsort_seq::run_test(in);
 }
 
 // Тест вектора с одним элементом
 TEST(matyunina_a_batcher_qsort_seq, single) {
   std::vector<int> in = {42};
-  std::vector<int32_t> out(in.size());
-  std::vector<int32_t> sorted(in);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskData->inputs_count.emplace_back(in.size());
-
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskData->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  matyunina_a_batcher_qsort_seq::TestTaskSequential<int32_t> testTaskSequential(taskData);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
-  std::sort(sorted.begin(), sorted.end());
-  ASSERT_EQ(sorted, out);
+  matyunina_a_batcher_qsort_seq::run_test(in);
 }
 
 // Тест вектора с повторяющимися элементами
 TEST(matyunina_a_batcher_qsort_seq, duplicated_elements) {
   std::vector<int32_t> in = {3, 4, 4, 1, 5, 5, 2, 6, 5, 3};
-  std::vector<int32_t> out(in.size());
-  std::vector<int32_t> sorted(in);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskData->inputs_count.emplace_back(in.size());
-
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskData->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  matyunina_a_batcher_qsort_seq::TestTaskSequential<int32_t> testTaskSequential(taskData);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
-  std::sort(sorted.begin(), sorted.end());
-  ASSERT_EQ(sorted, out);
+  matyunina_a_batcher_qsort_seq::run_test(in);
 }
 
 TEST(matyunina_a_batcher_qsort_seq, video_example) {
   std::vector<int> in = {8, 2, 5, 10, 1, 7, 3, 12, 6, 11, 4, 9};
-  std::vector<int32_t> out(in.size());
-  std::vector<int32_t> sorted(in);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
-  taskData->inputs_count.emplace_back(in.size());
-
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-  taskData->outputs_count.emplace_back(out.size());
-
-  // Create Task
-  matyunina_a_batcher_qsort_seq::TestTaskSequential<int32_t> testTaskSequential(taskData);
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-
-  std::sort(sorted.begin(), sorted.end());
-  ASSERT_EQ(sorted, out);
+  matyunina_a_batcher_qsort_seq::run_test(in);
 }
