@@ -160,4 +160,4 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_diag
 
   kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
-}//
+}  //
