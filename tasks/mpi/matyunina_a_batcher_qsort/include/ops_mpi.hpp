@@ -181,12 +181,12 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
     reqs.clear();
     std::copy(local_.begin(), local_.end(), global_.begin());
 
-    uint32_t offset = local_.size();
+    uint32_t global_offset = local_.size();
     uint32_t recv_size;
     for (int32_t proc = 1; proc < world.size(); proc++) {
       recv_size = delta + (((uint32_t)proc < remainder) ? 1 : 0);
-      reqs.emplace_back(world.irecv(proc, proc, global_.data() + offset, recv_size));
-      offset += recv_size;
+      reqs.emplace_back(world.irecv(proc, proc, global_.data() + global_offset, recv_size));
+      global_offset += recv_size;
     }
 
     for (auto& req : reqs) {
