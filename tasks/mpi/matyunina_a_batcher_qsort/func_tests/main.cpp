@@ -106,4 +106,3 @@ TEST(matyunina_a_batcher_qsort_mpi, video_example) {
   std::vector<int32_t> in = {8, 2, 5, 10, 1, 7, 3, 12, 6, 11, 4, 9};
   matyunina_a_batcher_qsort_mpi::run_test(in);
 }
-
