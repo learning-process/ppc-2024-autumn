@@ -48,8 +48,8 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
       if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
       if (2 * i + 2 < size) subtree_sizes[i] += subtree_sizes[2 * i + 2];
     }
-    // Check that sendbuf is not null on root
-    if (sendbuf == nullptr) {
+    // Check that sendbuf is not null on root only if sendcount is not zero
+    if (sendcount != 0 && sendbuf == nullptr) {
       return MPI_ERR_BUFFER;
     }
     // Check consistency of sendcount and recvcount
@@ -75,7 +75,9 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
     if (recvbuf == nullptr) {
       return MPI_ERR_BUFFER;
     }
-    memcpy(recvbuf, send_ptr, recvcount * datatype_size);
+    if (sendcount > 0) {
+      memcpy(recvbuf, send_ptr, recvcount * datatype_size);
+    }
 
     if (left_child < size) {
       int left_offset = recvcount * datatype_size;
@@ -95,7 +97,9 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
     if (recvbuf == nullptr) {
       return MPI_ERR_BUFFER;
     }
-    memcpy(recvbuf, temp_buffer.data(), recvcount * datatype_size);
+    if (recvcount > 0) {
+      memcpy(recvbuf, temp_buffer.data(), recvcount * datatype_size);
+    }
 
     if (left_child < size) {
       int left_data_size = subtree_sizes[left_child] * recvcount * datatype_size;
