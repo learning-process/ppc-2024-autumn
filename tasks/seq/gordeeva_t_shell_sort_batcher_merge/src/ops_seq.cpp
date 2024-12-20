@@ -50,11 +50,6 @@ bool gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::validation() {
 bool gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  /*for (int i = 0; i < input_.size(); i++) {
-    std::cout << input_[i] << " ";
-  }
-  std::cout << std::endl;*/
-
   shellSort(input_, input_.size());
 
   for (size_t i = 0; i < input_.size(); i++) {

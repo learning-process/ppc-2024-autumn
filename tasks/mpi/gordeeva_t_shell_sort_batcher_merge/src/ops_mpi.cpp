@@ -1,4 +1,3 @@
-// Copyright 2023 Nesterov Alexander
 #include "mpi/gordeeva_t_shell_sort_batcher_merge/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -36,9 +35,7 @@ std::vector<int> gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential:
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::pre_processing() {
-  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
-    throw std::runtime_error("Invalid input data in pre_processing.");
-  }
+  internal_order_test();
 
   size_t sz = taskData->inputs_count[0];
   auto* input_tmp = reinterpret_cast<int32_t*>(taskData->inputs[0]);
@@ -49,6 +46,8 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::pre_process
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::validation() {
+  internal_order_test();
+
   if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
   if (taskData->inputs_count[0] <= 0) return false;
   if (taskData->outputs_count.size() != 1) return false;
@@ -56,12 +55,16 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::validation(
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::run() {
+  internal_order_test();
+
   shellSort(input_);
   res_ = input_;
   return true;
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::post_processing() {
+  internal_order_test();
+
   int* output_matr = reinterpret_cast<int*>(taskData->outputs[0]);
   std::copy(res_.begin(), res_.end(), output_matr);
   return true;
@@ -94,11 +97,9 @@ void gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::batcher_merge
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::pre_processing() {
-  if (world.rank() == 0) {
-    if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
-      throw std::runtime_error("Invalid input data in pre_processing.");
-    }
+  internal_order_test();
 
+  if (world.rank() == 0) {
     sz_mpi = taskData->inputs_count[0];
     auto* input_tmp = reinterpret_cast<int32_t*>(taskData->inputs[0]);
     input_.assign(input_tmp, input_tmp + sz_mpi);
@@ -108,6 +109,8 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::pre_processin
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::validation() {
+  internal_order_test();
+
   if (world.rank() == 0) {
     if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
     if (taskData->inputs_count[0] <= 0) return false;
@@ -117,6 +120,8 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::validation() 
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
+  internal_order_test();
+
   size_t rank = world.rank();
   size_t size = world.size();
 
@@ -160,6 +165,8 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::run() {
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskParallel::post_processing() {
+  internal_order_test();
+
   if (world.rank() == 0 && !taskData->outputs.empty()) {
     std::copy(res_.begin(), res_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
