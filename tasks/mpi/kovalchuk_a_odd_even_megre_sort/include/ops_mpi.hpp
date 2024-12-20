@@ -12,7 +12,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace kovalchuk_a_horizontal_tape_scheme {
+namespace kovalchuk_a_odd_even {
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -23,8 +23,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> matrix_;
-  std::vector<int> vector_;
+  std::vector<int> array_;
   std::vector<int> result_;
 };
 
@@ -37,9 +36,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<int>> matrix_;
-  std::vector<int> vector_;
-  std::vector<int> local_result_;
+  std::vector<int> array_;
+  std::vector<int> local_array_;
   std::vector<int> result_;
   boost::mpi::communicator world;
 };
