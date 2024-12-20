@@ -38,6 +38,10 @@ bool BellmanFordMPIMPI::pre_processing() {
 
   shortest_paths.resize(V, INF);
   shortest_paths[0] = 0;
+
+  // Broadcast paths to all ranks
+  boost::mpi::broadcast(world, shortest_paths, 0);
+
   return true;
 }
 
@@ -80,6 +84,9 @@ bool BellmanFordMPIMPI::Iteration(std::vector<int>& paths) {
         return std::min(a, b);
       },
       0);
+
+  // Broadcast the reduced paths to all ranks
+  boost::mpi::broadcast(world, reduced_paths, 0);
 
   if (world.rank() == 0) {
     for (size_t i = 0; i < V; i++) {
