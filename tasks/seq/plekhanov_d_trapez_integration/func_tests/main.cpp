@@ -8,7 +8,6 @@
 namespace plekhanov_d_trapez_integration_seq {
 
 void run_test(double a, double b, double epsilon, double expected_result, bool expected_validation = true) {
-
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t *>(&a));
