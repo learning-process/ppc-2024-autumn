@@ -5,7 +5,6 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/plekhanov_d_trapez_integration/include/ops_seq.hpp"
 
-
 TEST(plekhanov_d_trapez_integration_seq, test_pipeline_run) {
   double a = 0.0;
   double b = 1.45;
@@ -16,8 +15,7 @@ TEST(plekhanov_d_trapez_integration_seq, test_pipeline_run) {
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
   double output = 1.0;
   taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
-  auto testTaskSequential =
-      std::make_shared<plekhanov_d_trapez_integration_seq::TestTaskSequential>(taskData);
+  auto testTaskSequential = std::make_shared<plekhanov_d_trapez_integration_seq::TestTaskSequential>(taskData);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -44,8 +42,7 @@ TEST(plekhanov_d_trapez_integration_seq, test_task_run) {
   taskData->inputs.push_back(reinterpret_cast<uint8_t *>(&epsilon));
   double output = 1.0;
   taskData->outputs.push_back(reinterpret_cast<uint8_t *>(&output));
-  auto testTaskSequential =
-      std::make_shared<plekhanov_d_trapez_integration_seq::TestTaskSequential>(taskData);
+  auto testTaskSequential = std::make_shared<plekhanov_d_trapez_integration_seq::TestTaskSequential>(taskData);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();

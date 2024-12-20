@@ -19,8 +19,7 @@ TEST(plekhanov_d_trapez_integration_mpi, test_integration_pipeline_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
-  auto testMpiTaskParallel =
-      std::make_shared<plekhanov_d_trapez_integration_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<plekhanov_d_trapez_integration_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -50,8 +49,7 @@ TEST(plekhanov_d_trapez_integration_mpi, test_integration_task_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
   }
-  auto testMpiTaskParallel =
-      std::make_shared<plekhanov_d_trapez_integration_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<plekhanov_d_trapez_integration_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
