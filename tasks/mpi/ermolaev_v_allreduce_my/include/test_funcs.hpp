@@ -51,8 +51,6 @@ void funcTestBody(uint32_t rows, uint32_t cols, value_type gen_min, value_type g
   std::vector<value_type> matrix;
   std::vector<value_type> mpi_res;
 
-  if (world.rank() == 0) std::cout << "Run test with " << rows << "x" << cols << " matrix\n";
-
   auto run = [](ppc::core::Task& task) {
     task.validation();
     task.pre_processing();
@@ -81,8 +79,6 @@ void funcTestBody(uint32_t rows, uint32_t cols, value_type gen_min, value_type g
 
     for (uint32_t i = 0; i < rows; i++)
       for (uint32_t j = 0; j < cols; j++) ASSERT_NEAR(seq_res[i * cols + j], mpi_res[i * cols + j], 1e-1);
-
-    std::cout << "Successful test with " << rows << "x" << cols << " matrix\n";
   }
 }
 
