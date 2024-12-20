@@ -64,7 +64,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_100_with_random) {
   std::vector<int> result_parallel(size);
   std::vector<int> result_seq(size);
 
-
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
@@ -100,8 +99,8 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_100_with_random) {
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();  
   }
-
-    ASSERT_EQ(result_parallel, result_seq);
+  
+  ASSERT_EQ(result_parallel, result_seq);
 }
 
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_1000_with_random) {
@@ -182,7 +181,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_5000_with_random) {
   testPar.post_processing();
 
   world.barrier();
-  
+
   if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_vec.data()));
