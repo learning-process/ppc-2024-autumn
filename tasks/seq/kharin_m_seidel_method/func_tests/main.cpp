@@ -9,7 +9,7 @@
 using namespace kharin_m_seidel_method;
 
 // Тест 1: Простые данные
-TEST(GaussSeidel_Sequential, SimpleData) {
+TEST(kharin_m_seidel_method_tests_seq, SimpleData) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 4;          // Размер матрицы
@@ -55,7 +55,7 @@ TEST(GaussSeidel_Sequential, SimpleData) {
 }
 
 // Тест 2: Неправильный размер матрицы A
-TEST(GaussSeidel_Sequential, ValidationFailureTestMatrixSize) {
+TEST(kharin_m_seidel_method_tests_seq, ValidationFailureTestMatrixSize) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 4;
@@ -88,7 +88,7 @@ TEST(GaussSeidel_Sequential, ValidationFailureTestMatrixSize) {
 }
 
 // Тест 3: Матрица не диагонально доминантная
-TEST(GaussSeidel_Sequential, ValidationFailureTestNonDiagonallyDominant) {
+TEST(kharin_m_seidel_method_tests_seq, ValidationFailureTestNonDiagonallyDominant) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 4;
@@ -120,7 +120,7 @@ TEST(GaussSeidel_Sequential, ValidationFailureTestNonDiagonallyDominant) {
 }
 
 // Тест 4: Неправильное количество выходных данных
-TEST(GaussSeidel_Sequential, ValidationFailureTestOutputCount) {
+TEST(kharin_m_seidel_method_tests_seq, ValidationFailureTestOutputCount) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 4;
@@ -154,7 +154,7 @@ TEST(GaussSeidel_Sequential, ValidationFailureTestOutputCount) {
 }
 
 // Тест 5: Случайная диагонально доминантная матрица
-TEST(GaussSeidel, RandomDiagonallyDominantMatrix) {
+TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrix) {
   // Параметры теста
   int N = 6;          // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
@@ -231,7 +231,7 @@ TEST(GaussSeidel, RandomDiagonallyDominantMatrix) {
 }
 
 // Тест 6: Нули на диагонали
-TEST(GaussSeidel_Sequential, ValidationFailureTestZerosDiagonally) {
+TEST(kharin_m_seidel_method_tests_seq, ValidationFailureTestZerosDiagonally) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 4;
@@ -263,7 +263,7 @@ TEST(GaussSeidel_Sequential, ValidationFailureTestZerosDiagonally) {
 }
 
 // Тест 7: Валидация с корректными данными
-TEST(GaussSeidel_Sequential, ParallelValidationWithCorrectData) {
+TEST(kharin_m_seidel_method_tests_seq, ParallelValidationWithCorrectData) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 3;
@@ -294,7 +294,7 @@ TEST(GaussSeidel_Sequential, ParallelValidationWithCorrectData) {
 }
 
 // Тест 8: Валидация параллельной версии с некорректными данными (недостаточный ранг)
-TEST(GaussSeidel_Sequential, ParallelValidationFailureInsufficientRank) {
+TEST(kharin_m_seidel_method_tests_seq, ParallelValidationFailureInsufficientRank) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int N = 3;
@@ -327,7 +327,7 @@ TEST(GaussSeidel_Sequential, ParallelValidationFailureInsufficientRank) {
 }
 
 // Тест 9: Случайная диагонально доминантная матрица M
-TEST(GaussSeidel, RandomDiagonallyDominantMatrixM) {
+TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrixM) {
   // Параметры теста
   int N = 20;         // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
@@ -404,7 +404,7 @@ TEST(GaussSeidel, RandomDiagonallyDominantMatrixM) {
 }
 
 // Тест 10: Случайная диагонально доминантная матрица L
-TEST(GaussSeidel, RandomDiagonallyDominantMatrix) {
+TEST(kharin_m_seidel_method_tests_seq, RandomDiagonallyDominantMatrix) {
   // Параметры теста
   int N = 50;         // Размер матрицы
   double eps = 1e-6;  // Точность вычислений

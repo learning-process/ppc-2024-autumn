@@ -11,7 +11,7 @@ namespace mpi = boost::mpi;
 using namespace kharin_m_seidel_method;
 
 // Тест 1: Простые данные
-TEST(GaussSeidel_MPI, SimpleData) {
+TEST(kharin_m_seidel_method_tests_mpi, SimpleData) {
   mpi::environment env;
   mpi::communicator world;
   // Создаем TaskData для параллельной и последовательной версий
@@ -88,7 +88,7 @@ TEST(GaussSeidel_MPI, SimpleData) {
 }
 
 // Тест 2: Неправильный размер матрицы A
-TEST(GaussSeidel_MPI, ValidationFailureTestMatrixSize) {
+TEST(kharin_m_seidel_method_tests_mpi, ValidationFailureTestMatrixSize) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -141,7 +141,7 @@ TEST(GaussSeidel_MPI, ValidationFailureTestMatrixSize) {
 }
 
 // Тест 3: Матрица не диагонально доминантная
-TEST(GaussSeidel_MPI, ValidationFailureTestNonDiagonallyDominant) {
+TEST(kharin_m_seidel_method_tests_mpi, ValidationFailureTestNonDiagonallyDominant) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -194,7 +194,7 @@ TEST(GaussSeidel_MPI, ValidationFailureTestNonDiagonallyDominant) {
 }
 
 // Тест 4: Неправильное количество выходных данных
-TEST(GaussSeidel_MPI, ValidationFailureTestOutputCount) {
+TEST(kharin_m_seidel_method_tests_mpi, ValidationFailureTestOutputCount) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -247,7 +247,7 @@ TEST(GaussSeidel_MPI, ValidationFailureTestOutputCount) {
 }
 
 // Тест 5: Случайная диагонально доминантная матрица
-TEST(GaussSeidel_MPI, RandomDiagonallyDominantMatrixS) {
+TEST(kharin_m_seidel_method_tests_mpi, RandomDiagonallyDominantMatrixS) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -363,7 +363,7 @@ TEST(GaussSeidel_MPI, RandomDiagonallyDominantMatrixS) {
 }
 
 // Тест 6: Нули на диагонали
-TEST(GaussSeidel_MPI, ValidationFailureTestZerosDiagonally) {
+TEST(kharin_m_seidel_method_tests_mpi, ValidationFailureTestZerosDiagonally) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -417,7 +417,7 @@ TEST(GaussSeidel_MPI, ValidationFailureTestZerosDiagonally) {
 }
 
 // Тест 7: Валидация параллельной версии с корректными данными
-TEST(GaussSeidel_MPI, ParallelValidationWithCorrectData) {
+TEST(kharin_m_seidel_method_tests_mpi, ParallelValidationWithCorrectData) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -472,7 +472,7 @@ TEST(GaussSeidel_MPI, ParallelValidationWithCorrectData) {
 }
 
 // Тест 8: Валидация параллельной версии с некорректными данными (недостаточный ранг)
-TEST(GaussSeidel_MPI, ParallelValidationFailureInsufficientRank) {
+TEST(kharin_m_seidel_method_tests_mpi, ParallelValidationFailureInsufficientRank) {
   mpi::environment env;
   mpi::communicator world;
 
@@ -527,8 +527,10 @@ TEST(GaussSeidel_MPI, ParallelValidationFailureInsufficientRank) {
 }
 
 // Тест 9: Случайная диагонально доминантная матрица M
-TEST(GaussSeidel_MPI, RandomDiagonallyDominantMatrixM) {
+TEST(kharin_m_seidel_method_tests_mpi, RandomDiagonallyDominantMatrixM) {
   // Параметры теста
+  mpi::environment env;
+  mpi::communicator world;
   int N = 20;         // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
 
@@ -640,8 +642,10 @@ TEST(GaussSeidel_MPI, RandomDiagonallyDominantMatrixM) {
 }
 
 // Тест 10: Случайная диагонально доминантная матрица L
-TEST(GaussSeidel_MPI, RandomDiagonallyDominantMatrixL) {
+TEST(kharin_m_seidel_method_tests_mpi, RandomDiagonallyDominantMatrixL) {
   // Параметры теста
+  mpi::environment env;
+  mpi::communicator world;
   int N = 50;         // Размер матрицы
   double eps = 1e-6;  // Точность вычислений
 
