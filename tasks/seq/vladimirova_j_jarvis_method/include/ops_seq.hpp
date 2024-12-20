@@ -28,8 +28,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<Point> input_{};
-  std::vector<int> res_{};
+  std::vector<Point> input_;
+  std::vector<int> res_;
   size_t col = 0, row = 0;
 };
 

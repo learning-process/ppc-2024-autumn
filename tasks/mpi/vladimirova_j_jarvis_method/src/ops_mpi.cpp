@@ -47,11 +47,11 @@ size_t FindMinAngle(Point* A, Point* B, std::vector<Point> vec) {
       double BA_length = std::sqrt(reg_x * reg_x + reg_y * reg_y);
       double BC_length = std::sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
       double length = BA_length * BC_length;
-      double angle = (double)(tmp_x * reg_x + tmp_y * reg_y);
+      double angle = tmp_x * reg_x + tmp_y * reg_y;
       if (length == 0)
         angle = 0;
       else
-        angle = (double)(tmp_x * reg_x + tmp_y * reg_y) / (length);
+        angle = angle / (length);
       if (angle < min_angle) {
         min_angle = angle;
         min_angle_point = i;
@@ -71,8 +71,8 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::pre_processing() {
   row = (size_t)taskData->inputs_count[0];
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < col * row; i++) {
-    if ((int)tmp_ptr[i] != 255) {
-      input_.push_back(Point((int)(i % col), (int)(i / col)));
+    if (tmp_ptr[i] != 255) {
+      input_.emplace_back(Point((int)(i % col), (int)(i / col)));
     }
   }
   return true;
@@ -81,12 +81,11 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::pre_processing() {
 bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  if (!(taskData->inputs_count[1] > 0 && taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0)) return false;
-
+  if (taskData->inputs_count[1] <= 0 || taskData->inputs_count[0] <= 0 || taskData->outputs_count[0] <= 0) return false;
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   size_t c = 0;
   for (size_t i = 0; i < taskData->inputs_count[0] * taskData->inputs_count[1]; i++) {
-    if ((int)(tmp_ptr[i]) != 255) c++;
+    if (tmp_ptr[i] != 255) c++;
   }
   return (c > 2);
 }
@@ -122,9 +121,6 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::run() {
     B = &input_[i];
 
   } while (B != first);
-
-  B = &tmp;
-  A = &tmp;
 
   return true;
 }
@@ -169,7 +165,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::validation() {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
     size_t c = 0;
     for (size_t i = 0; i < taskData->inputs_count[0] * taskData->inputs_count[1]; i++) {
-      if ((int)(tmp_ptr[i]) != 255) c++;
+      if (tmp_ptr[i] != 255) c++;
     }
     return (c > 2);
   }
@@ -214,7 +210,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
   Point C = Point(-1, -1);
   int reg_x;
   int reg_y;
-  bool active = true;
+  int active = 1;
   int sz = local_input_.size();
   int k = 0;
 
@@ -236,7 +232,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
     do {
       k++;
       double min_angle = 1000;
-      send_data = {reg_x, reg_y, B.x, B.y, true};
+      send_data = {reg_x, reg_y, B.x, B.y, 1};
       for (int i = 1; i < world.size(); i++) world.send(i, 0, send_data.data(), 5);
       // cвоя часть
       for (size_t i = 0; i < local_input_.size(); i++) {
@@ -271,7 +267,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       reg_x = A.x - (B.x);
       reg_y = -(A.y - B.y);  // y идет вниз
     } while (first != B);
-    send_data[4] = false;
+    send_data[4] = 0;
     for (int i = 1; i < world.size(); i++) world.send(i, 0, send_data.data(), 5);
   }
 

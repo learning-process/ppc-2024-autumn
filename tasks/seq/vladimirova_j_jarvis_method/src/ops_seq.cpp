@@ -23,11 +23,11 @@ size_t FindMinAngle(vladimirova_j_jarvis_method_seq::Point* A, vladimirova_j_jar
       double BA_length = std::sqrt(reg_x * reg_x + reg_y * reg_y);
       double BC_length = std::sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
       double length = BA_length * BC_length;
-      double angle = (double)(tmp_x * reg_x + tmp_y * reg_y);
+      double angle = tmp_x * reg_x + tmp_y * reg_y;
       if (length == 0)
         angle = 0;
       else
-        angle = (double)(tmp_x * reg_x + tmp_y * reg_y) / (length);
+        angle = angle / (length);
       if (angle < min_angle) {
         min_angle = angle;
         min_angle_point = i;
@@ -47,8 +47,8 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::pre_processing() {
   row = (size_t)taskData->inputs_count[0];
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < col * row; i++) {
-    if ((int)tmp_ptr[i] != 255) {
-      input_.push_back(vladimirova_j_jarvis_method_seq::Point((int)(i % col), (int)(i / col)));
+    if (tmp_ptr[i] != 255) {
+      input_.emplace_back(vladimirova_j_jarvis_method_seq::Point((int)(i % col), (int)(i / col)));
     }
   }
   res_.clear();
@@ -58,12 +58,12 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::pre_processing() {
 bool vladimirova_j_jarvis_method_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  if (!(taskData->inputs_count[1] > 0 && taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0)) return false;
+  if (taskData->inputs_count[1] <= 0 || taskData->inputs_count[0] <= 0 || taskData->outputs_count[0] <= 0) return false;
 
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   size_t c = 0;
   for (size_t i = 0; i < taskData->inputs_count[0] * taskData->inputs_count[1]; i++) {
-    if ((int)(tmp_ptr[i]) != 255) c++;
+    if (tmp_ptr[i] != 255) c++;
   }
   return (c > 2);
 }
@@ -99,9 +99,6 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
     B = &input_[i];
 
   } while (B != first);
-
-  B = &tmp;
-  A = &tmp;
 
   return true;
 }
