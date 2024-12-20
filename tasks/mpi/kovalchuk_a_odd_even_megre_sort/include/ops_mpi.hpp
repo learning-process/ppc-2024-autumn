@@ -42,4 +42,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace kovalchuk_a_horizontal_tape_scheme
+}  // namespace kovalchuk_a_odd_even
