@@ -53,6 +53,10 @@ bool chastov_v_count_words_in_line_mpi::TestMPITaskParallel::run() {
       input_[i] = tmp[i];
     }
     blockSize = taskData->inputs_count[0] / world.size();
+    int remainder = taskData->inputs_count[0] % world.size();
+    if (world.rank() < remainder) {
+      blockSize++;
+    }
   }
   boost::mpi::broadcast(world, blockSize, 0);
 

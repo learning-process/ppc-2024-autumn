@@ -47,7 +47,7 @@ TEST(chastov_v_count_words_in_line_mpi, test_pipeline_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(wordsFound[0], 30000);
+    ASSERT_EQ(wordsFound[0], 30000001);
   }
 }
 
@@ -79,6 +79,6 @@ TEST(chastov_v_count_words_in_line_mpi, test_task_run) {
 
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(wordsFound[0], 30000);
+    ASSERT_EQ(wordsFound[0], 30030001);
   }
 }

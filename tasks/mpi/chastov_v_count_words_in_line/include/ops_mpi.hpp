@@ -1,6 +1,5 @@
 // Copyright 2024 Chastov Vyacheslav
 #pragma once
-
 #include <gtest/gtest.h>
 
 #include <algorithm>
