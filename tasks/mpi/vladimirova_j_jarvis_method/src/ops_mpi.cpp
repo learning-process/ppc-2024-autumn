@@ -1,9 +1,9 @@
 #include "mpi/vladimirova_j_jarvis_method/include/ops_mpi.hpp"
 
+#include <cmath>
 #include <string>
 #include <thread>
 #include <vector>
-#include <cmath>
 
 using namespace std::chrono_literals;
 using namespace vladimirova_j_jarvis_method_mpi;
@@ -289,7 +289,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       double min_angle = 5000;
       std::vector<double> ans = getMinAngleMPI(send_data[0], send_data[1], B, local_input_, f);
       f = true;
-      size_t itr = (size_t)ans[0];
+      size_t itr = ans[0];
       C = local_input_[itr];
       min_angle = ans[1];
       sz = (size_t)ans[2];
