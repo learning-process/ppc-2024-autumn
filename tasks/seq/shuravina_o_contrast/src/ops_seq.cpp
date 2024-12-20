@@ -1,18 +1,10 @@
-#include "seq/shuravina_o_contrast/include/ops_seq.hpp"
-
 #include <algorithm>
-#include <iostream>
+
+#include "seq/shuravina_o_contrast/include/ops_seq.hpp"
 
 namespace shuravina_o_contrast {
 
 bool ContrastTaskSequential::pre_processing() {
-  internal_order_test();
-
-  if (taskData->inputs_count.empty() || taskData->inputs_count[0] == 0) {
-    std::cerr << "Error: Input image is empty." << std::endl;
-    return false;
-  }
-
   input_ = std::vector<uint8_t>(taskData->inputs_count[0]);
   auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input_.begin());
@@ -20,20 +12,9 @@ bool ContrastTaskSequential::pre_processing() {
   return true;
 }
 
-bool ContrastTaskSequential::validation() {
-  internal_order_test();
-
-  return taskData->outputs_count[0] == taskData->inputs_count[0];
-}
+bool ContrastTaskSequential::validation() { return taskData->outputs_count[0] == taskData->inputs_count[0]; }
 
 bool ContrastTaskSequential::run() {
-  internal_order_test();
-
-  if (input_.empty()) {
-    std::cerr << "Error: Input image is empty." << std::endl;
-    return false;
-  }
-
   uint8_t min_val = *std::min_element(input_.begin(), input_.end());
   uint8_t max_val = *std::max_element(input_.begin(), input_.end());
 
@@ -44,13 +25,6 @@ bool ContrastTaskSequential::run() {
 }
 
 bool ContrastTaskSequential::post_processing() {
-  internal_order_test();
-
-  if (output_.empty()) {
-    std::cerr << "Error: Output image is empty." << std::endl;
-    return false;
-  }
-
   auto* tmp_ptr = reinterpret_cast<uint8_t*>(taskData->outputs[0]);
   std::copy(output_.begin(), output_.end(), tmp_ptr);
   return true;

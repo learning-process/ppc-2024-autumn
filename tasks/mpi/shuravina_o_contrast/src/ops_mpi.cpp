@@ -1,14 +1,12 @@
-#include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
-
 #include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <limits>
 
+#include "mpi/shuravina_o_contrast/include/ops_mpi.hpp"
+
 namespace shuravina_o_contrast {
 
 bool ContrastTaskParallel::pre_processing() {
-  internal_order_test();
-
   if (taskData->inputs_count.empty() || taskData->outputs_count.empty()) {
     return false;
   }
@@ -23,8 +21,6 @@ bool ContrastTaskParallel::pre_processing() {
 }
 
 bool ContrastTaskParallel::validation() {
-  internal_order_test();
-
   if (world.rank() == 0) {
     return taskData->outputs_count[0] == taskData->inputs_count[0];
   }
@@ -32,8 +28,6 @@ bool ContrastTaskParallel::validation() {
 }
 
 bool ContrastTaskParallel::run() {
-  internal_order_test();
-
   unsigned int delta = taskData->inputs_count[0] / world.size();
   broadcast(world, delta, 0);
 
@@ -81,9 +75,6 @@ bool ContrastTaskParallel::run() {
   return true;
 }
 
-bool ContrastTaskParallel::post_processing() {
-  internal_order_test();
-  return true;
-}
+bool ContrastTaskParallel::post_processing() { return true; }
 
 }  // namespace shuravina_o_contrast
