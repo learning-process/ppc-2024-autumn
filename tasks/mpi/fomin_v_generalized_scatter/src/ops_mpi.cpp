@@ -39,23 +39,26 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   int datatype_size;
   MPI_Type_size(sendtype, &datatype_size);
 
-  // Use std::vector for safe memory management
   std::vector<int> subtree_sizes(size, 0);
 
-  // Calculate subtree sizes on root and broadcast to all processes
   if (rank == root) {
+    // Calculate subtree sizes
     for (int i = size - 1; i >= 0; --i) {
       subtree_sizes[i] = 1;
       if (2 * i + 1 < size) subtree_sizes[i] += subtree_sizes[2 * i + 1];
       if (2 * i + 2 < size) subtree_sizes[i] += subtree_sizes[2 * i + 2];
     }
+    // Check that sendbuf is not null on root
+    if (sendbuf == nullptr) {
+      return MPI_ERR_BUFFER;
+    }
+    // Check consistency of sendcount and recvcount
+    if (sendcount != subtree_sizes[root] * recvcount) {
+      return MPI_ERR_COUNT;
+    }
   }
-  MPI_Bcast(subtree_sizes.data(), subtree_sizes.size(), MPI_INT, root, comm);
 
-  // Check for consistency of sendcount and recvcount
-  if (rank == root && sendcount != subtree_sizes[root] * recvcount) {
-    return MPI_ERR_COUNT;
-  }
+  MPI_Bcast(subtree_sizes.data(), subtree_sizes.size(), MPI_INT, root, comm);
 
   int parent = (rank == root) ? MPI_PROC_NULL : (rank - 1) / 2;
   int left_child = 2 * rank + 1;
@@ -68,6 +71,10 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
 
   if (rank == root) {
     const char* send_ptr = static_cast<const char*>(sendbuf);
+    // Check recvbuf is not null
+    if (recvbuf == nullptr) {
+      return MPI_ERR_BUFFER;
+    }
     memcpy(recvbuf, send_ptr, recvcount * datatype_size);
 
     if (left_child < size) {
@@ -84,7 +91,10 @@ int fomin_v_generalized_scatter::generalized_scatter(const void* sendbuf, int se
   } else {
     MPI_Status status;
     MPI_Recv(temp_buffer.data(), subtree_sizes[rank] * recvcount * datatype_size, MPI_CHAR, parent, 0, comm, &status);
-
+    // Check recvbuf is not null
+    if (recvbuf == nullptr) {
+      return MPI_ERR_BUFFER;
+    }
     memcpy(recvbuf, temp_buffer.data(), recvcount * datatype_size);
 
     if (left_child < size) {
