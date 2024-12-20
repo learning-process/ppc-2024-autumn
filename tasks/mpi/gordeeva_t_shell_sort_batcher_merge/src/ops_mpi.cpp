@@ -46,9 +46,9 @@ bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::pre_process
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  if ((taskData->inputs.empty() || taskData->outputs.empty()) || (taskData->inputs_count[0] <= 0) ||
-      (taskData->outputs_count.size() != 1))
-    return false;
+  if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
+  if (taskData->inputs_count[0] <= 0) return false;
+  if (taskData->outputs_count.size() != 1) return false;
   return true;
 }
 
