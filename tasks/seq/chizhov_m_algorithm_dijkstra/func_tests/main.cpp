@@ -32,7 +32,7 @@ TEST(chizhov_m_dijkstra_realization, Test_Graph_3x3) {
   ASSERT_EQ(ans, res);
 }
 
-TEST(chizhov_m_dijkstra_realization, Test_Graph_4x4) {
+TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_4x4) {
   int size = 4;
   int st = 0;
 
@@ -59,7 +59,7 @@ TEST(chizhov_m_dijkstra_realization, Test_Graph_4x4) {
   ASSERT_EQ(ans, res);
 }
 
-TEST(chizhov_m_dijkstra_realization, Test_Graph_5x5) {
+TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_5x5) {
   int size = 5;
   int st = 0;
 
@@ -88,7 +88,7 @@ TEST(chizhov_m_dijkstra_realization, Test_Graph_5x5) {
   ASSERT_EQ(ans, res);
 }
 
-TEST(chizhov_m_dijkstra_realization, Test_Negative_Value) {
+TEST(chizhov_m_dijkstra_realization_seq, Test_Negative_Value) {
   int size = 3;
   int st = 0;
 
@@ -110,7 +110,7 @@ TEST(chizhov_m_dijkstra_realization, Test_Negative_Value) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 
-TEST(chizhov_m_dijkstra_realization, Test_Source_Vertex_False) {
+TEST(chizhov_m_dijkstra_realization_seq, Test_Source_Vertex_False) {
   int size = 3;
   int st = 5;
 

@@ -1,6 +1,11 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/chizhov_m_algorithm_dijkstra/include/ops_seq.hpp"
 
+#include <algorithm>
+#include <vector>
+
+const int INF = std::numeric_limits<int>::max();
+
 bool chizhov_m_dijkstra_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -33,10 +38,8 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::validation() {
 
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (unsigned int j = 0; j < taskData->inputs_count[0]; j++) {
-      if (tmp_ptr[j] < 0) {
-        return false;
-      }
+    if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
+      return false;
     }
   }
 
@@ -62,8 +65,8 @@ void chizhov_m_dijkstra_seq::convertToCRS(const std::vector<std::vector<int>>& w
     rowPtr[i] = nnz;
     for (int j = 0; j < n; j++) {
       if (w[i][j] != 0) {
-        values.push_back(w[i][j]);
-        colIndex.push_back(j);
+        values.emplace_back(w[i][j]);
+        colIndex.emplace_back(j);
         nnz++;
       }
     }
@@ -79,11 +82,11 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::run() {
   convertToCRS(input_, values, colIndex, rowPtr);
 
   std::vector<bool> visited(size, false);
-  std::vector<int> D(size, INT_MAX);
+  std::vector<int> D(size, INF);
   D[st] = 0;
 
   for (int i = 0; i < size; i++) {
-    int min = INT_MAX;
+    int min = INF;
     int index = -1;
     for (int j = 0; j < size; j++) {
       if (!visited[j] && D[j] < min) {
@@ -101,7 +104,7 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::run() {
       int v = colIndex[j];
       int weight = values[j];
 
-      if (!visited[v] && D[u] != INT_MAX && (D[u] + weight < D[v])) {
+      if (!visited[v] && D[u] != INF && (D[u] + weight < D[v])) {
         D[v] = D[u] + weight;
       }
     }
@@ -114,8 +117,6 @@ bool chizhov_m_dijkstra_seq::TestTaskSequential::run() {
 
 bool chizhov_m_dijkstra_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < size; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
-  }
+  std::copy(res_.begin(), res_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   return true;
 }

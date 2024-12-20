@@ -3,9 +3,9 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
-#include <string>
 #include <vector>
+
+const int INF = std::numeric_limits<int>::max();
 
 void chizhov_m_dijkstra_mpi::convertToCRS(const std::vector<std::vector<int>>& w, std::vector<int>& values,
                                           std::vector<int>& colIndex, std::vector<int>& rowPtr) {
@@ -16,8 +16,8 @@ void chizhov_m_dijkstra_mpi::convertToCRS(const std::vector<std::vector<int>>& w
     rowPtr[i] = nnz;
     for (int j = 0; j < n; j++) {
       if (w[i][j] != 0) {
-        values.push_back(w[i][j]);
-        colIndex.push_back(j);
+        values.emplace_back(w[i][j]);
+        colIndex.emplace_back(j);
         nnz++;
       }
     }
@@ -57,10 +57,8 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::validation() {
 
   for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (unsigned int j = 0; j < taskData->inputs_count[0]; j++) {
-      if (tmp_ptr[j] < 0) {
-        return false;
-      }
+    if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
+      return false;
     }
   }
 
@@ -83,11 +81,11 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::run() {
   convertToCRS(input_, values, colIndex, rowPtr);
 
   std::vector<bool> visited(size, false);
-  std::vector<int> D(size, INT_MAX);
+  std::vector<int> D(size, INF);
   D[st] = 0;
 
   for (int i = 0; i < size; i++) {
-    int min = INT_MAX;
+    int min = INF;
     int index = -1;
     for (int j = 0; j < size; j++) {
       if (!visited[j] && D[j] < min) {
@@ -105,7 +103,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::run() {
       int v = colIndex[j];
       int weight = values[j];
 
-      if (!visited[v] && D[u] != INT_MAX && (D[u] + weight < D[v])) {
+      if (!visited[v] && D[u] != INF && (D[u] + weight < D[v])) {
         D[v] = D[u] + weight;
       }
     }
@@ -118,9 +116,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::run() {
 
 bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
-  for (int i = 0; i < size; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
-  }
+  std::copy(res_.begin(), res_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   return true;
 }
 
@@ -160,10 +156,8 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::validation() {
 
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
       auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      for (unsigned int j = 0; j < taskData->inputs_count[0]; j++) {
-        if (tmp_ptr[j] < 0) {
-          return false;
-        }
+      if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
+        return false;
       }
     }
 
@@ -212,7 +206,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
 
   res_.resize(size, INT_MAX);
   std::vector<bool> visited(size, false);
-  std::vector<int> D(size, INT_MAX);
+  std::vector<int> D(size, INF);
 
   if (world.rank() == 0) {
     res_[st] = 0;
@@ -221,7 +215,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
   boost::mpi::broadcast(world, res_.data(), size, 0);
 
   for (int k = 0; k < size; k++) {
-    int local_min = INT_MAX;
+    int local_min = INF;
     int local_index = -1;
 
     for (int i = start_index; i < end_index; i++) {
@@ -232,7 +226,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
     }
 
     std::pair<int, int> local_pair = {local_min, local_index};
-    std::pair<int, int> global_pair = {INT_MAX, -1};
+    std::pair<int, int> global_pair = {INF, -1};
 
     boost::mpi::all_reduce(world, local_pair, global_pair,
                            [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
@@ -241,7 +235,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
                              return a;
                            });
 
-    if (global_pair.first == INT_MAX || global_pair.second == -1) {
+    if (global_pair.first == INF || global_pair.second == -1) {
       break;
     }
 
@@ -251,7 +245,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
       int v = colIndex[j];
       int w = values[j];
 
-      if (!visited[v] && res_[global_pair.second] != INT_MAX && (res_[global_pair.second] + w < res_[v])) {
+      if (!visited[v] && res_[global_pair.second] != INF && (res_[global_pair.second] + w < res_[v])) {
         res_[v] = res_[global_pair.second] + w;
       }
     }
@@ -266,9 +260,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::run() {
 bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (int i = 0; i < size; i++) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
-    }
+    std::copy(res_.begin(), res_.end(), reinterpret_cast<int*>(taskData->outputs[0]));
   }
   return true;
 }

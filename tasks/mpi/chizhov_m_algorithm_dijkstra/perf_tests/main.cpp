@@ -12,11 +12,11 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_pipeline_run) {
   int count_size_vector = 1000;
   int st = 0;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_path(count_size_vector, 1);
+  std::vector<int32_t> global_path(count_size_vector, 3);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix.resize(count_size_vector, std::vector<int>(count_size_vector, 1));
+    global_matrix.resize(count_size_vector, std::vector<int>(count_size_vector, 3));
     for (int i = 0; i < count_size_vector; i++) {
       global_matrix[i][i] = 0;
     }
@@ -49,20 +49,20 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_path[1]);
+    ASSERT_EQ(3, global_path[3]);
   }
 }
 
 TEST(chizhov_m_dijkstra_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
   int count_size_vector = 1000;
-  int st = 0;
+  int st = 5;
   std::vector<std::vector<int>> global_matrix;
-  std::vector<int32_t> global_path(count_size_vector, 1);
+  std::vector<int32_t> global_path(count_size_vector, 3);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix.resize(count_size_vector, std::vector<int>(count_size_vector, 1));
+    global_matrix.resize(count_size_vector, std::vector<int>(count_size_vector, 3));
     for (int i = 0; i < count_size_vector; i++) {
       global_matrix[i][i] = 0;
     }
@@ -95,6 +95,6 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(1, global_path[1]);
+    ASSERT_EQ(3, global_path[3]);
   }
 }
