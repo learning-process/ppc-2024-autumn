@@ -12,14 +12,12 @@
 TEST(MonteCarloIntegration, SequentialVsParallel) {
   const double a = 0.0;
   const double b = 1.0;
-  const int num_samples = 100000;  // Количество выборок
-  const int seed = 12345;  // Начальное значение для генератора случайных чисел
+  const int num_samples = 100000;
+  const int seed = 12345;
 
-  // Вектор для хранения результатов
   std::vector<double> sequential_res(1, 0.0);
   std::vector<double> parallel_res(1, 0.0);
 
-  // Инициализация данных задачи для последовательного выполнения
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<double> inputs = {a, b, static_cast<double>(num_samples), static_cast<double>(seed)};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputs.data()));
@@ -27,7 +25,6 @@ TEST(MonteCarloIntegration, SequentialVsParallel) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sequential_res.data()));
   taskDataSeq->outputs_count.emplace_back(sequential_res.size());
 
-  // Создание и запуск последовательного выполнения
   pikarychev_i_monte_carlo_parallel::TestMPITaskSequential sequentialTask(taskDataSeq);
   ASSERT_TRUE(sequentialTask.validation());
   ASSERT_TRUE(sequentialTask.pre_processing());
@@ -36,26 +33,22 @@ TEST(MonteCarloIntegration, SequentialVsParallel) {
 
   double sequential_result = sequential_res[0];
 
-  // Инициализация данных задачи для параллельного выполнения
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputs.data()));
   taskDataPar->inputs_count.emplace_back(inputs.size());
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(parallel_res.data()));
   taskDataPar->outputs_count.emplace_back(parallel_res.size());
 
-  // Создание и запуск параллельного выполнения
   pikarychev_i_monte_carlo_parallel::TestMPITaskParallel parallelTask(taskDataPar);
   ASSERT_TRUE(parallelTask.validation());
   ASSERT_TRUE(parallelTask.pre_processing());
   ASSERT_TRUE(parallelTask.run());
   ASSERT_TRUE(parallelTask.post_processing());
 
-  // Только процесс с rank 0 выполняет проверку результата
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   if (rank == 0) {
     double parallel_result = parallel_res[0];
-    // Сравнение результатов
     ASSERT_NEAR(sequential_result, parallel_result, 0.1);
   }
 }
@@ -63,13 +56,11 @@ TEST(MonteCarloIntegration, SequentialVsParallel) {
 TEST(MonteCarloIntegration, SequentialVsParallel_1) {
   const double a = 0.0;
   const double b = 0.0;
-  const int num_samples = 1;  // Количество выборок
-  const int seed = 12345;  // Начальное значение для генератора случайных чисел
+  const int num_samples = 1;
+  const int seed = 12345;
 
-  // Вектор для хранения результатов
   std::vector<double> sequential_res(1, 0.0);
   std::vector<double> parallel_res(1, 0.0);
-  // Инициализация данных задачи для последовательного выполнения
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   std::vector<double> inputs = {a, b, static_cast<double>(num_samples), static_cast<double>(seed)};
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputs.data()));
@@ -77,7 +68,6 @@ TEST(MonteCarloIntegration, SequentialVsParallel_1) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sequential_res.data()));
   taskDataSeq->outputs_count.emplace_back(sequential_res.size());
 
-  // Создание и запуск последовательного выполнения
   pikarychev_i_monte_carlo_parallel::TestMPITaskSequential sequentialTask(taskDataSeq);
   ASSERT_TRUE(sequentialTask.validation());
   ASSERT_TRUE(sequentialTask.pre_processing());
@@ -105,8 +95,8 @@ TEST(MonteCarloIntegration, SequentialVsParallel_1) {
 TEST(MonteCarloIntegration, SequentialVsParallel_4) {
   const double a = -1.0;
   const double b = 1.0;
-  const int num_samples = 100;  // Количество выборок
-  const int seed = 1;  // Начальное значение для генератора случайных чисел
+  const int num_samples = 100;
+  const int seed = 1;
   std::vector<double> sequential_res(1, 0.33335967263763133);
   std::vector<double> parallel_res(1, 0.33335967263763133);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -142,8 +132,8 @@ TEST(MonteCarloIntegration, SequentialVsParallel_4) {
 TEST(MonteCarloIntegration, SequentialVsParallel_5) {
   const double a = -1.0;
   const double b = -2.0;
-  const int num_samples = 100;  // Количество выборок
-  const int seed = 1;  // Начальное значение для генератора случайных чисел
+  const int num_samples = 100;
+  const int seed = 1;
   std::vector<double> sequential_res(1, 0.33335967263763133);
   std::vector<double> parallel_res(1, 0.33335967263763133);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -179,8 +169,8 @@ TEST(MonteCarloIntegration, SequentialVsParallel_5) {
 TEST(MonteCarloIntegration, SequentialVsParallel_9) {
   const double a = 0.0;
   const double b = 1000.0;
-  const int num_samples = 1000;  // Количество выборок
-  const int seed = 1;  // Начальное значение для генератора случайных чисел
+  const int num_samples = 1000;
+  const int seed = 1;
   std::vector<double> sequential_res(1, 0.0);
   std::vector<double> parallel_res(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -219,8 +209,8 @@ TEST(MonteCarloIntegration, SequentialVsParallel_reg9) {
   std::mt19937 gen(dev());
   double a = (gen() % 100) / 100.0;
   double b = (gen() % 100) / 100.0;
-  const int num_samples = 1000;  // Количество выборок
-  const int seed = 1;  // Начальное значение для генератора случайных чисел
+  const int num_samples = 1000;
+  const int seed = 1;
   std::vector<double> sequential_res(1, 0.0);
   std::vector<double> parallel_res(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
