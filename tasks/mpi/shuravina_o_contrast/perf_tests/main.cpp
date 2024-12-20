@@ -53,7 +53,6 @@ TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Small_Image) {
     std::cout << "Time taken for small image: " << elapsed.count() << " seconds" << std::endl;
   }
 }
-
 TEST(shuravina_o_contrast_perf, Test_Contrast_Enhancement_Large_Image) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
