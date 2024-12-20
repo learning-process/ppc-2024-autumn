@@ -179,3 +179,32 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::post_processing() {
   }
   return true;
 }
+void morozov_e_mult_sparse_matrix::fillData(std::shared_ptr<ppc::core::TaskData>& taskData, int rowsA, int columnsA,
+                                            int rowsB, int columnsB, std::vector<double>& dA,
+                                            std::vector<int>& row_indA, std::vector<int>& col_indA,
+                                            std::vector<double>& dB, std::vector<int>& row_indB,
+                                            std::vector<int>& col_indB, std::vector<std::vector<double>>& out) {
+  taskData->inputs_count.emplace_back(rowsA);
+  taskData->inputs_count.emplace_back(columnsA);
+  taskData->inputs_count.emplace_back(dA.size());
+  taskData->inputs_count.emplace_back(row_indA.size());
+  taskData->inputs_count.emplace_back(col_indA.size());
+
+  taskData->inputs_count.emplace_back(rowsB);
+  taskData->inputs_count.emplace_back(columnsB);
+  taskData->inputs_count.emplace_back(dB.size());
+  taskData->inputs_count.emplace_back(row_indB.size());
+  taskData->inputs_count.emplace_back(col_indB.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(dA.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_indA.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indA.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(dB.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(row_indB.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(col_indB.data()));
+
+  for (size_t i = 0; i < out.size(); ++i) {
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(out[i].data()));
+  }
+  taskData->outputs_count.emplace_back(out.size());
+  taskData->outputs_count.emplace_back(out[0].size());
+}

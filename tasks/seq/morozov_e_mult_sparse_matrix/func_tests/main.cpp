@@ -16,29 +16,9 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_columnsA_notEqual_rowsB_1) {
   morozov_e_mult_sparse_matrix::convertToCCS(matrixB, dB, row_indB, col_indB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(matrixA.size());
-  taskData->inputs_count.emplace_back(matrixA[0].size());
-  taskData->inputs_count.emplace_back(dA.size());
-  taskData->inputs_count.emplace_back(row_indA.size());
-  taskData->inputs_count.emplace_back(col_indA.size());
-
-  taskData->inputs_count.emplace_back(matrixB.size());
-  taskData->inputs_count.emplace_back(matrixB[0].size());
-  taskData->inputs_count.emplace_back(dB.size());
-  taskData->inputs_count.emplace_back(row_indB.size());
-  taskData->inputs_count.emplace_back(col_indB.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (size_t i = 0; i < out.size(); ++i) {
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-  }
-  taskData->outputs_count.emplace_back(out.size());
-  taskData->outputs_count.emplace_back(out[0].size());
+  morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(), matrixB[0].size(),
+                                         dA, row_indA, col_indA, dB, row_indB, col_indB, out);
 
   morozov_e_mult_sparse_matrix::TestTaskSequential testTaskSequential(taskData);
   ASSERT_FALSE(testTaskSequential.validation());
@@ -56,29 +36,9 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_columnsA_notEqual_rowsB_2) {
   morozov_e_mult_sparse_matrix::convertToCCS(matrixB, dB, row_indB, col_indB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(matrixA.size());
-  taskData->inputs_count.emplace_back(matrixA[0].size());
-  taskData->inputs_count.emplace_back(dA.size());
-  taskData->inputs_count.emplace_back(row_indA.size());
-  taskData->inputs_count.emplace_back(col_indA.size());
-
-  taskData->inputs_count.emplace_back(matrixB.size());
-  taskData->inputs_count.emplace_back(matrixB[0].size());
-  taskData->inputs_count.emplace_back(dB.size());
-  taskData->inputs_count.emplace_back(row_indB.size());
-  taskData->inputs_count.emplace_back(col_indB.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (size_t i = 0; i < out.size(); ++i) {
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-  }
-  taskData->outputs_count.emplace_back(out.size());
-  taskData->outputs_count.emplace_back(out[0].size());
+  morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(), matrixB[0].size(),
+                                         dA, row_indA, col_indA, dB, row_indB, col_indB, out);
 
   morozov_e_mult_sparse_matrix::TestTaskSequential testTaskSequential(taskData);
   ASSERT_FALSE(testTaskSequential.validation());
@@ -96,29 +56,9 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_columnsAns_notEqual_columnsB)
   morozov_e_mult_sparse_matrix::convertToCCS(matrixB, dB, row_indB, col_indB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(matrixA.size());
-  taskData->inputs_count.emplace_back(matrixA[0].size());
-  taskData->inputs_count.emplace_back(dA.size());
-  taskData->inputs_count.emplace_back(row_indA.size());
-  taskData->inputs_count.emplace_back(col_indA.size());
-
-  taskData->inputs_count.emplace_back(matrixB.size());
-  taskData->inputs_count.emplace_back(matrixB[0].size());
-  taskData->inputs_count.emplace_back(dB.size());
-  taskData->inputs_count.emplace_back(row_indB.size());
-  taskData->inputs_count.emplace_back(col_indB.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-  std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (size_t i = 0; i < out.size(); ++i) {
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-  }
-  taskData->outputs_count.emplace_back(out.size());
-  taskData->outputs_count.emplace_back(out[0].size() + 1);
+  std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size() + 1, 0));
+  morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(), matrixB[0].size(),
+                                         dA, row_indA, col_indA, dB, row_indB, col_indB, out);
 
   morozov_e_mult_sparse_matrix::TestTaskSequential testTaskSequential(taskData);
   ASSERT_FALSE(testTaskSequential.validation());
@@ -136,29 +76,9 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_rowssAns_notEqual_rowsB) {
   morozov_e_mult_sparse_matrix::convertToCCS(matrixB, dB, row_indB, col_indB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(matrixA.size());
-  taskData->inputs_count.emplace_back(matrixA[0].size());
-  taskData->inputs_count.emplace_back(dA.size());
-  taskData->inputs_count.emplace_back(row_indA.size());
-  taskData->inputs_count.emplace_back(col_indA.size());
-
-  taskData->inputs_count.emplace_back(matrixB.size());
-  taskData->inputs_count.emplace_back(matrixB[0].size());
-  taskData->inputs_count.emplace_back(dB.size());
-  taskData->inputs_count.emplace_back(row_indB.size());
-  taskData->inputs_count.emplace_back(col_indB.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-  std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (size_t i = 0; i < out.size(); ++i) {
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-  }
-  taskData->outputs_count.emplace_back(out.size() + 1);
-  taskData->outputs_count.emplace_back(out[0].size());
+  std::vector<std::vector<double>> out(matrixA.size() + 1, std::vector<double>(matrixB[0].size(), 0));
+  morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(), matrixB[0].size(),
+                                         dA, row_indA, col_indA, dB, row_indB, col_indB, out);
 
   morozov_e_mult_sparse_matrix::TestTaskSequential testTaskSequential(taskData);
   ASSERT_FALSE(testTaskSequential.validation());
@@ -176,30 +96,9 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main) {
   morozov_e_mult_sparse_matrix::convertToCCS(matrixB, dB, row_indB, col_indB);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(matrixA.size());
-  taskData->inputs_count.emplace_back(matrixA[0].size());
-  taskData->inputs_count.emplace_back(dA.size());
-  taskData->inputs_count.emplace_back(row_indA.size());
-  taskData->inputs_count.emplace_back(col_indA.size());
-
-  taskData->inputs_count.emplace_back(matrixB.size());
-  taskData->inputs_count.emplace_back(matrixB[0].size());
-  taskData->inputs_count.emplace_back(dB.size());
-  taskData->inputs_count.emplace_back(row_indB.size());
-  taskData->inputs_count.emplace_back(col_indB.size());
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-  for (size_t i = 0; i < out.size(); ++i) {
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-  }
-  taskData->outputs_count.emplace_back(out.size());
-  taskData->outputs_count.emplace_back(out[0].size());
-
+  morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(), matrixB[0].size(),
+                                         dA, row_indA, col_indA, dB, row_indB, col_indB, out);
   morozov_e_mult_sparse_matrix::TestTaskSequential testTaskSequential(taskData);
   ASSERT_TRUE(testTaskSequential.validation());
   testTaskSequential.pre_processing();

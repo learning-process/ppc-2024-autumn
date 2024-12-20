@@ -35,29 +35,8 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_colsA_notEqual_rowsB) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   if (world.rank() == 0) {
-    taskData->inputs_count.emplace_back(matrixA.size());
-    taskData->inputs_count.emplace_back(matrixA[0].size());
-    taskData->inputs_count.emplace_back(dA.size());
-    taskData->inputs_count.emplace_back(row_indA.size());
-    taskData->inputs_count.emplace_back(col_indA.size());
-
-    taskData->inputs_count.emplace_back(matrixB.size());
-    taskData->inputs_count.emplace_back(matrixB[0].size());
-    taskData->inputs_count.emplace_back(dB.size());
-    taskData->inputs_count.emplace_back(row_indB.size());
-    taskData->inputs_count.emplace_back(col_indB.size());
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < out.size(); ++i) {
-      taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-    }
-    taskData->outputs_count.emplace_back(out.size());
-    taskData->outputs_count.emplace_back(out[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, out);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskData);
@@ -81,29 +60,8 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_colsAns_notEqual_colsB) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size() + 1, 0));
   if (world.rank() == 0) {
-    taskData->inputs_count.emplace_back(matrixA.size());
-    taskData->inputs_count.emplace_back(matrixA[0].size());
-    taskData->inputs_count.emplace_back(dA.size());
-    taskData->inputs_count.emplace_back(row_indA.size());
-    taskData->inputs_count.emplace_back(col_indA.size());
-
-    taskData->inputs_count.emplace_back(matrixB.size());
-    taskData->inputs_count.emplace_back(matrixB[0].size());
-    taskData->inputs_count.emplace_back(dB.size());
-    taskData->inputs_count.emplace_back(row_indB.size());
-    taskData->inputs_count.emplace_back(col_indB.size());
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < out.size(); ++i) {
-      taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-    }
-    taskData->outputs_count.emplace_back(out.size());
-    taskData->outputs_count.emplace_back(out[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, out);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskData);
@@ -127,29 +85,8 @@ TEST(morozov_e_mult_sparse_matrix, Test_Validation_rowsAns_notEqual_rowsA) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<double>> out(matrixA.size() + 2, std::vector<double>(matrixB[0].size(), 0));
   if (world.rank() == 0) {
-    taskData->inputs_count.emplace_back(matrixA.size());
-    taskData->inputs_count.emplace_back(matrixA[0].size());
-    taskData->inputs_count.emplace_back(dA.size());
-    taskData->inputs_count.emplace_back(row_indA.size());
-    taskData->inputs_count.emplace_back(col_indA.size());
-
-    taskData->inputs_count.emplace_back(matrixB.size());
-    taskData->inputs_count.emplace_back(matrixB[0].size());
-    taskData->inputs_count.emplace_back(dB.size());
-    taskData->inputs_count.emplace_back(row_indB.size());
-    taskData->inputs_count.emplace_back(col_indB.size());
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < out.size(); ++i) {
-      taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
-    }
-    taskData->outputs_count.emplace_back(out.size());
-    taskData->outputs_count.emplace_back(out[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, out);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskData);
@@ -176,51 +113,11 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main1) {
   std::vector<std::vector<double>> outSeq(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   if (world.rank() == 0) {
     // parallel version
-    taskDataPar->inputs_count.emplace_back(matrixA.size());
-    taskDataPar->inputs_count.emplace_back(matrixA[0].size());
-    taskDataPar->inputs_count.emplace_back(dA.size());
-    taskDataPar->inputs_count.emplace_back(row_indA.size());
-    taskDataPar->inputs_count.emplace_back(col_indA.size());
-    taskDataPar->inputs_count.emplace_back(matrixB.size());
-    taskDataPar->inputs_count.emplace_back(matrixB[0].size());
-    taskDataPar->inputs_count.emplace_back(dB.size());
-    taskDataPar->inputs_count.emplace_back(row_indB.size());
-    taskDataPar->inputs_count.emplace_back(col_indB.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outPar.size(); ++i) {
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(outPar[i].data()));
-    }
-    taskDataPar->outputs_count.emplace_back(outPar.size());
-    taskDataPar->outputs_count.emplace_back(outPar[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataPar, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outPar);
     // seq version
-    taskDataSeq->inputs_count.emplace_back(matrixA.size());
-    taskDataSeq->inputs_count.emplace_back(matrixA[0].size());
-    taskDataSeq->inputs_count.emplace_back(dA.size());
-    taskDataSeq->inputs_count.emplace_back(row_indA.size());
-    taskDataSeq->inputs_count.emplace_back(col_indA.size());
-    taskDataSeq->inputs_count.emplace_back(matrixB.size());
-    taskDataSeq->inputs_count.emplace_back(matrixB[0].size());
-    taskDataSeq->inputs_count.emplace_back(dB.size());
-    taskDataSeq->inputs_count.emplace_back(row_indB.size());
-    taskDataSeq->inputs_count.emplace_back(col_indB.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outPar.size(); ++i) {
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outSeq[i].data()));
-    }
-    taskDataSeq->outputs_count.emplace_back(outSeq.size());
-    taskDataSeq->outputs_count.emplace_back(outSeq[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataSeq, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outSeq);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -266,53 +163,11 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main2) {
   std::vector<std::vector<double>> outSeq(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   if (world.rank() == 0) {
     // par version
-    taskDataPar->inputs_count.emplace_back(matrixA.size());
-    taskDataPar->inputs_count.emplace_back(matrixA[0].size());
-    taskDataPar->inputs_count.emplace_back(dA.size());
-    taskDataPar->inputs_count.emplace_back(row_indA.size());
-    taskDataPar->inputs_count.emplace_back(col_indA.size());
-
-    taskDataPar->inputs_count.emplace_back(matrixB.size());
-    taskDataPar->inputs_count.emplace_back(matrixB[0].size());
-    taskDataPar->inputs_count.emplace_back(dB.size());
-    taskDataPar->inputs_count.emplace_back(row_indB.size());
-    taskDataPar->inputs_count.emplace_back(col_indB.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outPar.size(); ++i) {
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(outPar[i].data()));
-    }
-    taskDataPar->outputs_count.emplace_back(outPar.size());
-    taskDataPar->outputs_count.emplace_back(outPar[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataPar, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outPar);
     // seq version
-    taskDataSeq->inputs_count.emplace_back(matrixA.size());
-    taskDataSeq->inputs_count.emplace_back(matrixA[0].size());
-    taskDataSeq->inputs_count.emplace_back(dA.size());
-    taskDataSeq->inputs_count.emplace_back(row_indA.size());
-    taskDataSeq->inputs_count.emplace_back(col_indA.size());
-
-    taskDataSeq->inputs_count.emplace_back(matrixB.size());
-    taskDataSeq->inputs_count.emplace_back(matrixB[0].size());
-    taskDataSeq->inputs_count.emplace_back(dB.size());
-    taskDataSeq->inputs_count.emplace_back(row_indB.size());
-    taskDataSeq->inputs_count.emplace_back(col_indB.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outSeq.size(); ++i) {
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outSeq[i].data()));
-    }
-    taskDataSeq->outputs_count.emplace_back(outSeq.size());
-    taskDataSeq->outputs_count.emplace_back(outSeq[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataSeq, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outSeq);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -357,53 +212,11 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main3) {
   std::vector<std::vector<double>> outPar(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   std::vector<std::vector<double>> outSeq(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   if (world.rank() == 0) {
-    taskDataPar->inputs_count.emplace_back(matrixA.size());
-    taskDataPar->inputs_count.emplace_back(matrixA[0].size());
-    taskDataPar->inputs_count.emplace_back(dA.size());
-    taskDataPar->inputs_count.emplace_back(row_indA.size());
-    taskDataPar->inputs_count.emplace_back(col_indA.size());
-
-    taskDataPar->inputs_count.emplace_back(matrixB.size());
-    taskDataPar->inputs_count.emplace_back(matrixB[0].size());
-    taskDataPar->inputs_count.emplace_back(dB.size());
-    taskDataPar->inputs_count.emplace_back(row_indB.size());
-    taskDataPar->inputs_count.emplace_back(col_indB.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outPar.size(); ++i) {
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(outPar[i].data()));
-    }
-    taskDataPar->outputs_count.emplace_back(outPar.size());
-    taskDataPar->outputs_count.emplace_back(outPar[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataPar, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outPar);
     // seq version
-    taskDataSeq->inputs_count.emplace_back(matrixA.size());
-    taskDataSeq->inputs_count.emplace_back(matrixA[0].size());
-    taskDataSeq->inputs_count.emplace_back(dA.size());
-    taskDataSeq->inputs_count.emplace_back(row_indA.size());
-    taskDataSeq->inputs_count.emplace_back(col_indA.size());
-
-    taskDataSeq->inputs_count.emplace_back(matrixB.size());
-    taskDataSeq->inputs_count.emplace_back(matrixB[0].size());
-    taskDataSeq->inputs_count.emplace_back(dB.size());
-    taskDataSeq->inputs_count.emplace_back(row_indB.size());
-    taskDataSeq->inputs_count.emplace_back(col_indB.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outSeq.size(); ++i) {
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outSeq[i].data()));
-    }
-    taskDataSeq->outputs_count.emplace_back(outSeq.size());
-    taskDataSeq->outputs_count.emplace_back(outSeq[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataSeq, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outSeq);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
@@ -448,53 +261,11 @@ TEST(morozov_e_mult_sparse_matrix, Test_Main4) {
   std::vector<std::vector<double>> outPar(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   std::vector<std::vector<double>> outSeq(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
   if (world.rank() == 0) {
-    taskDataPar->inputs_count.emplace_back(matrixA.size());
-    taskDataPar->inputs_count.emplace_back(matrixA[0].size());
-    taskDataPar->inputs_count.emplace_back(dA.size());
-    taskDataPar->inputs_count.emplace_back(row_indA.size());
-    taskDataPar->inputs_count.emplace_back(col_indA.size());
-
-    taskDataPar->inputs_count.emplace_back(matrixB.size());
-    taskDataPar->inputs_count.emplace_back(matrixB[0].size());
-    taskDataPar->inputs_count.emplace_back(dB.size());
-    taskDataPar->inputs_count.emplace_back(row_indB.size());
-    taskDataPar->inputs_count.emplace_back(col_indB.size());
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outPar.size(); ++i) {
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(outPar[i].data()));
-    }
-    taskDataPar->outputs_count.emplace_back(outPar.size());
-    taskDataPar->outputs_count.emplace_back(outPar[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataPar, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outPar);
     // seq version
-    taskDataSeq->inputs_count.emplace_back(matrixA.size());
-    taskDataSeq->inputs_count.emplace_back(matrixA[0].size());
-    taskDataSeq->inputs_count.emplace_back(dA.size());
-    taskDataSeq->inputs_count.emplace_back(row_indA.size());
-    taskDataSeq->inputs_count.emplace_back(col_indA.size());
-
-    taskDataSeq->inputs_count.emplace_back(matrixB.size());
-    taskDataSeq->inputs_count.emplace_back(matrixB[0].size());
-    taskDataSeq->inputs_count.emplace_back(dB.size());
-    taskDataSeq->inputs_count.emplace_back(row_indB.size());
-    taskDataSeq->inputs_count.emplace_back(col_indB.size());
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indA.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(dB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row_indB.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(col_indB.data()));
-
-    for (size_t i = 0; i < outSeq.size(); ++i) {
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outSeq[i].data()));
-    }
-    taskDataSeq->outputs_count.emplace_back(outSeq.size());
-    taskDataSeq->outputs_count.emplace_back(outSeq[0].size());
+    morozov_e_mult_sparse_matrix::fillData(taskDataSeq, matrixA.size(), matrixA[0].size(), matrixB.size(),
+                                           matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, outSeq);
   }
 
   morozov_e_mult_sparse_matrix::TestMPITaskParallel testMpiTaskParallel(taskDataPar);

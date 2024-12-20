@@ -21,6 +21,9 @@ std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> co
     int columnsA, int rowsB, int columnsB);
 void convertToCCS(const std::vector<std::vector<double>> &matrix, std::vector<double> &values,
                   std::vector<int> &row_indices, std::vector<int> &col_pointers);
+void fillData(std::shared_ptr<ppc::core::TaskData> &taskData, int rowsA, int columnsA, int rowsB, int columnsB,
+              std::vector<double> &dA, std::vector<int> &row_indA, std::vector<int> &col_indA, std::vector<double> &dB,
+              std::vector<int> &row_indB, std::vector<int> &col_indB, std::vector<std::vector<double>> &out);
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
