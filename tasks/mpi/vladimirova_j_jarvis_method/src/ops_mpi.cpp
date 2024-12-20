@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <cmath>
 
 using namespace std::chrono_literals;
 using namespace vladimirova_j_jarvis_method_mpi;
@@ -14,8 +15,8 @@ double getAngle(int reg_x, int reg_y, Point B, Point C) {
   int tmp_x = (C.x - B.x);
   int tmp_y = -(C.y - B.y);
   if (reg_x * tmp_y - reg_y * tmp_x > 0) return 1000;
-  double BA_length = std::sqrt(reg_x * reg_x + reg_y * reg_y);
-  double BC_length = std::sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
+  double BA_length = sqrt(reg_x * reg_x + reg_y * reg_y);
+  double BC_length = sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
   double length = BA_length * BC_length;
   double angle = tmp_x * reg_x + tmp_y * reg_y;
   if (length == 0)
@@ -58,8 +59,8 @@ size_t FindMinAngle(Point* A, Point* B, std::vector<Point> vec) {
     int tmp_x = (C->x - B->x);
     int tmp_y = -(C->y - B->y);
     if (reg_x * tmp_y - reg_y * tmp_x <= 0) {
-      double BA_length = std::sqrt(reg_x * reg_x + reg_y * reg_y);
-      double BC_length = std::sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
+      double BA_length = sqrt(reg_x * reg_x + reg_y * reg_y);
+      double BC_length = sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
       double length = BA_length * BC_length;
       double angle = tmp_x * reg_x + tmp_y * reg_y;
       if (length == 0)
