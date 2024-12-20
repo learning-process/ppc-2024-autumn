@@ -21,10 +21,9 @@ class LinearHistogramStretch {
   int size_;
   int local_size_;
   int* local_data_;
-  int global_min_;
-  int global_max_;
 
-  void stretch_pixels();
+  void distribute_data();
+  void gather_data();
 };
 
 }  // namespace konkov_i_linear_hist_stretch
