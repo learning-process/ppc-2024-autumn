@@ -134,7 +134,6 @@ TEST(lysov_i_integration_the_trapezoid_method_seq, BasicTest7) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  std::cout << output << std::endl;
   double expected_result = 666.66666;
   ASSERT_NEAR(output, expected_result, 1e-2);
 }
