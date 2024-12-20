@@ -56,14 +56,12 @@ TEST(mpi_zolotareva_a_count_of_words_perf_test, test_pipeline_run) {
     ASSERT_EQ(answer, global_count);
   }
 }
-
+1`                                                        
 TEST(mpi_zolotareva_a_count_of_words_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::string global_string;
   size_t answer = 0;
   size_t global_count = 0;
-
-  global_string = getRandomString(1000, &answer);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
