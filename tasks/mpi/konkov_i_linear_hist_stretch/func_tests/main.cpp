@@ -6,7 +6,6 @@
 TEST(konkov_i_LinearHistStretchTest, ValidImageData) {
   const int image_size = 100;
   int image_data[image_size];
-  // Initialize image_data with sample values
   for (int i = 0; i < image_size; ++i) {
     image_data[i] = rand() % 256;  // Random values between 0 and 255
   }

@@ -1,6 +1,9 @@
 #include "mpi/konkov_i_linear_hist_stretch/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <iostream>
+#include <limits>
+#include <numeric>
 
 namespace konkov_i_linear_hist_stretch {
 
@@ -9,14 +12,11 @@ LinearHistogramStretch::LinearHistogramStretch(int image_size, int* image_data)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
   MPI_Comm_size(MPI_COMM_WORLD, &size_);
 
-  // Calculate local sizes and displacements
   local_size_ = image_size_ / size_;
-  int remainder = image_size_ % size_;
-  if (rank_ < remainder) {
+  if (rank_ < image_size_ % size_) {
     local_size_++;
   }
 
-  // Allocate local data
   local_data_ = new int[local_size_];
 }
 
@@ -27,10 +27,10 @@ bool LinearHistogramStretch::validation() const { return image_size_ > 0 && imag
 bool LinearHistogramStretch::pre_processing() {
   if (!validation()) return false;
 
-  // Scatter data with variable local sizes
   int* send_counts = new int[size_];
   int* displacements = new int[size_];
   displacements[0] = 0;
+
   for (int i = 0; i < size_; ++i) {
     send_counts[i] = image_size_ / size_;
     if (i < image_size_ % size_) {
@@ -41,13 +41,21 @@ bool LinearHistogramStretch::pre_processing() {
     }
   }
 
+  if (rank_ == 0) {
+    int total_count = std::accumulate(send_counts, send_counts + size_, 0);
+    if (total_count != image_size_) {
+      std::cerr << "Error: Total send counts mismatch: " << total_count << " vs. " << image_size_ << std::endl;
+      delete[] send_counts;
+      delete[] displacements;
+      return false;
+    }
+  }
+
   MPI_Scatterv(image_data_, send_counts, displacements, MPI_INT, local_data_, local_size_, MPI_INT, 0, MPI_COMM_WORLD);
 
-  // Find local min and max
-  int local_min = *std::min_element(local_data_, local_data_ + local_size_);
-  int local_max = *std::max_element(local_data_, local_data_ + local_size_);
+  int local_min = local_size_ > 0 ? *std::min_element(local_data_, local_data_ + local_size_) : INT_MAX;
+  int local_max = local_size_ > 0 ? *std::max_element(local_data_, local_data_ + local_size_) : INT_MIN;
 
-  // Find global min and max
   MPI_Allreduce(&local_min, &global_min_, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
   MPI_Allreduce(&local_max, &global_max_, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
@@ -74,10 +82,10 @@ void LinearHistogramStretch::stretch_pixels() {
 }
 
 bool LinearHistogramStretch::post_processing() {
-  // Gather data with variable local sizes
   int* send_counts = new int[size_];
   int* displacements = new int[size_];
   displacements[0] = 0;
+
   for (int i = 0; i < size_; ++i) {
     send_counts[i] = image_size_ / size_;
     if (i < image_size_ % size_) {
