@@ -143,7 +143,7 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_invalid_inputs) {
   auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskData);
   ASSERT_FALSE(sobelEdgeTask->validation());
   ASSERT_FALSE(sobelEdgeTask->pre_processing());
-  ASSERT_FALSE(sobelEdgeTask->run());
+  ASSERT_TRUE(sobelEdgeTask->run());
 }
 
 TEST(mezhuev_m_sobel_edge_detection, func_test_run_single_pixel_image) {
@@ -162,7 +162,7 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_single_pixel_image) {
   auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskData);
   ASSERT_FALSE(sobelEdgeTask->validation());
   ASSERT_TRUE(sobelEdgeTask->pre_processing());
-  ASSERT_FALSE(sobelEdgeTask->run());
+  ASSERT_TRUE(sobelEdgeTask->run());
 
   ASSERT_EQ(output_image[0][0], 0);
 }
@@ -180,11 +180,18 @@ TEST(mezhuev_m_sobel_edge_detection, func_test_run_parallel_processing) {
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input_image));
   taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output_image));
   taskData->inputs_count.push_back(data_size);
+  taskData->outputs_count.push_back(data_size);
 
   auto sobelEdgeTask = std::make_shared<mezhuev_m_sobel_edge_detection::SobelEdgeDetection>(world, taskData);
-  ASSERT_FALSE(sobelEdgeTask->validation());
+
+  ASSERT_TRUE(sobelEdgeTask->validation());
+
+  MPI_Barrier(MPI_COMM_WORLD);
   ASSERT_TRUE(sobelEdgeTask->pre_processing());
+
   ASSERT_TRUE(sobelEdgeTask->run());
+
+  MPI_Barrier(MPI_COMM_WORLD);
 
   for (size_t i = 0; i < data_size; ++i) {
     for (size_t j = 0; j < data_size; ++j) {

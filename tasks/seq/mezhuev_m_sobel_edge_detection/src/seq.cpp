@@ -7,22 +7,18 @@ namespace mezhuev_m_sobel_edge_detection {
 
 bool SobelEdgeDetectionSeq::validation() {
   if (taskData == nullptr) {
-    std::cerr << "Error: taskData is nullptr." << std::endl;
     return false;
   }
 
   if (taskData->inputs.empty() || taskData->outputs.empty()) {
-    std::cerr << "Error: taskData buffers are null or empty." << std::endl;
     return false;
   }
 
   if (taskData->inputs.size() != 1 || taskData->outputs.size() != 1) {
-    std::cerr << "Error: Expected exactly one input and one output." << std::endl;
     return false;
   }
 
   if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
-    std::cerr << "Error: Invalid input or output buffer." << std::endl;
     return false;
   }
 
@@ -30,7 +26,6 @@ bool SobelEdgeDetectionSeq::validation() {
   size_t output_size = taskData->outputs_count[0];
 
   if (input_size != output_size) {
-    std::cerr << "Error: Mismatch in input/output buffer sizes." << std::endl;
     return false;
   }
 
@@ -39,7 +34,6 @@ bool SobelEdgeDetectionSeq::validation() {
 
 bool SobelEdgeDetectionSeq::pre_processing() {
   if (taskData == nullptr) {
-    std::cerr << "Error: task_data is nullptr before processing!" << std::endl;
     return false;
   }
 
@@ -51,7 +45,6 @@ bool SobelEdgeDetectionSeq::pre_processing() {
 
 bool SobelEdgeDetectionSeq::run() {
   if (taskData == nullptr) {
-    std::cerr << "Error: task_data is nullptr in run." << std::endl;
     return false;
   }
 
@@ -60,11 +53,8 @@ bool SobelEdgeDetectionSeq::run() {
 
   // Check if the buffers are valid
   if (input_image == nullptr || output_image == nullptr) {
-    std::cerr << "Error: Input or output image buffer is null." << std::endl;
     return false;
   }
-
-  std::cout << "Running Sobel edge detection..." << std::endl;
   size_t width = taskData->inputs_count[0];
   size_t height = taskData->inputs_count[0];
 
@@ -95,20 +85,17 @@ bool SobelEdgeDetectionSeq::run() {
 
 bool SobelEdgeDetectionSeq::post_processing() {
   if (taskData == nullptr || taskData->outputs[0] == nullptr) {
-    std::cerr << "Error: Invalid output buffer." << std::endl;
     return false;
   }
 
   size_t output_size = taskData->outputs_count[0];
 
   if (output_size == 0) {
-    std::cerr << "Error: Output buffer is empty." << std::endl;
     return false;
   }
 
   for (size_t i = 0; i < output_size; ++i) {
     if (taskData->outputs[0][i] == 0) {
-      std::cerr << "Error: Invalid output value at index " << i << "." << std::endl;
       return false;
     }
   }

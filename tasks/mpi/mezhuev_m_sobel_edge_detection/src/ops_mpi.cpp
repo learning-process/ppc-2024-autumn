@@ -16,7 +16,7 @@ bool SobelEdgeDetection::validation() {
   if (taskData->inputs.size() != 1 || taskData->outputs.size() != 1) {
     return false;
   }
-  if (taskData->inputs[0] == nullptr || !taskData->outputs[0]) {
+  if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
     return false;
   }
   if (taskData->inputs_count.empty() || taskData->outputs_count.empty()) {
@@ -47,12 +47,7 @@ bool SobelEdgeDetection::pre_processing() {
 
 bool SobelEdgeDetection::run() {
   internal_order_test();
-  if (!taskData || taskData->inputs.empty() || taskData->outputs.empty()) {
-    return false;
-  }
-  if (taskData->inputs[0] == nullptr || taskData->outputs[0] == nullptr) {
-    return false;
-  }
+
   uint8_t* input_image = taskData->inputs[0];
   uint8_t* output_image = taskData->outputs[0];
   size_t data_size = taskData->inputs_count[0];
@@ -64,23 +59,21 @@ bool SobelEdgeDetection::run() {
   size_t extra_rows = data_size % size;
   size_t start_row = rank * rows_per_process + std::min(rank, static_cast<int>(extra_rows));
   size_t end_row = (rank + 1) * rows_per_process + std::min(rank + 1, static_cast<int>(extra_rows));
-  std::cout << "Rank " << rank << " processing rows " << start_row << " to " << end_row << std::endl;
-  if (end_row <= start_row + 1) {
-    return false;
-  }
-  for (size_t y = start_row + 1; y < end_row - 1; ++y) {
-    for (size_t x = 1; x < data_size - 1; ++x) {
-      int gx = 0;
-      int gy = 0;
-      for (int ky = -1; ky <= 1; ++ky) {
-        for (int kx = -1; kx <= 1; ++kx) {
-          int pixel_value = input_image[(y + ky) * data_size + (x + kx)];
-          gx += sobel_x[ky + 1][kx + 1] * pixel_value;
-          gy += sobel_y[ky + 1][kx + 1] * pixel_value;
+  if (end_row > start_row + 1) {
+    for (size_t y = start_row + 1; y < end_row - 1; ++y) {
+      for (size_t x = 1; x < data_size - 1; ++x) {
+        int gx = 0;
+        int gy = 0;
+        for (int ky = -1; ky <= 1; ++ky) {
+          for (int kx = -1; kx <= 1; ++kx) {
+            int pixel_value = input_image[(y + ky) * data_size + (x + kx)];
+            gx += sobel_x[ky + 1][kx + 1] * pixel_value;
+            gy += sobel_y[ky + 1][kx + 1] * pixel_value;
+          }
         }
+        int magnitude = static_cast<int>(std::sqrt(gx * gx + gy * gy));
+        output_image[y * data_size + x] = std::min(magnitude, 255);
       }
-      int magnitude = static_cast<int>(std::sqrt(gx * gx + gy * gy));
-      output_image[y * data_size + x] = std::min(magnitude, 255);
     }
   }
   size_t total_rows = data_size;
@@ -88,11 +81,9 @@ bool SobelEdgeDetection::run() {
     for (int i = 1; i < size; ++i) {
       size_t worker_start_row = i * rows_per_process + std::min(i, static_cast<int>(extra_rows));
       size_t worker_end_row = (i + 1) * rows_per_process + std::min(i + 1, static_cast<int>(extra_rows));
-
       if (worker_end_row > total_rows) {
         worker_end_row = total_rows;
       }
-
       world.recv(i, 0, output_image + worker_start_row * data_size, (worker_end_row - worker_start_row) * data_size);
     }
   } else {
