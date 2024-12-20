@@ -106,6 +106,10 @@ bool matyunina_a_batcher_qsort_mpi::TestTaskParallel<T>::run() {
   if (world.rank() == 0) data_size = global_.size();
   broadcast(world, data_size, 0);
 
+  if (data_size == 0) {
+    return true;
+  }
+
   uint32_t delta = data_size / world.size();
   uint32_t remainder = data_size % world.size();
   uint32_t local_size = delta + (((uint32_t)world.rank() < remainder) ? 1 : 0);

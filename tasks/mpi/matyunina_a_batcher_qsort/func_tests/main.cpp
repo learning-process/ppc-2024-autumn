@@ -80,10 +80,6 @@ TEST(matyunina_a_batcher_qsort_mpi, random_vector) {
   if (world.rank() == 0) {
     in = matyunina_a_batcher_qsort_mpi::generateRandomVector(size, min, max);
   }
-
-  std::cout << "in: ";
-  for (auto& i : in) std::cout << i << " ";
-  std::cout << std::endl;
   matyunina_a_batcher_qsort_mpi::run_test(in);
 }
 

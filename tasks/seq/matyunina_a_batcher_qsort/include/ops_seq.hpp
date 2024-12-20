@@ -48,6 +48,10 @@ template <typename T>
 bool matyunina_a_batcher_qsort_seq::TestTaskSequential<T>::run() {
   internal_order_test();
 
+  if (data_.empty()) {
+    return true;
+  }
+
   quickSort(data_);
 
   return true;
