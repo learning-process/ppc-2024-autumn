@@ -8,6 +8,7 @@ namespace konkov_i_linear_hist_stretch {
 class LinearHistogramStretch {
  public:
   explicit LinearHistogramStretch(int image_size, int* image_data);
+  ~LinearHistogramStretch();
   bool validation() const;
   bool pre_processing();
   bool run();
