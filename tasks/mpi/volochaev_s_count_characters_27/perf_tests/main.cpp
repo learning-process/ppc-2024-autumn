@@ -9,7 +9,7 @@
 
 TEST(volochaev_s_count_characters_27_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<std::string> global_vec(2, std::string(2000000,' '));
+  std::vector<std::string> global_vec(2, std::string(2000000, ' '));
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
