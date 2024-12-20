@@ -147,7 +147,7 @@ bool TestMPITaskParallel::run() {
     }
   }
 
-  if (sizeArray > 20) {
+  if (actualChunkSize > 20) {
     quicksort(localArray, 0, localArray.size() - 1);
   } else {
     heapsort(localArray);
