@@ -7,8 +7,6 @@
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
 double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::integrate(
     const Function& f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits,
     const std::vector<double>& h, std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_, size_t n) {
@@ -47,8 +45,6 @@ double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential:
     I_2n = integrate_with_rectangle_method(f_, f_values_, l_limits, u_limits, dim_, n);
     delta = std::abs(I_2n - I_n);
     I_n = I_2n;
-
-    /*   std::cout << "n: " << n << ", I: " << I_2n << ", delta : " << delta << std::endl;*/
 
   } while ((1.0 / 3) * delta >= epsilon_);
 
@@ -89,7 +85,6 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::v
 
 bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  // std::cout << "seq" << std::endl;
   result = run_multistep_scheme_method_rectangle(f, f_values, lower_limits, upper_limits, dim, epsilon);
   return true;
 }
@@ -155,18 +150,6 @@ double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::r
     local_u_limits[i] = l_limits[i] + ((ProcRank + 1) * (range / size));
   }
 
-  // std::cout << "Im process " << ProcRank << std::endl;
-  // std::cout << "my local_lower_limits is ";
-  // for (size_t i = 0; i < sz_lower_limits; i++) {
-  //   std::cout << " " << local_l_limits[i];
-  // }
-  // std::cout << std::endl;
-  // std::cout << "my local_upper_limits is ";
-  // for (size_t i = 0; i < sz_upper_limits; i++) {
-  //   std::cout << " " << local_u_limits[i];
-  // }
-  // std::cout << std::endl;
-
   do {
     n *= 2;
 
@@ -178,10 +161,6 @@ double kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::r
       I_n = I_2n;
     }
     MPI_Bcast(&delta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
-    /*   if (ProcRank == 0) {
-         std::cout << "n: " << n << ", I: " << I_2n << ", delta : " << delta << std::endl;
-       }*/
 
   } while ((1.0 / 3) * delta >= epsilon_);
 
@@ -254,29 +233,7 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::run
   MPI_Bcast(upper_limits.data(), sz_upper_limits, MPI_DOUBLE, 0, MPI_COMM_WORLD);
   MPI_Bcast(f_values.data(), static_cast<int>(sz_values), MPI_DOUBLE, 0, MPI_COMM_WORLD);  // problem?
 
-  // std::cout << "Im process " << ProcRank << std::endl;
-  //  std::cout << "my f_values is ";
-  //  for (size_t i = 0; i < sz_values; i++) {
-  //    std::cout << " " << f_values[i];
-  //  }
-  // std::cout << "my lower_limits is ";
-  // for (size_t i = 0; i < sz_lower_limits; i++) {
-  //   std::cout << " " << lower_limits[i];
-  // }
-  // std::cout << std::endl;
-  // std::cout << "my upper_limits is ";
-  // for (size_t i = 0; i < sz_upper_limits; i++) {
-  //   std::cout << " " << upper_limits[i];
-  // }
-  // std::cout << std::endl;
-
-  // if (ProcRank == 0) {
-  //   std::cout << "mpi" << std::endl;
-  // }
   run_multistep_scheme_method_rectangle(f, f_values, lower_limits, upper_limits, dim, epsilon);
-  // if (ProcRank == 0) {
-  //   std::cout << "global_result is " << I_2n;
-  // }
   return true;
 }
 
@@ -287,7 +244,7 @@ bool kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::pos
   if (ProcRank == 0) {
     reinterpret_cast<double*>(taskData->outputs[0])[0] = I_2n;
   }
-  return true;  //
+  return true;
 }
 
 kholin_k_multidimensional_integrals_rectangle_mpi::TestMPITaskParallel::~TestMPITaskParallel() { MPI_Type_free(&sz_t); }

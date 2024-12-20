@@ -104,8 +104,3 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
   delete f_object;
 }
-
-// int main(int argc, char **argv) {
-//   testing::InitGoogleTest(&argc, argv);
-//   return RUN_ALL_TESTS();
-// }

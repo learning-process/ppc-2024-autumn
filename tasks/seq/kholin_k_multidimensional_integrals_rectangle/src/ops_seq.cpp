@@ -2,8 +2,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 double kholin_k_multidimensional_integrals_rectangle_seq::TestTaskSequential::integrate(
     const Function& f_, const std::vector<double>& l_limits, const std::vector<double>& u_limits,
     const std::vector<double>& h, std::vector<double>& f_values_, size_t curr_index_dim, size_t dim_, size_t n) {
@@ -42,8 +40,6 @@ double kholin_k_multidimensional_integrals_rectangle_seq::TestTaskSequential::ru
     I_2n = integrate_with_rectangle_method(f_, f_values_, l_limits, u_limits, dim_, n);
     delta = std::abs(I_2n - I_n);
     I_n = I_2n;
-
-    // std::cout << "n: " << n << ", I: " << I_2n << ", delta : " << delta << std::endl;
 
   } while ((1.0 / 3) * delta >= epsilon_);
 
