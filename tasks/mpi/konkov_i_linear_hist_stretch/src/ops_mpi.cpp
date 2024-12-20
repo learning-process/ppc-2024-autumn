@@ -22,7 +22,7 @@ LinearHistogramStretch::LinearHistogramStretch(int image_size, int* image_data)
 
 LinearHistogramStretch::~LinearHistogramStretch() { delete[] local_data_; }
 
-bool LinearHistogramStretch::validation() const { return image_size_ >= 0 && image_data_ != nullptr; }
+bool LinearHistogramStretch::validation() const { return image_size_ > 0 && image_data_ != nullptr; }
 
 bool LinearHistogramStretch::pre_processing() {
   if (!validation()) return false;
@@ -41,11 +41,7 @@ bool LinearHistogramStretch::pre_processing() {
     }
   }
 
-  if (rank_ == 0 && image_size_ > 0) {
-    MPI_Scatterv(image_data_, send_counts, displacements, MPI_INT, local_data_, local_size_, MPI_INT, MPI_COMM_WORLD);
-  } else {
-    MPI_Scatterv(nullptr, send_counts, displacements, MPI_INT, local_data_, local_size_, MPI_INT, MPI_COMM_WORLD);
-  }
+  MPI_Scatterv(image_data_, send_counts, displacements, MPI_INT, local_data_, local_size_, MPI_INT, 0, MPI_COMM_WORLD);
 
   // Find local min and max
   int local_min = *std::min_element(local_data_, local_data_ + local_size_);
@@ -92,11 +88,7 @@ bool LinearHistogramStretch::post_processing() {
     }
   }
 
-  if (rank_ == 0 && image_size_ > 0) {
-    MPI_Gatherv(local_data_, local_size_, MPI_INT, image_data_, send_counts, displacements, MPI_INT, MPI_COMM_WORLD);
-  } else {
-    MPI_Gatherv(nullptr, 0, MPI_INT, nullptr, send_counts, displacements, MPI_INT, MPI_COMM_WORLD);
-  }
+  MPI_Gatherv(local_data_, local_size_, MPI_INT, image_data_, send_counts, displacements, MPI_INT, 0, MPI_COMM_WORLD);
 
   delete[] send_counts;
   delete[] displacements;
