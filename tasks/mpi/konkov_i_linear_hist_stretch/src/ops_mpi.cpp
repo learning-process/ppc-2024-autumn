@@ -4,6 +4,7 @@
 #include <iostream>
 #include <limits>
 #include <numeric>
+#include <climits>
 
 namespace konkov_i_linear_hist_stretch {
 
