@@ -48,7 +48,7 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::pre_processing() {
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < col * row; i++) {
     if (tmp_ptr[i] != 255) {
-      input_.emplace_back(vladimirova_j_jarvis_method_seq::Point((int)(i % col), (int)(i / col)));
+      input_.emplace_back((int)(i % col), (int)(i / col));
     }
   }
   res_.clear();

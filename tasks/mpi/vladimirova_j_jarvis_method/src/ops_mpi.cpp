@@ -23,11 +23,11 @@ double getAngle(int reg_x, int reg_y, Point B, Point C) {
   double BA_length = std::sqrt(reg_x * reg_x + reg_y * reg_y);
   double BC_length = std::sqrt(tmp_x * tmp_x + tmp_y * tmp_y);
   double length = BA_length * BC_length;
-  double angle = (double)(tmp_x * reg_x + tmp_y * reg_y);
+  double angle = tmp_x * reg_x + tmp_y * reg_y;
   if (length == 0)
     angle = 0;
   else
-    angle = (double)(tmp_x * reg_x + tmp_y * reg_y) / (length);
+    angle = angle / (length);
   return angle;
 }
 
@@ -72,7 +72,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::pre_processing() {
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   for (size_t i = 0; i < col * row; i++) {
     if (tmp_ptr[i] != 255) {
-      input_.emplace_back(Point((int)(i % col), (int)(i / col)));
+      input_.emplace_back((int)(i % col), (int)(i / col));
     }
   }
   return true;
@@ -159,7 +159,7 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::pre_processing() {
 bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (!(taskData->inputs_count[1] > 0 && taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0))
+    if (taskData->inputs_count[1] <= 0 || taskData->inputs_count[0] <= 0 || taskData->outputs_count[0] <= 0)
       return false;
 
     auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
@@ -276,10 +276,10 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
     k++;
     std::vector<int> send_data(5);
     std::vector<double> send0_data(3);
-    while (active) {
+    while (active == 1) {
       world.recv(0, 0, send_data.data(), 5);
       active = send_data[4];
-      if (!active) return true;
+      if (active != 1) return true;
       if (sz <= 0) {
         send0_data = {10000, -1, -1};
         world.send(0, 0, send0_data.data(), 3);
