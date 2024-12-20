@@ -1,8 +1,4 @@
-// Copyright 2024 Nesterov Alexander
 #include "seq/gordeeva_t_shell_sort_batcher_merge/include/ops_seq.hpp"
-
-#include <random>
-#include <thread>
 
 using namespace std::chrono_literals;
 
