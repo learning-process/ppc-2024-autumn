@@ -97,9 +97,8 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_100_with_random) {
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();  
+    testMpiTaskSequential.post_processing();
   }
-  
   ASSERT_EQ(result_parallel, result_seq);
 }
 
@@ -149,7 +148,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_1000_with_random) {
   }
 
   if (world.rank() == 0) {
-
     ASSERT_EQ(result_parallel, result_seq);
   }
 }
