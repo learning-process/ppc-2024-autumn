@@ -1,11 +1,5 @@
 #include "mpi/vladimirova_j_jarvis_method/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <boost/mpi/collectives/gather.hpp>
-#include <boost/serialization/access.hpp>
-#include <boost/serialization/vector.hpp>
-#include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
@@ -29,6 +23,26 @@ double getAngle(int reg_x, int reg_y, Point B, Point C) {
   else
     angle = angle / (length);
   return angle;
+}
+std::vector<double> getMinAngleMPI(int reg_x, int reg_y, Point B, std::vector<Point>& vec, bool f) {
+  size_t min_angle_point = vec.size() + 1;
+  double min_angle = 550;
+  size_t sz = 0;
+  for (size_t i = 0; i < vec.size(); i++) {
+    if (f && (vec[i] == B)) {
+      vec[i].x = -1;
+      vec[i].y = -1;
+      continue;
+    }
+    if (vec[i].x < 0) continue;
+    double angle = getAngle(reg_x, reg_y, B, vec[i]);
+    if (angle < min_angle) {
+      min_angle = angle;
+      min_angle_point = i;
+    }
+    sz++;
+  }
+  return {(double)min_angle_point, min_angle, (double)sz};
 }
 
 size_t FindMinAngle(Point* A, Point* B, std::vector<Point> vec) {
@@ -211,9 +225,8 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
   int reg_x;
   int reg_y;
   int active = 1;
-  int sz = local_input_.size();
-  int k = 0;
-
+  size_t sz = local_input_.size();
+  bool f = false;
   if (rank == 0) {
     B = Point(input_[input_.size() - 2], input_[input_.size() - 1]);
     Point A = Point(-1, -1);
@@ -230,28 +243,14 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
     std::vector<int> send_data = {reg_x, reg_y, B.x, B.y, active};
     std::vector<double> send0_data(3);
     do {
-      k++;
       double min_angle = 1000;
       send_data = {reg_x, reg_y, B.x, B.y, 1};
       for (int i = 1; i < world.size(); i++) world.send(i, 0, send_data.data(), 5);
       // cвоя часть
-      for (size_t i = 0; i < local_input_.size(); i++) {
-        Point tmp = local_input_[i];
-        if (tmp == B) {
-          if (tmp == first) continue;
-          local_input_[i].x = -1;
-          local_input_[i].y = -1;
-          sz--;
-        }
-        if (tmp.x < 0) continue;
-        double angle = vladimirova_j_jarvis_method_mpi::getAngle(send_data[0], send_data[1], B, tmp);
-        if (angle < min_angle) {
-          min_angle = angle;
-          C.x = tmp.x;
-          C.y = tmp.y;
-        }
-      }
-
+      std::vector<double> ans = getMinAngleMPI(reg_x, reg_y, B, local_input_, f);
+      C = local_input_[(size_t)ans[0]];
+      min_angle = ans[1];
+      sz = (size_t)ans[2];
       for (int i = 1; i < world.size(); i++) {
         world.recv(i, 0, send0_data.data(), 3);
         if (send0_data[0] < min_angle) {
@@ -266,14 +265,13 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       B = C;
       reg_x = A.x - (B.x);
       reg_y = -(A.y - B.y);  // y идет вниз
+      f = true;
     } while (first != B);
     send_data[4] = 0;
     for (int i = 1; i < world.size(); i++) world.send(i, 0, send_data.data(), 5);
   }
 
   if (rank != 0) {
-    bool f = true;
-    k++;
     std::vector<int> send_data(5);
     std::vector<double> send0_data(3);
     while (active == 1) {
@@ -288,30 +286,14 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::run() {
       B.x = send_data[2];
       B.y = send_data[3];
       double min_angle = 5000;
-
-      for (size_t i = 0; i < local_input_.size(); i++) {
-        Point tmp = local_input_[i];
-        if (tmp == B) {
-          if (f) {
-            continue;
-          }
-          local_input_[i].x = -1;
-          local_input_[i].y = -1;
-          sz--;
-        }
-        if (tmp.x < 0) continue;
-        double angle = vladimirova_j_jarvis_method_mpi::getAngle(send_data[0], send_data[1], B, tmp);
-        if (angle < min_angle) {
-          min_angle = angle;
-          C.x = tmp.x;
-          C.y = tmp.y;
-        }
-      }
-      f = false;
+      std::vector<double> ans = getMinAngleMPI(send_data[0], send_data[1], B, local_input_, f);
+      f = true;
+      size_t itr = (size_t)ans[0];
+      C = local_input_[itr];
+      min_angle = ans[1];
+      sz = (size_t)ans[2];
       send0_data = {min_angle, (double)C.x, (double)C.y};
       world.send(0, 0, send0_data.data(), 3);
-
-      if (k == 10) break;
     }
   }
 

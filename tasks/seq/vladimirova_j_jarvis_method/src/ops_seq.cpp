@@ -1,6 +1,5 @@
 #include "seq/vladimirova_j_jarvis_method/include/ops_seq.hpp"
 
-#include <cmath>
 #include <thread>
 
 using namespace std::chrono_literals;
