@@ -11,8 +11,11 @@
 namespace sidorina_p_convex_hull_binary_image_seq {
 double distanceSq(const Point& p1, const Point& p2) { return pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2); }
 
-double mix_mult(const Point& p1, const Point& p2, const Point& p3) {
-  int dx12 = p2.x - p1.x, dy13 = p3.y - p1.y, dy12 = p2.y - p1.y, dx13 = p3.x - p1.x;
+int mix_mult(const Point& p1, const Point& p2, const Point& p3) {
+  int dx12 = p2.x - p1.x;
+  int dy13 = p3.y - p1.y;
+  int dy12 = p2.y - p1.y;
+  int dx13 = p3.x - p1.x;
 
   return dx12 * dy13 - dy12 * dx13;
 }
@@ -48,7 +51,8 @@ void mark_contours(std::vector<int>& image, int width, int height, int num) {
 
   const auto& func = [&](int i, int j) -> void {
     int del = image[i * width + j];
-    int a = 0, b = 0;  // a - left/right, b - up/low
+    int a = 0;
+    int b = 0;  // a - left/right, b - up/low
 
     if (del == 0) return;
 
