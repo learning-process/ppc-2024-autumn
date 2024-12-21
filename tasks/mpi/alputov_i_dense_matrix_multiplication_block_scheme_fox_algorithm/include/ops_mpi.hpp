@@ -6,8 +6,8 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
 #include <climits>
-#include <memory>
 #include <cmath>
+#include <memory>
 #include <numeric>
 #include <string>
 #include <utility>
