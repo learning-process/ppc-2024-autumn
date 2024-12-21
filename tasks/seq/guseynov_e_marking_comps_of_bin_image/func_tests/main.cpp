@@ -247,7 +247,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   testTaskSequential.run();
   testTaskSequential.post_processing();
 }
-
 TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_point4) {
   const int rows = 100;
   const int columns = 100;
