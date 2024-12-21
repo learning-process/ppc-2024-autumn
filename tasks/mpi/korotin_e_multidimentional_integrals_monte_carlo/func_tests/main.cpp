@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <iostream>
 #include <random>
 #include <vector>
 
@@ -67,6 +68,8 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_mpi, monte_carlo_rng_borde
     for (int i = 0; i < 3; i++) {
       borders[i].first = left_border[i];
       borders[i].second = right_border[i];
+      std::cout << left_border[i] << " - left " << i << "\n";
+      std::cout << right_border[i] << " - right " << i << "\n";
     }
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -88,7 +91,10 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_mpi, monte_carlo_rng_borde
     double seq_err = testMpiTaskSequential.possible_error();
 
     bool ans = (std::abs(res[0] - ref[0]) < err + seq_err);
-
+    std::cout << "MPI res" << res[0] << "\nSEQ res" << ref[0] << "\n";
+    std::cout << "MPI err" << err << "\nSEQ err" << seq_err << "\n";
+    std::cout << "ABS: " << std::abs(res[0] - ref[0]) << std::endl;
+    std::cout << "SUM err" << err + seq_err << std::endl;
     ASSERT_EQ(ans, true);
   }
 }
