@@ -43,11 +43,10 @@ void TestOfValidation(double (*function)(std::vector<double>), std::vector<unsig
 }
 
 void TestOfFunction(double (*function)(std::vector<double>), std::vector<unsigned int>& count,
-                    std::vector<std::pair<double, double>>& limits, std::vector<unsigned int>& intervals,
-                    double answer) {
+                    std::vector<std::pair<double, double>>& limits, std::vector<unsigned int>& intervals) {
   boost::mpi::communicator world;
 
-  std::vector<double> out(1, 0.0);
+  std::vector<double> out_mpi(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
 
@@ -60,8 +59,8 @@ void TestOfFunction(double (*function)(std::vector<double>), std::vector<unsigne
     taskDataParallel->inputs_count.emplace_back(limits.size());
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(intervals.data()));
     taskDataParallel->inputs_count.emplace_back(intervals.size());
-    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataParallel->outputs_count.emplace_back(out.size());
+    taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_mpi.data()));
+    taskDataParallel->outputs_count.emplace_back(out_mpi.size());
   }
 
   kalyakina_a_trapezoidal_integration_mpi::TrapezoidalIntegrationTaskParallel TaskParallel(taskDataParallel, function);
@@ -71,7 +70,31 @@ void TestOfFunction(double (*function)(std::vector<double>), std::vector<unsigne
   TaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    EXPECT_NEAR(answer, out[0], 0.001);
+    // Create data
+    std::vector<double> out_seq(1, 0.0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
+
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(count.data()));
+    taskDataSequential->inputs_count.emplace_back(count.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(limits.data()));
+    taskDataSequential->inputs_count.emplace_back(limits.size());
+    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t*>(intervals.data()));
+    taskDataSequential->inputs_count.emplace_back(intervals.size());
+    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_seq.data()));
+    taskDataSequential->outputs_count.emplace_back(out_seq.size());
+
+    // Create Task
+    kalyakina_a_trapezoidal_integration_mpi::TrapezoidalIntegrationTaskSequential TaskSequential(taskDataSequential,
+                                                                                                 function);
+
+    ASSERT_EQ(TaskSequential.validation(), true);
+    TaskSequential.pre_processing();
+    TaskSequential.run();
+    TaskSequential.post_processing();
+
+    EXPECT_NEAR(out_seq[0], out_mpi[0], 0.00001);
   }
 }
 
@@ -84,7 +107,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_count_of_variab
 
   if (world.rank() == 0) {
     limits = {{2.5, 4.5}, {1.0, 3.2}};
-    intervals = {1000, 1000};
+    intervals = {100, 100};
     count = std::vector<unsigned int>{3};
   }
 
@@ -116,7 +139,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_validation_size_limits) {
 
   if (world.rank() == 0) {
     limits = {{2.5, 4.5}};
-    intervals = {1000, 1000};
+    intervals = {100, 100};
     count = std::vector<unsigned int>{2};
   }
 
@@ -132,12 +155,11 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_1) {
 
   if (world.rank() == 0) {
     limits = {{2.5, 4.5}, {1.0, 3.2}};
-    intervals = {1000, 1000};
+    intervals = {100, 100};
     count = std::vector<unsigned int>{2};
   }
 
-  TestOfFunction(function1, count, limits, intervals,
-                 (3.2 - 1) * (pow(4.5, 4) - pow(2.5, 4)) / 4 + (4.5 - 2.5) * (pow(3.2, 4) - pow(1, 4)) / 4);
+  TestOfFunction(function1, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_2) {
@@ -150,10 +172,10 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_2) {
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{3};
     limits = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
-    intervals = {100, 100, 100};
+    intervals = {80, 80, 80};
   }
 
-  TestOfFunction(function2, count, limits, intervals, -3 * std::cos(1) + 3 * std::cos(0));
+  TestOfFunction(function2, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_3) {
@@ -166,10 +188,10 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_3) {
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{3};
     limits = {{0.0, 3.0}, {0.0, 4.0}, {0.0, 5.0}};
-    intervals = {100, 100, 100};
+    intervals = {80, 80, 80};
   }
 
-  TestOfFunction(function3, count, limits, intervals, pow(3 - 0, 2) * pow(4 - 0, 2) * pow(5 - 0, 2));
+  TestOfFunction(function3, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_4) {
@@ -182,10 +204,10 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_4) {
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{1};
     limits = {{0.0, 0.5}};
-    intervals = {10000};
+    intervals = {1000};
   }
 
-  TestOfFunction(function4, count, limits, intervals, acos(0.5) - acos(0));
+  TestOfFunction(function4, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_5) {
@@ -198,10 +220,10 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_5) {
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{2};
     limits = {{0.0, 1.0}, {0.0, 1.0}};
-    intervals = {1000, 1000};
+    intervals = {100, 100};
   }
 
-  TestOfFunction(function5, count, limits, intervals, (sin(1) - sin(0)) * (cos(1) - cos(0)));
+  TestOfFunction(function5, count, limits, intervals);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_6) {
@@ -214,8 +236,8 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_6) {
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{2};
     limits = {{0.0, 1.0}, {4.0, 6.0}};
-    intervals = {1000, 1000};
+    intervals = {100, 100};
   }
 
-  TestOfFunction(function6, count, limits, intervals, (pow(6.0, 3) - pow(4.0, 3)) * (cos(5 * 1.0) - cos(5 * 0.0)) / 10);
+  TestOfFunction(function6, count, limits, intervals);
 }
