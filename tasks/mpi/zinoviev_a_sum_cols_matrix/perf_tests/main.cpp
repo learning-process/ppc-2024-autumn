@@ -9,8 +9,8 @@
 
 TEST(zinoviev_a_sum_cols_matrix, test_task_run) {
   boost::mpi::communicator world;
-  int cols = 10;
-  int rows = 10;
+  int cols = 1000;
+  int rows = 1000;
 
   std::vector<int> matrix(cols * rows, 0);
   matrix[3] = 1;
