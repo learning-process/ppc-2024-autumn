@@ -58,7 +58,7 @@ void create_test(size_t N) {
   ASSERT_TRUE(strassenMatrixMultPar.post_processing());
 
   for (size_t i = 0; i < N * N; i++) {
-    EXPECT_NEAR(out_seq[i], out_par[i], 1e-3);
+    ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
   }
 }
 
@@ -74,4 +74,6 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_10x10_matrices) 
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_15x15_matrices) { create_test(15); }
 
-TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_70x70_matrices) { create_test(70); }
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_20x20_matrices) { create_test(20); }
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_25x25_matrices) { create_test(25); }

@@ -197,20 +197,26 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
 
   boost::mpi::broadcast(world, A_ext, 0);
   boost::mpi::broadcast(world, B_ext, 0);
+  boost::mpi::broadcast(world, newSize, 0);
 
   std::cout << "Process " << rank << ": Broadcast completed for A and B. Received data size: " << A_ext.size()
             << " and " << B_ext.size() << std::endl;
 
-  world.barrier();
+  // world.barrier();
 
   size_t half = newSize / 2;
 
-  std::vector<double> A11(half * half), A12(half * half), A21(half * half), A22(half * half);
-  std::vector<double> B11(half * half), B12(half * half), B21(half * half), B22(half * half);
+  std::vector<double> A11(half * half, 0.0), A12(half * half, 0.0), A21(half * half, 0.0), A22(half * half, 0.0);
+  std::vector<double> B11(half * half, 0.0), B12(half * half, 0.0), B21(half * half, 0.0), B22(half * half, 0.0);
 
   for (size_t i = 0; i < half; ++i) {
     for (size_t j = 0; j < half; ++j) {
       size_t index = i * newSize + j;
+      if (index >= A_ext.size()) {
+        std::cerr << "Process " << rank << ": Index out of bounds: " << index << " vs A_ext.size(): " << A_ext.size()
+                  << std::endl;
+        continue;
+      }
       A11[i * half + j] = A_ext[index];
       A12[i * half + j] = A_ext[index + half];
       A21[i * half + j] = A_ext[index + half * newSize];
@@ -223,9 +229,10 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
     }
   }
 
-  world.barrier();
+  // world.barrier();
 
-  std::vector<double> M1, M2, M3, M4, M5, M6, M7;
+  std::vector<double> M1(half * half, 0.0), M2(half * half, 0.0), M3(half * half, 0.0), M4(half * half, 0.0),
+      M5(half * half, 0.0), M6(half * half, 0.0), M7(half * half, 0.0);
 
   for (int task = rank; task < 7; task += size) {
     std::cout << "Process " << rank << ": Starting task " << task << std::endl;
@@ -264,45 +271,40 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
     }
   }
 
-  if (M1.empty()) M1.resize(half * half, 0.0);
-  if (M2.empty()) M2.resize(half * half, 0.0);
-  if (M3.empty()) M3.resize(half * half, 0.0);
-  if (M4.empty()) M4.resize(half * half, 0.0);
-  if (M5.empty()) M5.resize(half * half, 0.0);
-  if (M6.empty()) M6.resize(half * half, 0.0);
-  if (M7.empty()) M7.resize(half * half, 0.0);
+  // world.barrier();
 
   std::cout << "Process " << rank << ": Completed tasks. Sizes - "
             << "M1: " << M1.size() << ", M2: " << M2.size() << ", M3: " << M3.size() << ", M4: " << M4.size()
             << ", M5: " << M5.size() << ", M6: " << M6.size() << ", M7: " << M7.size() << std::endl;
 
+  world.barrier();
+
   std::vector<double> M1_global(half * half, 0.0), M2_global(half * half, 0.0), M3_global(half * half, 0.0),
       M4_global(half * half, 0.0), M5_global(half * half, 0.0), M6_global(half * half, 0.0),
       M7_global(half * half, 0.0);
 
-  world.barrier();
-
-  assert(M1.size() == half * half);
-  assert(M2.size() == half * half);
-  assert(M3.size() == half * half);
-  assert(M4.size() == half * half);
-  assert(M5.size() == half * half);
-  assert(M6.size() == half * half);
-  assert(M7.size() == half * half);
-
-  boost::mpi::reduce(world, M1.data(), M1.size(), M1_global.data(), std::plus<double>(), 0);
-  boost::mpi::reduce(world, M2.data(), M2.size(), M2_global.data(), std::plus<double>(), 0);
-  boost::mpi::reduce(world, M3.data(), M3.size(), M3_global.data(), std::plus<double>(), 0);
-  boost::mpi::reduce(world, M4.data(), M4.size(), M4_global.data(), std::plus<double>(), 0);
-  boost::mpi::reduce(world, M5.data(), M5.size(), M5_global.data(), std::plus<double>(), 0);
-  boost::mpi::reduce(world, M6.data(), M6.size(), M6_global.data(), std::plus<double>(), 0);
-  boost::mpi::reduce(world, M7.data(), M7.size(), M7_global.data(), std::plus<double>(), 0);
-
-  world.barrier();
+  if (rank < 7) {
+    boost::mpi::reduce(world, M1.data(), M1.size(), M1_global.data(), std::plus<double>(), 0);
+    std::cout << *M1.data() << " M1\n" << std::endl;
+    boost::mpi::reduce(world, M2.data(), M2.size(), M2_global.data(), std::plus<double>(), 0);
+    std::cout << *M2.data() << " M2\n" << std::endl;
+    boost::mpi::reduce(world, M3.data(), M3.size(), M3_global.data(), std::plus<double>(), 0);
+    std::cout << *M3.data() << " M3\n" << std::endl;
+    boost::mpi::reduce(world, M4.data(), M4.size(), M4_global.data(), std::plus<double>(), 0);
+    std::cout << *M4.data() << " M4\n" << std::endl;
+    boost::mpi::reduce(world, M5.data(), M5.size(), M5_global.data(), std::plus<double>(), 0);
+    std::cout << *M5.data() << " M5\n" << std::endl;
+    boost::mpi::reduce(world, M6.data(), M6.size(), M6_global.data(), std::plus<double>(), 0);
+    std::cout << *M6.data() << " M6\n" << std::endl;
+    boost::mpi::reduce(world, M7.data(), M7.size(), M7_global.data(), std::plus<double>(), 0);
+    std::cout << *M7.data() << " M7\n" << std::endl;
+  }
 
   if (rank == 0) {
     std::cout << "Process 0: Reduce completed. Global matrices collected." << std::endl;
   }
+
+  world.barrier();
 
   if (rank == 0) {
     std::vector<double> result_ext(newSize * newSize, 0.0);
