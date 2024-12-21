@@ -1,6 +1,7 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <vector>
 
 #include "seq/korotin_e_multidimentional_integrals_monte_carlo/include/ops_seq.hpp"
@@ -10,7 +11,7 @@ namespace korotin_e_multidimentional_integrals_monte_carlo_seq {
 double test_func(const double *x, int x_size) {
   double res = 0.0;
   for (int i = 0; i < x_size; i++) {
-    res += x[i] * x[i];
+    res += std::pow(x[i], 2);
   }
   return res;
 }
@@ -18,8 +19,8 @@ double test_func(const double *x, int x_size) {
 double ref_integration(const std::vector<std::pair<double, double>> &borders) {
   double res = 0.0;
   for (size_t i = 0; i < borders.size(); i++) {
-    double tmp = borders[i].second * borders[i].second * borders[i].second;
-    tmp -= borders[i].first * borders[i].first * borders[i].first;
+    double tmp = std::pow(borders[i].second, 3);
+    tmp -= std::pow(borders[i].first, 3);
     tmp /= 3;
     for (size_t j = 0; j < borders.size(); j++) {
       if (j == i) continue;
@@ -36,7 +37,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, monte_carlo_rng_borde
   std::vector<std::pair<double, double>> borders(3);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
+  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
 
   double ref;
 
@@ -77,7 +78,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, monte_carlo_pseudo_rn
   std::vector<std::pair<double, double>> borders(dimentions);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
+  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
   double ref;
 
   std::random_device rd;
