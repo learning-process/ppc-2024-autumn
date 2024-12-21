@@ -7,6 +7,16 @@
 
 #include "mpi/kolodkin_g_hoar_merge_sort/include/ops_mpi.hpp"
 
+namespace kolodkin_g_random_function {
+std::vector<int> create_random_vector(unsigned n) {
+  std::vector<int> vector;
+  for (unsigned i = 0; i < n; i++) {
+    vector.push_back(-100 + rand() % 100000);
+  }
+  return vector;
+}
+};  // namespace kolodkin_g_random_function
+
 TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
   boost::mpi::communicator world;
 
@@ -19,7 +29,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
   auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
-    vector = {50};
+    vector = kolodkin_g_random_function::create_random_vector(1);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
@@ -238,9 +248,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
   auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
-    for (unsigned i = 0; i < 1000; i++) {
-      vector.push_back(-100 + rand() % 100000);
-    }
+    vector=kolodkin_g_random_function::create_random_vector(1000);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
