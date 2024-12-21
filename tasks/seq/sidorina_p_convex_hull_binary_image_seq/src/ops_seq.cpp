@@ -22,24 +22,23 @@ std::vector<int> bin_img(const std::vector<Point>& points, int width, int height
   int size = points.size();
   if (size < 2) return image;
 
-  int mX = points[0].x, MX = points[0].x, mY = points[0].y, MY = points[0].y;
-  for (int i = 1; i < size; i++) {
-    mX = std::min(mX, points[i].x);
-    MX = std::max(MX, points[i].x);
-    mY = std::min(mY, points[i].y);
-    MY = std::max(MY, points[i].y);
-  }
+  auto [minX, maxX] = std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { 
+      return a.x < b.x; 
+  });
+  auto [minY, maxY] = std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { 
+      return a.y < b.y; 
+  });
 
-  for (int x = mX; x <= MX; x++) {
+  for (int x = minX->x; x <= maxX->x; x++) {
     if (x >= 0 && x < width) {
-      image[mY * width + x] = 1;
-      image[MY * width + x] = 1;
+      image[minY->y * width + x] = 1;
+      image[maxY->y * width + x] = 1;
     }
   }
-  for (int y = mY; y <= MY; y++) {
+  for (int y = minY->y; y <= maxY->y; y++) {
     if (y >= 0 && y < height) {
-      image[y * width + mX] = 1;
-      image[y * width + MX] = 1;
+      image[y * width + minX->x] = 1;
+      image[y * width + maxX->x] = 1;
     }
   }
 
@@ -108,8 +107,9 @@ std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int widt
     }
   }
   std::vector<std::vector<Point>> result;
+  result.reserve(components.size());
   for (const auto& [label, points] : components) {
-    result.push_back({points.begin(), points.end()});
+    result.emplace_back(points.begin(), points.end());
   }
   return result;
 }
@@ -144,10 +144,10 @@ std::vector<Point> jarvis(std::vector<Point> points) {
 
   std::vector<Point> hull = {min_point};
   for (size_t i = 1; i < points.size(); i++) {
+    hull.push_back(points[i]); 
     while (hull.size() > 1 && mix_mult(hull[hull.size() - 2], hull.back(), points[i]) <= 0) {
       hull.pop_back();
     }
-    hull.push_back(points[i]);
   }
 
   return hull;
@@ -195,7 +195,9 @@ bool ConvexHullBinImgSeq::run() {
   std::vector<Point> points;
   for (const auto& component : components) {
     auto hull = jarvis(component);
-    points.insert(points.end(), hull.begin(), hull.end());
+    for (const auto& point : hull) { 
+      points.push_back(point);
+    }
   }
 
   image = bin_img(points, width, height);

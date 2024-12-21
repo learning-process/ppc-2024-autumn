@@ -164,3 +164,35 @@ TEST(sidorina_p_convex_hull_binary_image_mpi, Test_all_px_0) {
     ASSERT_EQ(image, hull);
   }
 }
+
+TEST(sidorina_p_convex_hull_binary_image_mpi, Test_one_px_1) {
+  boost::mpi::communicator world;
+  const int width = 10;
+  const int height = 10;
+  std::vector<int> image(width * height, 0);
+  std::vector<int> ref(width * height, 0);
+  std::vector<int> hull(width * height);
+
+  image[2 * width + 1] = 1;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataPar->inputs_count.emplace_back(width * height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
+    taskDataPar->outputs_count.emplace_back(width * height);
+  }
+
+  sidorina_p_convex_hull_binary_image_mpi::ConvexHullBinImgMpi TestTaskMPI(taskDataPar);
+  ASSERT_TRUE(TestTaskMPI.validation());
+  TestTaskMPI.pre_processing();
+  TestTaskMPI.run();
+  TestTaskMPI.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(ref, hull);
+  }
+}

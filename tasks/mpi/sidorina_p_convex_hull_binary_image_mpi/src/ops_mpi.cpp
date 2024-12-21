@@ -41,24 +41,23 @@ std::vector<int> bin_img(const std::vector<Point>& points, int width, int height
   int size = points.size();
   if (size < 2) return image;
 
-  int mX = points[0].x, MX = points[0].x, mY = points[0].y, MY = points[0].y;
-  for (int i = 1; i < size; i++) {
-    mX = std::min(mX, points[i].x);
-    MX = std::max(MX, points[i].x);
-    mY = std::min(mY, points[i].y);
-    MY = std::max(MY, points[i].y);
-  }
+  auto [minX, maxX] = std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { 
+      return a.x < b.x; 
+  });
+  auto [minY, maxY] = std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { 
+      return a.y < b.y; 
+  });
 
-  for (int x = mX; x <= MX; x++) {
+  for (int x = minX->x; x <= maxX->x; x++) {
     if (x >= 0 && x < width) {
-      image[mY * width + x] = 1;
-      image[MY * width + x] = 1;
+      image[minY->y * width + x] = 1;
+      image[maxY->y * width + x] = 1;
     }
   }
-  for (int y = mY; y <= MY; y++) {
+  for (int y = minY->y; y <= maxY->y; y++) {
     if (y >= 0 && y < height) {
-      image[y * width + mX] = 1;
-      image[y * width + MX] = 1;
+      image[y * width + minX->x] = 1;
+      image[y * width + maxX->x] = 1;
     }
   }
 
@@ -164,10 +163,10 @@ std::vector<Point> jarvis(std::vector<Point> points) {
 
   std::vector<Point> hull = {min_point};
   for (size_t i = 1; i < points.size(); i++) {
+    hull.push_back(points[i]);
     while (hull.size() > 1 && mix_mult(hull[hull.size() - 2], hull.back(), points[i]) <= 0) {
       hull.pop_back();
     }
-    hull.push_back(points[i]);
   }
 
   return hull;
@@ -214,106 +213,57 @@ bool ConvexHullBinImgMpi::pre_processing() {
   return true;
 }
 
-/* bool ConvexHullBinImgMpi::run() {
-  internal_order_test();
-
-  std::vector<std::vector<Point>> local_components;
-  int c_size = components.size();
-  int w_size = world.size();
-  int count = c_size / w_size;
-  int rem = c_size % w_size;
-  local_components.resize(w_size);
-  for (int i = 0; i < w_size; ++i) {
-    if (i < rem) {
-      local_components[i].reserve(count + 1);
-    } else {
-      local_components[i].reserve(count);
-    }
-  }
-  if (world.rank() == 0) {
-    MPI_Scatterv(components.data(), &count, &rem, MPI_INT, local_components[0].data(), local_components.size() * count,
-                 MPI_INT, 0, world);
-  } else {
-    local_components[0].resize(count);
-    MPI_Scatterv(nullptr, nullptr, nullptr, MPI_INT, local_components[0].data(), local_components.size() * count,
-                 MPI_INT, 0, world);
-  }
-
-  std::vector<Point> h_local;
-  for (const auto& component : local_components) {
-    auto hull = jarvis(component);
-    h_local.insert(h_local.end(), hull.begin(), hull.end());
-  }
-
-  if (world.rank() == 0) {
-    std::vector<Point> h_merged(c_size);
-    int* count_ptr = new int[w_size];
-    for (int i = 0; i < w_size; ++i) {
-      if (i < rem) {
-        count_ptr[i] = count + 1;
-      } else {
-        count_ptr[i] = count;
-      }
-    }
-
-    MPI_Gatherv(h_local.data(), h_local.size(), MPI_INT, h_merged.data(), count_ptr, nullptr, MPI_INT, 0, world);
-    delete[] count_ptr;
-
-    image = bin_img(jarvis(h_merged), width, height);
-  } else {
-    MPI_Gatherv(h_local.data(), h_local.size(), MPI_INT, nullptr, nullptr, nullptr, MPI_INT, 0, world);
-  }
-
-  return true;
-}*/
-
 bool ConvexHullBinImgMpi::run() {
-  internal_order_test();
+ internal_order_test();
 
-  std::vector<std::vector<Point>> local_components;
+ std::vector<std::vector<Point>> local_components;
 
-  int c_size = components.size();
-  int w_size = world.size();
-  int count = c_size / w_size;
-  int rem = c_size % w_size;
+ int c_size = components.size();
+ int w_size = world.size();
+ int count = c_size / w_size;
+ int rem = c_size % w_size;
 
-  if (world.rank() == 0) {
-    int tmp = 0;
-    for (int i = 1; i < w_size; i++) {
-      int c_send = count + count_rem(rem, i);
-      world.send(i, 0, &c_send, 1);
-      for (int j = 0; j < c_send; j++) world.send(j, 1, conv_vec(components[tmp + j]));
-      tmp += c_send;
-    }
+ if (world.rank() == 0) {
+   int tmp = 0;
+   for (int i = 1; i < w_size; i++) {
+     int c_send = count + count_rem(rem, i);
+     world.send(i, 0, &c_send, 1);
+     for (int j = 0; j < c_send; j++) world.send(j, 1, conv_vec(components[tmp + j]));
+     tmp += c_send;
+   }
 
-    int c_local = count + count_rem(rem, 0);
-    for (int k = 0; k < c_local; k++) local_components.push_back(components[tmp + k]);
-  } else {
-    int recv_count;
-    world.recv(0, 0, &recv_count, 1);
+   int c_local = count + count_rem(rem, 0);
+   for (int k = 0; k < c_local; k++) local_components.push_back(components[tmp + k]);
+ } else {
+   int recv_count;
+   world.recv(0, 0, &recv_count, 1);
 
-    for (int i = 0; i < recv_count; i++) {
-      std::vector<int> int_component;
-      world.recv(0, 1, int_component);
-      local_components.push_back(conv_point(int_component));
-    }
-  }
+   std::vector<int> int_component(recv_count);
+   for (int i = 0; i < recv_count; i++) {
+     world.recv(0, 1, int_component);
+     local_components.push_back(conv_point(int_component));
+   }
+ }
 
-  std::vector<Point> h_local;
-  for (const auto& component : local_components) {
-    auto hull = jarvis(component);
-    h_local.insert(h_local.end(), hull.begin(), hull.end());
-  }
+ std::vector<Point> h_local;
+ for (const auto& component : local_components) {
+   auto hull = jarvis(component);
+   std::copy(hull.begin(), hull.end(), std::back_inserter(h_local)); 
+ }
 
-  if (world.rank() == 0) {
-    std::vector<Point> h_merged;
-    h_merged.insert(h_merged.end(), h_local.begin(), h_local.end());
-    for (int proc = 1; proc < world.size(); ++proc) {
-      std::vector<int> h_ints;
-      world.recv(proc, 2, h_ints);
-      auto hull = conv_point(h_ints);
-      h_merged.insert(h_merged.end(), hull.begin(), hull.end());
-    }
+ if (world.rank() == 0) {
+   std::vector<Point> h_merged;
+   h_merged.insert(h_merged.end(), h_local.begin(), h_local.end());
+   std::vector<std::vector<int>> process_groups;
+
+   for (auto& group : process_groups) {
+     std::vector<int> h_ints;
+     for (int proc : group) {
+       world.recv(proc, 2, h_ints); 
+     }
+   auto hull = conv_point(h_ints);
+   h_merged.insert(h_merged.end(), hull.begin(), hull.end());
+   }
 
     image = bin_img(jarvis(h_merged), width, height);
   } else {

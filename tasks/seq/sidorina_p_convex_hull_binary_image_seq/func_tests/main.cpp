@@ -11,14 +11,9 @@ std::vector<int> gen(int width, int height) {
     return {};
   }
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> dist(0, 1);
-
   std::vector<int> image(width * height);
-
   for (int i = 0; i < width * height; ++i) {
-    image[i] = dist(gen) ? 1 : 0;
+    image[i] = rand() % 2;
   }
 
   return image;

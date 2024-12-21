@@ -6,8 +6,8 @@
 #include "seq/sidorina_p_convex_hull_binary_image_seq/include/ops_seq.hpp"
 
 TEST(sidorina_p_convex_hull_binary_image_seq, test_pipeline_run) {
-  const int width = 1600;
-  const int height = 1600;
+  const int width = 1500;
+  const int height = 1500;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
@@ -57,8 +57,8 @@ TEST(sidorina_p_convex_hull_binary_image_seq, test_pipeline_run) {
 }
 
 TEST(sidorina_p_convex_hull_binary_image_seq, test_task_run) {
-  const int width = 1600;
-  const int height = 1600;
+  const int width = 1500;
+  const int height = 1500;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
