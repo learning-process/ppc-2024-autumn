@@ -214,13 +214,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   std::vector<int> in = getRandomBinImage(rows, columns);
   std::vector<int> out(rows * columns, 1);
 
-  for (int i = 0; i < rows; i++){
-    for (int j = 0; j < columns; j++){
-      std::cout << in[i * columns + j] << " ";
-    }
-    std::cout << "\n";
-  }
-
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
@@ -234,14 +227,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  std::cout << "\n";
-    for (int i = 0; i < rows; i++){
-    for (int j = 0; j < columns; j++){
-      std::cout << out[i * columns + j] << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
 }
 
 TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_point3) {
@@ -272,14 +257,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  std::cout << "\n";
-  for (int i = 0; i < rows; i++){
-    for (int j = 0; j < columns; j++){
-      std::cout << out[i * columns + j] << " ";
-    }
-    std::cout << "\n";
-  }
-  std::cout << "\n";
 }
 
 
@@ -301,14 +278,5 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  std::cout << "\n";
-  for (int i = 0; i < rows; i++){
-    for (int j = 0; j < columns; j++){
-      std::cout << out[i * columns + j] << ", ";
-    }
-    std::cout << "\n";
-  }
-    checkNeighbors(out, rows, columns);
-
-
+  checkNeighbors(out, rows, columns);
 }

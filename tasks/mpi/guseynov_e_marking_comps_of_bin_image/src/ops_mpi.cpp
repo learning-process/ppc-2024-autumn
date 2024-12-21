@@ -1,40 +1,40 @@
 #include "mpi/guseynov_e_marking_comps_of_bin_image/include/ops_mpi.hpp"
 
 #include <map>
-#include <vector>
-#include <queue>
 #include <set>
+#include <sstream>
+#include <vector>
 
 int findParent(std::map<int, std::set<int>>& parent, int labl) {
-    auto srch = parent.find(labl);
-    if (srch != parent.end()){
-      return *srch->second.begin();
-    }
+  auto srch = parent.find(labl);
+  if (srch != parent.end()) {
+    return *srch->second.begin();
+  }
 
-    return labl;
+  return labl;
 }
 
-void fixTable(std::map<int, std::set<int>>& parent){
-  for (auto& pair : parent){
-    for (auto value : pair.second){
-        parent[value].insert(pair.second.begin(), pair.second.end());
+void fixTable(std::map<int, std::set<int>>& parent) {
+  for (auto& pair : parent) {
+    for (auto value : pair.second) {
+      parent[value].insert(pair.second.begin(), pair.second.end());
     }
   }
 }
 
-void fixLabels(std::vector<int>& labeled_image, int rows, int cols){
+void fixLabels(std::vector<int>& labeled_image, int rows, int cols) {
   std::map<int, int> labels_equivalence;
   int min_label = 2;
-  for (int x = 0; x < rows; x++){
-    for (int y = 0; y < cols; y++){
+  for (int x = 0; x < rows; x++) {
+    for (int y = 0; y < cols; y++) {
       int position = x * cols + y;
-      if (labeled_image[position] > 1){
+      if (labeled_image[position] > 1) {
         int final_label;
         auto srch_label = labels_equivalence.find(labeled_image[position]);
-        if (srch_label == labels_equivalence.end()){
+        if (srch_label == labels_equivalence.end()) {
           final_label = min_label;
           labels_equivalence[labeled_image[position]] = min_label++;
-        }else{
+        } else {
           final_label = srch_label->second;
         }
 
@@ -42,39 +42,37 @@ void fixLabels(std::vector<int>& labeled_image, int rows, int cols){
       }
     }
   }
-} 
-
+}
 
 void unite(std::map<int, std::set<int>>& parent, int new_label, int neighbour_label) {
-  if (new_label == neighbour_label){
+  if (new_label == neighbour_label) {
     return;
   }
 
   auto srch1 = parent.find(new_label);
   auto srch2 = parent.find(neighbour_label);
 
-  if (srch1 == parent.end() && srch2 == parent.end()){
+  if (srch1 == parent.end() && srch2 == parent.end()) {
     parent[new_label].insert(neighbour_label);
     parent[new_label].insert(new_label);
     parent[neighbour_label].insert(new_label);
     parent[neighbour_label].insert(neighbour_label);
-  }else if(srch1 != parent.end() && srch2 == parent.end()){
+  } else if (srch1 != parent.end() && srch2 == parent.end()) {
     parent[new_label].insert(neighbour_label);
     parent[neighbour_label] = parent[new_label];
-  }else if(srch1 == parent.end() && srch2 != parent.end()){
+  } else if (srch1 == parent.end() && srch2 != parent.end()) {
     parent[neighbour_label].insert(new_label);
     parent[new_label] = parent[neighbour_label];
-  }else{
+  } else {
     std::set<int> tmp_set = parent[new_label];
     parent[new_label].insert(parent[neighbour_label].begin(), parent[neighbour_label].end());
     parent[neighbour_label].insert(parent[new_label].begin(), parent[new_label].end());
   }
 }
 
-void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows, int columns, int min_label) {
-  
-  int current_label = 2;
-  std::map<int, std::set<int>> parent;
+void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows, int columns, int min_label,
+              std::map<int, std::set<int>>& parent) {
+  int current_label = min_label;
   // Displacements for neighbours
   int dx[] = {-1, 0, -1};
   int dy[] = {0, -1, 1};
@@ -82,7 +80,7 @@ void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows
   for (int x = 0; x < rows; x++) {
     for (int y = 0; y < columns; y++) {
       int position = x * columns + y;
-      if (image[position] == 0) {
+      if (image[position] == 0 || labeled_image[position] > 1) {
         std::vector<int> neighbours;
 
         for (int i = 0; i < 3; i++) {
@@ -94,7 +92,7 @@ void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows
           }
         }
 
-        if (neighbours.empty()) {
+        if (neighbours.empty() && labeled_image[position] != 0) {
           labeled_image[position] = current_label;
           current_label++;
         } else {
@@ -114,54 +112,8 @@ void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows
       int position = x * columns + y;
       if (labeled_image[position] > 1) {
         int find_label = findParent(parent, labeled_image[position]);
-        
-        labeled_image[position] = find_label;       
-        
-        }
-      }
-    }
-  fixLabels(labeled_image, rows, columns);
-}
 
-
-void labelingFixForMPI(std::vector<int>& labeled_image, int rows, int columns) {
-  int current_label = 2;
-  int dx[] = {-1, 1, 0, 0, -1, 1};
-  int dy[] = {0, 0, -1, 1, 1, -1};
-
-  for (int x = 0; x < rows; x++) {
-    for (int y = 0; y < columns; y++) {
-      int position = x * columns + y;
-      if (labeled_image[position] > 1) {
-        std::vector<int> neighbours;
-        for (int i = 0; i < 6; i++) {
-          int nx = x + dx[i];
-          int ny = y + dy[i];
-          int tmp_pos = nx * columns + ny;
-          if (nx >= 0 && nx < rows && ny >= 0 && ny < columns && (labeled_image[tmp_pos] > 1)) {
-            neighbours.push_back(labeled_image[tmp_pos]);
-          }
-        }
-
-        if (neighbours.empty()) {
-          labeled_image[position] = current_label;
-          current_label++;
-        } else {
-          int min_label = *min_element(neighbours.begin(), neighbours.end());
-          if (current_label <= min_label) {
-            min_label = current_label;
-            current_label++;
-          }
-          labeled_image[position] = min_label;
-           for (int i = 0; i < 6; i++) {
-          int nx = x + dx[i];
-          int ny = y + dy[i];
-          int tmp_pos = nx * columns + ny;
-          if (nx >= 0 && nx < rows && ny >= 0 && ny < columns && (labeled_image[tmp_pos] > 1)) {
-            labeled_image[tmp_pos] = min_label;
-          }
-          }
-        }
+        labeled_image[position] = find_label;
       }
     }
   }
@@ -202,7 +154,10 @@ bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskSequential::validatio
 bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  labeling(image_, labeled_image, rows, columns, 2);
+  std::map<int, std::set<int>> no_need;
+  labeling(image_, labeled_image, rows, columns, 2, no_need);
+  fixLabels(labeled_image, rows, columns);
+
   return true;
 }
 
@@ -250,6 +205,45 @@ bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel::validation(
   return true;
 }
 
+void saveSet(std::ostringstream& oss, const std::set<int>& set) {
+  oss << set.size() << " ";  // Write the size of the set
+  for (const auto& item : set) {
+    oss << item << " ";  // Write each item
+  }
+}
+
+void loadSet(std::istringstream& iss, std::set<int>& set) {
+  size_t size;
+  iss >> size;  // Read the size of the set
+  set.clear();
+  for (size_t i = 0; i < size; ++i) {
+    int item;
+    iss >> item;  // Read each item
+    set.insert(item);
+  }
+}
+
+// Custom serialization for std::map
+void saveMap(std::ostringstream& oss, const std::map<int, std::set<int>>& map) {
+  oss << map.size() << " ";
+  for (const auto& pair : map) {
+    oss << pair.first << " ";
+    saveSet(oss, pair.second);
+  }
+}
+
+void loadMap(std::istringstream& iss, std::map<int, std::set<int>>& map) {
+  size_t size;
+  iss >> size;  // Read the size of the map
+  map.clear();
+  for (size_t i = 0; i < size; ++i) {
+    int key;
+    iss >> key;  // Read the key
+    std::set<int> value;
+    loadSet(iss, value);  // Deserialize the set
+    map[key] = value;
+  }
+}
 bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
@@ -265,13 +259,45 @@ bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel::run() {
   boost::mpi::scatterv(world, image_, sizes, local_image_.data(), 0);
 
   std::vector<int> local_labeled_image(sizes[world.rank()], 1);
-  int min_label = world.rank() * sizes[world.rank()] / 2 + 2;
-  labeling(local_image_, local_labeled_image, sizes[world.rank()] / columns, columns, min_label);
+  int min_label = 100000 * world.rank() + 2;
+  std::map<int, std::set<int>> local_parents;
+  labeling(local_image_, local_labeled_image, sizes[world.rank()] / columns, columns, min_label, local_parents);
 
   boost::mpi::gatherv(world, local_labeled_image, labeled_image.data(), sizes, 0);
 
+  std::ostringstream oss;
+  saveMap(oss, local_parents);
+  std::string serialized_data = oss.str();
+
+  std::vector<int> string_sizes(world.size());
+  int string_size = static_cast<int>(serialized_data.size());
+  boost::mpi::gather(world, string_size, string_sizes, 0);
+
+  int map_buffer_size;
+  std::vector<char> map_buffer;
+
   if (world.rank() == 0) {
-    labelingFixForMPI(labeled_image, rows, columns);
+    map_buffer_size = std::accumulate(string_sizes.begin(), string_sizes.end(), 0, std::plus<int>());
+    map_buffer = std::vector<char>(map_buffer_size);
+  }
+  std::vector<char> send_ser_data(serialized_data.begin(), serialized_data.end());
+  boost::mpi::gatherv(world, send_ser_data, map_buffer.data(), string_sizes, 0);
+
+  if (world.rank() == 0) {
+    std::map<int, std::set<int>> global_map;
+    int displacement = 0;
+    for (int i = 0; i < world.size(); i++) {
+      std::string map_data =
+          std::string(map_buffer.begin() + displacement, map_buffer.begin() + displacement + string_sizes[i]);
+      std::istringstream istr(map_data);
+      std::map<int, std::set<int>> recv_map;
+      loadMap(istr, recv_map);
+      displacement += string_sizes[i];
+      global_map.insert(recv_map.begin(), recv_map.end());
+    }
+
+    labeling(image_, labeled_image, rows, columns, 2, global_map);
+    fixLabels(labeled_image, rows, columns);
   }
   return true;
 }
