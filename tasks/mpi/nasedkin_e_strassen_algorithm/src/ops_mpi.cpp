@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <boost/mpi/collectives.hpp>
+#include <boost/serialization/vector.hpp>
 
 namespace nasedkin_e_strassen_algorithm {
 
