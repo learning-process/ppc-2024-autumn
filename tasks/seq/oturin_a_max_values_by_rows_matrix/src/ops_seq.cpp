@@ -1,10 +1,6 @@
 #include "seq/oturin_a_max_values_by_rows_matrix/include/ops_seq.hpp"
 
 #include <algorithm>
-#include <iostream>
-#include <thread>
-
-using namespace std::chrono_literals;
 
 bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -13,9 +9,7 @@ bool oturin_a_max_values_by_rows_matrix_seq::TestTaskSequential::pre_processing(
   m = (size_t)(taskData->inputs_count[1]);
   input_ = std::vector<int>(n * m);
   int *tmp_ptr = reinterpret_cast<int *>(taskData->inputs[0]);
-  for (unsigned i = 0; i < n * m; i++) {
-    input_[i] = tmp_ptr[i];
-  }
+  input_ = std::vector<int>(tmp_ptr, tmp_ptr + n * m);
   // Init values for output
   res = std::vector<int>(m, 0);
   return true;
