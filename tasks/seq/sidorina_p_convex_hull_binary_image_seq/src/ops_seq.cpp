@@ -3,9 +3,9 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <list>
 #include <random>
 #include <unordered_map>
-#include <list>
 #include <vector>
 
 namespace sidorina_p_convex_hull_binary_image_seq {
@@ -194,7 +194,8 @@ bool ConvexHullBinImgSeq::run() {
 
   std::vector<Point> points;
   for (const auto& component : components) {
-    points.insert(points.end(), jarvis(component).begin(), jarvis(component).end());
+    auto hull = jarvis(component);
+    points.insert(points.end(), hull.begin(), hull.end());
   }
 
   image = bin_img(points, width, height);

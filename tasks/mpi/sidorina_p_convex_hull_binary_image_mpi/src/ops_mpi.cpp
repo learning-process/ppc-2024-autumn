@@ -147,7 +147,7 @@ std::vector<Point> jarvis(std::vector<Point> points) {
       min_point = points[i];
     }
   }
-  
+
   struct Comparator {
     const Point& min_point;
 
