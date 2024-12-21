@@ -1,5 +1,3 @@
-#pragma once
-
 #include "mpi/Sadikov_I_Gauss_Linear_Filtration/include/ops_mpi.h"
 
 Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationSeq::LinearFiltrationSeq(
@@ -8,8 +6,8 @@ Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationSeq::LinearFiltrationSeq(
 
 bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationSeq::validation() {
   internal_order_test();
-  if ((taskData->inputs_count[0] > 2 or taskData->inputs_count[0] == 0) and taskData->inputs_count[1] > 2 or
-      taskData->inputs_count[1] == 0) {
+  if ((taskData->inputs_count[0] > 2 || taskData->inputs_count[0] == 0) &&
+      (taskData->inputs_count[1] > 2 || taskData->inputs_count[1] == 0)) {
     return taskData->outputs_count[0] == taskData->inputs_count[0] * taskData->inputs_count[1];
   }
   return false;
@@ -97,8 +95,8 @@ Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::LinearFiltrationMPI(
 bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if ((taskData->inputs_count[0] > 2 or taskData->inputs_count[0] == 0) and taskData->inputs_count[1] > 2 or
-        taskData->inputs_count[1] == 0) {
+    if ((taskData->inputs_count[0] > 2 || taskData->inputs_count[0] == 0) &&
+        (taskData->inputs_count[1] > 2 || taskData->inputs_count[1] == 0)) {
       return taskData->outputs_count[0] == taskData->inputs_count[0] * taskData->inputs_count[1];
     }
     return false;
@@ -165,7 +163,7 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::run() {
   boost::mpi::scatterv(world, m_pixelsMatrix.data(), m_scatterSizes, m_displacements, m_localInput.data(),
                        m_scatterSizes[world.rank()], 0);
   for (auto row = 0; row < m_rowsCount; ++row) {
-    for (auto column = 0; column < m_localInput.size() / m_rowsCount; ++column) {
+    for (auto column = 0; column < static_cast<int>(m_localInput.size()) / m_rowsCount; ++column) {
       CalculateNewPixelValue(column, row);
     }
   }

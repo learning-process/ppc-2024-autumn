@@ -3,6 +3,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
+#include <cmath>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -57,7 +58,7 @@ class LinearFiltrationMPI : public ppc::core::Task {
   bool post_processing() override;
   void CalculateGaussMatrix();
   void CalculateNewPixelValue(int iIndex, int jIndex);
-  bool CheckIndex(int index) const noexcept { return index >= 0 and index < m_localInput.size(); }
+  bool CheckIndex(int index) const noexcept { return index >= 0 and index < static_cast<int>(m_localInput.size()); }
   bool CheckRowIndex(int index) const noexcept { return index >= 0 and index < m_rowsCount; }
   bool CheckColumnIndex(int index, int columnsCount) const noexcept { return index >= 0 and index < columnsCount; }
 };

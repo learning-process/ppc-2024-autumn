@@ -2,7 +2,6 @@
 #include <seq/Sadikov_I_Gauss_Linear_Filtration/include/Point.h>
 #include <seq/Sadikov_I_Gauss_Linear_Filtration/include/seq_task.h>
 
-
 namespace Sadikov_I_Gauss_Linear_Filtration_tests {
 static std::vector<Point<double>> squareImage{
     Point(44.0, 2.0, 1.0),      Point(56.0, 11.0, 23.0),   Point(51.0, 75.0, 100.0),
@@ -42,10 +41,10 @@ static std::vector<Point<double>> squareImage2Check{
     Point(54.0, 35.0, 89.0),  Point(70.0, 102.0, 109.0), Point(65.0, 139.0, 121.0), Point(46.0, 95.0, 107.0)};
 
 static std::vector<Point<double>> rectImage2Check{
-    Point(63.0, 44.0, 42.0),   Point(81.0, 74.0, 53.0),   Point(61.0, 56.0, 40.0),    Point(75.0, 76.0, 95.0),
-    Point(87.0, 120.0, 128.0), Point(54.0, 97.0, 94.0),   Point(93.0, 76.0, 103.0),   Point(89.0, 118.0, 149.0),
+    Point(63.0, 44.0, 42.0),   Point(81.0, 74.0, 53.0),  Point(61.0, 56.0, 40.0),    Point(75.0, 76.0, 95.0),
+    Point(87.0, 120.0, 128.0), Point(54.0, 97.0, 94.0),  Point(93.0, 76.0, 103.0),   Point(89.0, 118.0, 149.0),
     Point(34.0, 100.0, 111.0), Point(109.0, 69.0, 98.0), Point(107.0, 103.0, 143.0), Point(46.0, 78.0, 104.0),
-    Point(69.0, 48.0, 77.0),   Point(76.0, 67.0, 107.0),  Point(42.0, 42.0, 73.0)};
+    Point(69.0, 48.0, 77.0),   Point(76.0, 67.0, 107.0), Point(42.0, 42.0, 73.0)};
 }  // namespace Sadikov_I_Gauss_Linear_Filtration_tests
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation) {
@@ -76,79 +75,79 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation2) {
   ASSERT_EQ(task.validation(), false);
 }
 
- TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image) {
-   std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::squareImage));
-   std::vector<int> in_index{3, 3};
-   std::vector<Point<double>> out(9);
-   auto taskData = std::make_shared<ppc::core::TaskData>();
-   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-   taskData->inputs_count.emplace_back(in_index[0]);
-   taskData->inputs_count.emplace_back(in_index[1]);
-   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-   taskData->outputs_count.emplace_back(out.size());
-   Sadikov_I_Gauss_Linear_Filtration::LinearFiltration task(taskData);
-   ASSERT_EQ(task.validation(), true);
-   task.pre_processing();
-   task.run();
-   task.post_processing();
-   bool flag = true;
-   for (auto i = 0; i < out.size(); ++i) {
-     if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImageCheck[i]) {
-       flag = false;
-     }
-   }
-   ASSERT_EQ(flag, true);
- }
+TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image) {
+  std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::squareImage));
+  std::vector<int> in_index{3, 3};
+  std::vector<Point<double>> out(9);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in_index[0]);
+  taskData->inputs_count.emplace_back(in_index[1]);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+  Sadikov_I_Gauss_Linear_Filtration::LinearFiltration task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  bool flag = true;
+  for (auto i = 0; i < out.size(); ++i) {
+    if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImageCheck[i]) {
+      flag = false;
+    }
+  }
+  ASSERT_EQ(flag, true);
+}
 
- TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image2) {
-   std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::squareImage2));
-   std::vector<int> in_index{4, 4};
-   std::vector<Point<double>> out(16);
-   auto taskData = std::make_shared<ppc::core::TaskData>();
-   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-   taskData->inputs_count.emplace_back(in_index[0]);
-   taskData->inputs_count.emplace_back(in_index[1]);
-   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-   taskData->outputs_count.emplace_back(out.size());
-   Sadikov_I_Gauss_Linear_Filtration::LinearFiltration task(taskData);
-   ASSERT_EQ(task.validation(), true);
-   task.pre_processing();
-   task.run();
-   task.post_processing();
-   bool flag = true;
-   for (auto i = 0; i < out.size(); ++i) {
-     if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImage2Check[i]) {
-       std::cout << out[i];
-       flag = false;
-     }
-   }
-   ASSERT_EQ(flag, true);
- }
+TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image2) {
+  std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::squareImage2));
+  std::vector<int> in_index{4, 4};
+  std::vector<Point<double>> out(16);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in_index[0]);
+  taskData->inputs_count.emplace_back(in_index[1]);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+  Sadikov_I_Gauss_Linear_Filtration::LinearFiltration task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  bool flag = true;
+  for (auto i = 0; i < out.size(); ++i) {
+    if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImage2Check[i]) {
+      std::cout << out[i];
+      flag = false;
+    }
+  }
+  ASSERT_EQ(flag, true);
+}
 
- TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image) {
-   std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::rectImage));
-   std::vector<int> in_index{3, 4};
-   std::vector<Point<double>> out(12);
-   auto taskData = std::make_shared<ppc::core::TaskData>();
-   taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-   taskData->inputs_count.emplace_back(in_index[0]);
-   taskData->inputs_count.emplace_back(in_index[1]);
-   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-   taskData->outputs_count.emplace_back(out.size());
-   Sadikov_I_Gauss_Linear_Filtration::LinearFiltration task(taskData);
-   ASSERT_EQ(task.validation(), true);
-   task.pre_processing();
-   task.run();
-   task.post_processing();
-   bool flag = true;
-   for (auto i = 0; i < out.size(); ++i) {
-     if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::rectImageCheck[i]) {
-       std::cout << out[i];
-       flag = false;
-     }
-   }
-   ASSERT_EQ(flag, true);
- }
+TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image) {
+  std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::rectImage));
+  std::vector<int> in_index{3, 4};
+  std::vector<Point<double>> out(12);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in_index[0]);
+  taskData->inputs_count.emplace_back(in_index[1]);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+  Sadikov_I_Gauss_Linear_Filtration::LinearFiltration task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  bool flag = true;
+  for (auto i = 0; i < out.size(); ++i) {
+    if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::rectImageCheck[i]) {
+      std::cout << out[i];
+      flag = false;
+    }
+  }
+  ASSERT_EQ(flag, true);
+}
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image2) {
   std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::rectImage2));
@@ -165,11 +164,11 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image2) {
   task.pre_processing();
   task.run();
   task.post_processing();
-   bool flag = true;
-   for (auto i = 0; i < out.size(); ++i) {
-     if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::rectImage2Check[i]) {
-       flag = false;
-     }
-   }
-   ASSERT_EQ(flag, true);
+  bool flag = true;
+  for (auto i = 0; i < out.size(); ++i) {
+    if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::rectImage2Check[i]) {
+      flag = false;
+    }
+  }
+  ASSERT_EQ(flag, true);
 }
