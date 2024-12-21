@@ -2,6 +2,7 @@
 
 #include <boost/mpi.hpp>
 #include <vector>
+#include <numbers>
 
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
@@ -113,7 +114,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Different_Functions) {
         if (func(0.5) == std::sin(0.5)) {
           expected_integral = 1.0 - std::cos(1.0);
         } else if (func(0.5) == std::exp(0.5)) {
-          expected_integral = std::exp(1.0) - 1.0;
+          expected_integral = std::numbers::e - 1.0;
         } else if (func(0.5) == std::cos(0.5)) {
           expected_integral = std::sin(1.0);
         }
