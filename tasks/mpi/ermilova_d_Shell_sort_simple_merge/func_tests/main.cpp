@@ -33,6 +33,51 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, Cant_create_incorrect_vector) {
   EXPECT_ANY_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
+TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_1) {
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  const int upper_border_test = 1000;
+  const int lower_border_test = -1000;
+  const int size = 1;
+
+  std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
+  std::vector<int> output(input.size(), 0);
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+    taskDataPar->outputs_count.emplace_back(output.size());
+  }
+
+  ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int> sort_ref(input.size(), 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataSeq->inputs_count.emplace_back(input.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(sort_ref.data()));
+    taskDataSeq->outputs_count.emplace_back(sort_ref.size());
+
+    // Create Task
+    ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+    ASSERT_EQ(testTaskSequential.validation(), true);
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
+
+    ASSERT_EQ(sort_ref, output);
+  }
+}
+
 TEST(ermilova_d_Shell_sort_simple_merge_mpi, Test_vec_10) {
   boost::mpi::communicator world;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

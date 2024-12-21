@@ -30,6 +30,32 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, Cant_create_incorrect_vector) {
   EXPECT_ANY_THROW(getRandomVector(size_test, upper_border_test, lower_border_test));
 }
 
+TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_1) {
+  const int upper_border_test = 1000;
+  const int lower_border_test = -1000;
+  const int size = 1;
+
+  std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
+  std::vector<int> output(input.size(), 0);
+
+  std::vector<int> res = input;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->inputs_count.emplace_back(input.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
+  taskDataSeq->outputs_count.emplace_back(output.size());
+
+  // Create Task
+  ermilova_d_Shell_sort_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(output, res);
+}
+
 TEST(ermilova_d_Shell_sort_simple_merge_seq, Test_vec_10) {
   const int upper_border_test = 1000;
   const int lower_border_test = -1000;

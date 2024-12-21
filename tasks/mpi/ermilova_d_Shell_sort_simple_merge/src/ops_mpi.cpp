@@ -4,11 +4,9 @@
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
 #include <functional>
-#include <queue>
 #include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
 
 std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::ShellSort(std::vector<int>& vec) {
   size_t n = vec.size();
