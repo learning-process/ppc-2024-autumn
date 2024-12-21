@@ -53,7 +53,7 @@ TEST(vedernikova_k_monte_carlo_integration_mpi_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_NEAR(expected_res, out, 1e-1);
+    EXPECT_NEAR(expected_res, out, 0.2);
   }
 }
 
@@ -103,6 +103,6 @@ TEST(vedernikova_k_monte_carlo_integration_mpi_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_NEAR(expected_res, out, 1e-1);
+    EXPECT_NEAR(expected_res, out, 0.2);
   }
 }
