@@ -36,7 +36,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, monte_carlo_rng_borde
   std::vector<std::pair<double, double>> borders(3);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
+  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
 
   double ref;
 
@@ -77,7 +77,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, monte_carlo_pseudo_rn
   std::vector<std::pair<double, double>> borders(dimentions);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
+  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
   double ref;
 
   std::random_device rd;

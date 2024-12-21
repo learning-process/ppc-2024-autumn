@@ -26,7 +26,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_mpi, monte_carlo_rng_borde
   std::vector<double> right_border(3);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_mpi::test_func);
+  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_mpi::test_func);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
@@ -100,7 +100,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_mpi, monte_carlo_pseudo_rn
   std::vector<double> right_border(dimentions);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_mpi::test_func);
+  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_mpi::test_func);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 

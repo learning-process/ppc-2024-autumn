@@ -27,7 +27,7 @@ class TestTaskSequential : public ppc::core::Task {
   size_t N;
   double variance{};
   double M{};
-  double (*f)(double*, int) = nullptr;
+  double (*f)(const double*, int) = nullptr;
 };
 
 }  // namespace korotin_e_multidimentional_integrals_monte_carlo_seq

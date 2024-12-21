@@ -20,7 +20,7 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential
   for (int i = 0; i < dim; i++) {
     input_[i] = start[i];
   }
-  f = (reinterpret_cast<double (**)(double*, int)>(taskData->inputs[0]))[0];
+  f = (reinterpret_cast<double (**)(const double*, int)>(taskData->inputs[0]))[0];
   // Init value for output
   res = 0.0;
   M = 0.0;
@@ -63,8 +63,8 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential
   for (int i = 0; i < dim; i++) volume *= (input_[i].second - input_[i].first);
   res = volume * M;
 
-  delete [] rng_bord;
-  delete [] mas;
+  delete[] rng_bord;
+  delete[] mas;
   return true;
 }
 
@@ -110,7 +110,7 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::
       input_right_[i] = start2[i];
     }
   }
-  f = (reinterpret_cast<double (**)(double*, int)>(taskData->inputs[0])[0]);
+  f = (reinterpret_cast<double (**)(const double*, int)>(taskData->inputs[0])[0]);
   res = 0.0;
   M = 0.0;
   local_M = 0.0;

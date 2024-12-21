@@ -14,7 +14,7 @@ bool korotin_e_multidimentional_integrals_monte_carlo_seq::TestTaskSequential::p
   N = (reinterpret_cast<size_t*>(taskData->inputs[2]))[0];
   input_ = std::vector<std::pair<double, double>>(dim);
   auto* start = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[1]);
-  f = (reinterpret_cast<double (**)(double*, int)>(taskData->inputs[0]))[0];
+  f = (reinterpret_cast<double (**)(const double*, int)>(taskData->inputs[0]))[0];
   for (int i = 0; i < dim; i++) {
     input_[i] = start[i];
   }
