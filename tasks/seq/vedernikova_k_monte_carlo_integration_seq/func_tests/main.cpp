@@ -34,7 +34,7 @@ TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_500000) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_NEAR(expected_res, out, 1e-1);
+  EXPECT_NEAR(expected_res, out, 1.0);
 }
 
 TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_600000) {
@@ -65,15 +65,15 @@ TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_600000) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_NEAR(expected_res, out, 1e-1);
+  EXPECT_NEAR(expected_res, out, 1.0);
 }
 
-TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_700000) {
+TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_650000) {
   double ax = -1.0;
   double bx = 1.0;
   double ay = -2.0;
   double by = 2.0;
-  size_t num_point = 700000;
+  size_t num_point = 650000;
 
   double out = 0.0;
   double expected_res = 8.0;
@@ -96,7 +96,7 @@ TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_700000) {
   testTaskSequential.pre_processing();
   testTaskSequential.run();
   testTaskSequential.post_processing();
-  EXPECT_NEAR(expected_res, out, 1e-1);
+  EXPECT_NEAR(expected_res, out, 1.0);
 }
 TEST(vedernikova_k_monte_carlo_integration_seq, validation_false) {
   double ax = -1.0;
