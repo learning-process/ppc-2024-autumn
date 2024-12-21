@@ -134,6 +134,8 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Uneven_Points_Distribution) {
       taskDataPar->outputs_count.emplace_back(out.size());
     }
 
+    boost::mpi::broadcast(world, taskDataPar, 0);
+
     auto testMpiTaskParallel =
         std::make_shared<shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel>(taskDataPar);
     testMpiTaskParallel->set_interval(0.0, 1.0);
@@ -188,6 +190,7 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Validation_Failure) {
     throw;
   }
 }
+
 TEST(MonteCarloIntegrationTaskParallel, Test_Zero_Points) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
