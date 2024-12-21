@@ -29,7 +29,7 @@ bool StrassenAlgorithmSequential::pre_processing() {
       B_[i][j] = B_input[i * matrix_size + j];
     }
   }
-
+  std::cout << "seq preporcessing done" << std::endl;
   return true;
 }
 
@@ -42,12 +42,14 @@ bool StrassenAlgorithmSequential::validation() {
 
   n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   return n > 0;
+  std::cout << "seq validation done" << std::endl;
 }
 
 bool StrassenAlgorithmSequential::run() {
   internal_order_test();
   strassen(A_, B_, C_);
   return true;
+  std::cout << "seq run done" << std::endl;
 }
 
 bool StrassenAlgorithmSequential::post_processing() {
@@ -59,6 +61,7 @@ bool StrassenAlgorithmSequential::post_processing() {
     }
   }
   return true;
+  std::cout << "seq postprocessing done" << std::endl;
 }
 
 void StrassenAlgorithmSequential::strassen(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
@@ -169,7 +172,7 @@ bool StrassenAlgorithmParallel::pre_processing() {
   displs_b.resize(world.size());
 
   if (world.rank() == 0) {
-    size_t matrix_size = *reinterpret_cast<size_t*>(taskData->inputs[0]);  // Изменено имя переменной
+    size_t matrix_size = *reinterpret_cast<size_t*>(taskData->inputs[0]);
 
     A_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
     B_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
@@ -188,6 +191,7 @@ bool StrassenAlgorithmParallel::pre_processing() {
     calculate_distribution(matrix_size, matrix_size, world.size(), sizes_a, displs_a);
     calculate_distribution(matrix_size, matrix_size, world.size(), sizes_b, displs_b);
   }
+  std::cout << "mpi preporcessing done" << std::endl;
   return true;
 }
 
@@ -202,6 +206,7 @@ bool StrassenAlgorithmParallel::validation() {
     n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
     return n > 0;
   }
+  std::cout << "mpi validation done" << std::endl;
   return true;
 }
 
@@ -245,7 +250,7 @@ bool StrassenAlgorithmParallel::run() {
   } else {
     boost::mpi::gatherv(world, local_C_flat.data(), sizes_a[world.rank()], 0);
   }
-
+  std::cout << "mpi run done" << std::endl;
   return true;
 }
 
@@ -260,6 +265,7 @@ bool StrassenAlgorithmParallel::post_processing() {
     }
   }
   return true;
+  std::cout << "mpi postprocessing done" << std::endl;
 }
 
 void StrassenAlgorithmParallel::calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs) {
