@@ -44,4 +44,4 @@ class TaskShellSortParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace suvorov_d_shell_with_ord_merge_seq
+}  // namespace suvorov_d_shell_with_ord_merge_mpi

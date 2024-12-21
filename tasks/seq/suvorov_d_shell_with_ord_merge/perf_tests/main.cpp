@@ -1,9 +1,9 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <algorithm>
 #include <random>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/suvorov_d_shell_with_ord_merge/include/ops_seq.hpp"
@@ -15,10 +15,10 @@ std::vector<int> get_rand_vector(const size_t vec_size, const int min_int = -100
   std::uniform_int_distribution<> distr(min_int, max_int);
 
   std::vector<int> new_vec(vec_size);
-  std::generate(new_vec.begin(), new_vec.end(), [&] () {return distr(gen);});
+  std::generate(new_vec.begin(), new_vec.end(), [&]() { return distr(gen); });
   return new_vec;
 }
-}  
+}  // namespace suvorov_d_shell_with_ord_merge_seq
 
 TEST(suvorov_d_shell_with_ord_merge_seq, test_pipeline_run) {
   const size_t count_of_elems = 100000;
@@ -32,7 +32,7 @@ TEST(suvorov_d_shell_with_ord_merge_seq, test_pipeline_run) {
   taskDataForSortingSeq->outputs_count.emplace_back(sorted_result.size());
 
   auto ShellSortSeq = std::make_shared<suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq>(taskDataForSortingSeq);
-  
+
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();

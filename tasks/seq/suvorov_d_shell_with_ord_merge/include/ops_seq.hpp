@@ -23,4 +23,4 @@ class TaskShellSortSeq : public ppc::core::Task {
   std::vector<int> shell_sort(const std::vector<int>&) const;
 };
 
-}  // namespace nesterov_a_test_task_seq
+}  // namespace suvorov_d_shell_with_ord_merge_seq

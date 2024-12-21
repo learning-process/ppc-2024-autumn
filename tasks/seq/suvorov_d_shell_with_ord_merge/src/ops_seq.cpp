@@ -5,7 +5,8 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::shell_sort(const std::vector<int>& vec_to_sort) const {
+std::vector<int> suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::shell_sort(
+    const std::vector<int>& vec_to_sort) const {
   std::vector<int> result_vec = vec_to_sort;
   size_t n = result_vec.size();
 
@@ -38,10 +39,8 @@ bool suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::pre_processing() {
 bool suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->inputs_count[0] > 0 && 
-    taskData->inputs_count.size() == 1 &&
-    taskData->inputs_count[0] == taskData->outputs_count[0] &&
-    taskData->outputs_count.size() == 1;
+  return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0 && taskData->inputs_count.size() == 1 &&
+         taskData->outputs_count.size() == 1 && taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::run() {
@@ -54,7 +53,7 @@ bool suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::run() {
 
 bool suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::post_processing() {
   internal_order_test();
-  
+
   std::copy(sorted_data.begin(), sorted_data.end(), reinterpret_cast<int*>(taskData->outputs[0]));
 
   return true;

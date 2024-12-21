@@ -63,11 +63,9 @@ bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortSeq::pre_processing() {
 
 bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortSeq::validation() {
   internal_order_test();
-  
-  return taskData->inputs_count[0] > 0 && 
-    taskData->inputs_count.size() == 1 &&
-    taskData->inputs_count[0] == taskData->outputs_count[0] &&
-    taskData->outputs_count.size() == 1;
+
+  return taskData->inputs_count[0] > 0 && taskData->inputs_count.size() == 1 &&
+         taskData->inputs_count[0] == taskData->outputs_count[0] && taskData->outputs_count.size() == 1;
 }
 
 bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortSeq::run() {
@@ -80,7 +78,7 @@ bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortSeq::run() {
 
 bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortSeq::post_processing() {
   internal_order_test();
-  
+
   std::copy(sorted_data.begin(), sorted_data.end(), reinterpret_cast<int*>(taskData->outputs[0]));
 
   return true;
@@ -101,17 +99,15 @@ bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel::pre_processing()
 bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0 && 
-        taskData->inputs_count.size() == 1 &&
-        taskData->inputs_count[0] == taskData->outputs_count[0] &&
-        taskData->outputs_count.size() == 1;
+    return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] > 0 && taskData->inputs_count.size() == 1 &&
+           taskData->outputs_count.size() == 1 && taskData->inputs_count[0] == taskData->outputs_count[0];
   }
   return true;
 }
 
 bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel::run() {
   internal_order_test();
-  
+
   size_t data_size = 0;
   if (world_.rank() == 0) {
     data_size = data_to_sort.size();
@@ -123,8 +119,7 @@ bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel::run() {
 
   std::vector<int> sizes(world_.size(), uniform_part_size);
 
-  std::transform(sizes.begin(), sizes.begin() + overflow_size, sizes.begin(),
-                [](int size) { return size + 1; });
+  std::transform(sizes.begin(), sizes.begin() + overflow_size, sizes.begin(), [](int size) { return size + 1; });
 
   std::vector<int> displacements(world_.size(), 0);
   std::partial_sum(sizes.begin(), sizes.end() - 1, displacements.begin() + 1);
@@ -146,8 +141,8 @@ bool suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel::run() {
   boost::mpi::gatherv(world, partial_data.data(), sizes[world.rank()], merge_data.data(), sizes, displacements, 0);
 
   if (world.rank() == 0) {
-    std::vector<int> tmp_buff; 
-    sorted_data.assign(merge_data.begin(), merge_data.begin() + sizes[0]); 
+    std::vector<int> tmp_buff;
+    sorted_data.assign(merge_data.begin(), merge_data.begin() + sizes[0]);
 
     for (int i = 1; i < world.size(); ++i) {
       auto start = merge_data.begin() + displacements[i];
