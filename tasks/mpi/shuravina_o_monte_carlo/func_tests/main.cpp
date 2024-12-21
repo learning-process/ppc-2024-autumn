@@ -188,7 +188,6 @@ TEST(MonteCarloIntegrationTaskParallel, Test_Validation_Failure) {
     throw;
   }
 }
-
 TEST(MonteCarloIntegrationTaskParallel, Test_Zero_Points) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
