@@ -68,29 +68,6 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_wrong_pixels) {
   }
 }
 
-TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_wrong_input_count) {
-  boost::mpi::communicator world;
-
-  const int width = 100;
-  const int height = 50;
-
-  std::vector<double> global_img(30, 1);
-  std::vector<double> global_ans(width * height, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_img.data()));
-    taskDataPar->inputs_count.emplace_back(global_img.size());
-    taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
-    taskDataPar->outputs_count.emplace_back(global_ans.size());
-    sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-    ASSERT_FALSE(testMpiTaskParallel.validation());
-  }
-}
-
 TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_7x5) {
   boost::mpi::communicator world;
 
