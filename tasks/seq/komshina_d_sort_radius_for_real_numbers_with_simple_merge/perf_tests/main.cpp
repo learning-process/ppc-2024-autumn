@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge, test_pipeline_run) {
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_pipeline_run) {
   std::vector<double> in = {0.5, 0.2, 0.9, 0.1, 0.4, 0.8, 0.6, 0.3, 0.7, 0.0};
   std::vector<double> out(in.size());
 
@@ -41,7 +41,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge, test_pipeline_ru
   ASSERT_TRUE(std::equal(out.begin(), out.end(), sorted_in.begin()));
 }
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge, test_task_run) {
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_task_run) {
   std::vector<double> in = {0.5, 0.2, 0.9, 0.1, 0.4, 0.8, 0.6, 0.3, 0.7, 0.0};
   std::vector<double> out(in.size());
 
