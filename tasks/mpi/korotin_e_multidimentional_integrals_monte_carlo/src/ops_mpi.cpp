@@ -6,6 +6,7 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
+#include <stdio.h>
 #include <thread>
 #include <vector>
 
@@ -80,6 +81,7 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequenti
       for (size_t i = 0; i < N; i++) {
         rng[i] *= rng[i];
       }
+      std::cout << "SEQ math ojd: " << M << "\n";
       variance = std::accumulate(rng.begin(), rng.end(), M);
     } else
       return -1.0;
@@ -182,11 +184,13 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel
         rng[i] *= rng[i];
       }
       local_variance = std::accumulate(rng.begin(), rng.end(), local_variance);
+      prtinf("%i, %f\n", world.rank(), local_variance);
     } else
       return -1.0;
     reduce(world, local_variance, variance, std::plus(), 0);
 
     if (world.rank() == 0) {
+      std::cout << "MPI Math ojd: " << M << "\n";
       M *= (M / N);
       variance -= M;
       std::cout << "MPI var: " << variance << std::endl;
