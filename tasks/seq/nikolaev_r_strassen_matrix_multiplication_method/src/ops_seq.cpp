@@ -88,15 +88,16 @@ std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_seq::strass
   }
 
   size_t half = newSize / 2;
+  size_t half_squared = half * half;
 
-  std::vector<double> A11(half * half);
-  std::vector<double> A12(half * half);
-  std::vector<double> A21(half * half);
-  std::vector<double> A22(half * half);
-  std::vector<double> B11(half * half);
-  std::vector<double> B12(half * half);
-  std::vector<double> B21(half * half);
-  std::vector<double> B22(half * half);
+  std::vector<double> A11(half_squared);
+  std::vector<double> A12(half_squared);
+  std::vector<double> A21(half_squared);
+  std::vector<double> A22(half_squared);
+  std::vector<double> B11(half_squared);
+  std::vector<double> B12(half_squared);
+  std::vector<double> B21(half_squared);
+  std::vector<double> B22(half_squared);
 
   for (size_t i = 0; i < half; ++i) {
     for (size_t j = 0; j < half; ++j) {

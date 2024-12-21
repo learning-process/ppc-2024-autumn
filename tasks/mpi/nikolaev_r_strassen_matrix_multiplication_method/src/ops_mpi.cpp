@@ -120,15 +120,16 @@ std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_mpi::strass
   }
 
   size_t half = newSize / 2;
+  size_t half_squared = half * half;
 
-  std::vector<double> A11(half * half);
-  std::vector<double> A12(half * half);
-  std::vector<double> A21(half * half);
-  std::vector<double> A22(half * half);
-  std::vector<double> B11(half * half);
-  std::vector<double> B12(half * half);
-  std::vector<double> B21(half * half);
-  std::vector<double> B22(half * half);
+  std::vector<double> A11(half_squared);
+  std::vector<double> A12(half_squared);
+  std::vector<double> A21(half_squared);
+  std::vector<double> A22(half_squared);
+  std::vector<double> B11(half_squared);
+  std::vector<double> B12(half_squared);
+  std::vector<double> B21(half_squared);
+  std::vector<double> B22(half_squared);
 
   for (size_t i = 0; i < half; ++i) {
     for (size_t j = 0; j < half; ++j) {
@@ -210,15 +211,16 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
   boost::mpi::broadcast(active_comm, newSize, 0);
 
   size_t half = newSize / 2;
+  size_t half_squared = half * half;
 
-  std::vector<double> A11(half * half, 0.0);
-  std::vector<double> A12(half * half, 0.0);
-  std::vector<double> A21(half * half, 0.0);
-  std::vector<double> A22(half * half, 0.0);
-  std::vector<double> B11(half * half, 0.0);
-  std::vector<double> B12(half * half, 0.0);
-  std::vector<double> B21(half * half, 0.0);
-  std::vector<double> B22(half * half, 0.0);
+  std::vector<double> A11(half_squared, 0.0);
+  std::vector<double> A12(half_squared, 0.0);
+  std::vector<double> A21(half_squared, 0.0);
+  std::vector<double> A22(half_squared, 0.0);
+  std::vector<double> B11(half_squared, 0.0);
+  std::vector<double> B12(half_squared, 0.0);
+  std::vector<double> B21(half_squared, 0.0);
+  std::vector<double> B22(half_squared, 0.0);
 
   for (size_t i = 0; i < half; ++i) {
     for (size_t j = 0; j < half; ++j) {
@@ -235,13 +237,13 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
     }
   }
 
-  std::vector<double> M1(half * half, 0.0);
-  std::vector<double> M2(half * half, 0.0);
-  std::vector<double> M3(half * half, 0.0);
-  std::vector<double> M4(half * half, 0.0);
-  std::vector<double> M5(half * half, 0.0);
-  std::vector<double> M6(half * half, 0.0);
-  std::vector<double> M7(half * half, 0.0);
+  std::vector<double> M1(half_squared, 0.0);
+  std::vector<double> M2(half_squared, 0.0);
+  std::vector<double> M3(half_squared, 0.0);
+  std::vector<double> M4(half_squared, 0.0);
+  std::vector<double> M5(half_squared, 0.0);
+  std::vector<double> M6(half_squared, 0.0);
+  std::vector<double> M7(half_squared, 0.0);
 
   for (int task = rank; task < 7; task += size) {
     switch (task) {
@@ -271,13 +273,13 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
     }
   }
 
-  std::vector<double> M1_global(half * half, 0.0);
-  std::vector<double> M2_global(half * half, 0.0);
-  std::vector<double> M3_global(half * half, 0.0);
-  std::vector<double> M4_global(half * half, 0.0);
-  std::vector<double> M5_global(half * half, 0.0);
-  std::vector<double> M6_global(half * half, 0.0);
-  std::vector<double> M7_global(half * half, 0.0);
+  std::vector<double> M1_global(half_squared, 0.0);
+  std::vector<double> M2_global(half_squared, 0.0);
+  std::vector<double> M3_global(half_squared, 0.0);
+  std::vector<double> M4_global(half_squared, 0.0);
+  std::vector<double> M5_global(half_squared, 0.0);
+  std::vector<double> M6_global(half_squared, 0.0);
+  std::vector<double> M7_global(half_squared, 0.0);
 
   boost::mpi::reduce(active_comm, M1.data(), M1.size(), M1_global.data(), std::plus<>(), 0);
   boost::mpi::reduce(active_comm, M2.data(), M2.size(), M2_global.data(), std::plus<>(), 0);
