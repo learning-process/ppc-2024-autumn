@@ -14,7 +14,7 @@ std::vector<char> createTestInput(int n) {
   return wordCountInput;
 }
 
-// Test to check the behavior of the MPI word counting function with an empty string
+// Test to check the behavior of the MPI word counting function with an empty
 TEST(chastov_v_count_words_in_line_mpi, empty_string) {
   boost::mpi::communicator world;
   std::vector<char> input = {};
