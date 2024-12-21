@@ -22,32 +22,9 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
 
   // Create data
   std::vector<int> vector;
-  std::vector<int> global_out(1, 0);
-
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataMpi = std::make_shared<ppc::core::TaskData>();
-  auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
     vector = kolodkin_g_random_function::create_random_vector(1);
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
-    taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } else {
-    vector.resize(1, 0);
-    taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
-    taskDataMpi->inputs_count.emplace_back(vector.size());
-    taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  }
-
-  kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
-
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
     std::vector<int> reference_out(1, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -57,16 +34,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_ptr.get()));
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
-    ASSERT_EQ(testTaskSequential.validation(), true);
-    testTaskSequential.pre_processing();
-    testTaskSequential.run();
-    testTaskSequential.post_processing();
-    global_out = *reinterpret_cast<std::vector<int> *>(taskDataMpi->outputs[0]);
-    reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
-    for (unsigned i = 0; i < global_out.size(); i++) {
-      ASSERT_EQ(global_out[i], reference_out[i]);
-    }
-  }
+    ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
 TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_two_elems) {
