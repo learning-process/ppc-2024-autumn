@@ -74,7 +74,7 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_wrong_input_count
   const int width = 100;
   const int height = 50;
 
-  std::vector<double> global_img(150, 1);
+  std::vector<double> global_img(30, 1);
   std::vector<double> global_ans(width * height, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

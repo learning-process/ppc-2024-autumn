@@ -54,7 +54,7 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_wrong_input_count
   const int height = 50;
 
   // Create data
-  std::vector<double> in(150, 1);
+  std::vector<double> in(30, 1);
   std::vector<double> out(width * height, 0);
 
   // Create TaskData

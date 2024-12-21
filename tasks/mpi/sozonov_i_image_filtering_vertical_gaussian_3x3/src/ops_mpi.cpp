@@ -28,12 +28,17 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskSequential:
   auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], image.begin());
 
-  size_t size = taskData->inputs_count[1] * taskData->inputs_count[2];
+  size_t img_size = taskData->inputs_count[1] * taskData->inputs_count[2];
 
-  bool check_pixels = std::all_of(image.begin(), image.end(), [](double pixel) { return pixel >= 0 && pixel <= 255; });
+  // Check pixels range from 0 to 255
+  for (size_t i = 0; i < img_size; ++i) {
+    if (image[i] < 0 || image[i] > 255) {
+      return false;
+    }
+  }
 
-  // Check input and output count and pixels range from 0 to 255
-  return taskData->inputs_count[0] == size && taskData->outputs_count[0] == size && check_pixels &&
+  // Check size of image
+  return taskData->inputs_count[0] == img_size && taskData->outputs_count[0] == img_size &&
          taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3;
 }
 
@@ -96,13 +101,17 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskParallel::v
     auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
     std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], image.begin());
 
-    size_t size = taskData->inputs_count[1] * taskData->inputs_count[2];
+    size_t img_size = taskData->inputs_count[1] * taskData->inputs_count[2];
 
-    bool check_pixels =
-        std::all_of(image.begin(), image.end(), [](double pixel) { return pixel >= 0 && pixel <= 255; });
+    // Check pixels range from 0 to 255
+    for (size_t i = 0; i < img_size; ++i) {
+      if (image[i] < 0 || image[i] > 255) {
+        return false;
+      }
+    }
 
-    // Check input and output count and pixels range from 0 to 255
-    return taskData->inputs_count[0] == size && taskData->outputs_count[0] == size && check_pixels &&
+    // Check size of image
+    return taskData->inputs_count[0] == img_size && taskData->outputs_count[0] == img_size &&
            taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3;
   }
   return true;
