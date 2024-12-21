@@ -1,8 +1,8 @@
-#include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <random>
+
+#include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::pre_processing() {
   integral_value_ = 0.0;
@@ -30,8 +30,15 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::validation() {
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   int num_processes = world.size();
+  int rank = world.rank();
 
+  std::cout << "Run proc " << world.rank() << "\n";
   int local_num_points = num_points_ / num_processes;
+
+  if (num_points_ == 0) {
+    integral_value_ = 0.0;
+    return true;
+  }
 
   double local_sum = 0.0;
   for (int i = 0; i < local_num_points; ++i) {
@@ -43,6 +50,8 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   boost::mpi::all_reduce(world, local_sum, global_sum, std::plus<>());
 
   integral_value_ = (global_sum / num_points_) * (b_ - a_);
+
+  std::cout << "Rank " << rank << " finished processing." << std::endl;
 
   return true;
 }
