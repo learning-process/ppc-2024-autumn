@@ -258,6 +258,10 @@ bool StrassenAlgorithmParallel::run() {
   std::cout << "Process " << world.rank() << ": Broadcast complete, n = " << n << std::endl;
 
   int loc_mat_size = sizes_a[world.rank()];
+  if (loc_mat_size <= 0) {
+    std::cerr << "Process " << world.rank() << ": Invalid local matrix size = " << loc_mat_size << std::endl;
+    return false;
+  }
 
   std::cout << "Process " << world.rank() << ": Local matrix size = " << loc_mat_size << std::endl;
 
