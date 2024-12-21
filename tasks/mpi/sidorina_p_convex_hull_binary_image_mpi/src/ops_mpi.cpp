@@ -252,13 +252,9 @@ bool ConvexHullBinImgMpi::run() {
   if (world.rank() == 0) {
     std::vector<Point> h_merged;
     h_merged.insert(h_merged.end(), h_local.begin(), h_local.end());
-    std::vector<std::vector<int>> process_groups;
-
-    for (auto& group : process_groups) {
+    for (int proc = 1; proc < world.size(); ++proc) {
       std::vector<int> h_ints;
-      for (int proc : group) {
-        world.recv(proc, 2, h_ints);
-      }
+      world.recv(proc, 2, h_ints);
       auto hull = conv_point(h_ints);
       h_merged.insert(h_merged.end(), hull.begin(), hull.end());
     }
