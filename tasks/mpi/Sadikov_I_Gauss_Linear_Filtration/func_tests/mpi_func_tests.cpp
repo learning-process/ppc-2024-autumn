@@ -101,7 +101,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image) {
   task.post_processing();
   if (world.rank() == 0) {
     bool flag = true;
-    for (auto i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImageCheck[i]) {
         flag = false;
       }
@@ -130,7 +130,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image2) {
   task.post_processing();
   if (world.rank() == 0) {
     bool flag = true;
-    for (auto i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImage2Check[i]) {
         flag = false;
       }
@@ -159,7 +159,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image) {
   task.post_processing();
   if (world.rank() == 0) {
     bool flag = true;
-    for (auto i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::rectImageCheck[i]) {
         flag = false;
       }
@@ -188,7 +188,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image2) {
   task.post_processing();
   if (world.rank() == 0) {
     bool flag = true;
-    for (auto i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::rectImage2Check[i]) {
         flag = false;
       }
