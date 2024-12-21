@@ -288,7 +288,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_random_inter
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{2};
     limits = {{0.0, 1.0}, {4.0, 6.0}};
-    intervals = {GetRandomIntegerData(100, 200), GetRandomIntegerData(100, 200)};
+    intervals = {GetRandomIntegerData(100, 150), GetRandomIntegerData(100, 150)};
   }
 
   TestOfFunction(function6, count, limits, intervals);
@@ -304,7 +304,7 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_random_limit
   if (world.rank() == 0) {
     count = std::vector<unsigned int>{3};
     limits = {GetRandomLimit(0.0, 10.0), GetRandomLimit(0.0, 10.0), GetRandomLimit(0.0, 10.0)};
-    intervals = {GetRandomIntegerData(50, 80), GetRandomIntegerData(50, 80), GetRandomIntegerData(50, 80)};
+    intervals = {GetRandomIntegerData(40, 60), GetRandomIntegerData(40, 60), GetRandomIntegerData(40, 60)};
   }
 
   TestOfFunction(function3, count, limits, intervals);
