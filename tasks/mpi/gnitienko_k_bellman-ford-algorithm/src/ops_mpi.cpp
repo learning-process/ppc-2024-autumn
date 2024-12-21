@@ -155,14 +155,7 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI::Iteration(std::v
   }
 
   std::vector<int> reduced_paths(V, INF);
-  boost::mpi::reduce(
-      world, start_paths.data(), V, reduced_paths.data(),
-      [](int a, int b) {
-        if (a == 1000000000) return b;
-        if (b == 1000000000) return a;
-        return std::min(a, b);
-      },
-      0);
+  boost::mpi::reduce(world, start_paths.data(), V, reduced_paths.data(), boost::mpi::minimum<int>(), 0);
 
   if (world.rank() == 0) {
     for (size_t i = 0; i < V; i++) {

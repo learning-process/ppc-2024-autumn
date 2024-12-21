@@ -31,7 +31,7 @@ std::vector<int> generateGraph(const int V) {
 
 TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int V = 1000;
+  const int V = 2000;
 
   // Create data
   std::vector<int> graph;
