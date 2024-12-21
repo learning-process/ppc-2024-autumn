@@ -40,7 +40,7 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential::pre_processing() {
 
 bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0;
+  return taskData->inputs_count[0] > 1;
 }
 
 bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential::run() {
@@ -73,7 +73,7 @@ bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::pre_processing() {
 bool kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] > 0;
+    return taskData->inputs_count[0] > 1;
   }
   return true;
 }
