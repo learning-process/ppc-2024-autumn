@@ -11,8 +11,8 @@
 
 TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_500000_seq) {
   auto [ax, bx] = std::make_pair(0.0, 2.0);
-  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
-  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi_v<double>);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi_v<double>);
 
   size_t num_point = 500000;
   double out = 0.0;

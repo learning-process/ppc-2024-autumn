@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <random>
+#include <numbers>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"

@@ -100,8 +100,7 @@ bool vedernikova_k_monte_carlo_integration_mpi::TestMPITaskParallel::run() {
   double x_limit = b_x - a_x;
   double y_limit = b_y - a_y;
   double z_limit = b_z - a_z;
-  std::cout << "Limits:\n";
-  std::cout << x_limit << ' ' << y_limit << ' ' << z_limit;
+
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis_x(a_x, b_x);
@@ -109,9 +108,7 @@ bool vedernikova_k_monte_carlo_integration_mpi::TestMPITaskParallel::run() {
   std::uniform_real_distribution<> dis_z(a_z, b_z);
   double local_res = 0.0;
   int range = num_points / world.size();
-  std::cout << "Range: " << range << "\n";
-  std::cout << "Points:\n";
-  std::cout << a_x << ' ' << b_x << ' ' << a_y << ' ' << b_y << ' ' << a_z << ' ' << b_z << "\n";
+
   for (int i = 0; i < range; i++) {
     double r = dis_x(gen);
     double theta = dis_y(gen);
@@ -123,23 +120,19 @@ bool vedernikova_k_monte_carlo_integration_mpi::TestMPITaskParallel::run() {
     double dV = r * r * std::sin(theta);
     local_res += f(x, y, z) * dV;
   }
-  std::cout << "Local res: " << local_res << "\n";
 
   boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
 
   if (world.rank() == 0) {
     res *= x_limit * y_limit * z_limit / num_points;
-    std::cout << "res" << res << "\n";
   }
   return true;
 }
 bool vedernikova_k_monte_carlo_integration_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
-  std::cout << "res in post_processing" << res << "\n";
+
   if (world.rank() == 0) {
     *reinterpret_cast<double*>(taskData->outputs[0]) = res;
-
-    std::cout << "res in post_processing after writing: " << *reinterpret_cast<double*>(taskData->outputs[0]) << "\n";
   }
 
   return true;
