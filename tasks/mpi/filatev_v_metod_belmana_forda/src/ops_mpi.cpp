@@ -50,7 +50,7 @@ bool filatev_v_metod_belmana_forda_mpi::MetodBelmanaFordaMPI::run() {
   d[start] = 0;
 
   if (world.size() == 1 || world.size() > n) {
-    std::vector<int> update(n, false);
+    std::vector<bool> update(n, false);
     update[start] = true;
 
     std::queue<int> q;
