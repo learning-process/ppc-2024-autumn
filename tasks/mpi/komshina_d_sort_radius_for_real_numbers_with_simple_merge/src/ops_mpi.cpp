@@ -81,7 +81,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
 
 void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::CountingSort(double* inp, double* out, int byteNum,
                                                                                  int size) {
-  auto mas = reinterpret_cast<unsigned char*>(inp);
+  unsigned char* mas = reinterpret_cast<unsigned char*>(inp);
   int counter[256] = {0};
 
   for (int i = 0; i < size; i++) {
@@ -163,10 +163,12 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
 
 void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::ParallelSortDouble() {
   int total_size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
   if (rank == 0) total_size = input.size();
   MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+  if (rank == 0) {
+    std::cout << "Total size: " << total_size << std::endl;
+  }
 
   int base_size = total_size / size;
   int remainder = total_size % size;
@@ -180,14 +182,25 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
     displacements[i] = (i > 0) ? (displacements[i - 1] + send_counts[i - 1]) : 0;
   }
 
+  if (rank == 0) {
+    std::cout << "Send counts: ";
+    for (int i = 0; i < size; ++i) {
+      std::cout << send_counts[i] << " ";
+    }
+    std::cout << std::endl;
+  }
+
   std::vector<double> local_data(local_size);
 
   MPI_Scatterv(input.data(), send_counts.data(), displacements.data(), MPI_DOUBLE, local_data.data(), local_size,
                MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
+  MPI_Barrier(MPI_COMM_WORLD);
+
   SortDouble(local_data);
 
   std::vector<double> sorted_data(total_size);
+
   MPI_Gatherv(local_data.data(), local_size, MPI_DOUBLE, sorted_data.data(), send_counts.data(), displacements.data(),
               MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
