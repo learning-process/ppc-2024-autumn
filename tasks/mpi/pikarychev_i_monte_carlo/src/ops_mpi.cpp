@@ -103,7 +103,7 @@ bool pikarychev_i_monte_carlo_parallel::TestMPITaskParallel::run() {
   boost::mpi::reduce(world, local_sum, global_sum, std::plus<>(), 0);
 
   if (world.rank() == 0) {
-    res = (global_sum * (range_width / num_samples);
+    res = global_sum * (range_width / num_samples);
   }
   return true;
 }
