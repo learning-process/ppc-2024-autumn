@@ -1,7 +1,7 @@
-#include "seq/shuravina_o_monte_carlo/include/ops_seq.hpp"
-
 #include <iostream>
 #include <random>
+
+#include <seq/shuravina_o_monte_carlo/include/ops_seq.hpp>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::pre_processing() {
   integral_value_ = 0.0;
@@ -35,6 +35,12 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::run() {
   std::uniform_real_distribution<> dis(a, b);
 
   double sum = 0.0;
+
+  if (num_points == 0) {
+    integral_value_ = 0.0;
+    return true;
+  }
+
   for (int i = 0; i < num_points; ++i) {
     double x = dis(gen);
     sum += f(x);
