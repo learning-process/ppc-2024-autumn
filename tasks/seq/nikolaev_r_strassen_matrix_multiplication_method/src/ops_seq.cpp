@@ -37,11 +37,13 @@ bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultipl
 }
 
 bool nikolaev_r_strassen_matrix_multiplication_method_seq::is_square_matrix_size(size_t n) {
-  size_t sqrt_n = static_cast<size_t>(std::sqrt(n));
+  auto sqrt_n = static_cast<size_t>(std::sqrt(n));
   return sqrt_n * sqrt_n == n;
 }
 
-bool nikolaev_r_strassen_matrix_multiplication_method_seq::is_power_of_two(size_t n) { return (n && !(n & (n - 1))); }
+bool nikolaev_r_strassen_matrix_multiplication_method_seq::is_power_of_two(size_t n) {
+  return (n != 0) && ((n & (n - 1)) == 0);
+}
 
 std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_seq::add(const std::vector<double>& A,
                                                                               const std::vector<double>& B, size_t n) {
@@ -87,8 +89,14 @@ std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_seq::strass
 
   size_t half = newSize / 2;
 
-  std::vector<double> A11(half * half), A12(half * half), A21(half * half), A22(half * half);
-  std::vector<double> B11(half * half), B12(half * half), B21(half * half), B22(half * half);
+  std::vector<double> A11(half * half);
+  std::vector<double> A12(half * half);
+  std::vector<double> A21(half * half);
+  std::vector<double> A22(half * half);
+  std::vector<double> B11(half * half);
+  std::vector<double> B12(half * half);
+  std::vector<double> B21(half * half);
+  std::vector<double> B22(half * half);
 
   for (size_t i = 0; i < half; ++i) {
     for (size_t j = 0; j < half; ++j) {
