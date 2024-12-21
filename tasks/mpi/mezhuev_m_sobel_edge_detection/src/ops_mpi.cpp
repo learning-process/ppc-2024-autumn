@@ -55,7 +55,7 @@ bool SobelEdgeDetection::run() {
   int rank = world.rank();
   int size = world.size();
 
-  if (input_image == nullptr || output_image == nullptr || data_size == 0 || size > data_size) {
+  if (input_image == nullptr || output_image == nullptr || data_size == 0 || static_cast<size_t>(size) > data_size) {
     return true;
   }
 
@@ -67,24 +67,21 @@ bool SobelEdgeDetection::run() {
   size_t start_row = rank * rows_per_process + std::min(rank, static_cast<int>(extra_rows));
   size_t end_row = (rank + 1) * rows_per_process + std::min(rank + 1, static_cast<int>(extra_rows));
 
-  if (end_row > start_row + 1) {
-    for (size_t y = std::max(start_row + 1, size_t(1)); y < std::min(end_row - 1, data_size - 1); ++y) {
-      for (size_t x = 1; x < data_size - 1; ++x) {
-        int gx = 0;
-        int gy = 0;
-        for (int ky = -1; ky <= 1; ++ky) {
-          for (int kx = -1; kx <= 1; ++kx) {
-            int pixel_value = input_image[(y + ky) * data_size + (x + kx)];
-            gx += sobel_x[ky + 1][kx + 1] * pixel_value;
-            gy += sobel_y[ky + 1][kx + 1] * pixel_value;
-          }
+  for (size_t y = std::max(start_row, size_t(1)); y < std::min(end_row, data_size - 1); ++y) {
+    for (size_t x = 1; x < data_size - 1; ++x) {
+      int gx = 0;
+      int gy = 0;
+      for (int ky = -1; ky <= 1; ++ky) {
+        for (int kx = -1; kx <= 1; ++kx) {
+          int pixel_value = input_image[(y + ky) * data_size + (x + kx)];
+          gx += sobel_x[ky + 1][kx + 1] * pixel_value;
+          gy += sobel_y[ky + 1][kx + 1] * pixel_value;
         }
-        int magnitude = static_cast<int>(std::sqrt(gx * gx + gy * gy));
-        output_image[y * data_size + x] = std::min(magnitude, 255);
       }
+      int magnitude = static_cast<int>(std::sqrt(gx * gx + gy * gy));
+      output_image[y * data_size + x] = std::min(magnitude, 255);
     }
   }
-
   size_t total_rows = data_size;
   if (rank == 0) {
     for (int i = 1; i < size; ++i) {

@@ -42,7 +42,6 @@ TEST(mezhuev_m_sobel_edge_detection, RunPerformanceDifferentSizes) {
   double total_duration = 0;
 
   for (size_t size : image_sizes) {
-
     auto task_data = std::make_shared<ppc::core::TaskData>();
     task_data->inputs_count.push_back(size);
     task_data->outputs_count.push_back(size);
