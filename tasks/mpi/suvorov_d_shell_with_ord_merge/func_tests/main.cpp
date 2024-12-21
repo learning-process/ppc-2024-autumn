@@ -90,5 +90,7 @@ TEST(suvorov_d_shell_with_ord_merge_mpi, Sorting_an_empty_vector) {
   }
 
   suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel ShellSortMpi(taskDataForSortingMpi);
-  if (world.rank() == 0) EXPECT_FALSE(ShellSortMpi.validation());
+  if (world.rank() == 0) {
+    EXPECT_FALSE(ShellSortMpi.validation());
+  }
 }
