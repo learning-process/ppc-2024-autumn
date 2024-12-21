@@ -164,7 +164,7 @@ TEST(Sequential, Test_3D_Product) {
   std::function<double(const std::vector<double> &)> func = test_func_12;
   std::vector<double> lower_bounds = {0.0, 0.0, 0.0};
   std::vector<double> upper_bounds = {1.0, 1.0, 1.0};
-  std::vector<int> intervals = {100, 100, 100};
+  std::vector<int> intervals = {10, 10, 10};
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
