@@ -6,13 +6,23 @@
 
 #include "seq/kolodkin_g_hoar_merge_sort/include/ops_seq.hpp"
 
+namespace kolodkin_g_random_function {
+std::vector<int> create_random_vector(unsigned n) {
+  std::vector<int> vector;
+  for (unsigned i = 0; i < n; i++) {
+    vector.push_back(-100 + rand() % 100000);
+  }
+  return vector;
+}
+};  // namespace kolodkin_g_random_function
+
 TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_one_elems) {
   // Create data
   std::vector<int> vector;
   std::vector<int> reference_out(1, 0);
 
   // Create TaskData
-  vector = {50};
+  vector = kolodkin_g_random_function::create_random_vector(1);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
@@ -21,12 +31,7 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_one_elems) {
 
   kolodkin_g_hoar_merge_sort_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_EQ(testTaskSequential.validation(), true);
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  reference_out = *reinterpret_cast<std::vector<int> *>(taskDataSeq->outputs[0]);
-  ASSERT_EQ(50, reference_out[0]);
+  ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
 TEST(kolodkin_g_hoar_merge_sort_seq, Test_vector_with_two_elems) {
@@ -113,9 +118,7 @@ TEST(kolodkin_g_hoar_merge_sort_seq, Test_big_vector) {
   std::vector<int> reference_out(1000, 0);
 
   // Create TaskData
-  for (unsigned i = 0; i < 1000; i++) {
-    vector.push_back(-1000 + rand() % 1000);
-  }
+  vector = kolodkin_g_random_function::create_random_vector(1000);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
   taskDataSeq->inputs_count.emplace_back(vector.size());
