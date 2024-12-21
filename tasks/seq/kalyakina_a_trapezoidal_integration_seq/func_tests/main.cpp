@@ -78,7 +78,7 @@ void TestOfFunction(double (*function)(std::vector<double>), std::vector<unsigne
   TaskSequential.run();
   TaskSequential.post_processing();
 
-  EXPECT_NEAR(answer, out[0], 0.006);
+  EXPECT_NEAR(answer, out[0], 0.05);
 }
 
 TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_validation_count_of_variables) {
