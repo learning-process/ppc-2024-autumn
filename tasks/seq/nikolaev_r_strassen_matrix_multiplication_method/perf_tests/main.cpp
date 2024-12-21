@@ -5,7 +5,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/nikolaev_r_strassen_matrix_multiplication_method/include/ops_seq.hpp"
 
-std::vector<double> generate_random_square_matrix(int n, double minValue, double maxValue) {
+std::vector<double> generate_random_square_matrix(int n, double minValue = -50.0, double maxValue = 50.0) {
   std::vector<double> matrix(n * n);
 
   std::random_device rd;
@@ -19,10 +19,10 @@ std::vector<double> generate_random_square_matrix(int n, double minValue, double
 }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_pipeline_run) {
-  const size_t N = 50;
+  const size_t N = 64;
 
-  std::vector<double> A = generate_random_square_matrix(N, -15.0, 15.0);
-  std::vector<double> B = generate_random_square_matrix(N, -15.0, 15.0);
+  std::vector<double> A = generate_random_square_matrix(N);
+  std::vector<double> B = generate_random_square_matrix(N);
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -44,7 +44,6 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_pipeline_run) {
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -54,18 +53,15 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_pipeline_run) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
-
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  ASSERT_EQ(A.size(), out.size());
 }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_task_run) {
-  const size_t N = 50;
+  const size_t N = 64;
 
-  std::vector<double> A = generate_random_square_matrix(N, -15.0, 15.0);
-  std::vector<double> B = generate_random_square_matrix(N, -15.0, 15.0);
+  std::vector<double> A = generate_random_square_matrix(N);
+  std::vector<double> B = generate_random_square_matrix(N);
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
@@ -88,7 +84,6 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_task_run) {
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -98,9 +93,6 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_task_run) {
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
-
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  ASSERT_EQ(A.size(), out.size());
 }

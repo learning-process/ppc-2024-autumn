@@ -3,7 +3,7 @@
 #include <mpi/nikolaev_r_strassen_matrix_multiplication_method/include/ops_mpi.hpp>
 #include <random>
 
-std::vector<double> generate_random_square_matrix(int n, double minValue = -20.0, double maxValue = 20.0) {
+std::vector<double> generate_random_square_matrix(int n, double minValue = -200.0, double maxValue = 200.0) {
   std::vector<double> matrix(n * n);
 
   std::random_device rd;
@@ -58,7 +58,7 @@ void create_test(size_t N) {
   ASSERT_TRUE(strassenMatrixMultPar.post_processing());
 
   for (size_t i = 0; i < N * N; i++) {
-    ASSERT_NEAR(out_seq[i], out_par[i], 1e-6);
+    EXPECT_NEAR(out_seq[i], out_par[i], 1e-8);
   }
 }
 
@@ -72,8 +72,72 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_5x5_matrices) { 
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_10x10_matrices) { create_test(10); }
 
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_12x12_matrices) { create_test(12); }
+
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_15x15_matrices) { create_test(15); }
 
-TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_20x20_matrices) { create_test(20); }
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_23x23_matrices) { create_test(23); }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_25x25_matrices) { create_test(25); }
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_50x50_matrices) { create_test(50); }
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_64x64_matrices) { create_test(64); }
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_different_size_matrices) {
+  boost::mpi::communicator world;
+  std::vector<double> A = {1.0, 2.0, 3.0, 4.0};
+  std::vector<double> B = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(B.size());
+  }
+
+  nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+      taskDataPar);
+  ASSERT_FALSE(strassenMatrixMultPar.validation());
+}
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_squared_matrices) {
+  boost::mpi::communicator world;
+  std::vector<double> A = {1.0, 2.0, 3.0, 4.0, 5.0};
+  std::vector<double> B = {6.0, 7.0, 8.0, 9.0, 10.0};
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(B.size());
+  }
+
+  nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+      taskDataPar);
+  ASSERT_FALSE(strassenMatrixMultPar.validation());
+}
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_valid_outputs_count) {
+  boost::mpi::communicator world;
+
+  const size_t N = 2;
+  std::vector<double> A = {1.0, 2.0, 3.0, 4.0};
+  std::vector<double> B = {5.0, 6.0, 7.0, 8.0};
+  std::vector<double> out_par(N, 0.0);  // we need N * N
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+    taskDataPar->inputs_count.emplace_back(B.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
+    taskDataPar->outputs_count.emplace_back(out_par.size());
+  }
+  nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+      taskDataPar);
+  ASSERT_FALSE(strassenMatrixMultPar.validation());
+}
