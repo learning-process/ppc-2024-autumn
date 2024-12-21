@@ -59,7 +59,7 @@ bool kalyakina_a_trapezoidal_integration_seq::TrapezoidalIntegrationTask::pre_pr
 bool kalyakina_a_trapezoidal_integration_seq::TrapezoidalIntegrationTask::validation() {
   internal_order_test();
 
-  return ((taskData->inputs_count[0] == 1) &&
+  return ((taskData->inputs.size() == 3) && (taskData->inputs_count[0] == 1) &&
           (reinterpret_cast<unsigned int*>(taskData->inputs[0])[0] == taskData->inputs_count[1]) &&
           (taskData->inputs_count[1] == taskData->inputs_count[2]) && (taskData->outputs_count[0] == 1));
 }
