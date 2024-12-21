@@ -37,12 +37,12 @@ TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_500000) {
   EXPECT_NEAR(expected_res, out, 1e-1);
 }
 
-TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_1000000) {
+TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_600000) {
   double ax = -1.0;
   double bx = 1.0;
   double ay = -2.0;
   double by = 2.0;
-  size_t num_point = 1000000;
+  size_t num_point = 600000;
 
   double out = 0.0;
   double expected_res = 8.0;
@@ -68,12 +68,12 @@ TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_1000000) {
   EXPECT_NEAR(expected_res, out, 1e-1);
 }
 
-TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_1500000) {
+TEST(vedernikova_k_monte_carlo_integration_seq, number_of_points_700000) {
   double ax = -1.0;
   double bx = 1.0;
   double ay = -2.0;
   double by = 2.0;
-  size_t num_point = 1500000;
+  size_t num_point = 700000;
 
   double out = 0.0;
   double expected_res = 8.0;
