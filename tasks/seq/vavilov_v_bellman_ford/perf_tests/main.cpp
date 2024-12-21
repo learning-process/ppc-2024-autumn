@@ -8,36 +8,40 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/vavilov_v_bellman_ford/include/ops_seq.hpp"
 
-std::vector<std::tuple<int, int, int>> generate_linear_graph(int num_vertices) {
-  std::vector<std::tuple<int, int, int>> edges;
-  edges.reserve(num_vertices - 1);
+std::vector<int> generate_linear_graph(int num_vertices) {
+  std::vector<int> edges((num_vertices - 1) * 3);
   for (int i = 0; i < num_vertices - 1; ++i) {
-    edges.emplace_back(i, i + 1, i + 1);
+    edges[i * 3] = i;
+    edges[i * 3 + 1] = i + 1;
+    edges[i * 3 + 2] = 1;
   }
   return edges;
 }
 
 std::vector<int> compute_expected_distances(int num_vertices) {
-  std::vector<int> distances(num_vertices, 0);
-  for (int i = 1; i < num_vertices; ++i) {
-    distances[i] = distances[i - 1] + i;
+  std::vector<int> distances(num_vertices);
+  for (int i = 0; i < num_vertices; ++i) {
+    distances[i] = i;
   }
   return distances;
 }
 
 TEST(vavilov_v_bellman_ford_seq, test_task_run) {
   const int num_vertices = 1000;
+  const int edges_count = 999;
+  const int source = 0;
   auto edges = generate_linear_graph(num_vertices);
   auto expected_distances = compute_expected_distances(num_vertices);
 
-  std::vector<int> distances(num_vertices, INT_MAX);
-  distances[0] = 0;
+  std::vector<int> distances(num_vertices);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs_count.emplace_back(num_vertices);
+  taskDataSeq->inputs_count.emplace_back(edges_count);
+  taskDataSeq->inputs_count.emplace_back(source);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
-  taskDataSeq->inputs_count.emplace_back(edges.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
   taskDataSeq->outputs_count.emplace_back(distances.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
 
   auto testTaskSequential = std::make_shared<vavilov_v_bellman_ford_seq::TestTaskSequential>(taskDataSeq);
 
@@ -61,17 +65,20 @@ TEST(vavilov_v_bellman_ford_seq, test_task_run) {
 
 TEST(vavilov_v_bellman_ford_seq, test_pipeline_run) {
   const int num_vertices = 1000;
+  const int edges_count = 999;
+  const int source = 0;
   auto edges = generate_linear_graph(num_vertices);
   auto expected_distances = compute_expected_distances(num_vertices);
 
-  std::vector<int> distances(num_vertices, INT_MAX);
-  distances[0] = 0;
+  std::vector<int> distances(num_vertices);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs_count.emplace_back(num_vertices);
+  taskDataSeq->inputs_count.emplace_back(edges_count);
+  taskDataSeq->inputs_count.emplace_back(source);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(edges.data()));
-  taskDataSeq->inputs_count.emplace_back(edges.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
   taskDataSeq->outputs_count.emplace_back(distances.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(distances.data()));
 
   auto testTaskSequential = std::make_shared<vavilov_v_bellman_ford_seq::TestTaskSequential>(taskDataSeq);
 
