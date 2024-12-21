@@ -7,7 +7,6 @@
 #include <thread>
 #include <vector>
 
-
 std::vector<int> ermilova_d_Shell_sort_simple_merge_mpi::ShellSort(std::vector<int>& vec) {
   size_t n = vec.size();
   for (size_t gap = n / 2; gap > 0; gap /= 2) {
