@@ -7,6 +7,7 @@
 #include <boost/serialization/vector.hpp>
 #include <climits>
 #include <memory>
+#include <cmath>
 #include <numeric>
 #include <string>
 #include <utility>

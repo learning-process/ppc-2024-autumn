@@ -8,12 +8,12 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
   internal_order_test();
 
   std::cout << "init A\n";
-  double* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
   row_A = static_cast<int>(taskData->inputs_count[0]);
   column_A = static_cast<int>(taskData->inputs_count[1]);
 
   std::cout << "init B\n";
-  double* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
   row_B = static_cast<int>(taskData->inputs_count[2]);
   column_B = static_cast<int>(taskData->inputs_count[3]);
 
@@ -68,7 +68,7 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq::post_processing() {
   internal_order_test();
 
-  double* res = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* res = reinterpret_cast<double*>(taskData->outputs[0]);
   std::copy(C.begin(), C.end(), res);
   return true;
 }

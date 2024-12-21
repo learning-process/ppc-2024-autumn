@@ -11,11 +11,11 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
   internal_order_test();
 
   // std::cout << "init A\n";
-  double* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
   N = static_cast<int>(taskData->inputs_count[0]);  // Размерность матриц (N x N)
 
   // std::cout << "init B\n";
-  double* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
 
   A.resize(N * N);
   B.resize(N * N);
@@ -57,7 +57,7 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq::post_processing() {
   internal_order_test();
 
-  double* res = reinterpret_cast<double*>(taskData->outputs[0]);
+  auto* res = reinterpret_cast<double*>(taskData->outputs[0]);
   std::copy(C.begin(), C.end(), res);
   return true;
 }
@@ -67,9 +67,9 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
   internal_order_test();
 
   if (world.rank() == 0) {
-    double* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
     N = static_cast<int>(taskData->inputs_count[0]);
-    double* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
 
     A.resize(N * N);
     B.resize(N * N);
@@ -190,7 +190,7 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
   internal_order_test();
 
   if (world.rank() == 0) {
-    double* res = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto* res = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(C.begin(), C.end(), res);
   }
   return true;
