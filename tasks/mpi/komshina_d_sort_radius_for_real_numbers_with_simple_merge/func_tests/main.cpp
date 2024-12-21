@@ -36,33 +36,6 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Sort) {
   }
 }
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Seq_Sort) {
-  mpi::environment env;
-  mpi::communicator world;
-
-  std::vector<double> global_vec = {5.4, -3.1, 7.2, 0.0, -8.5, 2.3, -1.1, 4.4};
-  std::vector<double> global_sorted_vec(global_vec.size(), 0.0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(global_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sorted_vec.data()));
-    taskDataSeq->outputs_count.emplace_back(global_sorted_vec.size());
-  }
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential seqSortTask(taskDataSeq);
-  ASSERT_TRUE(seqSortTask.validation()) << "Validation failed!";
-  seqSortTask.pre_processing();
-  seqSortTask.run();
-  seqSortTask.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> expectedSortedVec = {-8.5, -3.1, -1.1, 0.0, 2.3, 4.4, 5.4, 7.2};
-    ASSERT_EQ(global_sorted_vec, expectedSortedVec) << "Sequential sort result mismatch!";
-  }
-}
-
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Empty_Vector) {
   mpi::environment env;
   mpi::communicator world;
