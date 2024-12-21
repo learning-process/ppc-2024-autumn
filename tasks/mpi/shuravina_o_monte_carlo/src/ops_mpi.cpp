@@ -35,11 +35,6 @@ bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskParallel::run() {
   std::cout << "Run proc " << world.rank() << "\n";
   int local_num_points = num_points_ / num_processes;
 
-  if (num_points_ == 0) {
-    integral_value_ = 0.0;
-    return true;
-  }
-
   double local_sum = 0.0;
   for (int i = 0; i < local_num_points; ++i) {
     double x = dis_(gen);
