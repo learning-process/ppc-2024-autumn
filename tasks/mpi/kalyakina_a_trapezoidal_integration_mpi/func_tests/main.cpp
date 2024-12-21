@@ -4,9 +4,29 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <random>
 #include <vector>
 
 #include "mpi/kalyakina_a_trapezoidal_integration_mpi/include/ops_mpi.hpp"
+
+std::pair<double, double> GetRandomLimit(double min_value, double max_value) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::pair<double, double> result;
+  max_value = max_value * 1000 - 5;
+  min_value *= 1000;
+  result.first = (double)(gen() % (int)(max_value - min_value) + min_value) / 1000;
+  max_value += 5;
+  min_value = result.first * 1000;
+  result.second = (double)(gen() % (int)(max_value - min_value) + min_value) / 1000;
+  return result;
+}
+
+unsigned int GetRandomIntegerData(unsigned int min_value, unsigned int max_value) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  return gen() % (max_value - min_value) + min_value;
+}
 
 double function1(std::vector<double> input) { return pow(input[0], 3) + pow(input[1], 3); };
 double function2(std::vector<double> input) { return sin(input[0]) + sin(input[1]) + sin(input[2]); };
@@ -240,4 +260,52 @@ TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_6) {
   }
 
   TestOfFunction(function6, count, limits, intervals);
+}
+
+TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_random_limits) {
+  boost::mpi::communicator world;
+
+  std::vector<unsigned int> count;
+  std::vector<std::pair<double, double>> limits;
+  std::vector<unsigned int> intervals;
+
+  if (world.rank() == 0) {
+    count = std::vector<unsigned int>{3};
+    limits = {GetRandomLimit(0.0, 10.0), GetRandomLimit(0.0, 10.0), GetRandomLimit(0.0, 10.0)};
+    intervals = {80, 80, 80};
+  }
+
+  TestOfFunction(function3, count, limits, intervals);
+}
+
+TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_random_intervals) {
+  boost::mpi::communicator world;
+
+  std::vector<unsigned int> count;
+  std::vector<std::pair<double, double>> limits;
+  std::vector<unsigned int> intervals;
+
+  if (world.rank() == 0) {
+    count = std::vector<unsigned int>{2};
+    limits = {{0.0, 1.0}, {4.0, 6.0}};
+    intervals = {GetRandomIntegerData(100, 200), GetRandomIntegerData(100, 200)};
+  }
+
+  TestOfFunction(function6, count, limits, intervals);
+}
+
+TEST(kalyakina_a_trapezoidal_integration_mpi, Test_of_functionality_random_limits_and_intervals) {
+  boost::mpi::communicator world;
+
+  std::vector<unsigned int> count;
+  std::vector<std::pair<double, double>> limits;
+  std::vector<unsigned int> intervals;
+
+  if (world.rank() == 0) {
+    count = std::vector<unsigned int>{3};
+    limits = {GetRandomLimit(0.0, 10.0), GetRandomLimit(0.0, 10.0), GetRandomLimit(0.0, 10.0)};
+    intervals = {GetRandomIntegerData(50, 80), GetRandomIntegerData(50, 80), GetRandomIntegerData(50, 80)};
+  }
+
+  TestOfFunction(function3, count, limits, intervals);
 }
