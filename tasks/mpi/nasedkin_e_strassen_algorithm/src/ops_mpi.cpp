@@ -1,508 +1,221 @@
 #include "mpi/nasedkin_e_strassen_algorithm/include/ops_mpi.hpp"
 
-#include <mpi.h>
-
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <boost/serialization/vector.hpp>
 #include <cmath>
-#include <vector>
+#include <iostream>
+#include <boost/mpi/collectives.hpp>
 
-#include "boost/mpi/collectives/broadcast.hpp"
+namespace nasedkin_e_strassen_algorithm {
 
-namespace nasedkin_e_strassen_algorithm_mpi {
-
-bool StrassenAlgorithmSequential::pre_processing() {
-  internal_order_test();
-  size_t matrix_size = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-
-  A_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
-  B_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
-  C_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
-
-  auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
-  auto* B_input = reinterpret_cast<double*>(taskData->inputs[2]);
-
-  for (size_t i = 0; i < matrix_size; ++i) {
-    for (size_t j = 0; j < matrix_size; ++j) {
-      A_[i][j] = A_input[i * matrix_size + j];
-      B_[i][j] = B_input[i * matrix_size + j];
-    }
-  }
-  std::cout << "seq preporcessing done" << std::endl;
-  return true;
-}
-
-bool StrassenAlgorithmSequential::validation() {
-  internal_order_test();
-
-  if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
+bool StrassenAlgorithmMPI::pre_processing() {
+  if (!validation()) {
     return false;
   }
 
-  n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  return n > 0;
-  std::cout << "seq validation done" << std::endl;
-}
+  result.resize(n, std::vector<double>(n, 0.0));
 
-bool StrassenAlgorithmSequential::run() {
-  internal_order_test();
-  strassen(A_, B_, C_);
   return true;
-  std::cout << "seq run done" << std::endl;
 }
 
-bool StrassenAlgorithmSequential::post_processing() {
-  internal_order_test();
-  auto* C_output = reinterpret_cast<double*>(taskData->outputs[0]);
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      C_output[i * n + j] = C_[i][j];
-    }
+bool StrassenAlgorithmMPI::validation() {
+  if (taskData->inputs_count.empty()) {
+    return false;
   }
+
+  n = taskData->inputs_count[0];
+  if (n <= 0 || (n & (n - 1)) != 0) {
+    return false;
+  }
+
+  A.resize(n, std::vector<double>(n, 0.0));
+  B.resize(n, std::vector<double>(n, 0.0));
+
   return true;
-  std::cout << "seq postprocessing done" << std::endl;
 }
 
-int recursion_depth = 0;
-void StrassenAlgorithmSequential::strassen(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
-  recursion_depth++;
-  std::cout << "Entering recursion depth: " << recursion_depth << std::endl;
-  size_t n = A.size();
-  if (n == 1) {
-    C[0][0] = A[0][0] * B[0][0];
+bool StrassenAlgorithmMPI::run() {
+  std::vector<std::vector<double>> local_A;
+  std::vector<std::vector<double>> local_B;
+  std::vector<std::vector<double>> local_result(n / world.size(), std::vector<double>(n, 0.0));
+
+  distribute_matrix(A, local_A);
+  distribute_matrix(B, local_B);
+
+  strassen_multiply(local_A, local_B, local_result, n / world.size());
+
+  gather_result(local_result, result);
+
+  return true;
+}
+
+bool StrassenAlgorithmMPI::post_processing() { return true; }
+
+void StrassenAlgorithmMPI::strassen_multiply(const std::vector<std::vector<double>>& local_A, const std::vector<std::vector<double>>& local_B, std::vector<std::vector<double>>& local_result, int size) {
+  if (size <= 2) {
+    for (int i = 0; i < size; ++i) {
+      for (int j = 0; j < size; ++j) {
+        local_result[i][j] = 0;
+        for (int k = 0; k < size; ++k) {
+          local_result[i][j] += local_A[i][k] * local_B[k][j];
+        }
+      }
+    }
     return;
   }
 
-  size_t half = n / 2;
+  int new_size = size / 2;
+  std::vector<std::vector<double>> A11(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> A12(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> A21(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> A22(new_size, std::vector<double>(new_size));
 
-  if (n % 2 != 0) {
-    throw std::logic_error("Matrix size must be a power of 2 for Strassen algorithm");
-  }
+  std::vector<std::vector<double>> B11(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> B12(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> B21(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> B22(new_size, std::vector<double>(new_size));
 
-  std::cout << "Matrix size: " << n << ", Half size: " << half << std::endl;
+  std::vector<std::vector<double>> C11(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> C12(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> C21(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> C22(new_size, std::vector<double>(new_size));
 
-  std::vector<std::vector<double>> A11(half, std::vector<double>(half));
-  std::vector<std::vector<double>> A12(half, std::vector<double>(half));
-  std::vector<std::vector<double>> A21(half, std::vector<double>(half));
-  std::vector<std::vector<double>> A22(half, std::vector<double>(half));
+  split_matrix(local_A, A11, A12, A21, A22, new_size);
+  split_matrix(local_B, B11, B12, B21, B22, new_size);
 
-  std::vector<std::vector<double>> B11(half, std::vector<double>(half));
-  std::vector<std::vector<double>> B12(half, std::vector<double>(half));
-  std::vector<std::vector<double>> B21(half, std::vector<double>(half));
-  std::vector<std::vector<double>> B22(half, std::vector<double>(half));
+  std::vector<std::vector<double>> M1(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> M2(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> M3(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> M4(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> M5(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> M6(new_size, std::vector<double>(new_size));
+  std::vector<std::vector<double>> M7(new_size, std::vector<double>(new_size));
 
-  std::vector<std::vector<double>> C11(half, std::vector<double>(half));
-  std::vector<std::vector<double>> C12(half, std::vector<double>(half));
-  std::vector<std::vector<double>> C21(half, std::vector<double>(half));
-  std::vector<std::vector<double>> C22(half, std::vector<double>(half));
+  add_matrices(A11, A22, M1, new_size);
+  add_matrices(B11, B22, M2, new_size);
+  strassen_multiply(M1, M2, M3, new_size);
 
-  for (size_t i = 0; i < half; ++i) {
-    for (size_t j = 0; j < half; ++j) {
-      A11[i][j] = A[i][j];
-      A12[i][j] = A[i][j + half];
-      A21[i][j] = A[i + half][j];
-      A22[i][j] = A[i + half][j + half];
+  add_matrices(A21, A22, M1, new_size);
+  strassen_multiply(M1, B11, M4, new_size);
 
-      B11[i][j] = B[i][j];
-      B12[i][j] = B[i][j + half];
-      B21[i][j] = B[i + half][j];
-      B22[i][j] = B[i + half][j + half];
-    }
-  }
+  subtract_matrices(B12, B22, M1, new_size);
+  strassen_multiply(A11, M1, M5, new_size);
 
-  std::vector<std::vector<double>> M1;
-  std::vector<std::vector<double>> M2;
-  std::vector<std::vector<double>> M3;
-  std::vector<std::vector<double>> M4;
-  std::vector<std::vector<double>> M5;
-  std::vector<std::vector<double>> M6;
-  std::vector<std::vector<double>> M7;
+  subtract_matrices(B21, B11, M1, new_size);
+  strassen_multiply(A22, M1, M6, new_size);
 
-  add(A11, A22, M1);
-  add(B11, B22, M2);
-  strassen(M1, M2, M3);
+  add_matrices(A11, A12, M1, new_size);
+  strassen_multiply(M1, B22, M7, new_size);
 
-  add(A21, A22, M1);
-  strassen(M1, B11, M4);
+  add_matrices(M3, M6, M1, new_size);
+  subtract_matrices(M5, M4, M2, new_size);
+  add_matrices(M1, M2, C11, new_size);
 
-  subtract(B12, B22, M1);
-  strassen(A11, M1, M5);
+  add_matrices(M5, M7, C12, new_size);
 
-  subtract(B21, B11, M1);
-  strassen(A22, M1, M6);
+  add_matrices(M6, M4, C21, new_size);
 
-  add(A11, A12, M1);
-  strassen(M1, B22, M7);
+  subtract_matrices(M3, M7, M1, new_size);
+  add_matrices(M5, M1, C22, new_size);
 
-  add(M3, M5, C12);
-  add(M2, M4, C21);
-
-  add(M1, M3, M2);
-  subtract(M2, M7, C11);
-
-  add(M1, M6, M2);
-  subtract(M2, M4, C22);
-
-  for (size_t i = 0; i < half; ++i) {
-    for (size_t j = 0; j < half; ++j) {
-      C[i][j] = C11[i][j];
-      C[i][j + half] = C12[i][j];
-      C[i + half][j] = C21[i][j];
-      C[i + half][j + half] = C22[i][j];
-    }
-  }
-  recursion_depth--;
-  std::cout << "Exiting recursion depth: " << recursion_depth << std::endl;
+  join_matrices(C11, C12, C21, C22, local_result, size);
 }
 
-void StrassenAlgorithmSequential::add(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
-  size_t n = A.size();
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
+void StrassenAlgorithmMPI::add_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
       C[i][j] = A[i][j] + B[i][j];
     }
   }
 }
 
-void StrassenAlgorithmSequential::subtract(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
-  size_t n = A.size();
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
+void StrassenAlgorithmMPI::subtract_matrices(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C, int size) {
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
       C[i][j] = A[i][j] - B[i][j];
     }
   }
 }
 
-bool StrassenAlgorithmParallel::pre_processing() {
-  internal_order_test();
-  std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
-
-  sizes_a.resize(world.size());
-  displs_a.resize(world.size());
-  sizes_b.resize(world.size());
-  displs_b.resize(world.size());
-
-  if (world.rank() == 0) {
-    std::cout << "Process 0: Initializing matrices" << std::endl;
-
-    size_t matrix_size = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-
-    A_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
-    B_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
-    C_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
-
-    auto* A_input = reinterpret_cast<double*>(taskData->inputs[1]);
-    auto* B_input = reinterpret_cast<double*>(taskData->inputs[2]);
-
-    for (size_t i = 0; i < matrix_size; ++i) {
-      for (size_t j = 0; j < matrix_size; ++j) {
-        A_[i][j] = A_input[i * matrix_size + j];
-        B_[i][j] = B_input[i * matrix_size + j];
-      }
-    }
-
-    calculate_distribution(matrix_size, matrix_size, world.size(), sizes_a, displs_a);
-    calculate_distribution(matrix_size, matrix_size, world.size(), sizes_b, displs_b);
-
-    std::cout << "Process 0: Matrices and distributions initialized" << std::endl;
-  }
-
-  world.barrier();
-
-  std::cout << "Process " << world.rank() << ": Pre_processing completed" << std::endl;
-  return true;
-}
-
-
-
-bool StrassenAlgorithmParallel::validation() {
-  internal_order_test();
-
-  std::cout << "Process " << world.rank() << ": Starting validation" << std::endl;
-
-  if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
-    std::cerr << "Process " << world.rank() << ": Validation failed - inputs_count size = "
-              << taskData->inputs_count.size() << ", outputs_count size = "
-              << taskData->outputs_count.size() << std::endl;
-    return false;
-  }
-
-  if (taskData->inputs[1] == nullptr || taskData->inputs[2] == nullptr) {
-    std::cerr << "Process " << world.rank() << ": Validation failed - Null pointer in inputs" << std::endl;
-    return false;
-  }
-
-  n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
-  if (n <= 0) {
-    std::cerr << "Process " << world.rank() << ": Validation failed - matrix size = " << n << std::endl;
-    return false;
-  }
-
-  std::cout << "Process " << world.rank() << ": Validation passed with matrix size = " << n << std::endl;
-  return true;
-}
-
-
-bool StrassenAlgorithmParallel::run() {
-  internal_order_test();
-
-  std::cout << "Process " << world.rank() << ": Broadcasting sizes and displacements" << std::endl;
-
-  boost::mpi::broadcast(world, sizes_a, 0);
-  boost::mpi::broadcast(world, sizes_b, 0);
-  boost::mpi::broadcast(world, displs_a, 0);
-  boost::mpi::broadcast(world, displs_b, 0);
-  boost::mpi::broadcast(world, n, 0);
-
-  std::cout << "Process " << world.rank() << ": Broadcast complete, n = " << n << std::endl;
-
-  int loc_mat_size = sizes_a[world.rank()];
-  if (loc_mat_size <= 0) {
-    std::cerr << "Process " << world.rank() << ": Invalid local matrix size = " << loc_mat_size << std::endl;
-    return false;
-  }
-
-  std::cout << "Process " << world.rank() << ": Local matrix size = " << loc_mat_size << std::endl;
-
-  std::vector<double> local_A_flat(loc_mat_size * n);
-  std::vector<double> local_B_flat(loc_mat_size * n);
-  std::vector<double> local_C_flat(loc_mat_size * n);
-
-  if (world.rank() == 0) {
-    auto A_flat = flatten_matrix(A_);
-    auto B_flat = flatten_matrix(B_);
-
-    std::cout << "Process 0: Flattened matrices" << std::endl;
-
-    boost::mpi::scatterv(world, A_flat, sizes_a, displs_a, local_A_flat.data(), sizes_a[0], 0);
-    boost::mpi::scatterv(world, B_flat, sizes_b, displs_b, local_B_flat.data(), sizes_b[0], 0);
-
-    std::cout << "Process 0: Scatterv completed" << std::endl;
-  } else {
-    boost::mpi::scatterv(world, local_A_flat.data(), sizes_a[world.rank()], 0);
-    boost::mpi::scatterv(world, local_B_flat.data(), sizes_b[world.rank()], 0);
-
-    std::cout << "Process " << world.rank() << ": Received data via scatterv" << std::endl;
-  }
-
-  local_A = unflatten_matrix(local_A_flat, loc_mat_size, n);
-  local_B = unflatten_matrix(local_B_flat, loc_mat_size, n);
-
-  strassen_mpi(local_A, local_B, local_C);
-
-  std::cout << "Process " << world.rank() << ": Strassen algorithm completed" << std::endl;
-
-  local_C_flat = flatten_matrix(local_C);
-
-  if (world.rank() == 0) {
-    std::vector<double> C_flat(n * n);
-    boost::mpi::gatherv(world, local_C_flat.data(), sizes_a[world.rank()], C_flat.data(), sizes_a, displs_a, 0);
-    C_ = unflatten_matrix(C_flat, n, n);
-
-    std::cout << "Process 0: Gathered result matrix" << std::endl;
-  } else {
-    boost::mpi::gatherv(world, local_C_flat.data(), sizes_a[world.rank()], 0);
-    std::cout << "Process " << world.rank() << ": Sent result matrix via gatherv" << std::endl;
-  }
-
-  return true;
-}
-
-
-
-bool StrassenAlgorithmParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    auto* C_output = reinterpret_cast<double*>(taskData->outputs[0]);
-    for (size_t i = 0; i < n; ++i) {
-      for (size_t j = 0; j < n; ++j) {
-        C_output[i * n + j] = C_[i][j];
-      }
-    }
-  }
-  return true;
-  std::cout << "mpi postprocessing done" << std::endl;
-}
-
-void StrassenAlgorithmParallel::calculate_distribution(int rows, int cols, int num_proc, std::vector<int>& sizes, std::vector<int>& displs) {
-  sizes.resize(num_proc, 0);
-  displs.resize(num_proc, -1);
-
-  if (world.rank() == 0) {
-    std::cout << "Calculating distribution for rows: " << rows << ", cols: " << cols << ", processes: " << num_proc << std::endl;
-  }
-
-  if (num_proc > rows) {
-    for (int i = 0; i < rows; ++i) {
-      sizes[i] = rows * cols;
-      displs[i] = i * rows * cols;
-    }
-  } else {
-    int a = rows / num_proc;
-    int b = rows % num_proc;
-
-    int offset = 0;
-    for (int i = 0; i < num_proc; ++i) {
-      if (b-- > 0) {
-        sizes[i] = (a + 1) * cols;
-      } else {
-        sizes[i] = a * cols;
-      }
-      displs[i] = offset;
-      offset += sizes[i];
-    }
-  }
-
-  if (world.rank() == 0) {
-    std::cout << "Sizes: ";
-    for (const auto& size : sizes) std::cout << size << " ";
-    std::cout << "\nDisplacements: ";
-    for (const auto& disp : displs) std::cout << disp << " ";
-    std::cout << std::endl;
-  }
-}
-
-
-void StrassenAlgorithmParallel::distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& local_matrix, const std::vector<int>& sizes, const std::vector<int>& displs) {
-  for (int i = 0; i < world.size(); ++i) {
-    int start = displs[i] / matrix.size();
-    int end = start + sizes[i] / matrix.size();
-    for (int j = start; j < end; ++j) {
-      for (int k = 0; k < static_cast<int>(matrix.size()); ++k) {
-        local_matrix[j - start][k] = matrix[j][k];
-      }
-    }
-  }
-}
-
-void StrassenAlgorithmParallel::gather_matrix(std::vector<std::vector<double>>& matrix, const std::vector<std::vector<double>>& local_matrix, const std::vector<int>& sizes, const std::vector<int>& displs) {
-  for (int i = 0; i < world.size(); ++i) {
-    int start = displs[i] / matrix.size();
-    int end = start + sizes[i] / matrix.size();
-    for (int j = start; j < end; ++j) {
-      for (int k = 0; k < static_cast<int>(matrix.size()); ++k) {
-        matrix[j][k] = local_matrix[j - start][k];
-      }
-    }
-  }
-}
-
-void StrassenAlgorithmParallel::strassen_mpi(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
-  size_t n = A.size();
-  if (n == 1) {
-    C[0][0] = A[0][0] * B[0][0];
-    return;
-  }
-
-  size_t half = n / 2;
-
-  std::vector<std::vector<double>> A11(half, std::vector<double>(half));
-  std::vector<std::vector<double>> A12(half, std::vector<double>(half));
-  std::vector<std::vector<double>> A21(half, std::vector<double>(half));
-  std::vector<std::vector<double>> A22(half, std::vector<double>(half));
-
-  std::vector<std::vector<double>> B11(half, std::vector<double>(half));
-  std::vector<std::vector<double>> B12(half, std::vector<double>(half));
-  std::vector<std::vector<double>> B21(half, std::vector<double>(half));
-  std::vector<std::vector<double>> B22(half, std::vector<double>(half));
-
-  std::vector<std::vector<double>> C11(half, std::vector<double>(half));
-  std::vector<std::vector<double>> C12(half, std::vector<double>(half));
-  std::vector<std::vector<double>> C21(half, std::vector<double>(half));
-  std::vector<std::vector<double>> C22(half, std::vector<double>(half));
-
-  for (size_t i = 0; i < half; ++i) {
-    for (size_t j = 0; j < half; ++j) {
+void StrassenAlgorithmMPI::split_matrix(const std::vector<std::vector<double>>& A, std::vector<std::vector<double>>& A11, std::vector<std::vector<double>>& A12, std::vector<std::vector<double>>& A21, std::vector<std::vector<double>>& A22, int size) {
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
       A11[i][j] = A[i][j];
-      A12[i][j] = A[i][j + half];
-      A21[i][j] = A[i + half][j];
-      A22[i][j] = A[i + half][j + half];
-
-      B11[i][j] = B[i][j];
-      B12[i][j] = B[i][j + half];
-      B21[i][j] = B[i + half][j];
-      B22[i][j] = B[i + half][j + half];
+      A12[i][j] = A[i][j + size];
+      A21[i][j] = A[i + size][j];
+      A22[i][j] = A[i + size][j + size];
     }
   }
+}
 
-  std::vector<std::vector<double>> M1;
-  std::vector<std::vector<double>> M2;
-  std::vector<std::vector<double>> M3;
-  std::vector<std::vector<double>> M4;
-  std::vector<std::vector<double>> M5;
-  std::vector<std::vector<double>> M6;
-  std::vector<std::vector<double>> M7;
-
-  add(A11, A22, M1);
-  add(B11, B22, M2);
-  strassen_mpi(M1, M2, M3);
-
-  add(A21, A22, M1);
-  strassen_mpi(M1, B11, M4);
-
-  subtract(B12, B22, M1);
-  strassen_mpi(A11, M1, M5);
-
-  subtract(B21, B11, M1);
-  strassen_mpi(A22, M1, M6);
-
-  add(A11, A12, M1);
-  strassen_mpi(M1, B22, M7);
-
-  add(M3, M5, C12);
-  add(M2, M4, C21);
-
-  add(M1, M3, M2);
-  subtract(M2, M7, C11);
-
-  add(M1, M6, M2);
-  subtract(M2, M4, C22);
-
-  for (size_t i = 0; i < half; ++i) {
-    for (size_t j = 0; j < half; ++j) {
+void StrassenAlgorithmMPI::join_matrices(const std::vector<std::vector<double>>& C11, const std::vector<std::vector<double>>& C12, const std::vector<std::vector<double>>& C21, const std::vector<std::vector<double>>& C22, std::vector<std::vector<double>>& C, int size) {
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
       C[i][j] = C11[i][j];
-      C[i][j + half] = C12[i][j];
-      C[i + half][j] = C21[i][j];
-      C[i + half][j + half] = C22[i][j];
+      C[i][j + size] = C12[i][j];
+      C[i + size][j] = C21[i][j];
+      C[i + size][j + size] = C22[i][j];
     }
   }
 }
 
-void StrassenAlgorithmParallel::add(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
-  size_t n = A.size();
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      C[i][j] = A[i][j] + B[i][j];
+void StrassenAlgorithmMPI::set_matrices(const std::vector<std::vector<double>>& matrixA, const std::vector<std::vector<double>>& matrixB) {
+  A = matrixA;
+  B = matrixB;
+  n = static_cast<int>(matrixA.size());
+}
+
+void StrassenAlgorithmMPI::generate_random_matrix(int size, std::vector<std::vector<double>>& matrix) {
+  matrix.resize(size, std::vector<double>(size, 0.0));
+
+  std::srand(static_cast<unsigned>(std::time(nullptr)));
+
+  for (int i = 0; i < size; ++i) {
+    for (int j = 0; j < size; ++j) {
+      matrix[i][j] = static_cast<double>(std::rand() % 10 + 1);
     }
   }
 }
 
-void StrassenAlgorithmParallel::subtract(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
-  size_t n = A.size();
-  for (size_t i = 0; i < n; ++i) {
-    for (size_t j = 0; j < n; ++j) {
-      C[i][j] = A[i][j] - B[i][j];
-    }
-  }
+void StrassenAlgorithmMPI::distribute_matrix(const std::vector<std::vector<double>>& matrix, std::vector<std::vector<double>>& distributed_matrix) {
+  int num_processes = world.size();
+  int local_size = n / num_processes;
+
+  std::vector<double> flat_matrix;
+  flatten_matrix(matrix, flat_matrix);
+
+  std::vector<double> local_flat_matrix(local_size * n);
+  boost::mpi::scatter(world, flat_matrix.data(), local_flat_matrix.data(), local_size * n, 0);
+
+  unflatten_matrix(local_flat_matrix, distributed_matrix, local_size, n);
 }
 
-std::vector<double> StrassenAlgorithmParallel::flatten_matrix(const std::vector<std::vector<double>>& matrix) {
-  std::vector<double> flat;
+void StrassenAlgorithmMPI::gather_result(const std::vector<std::vector<double>>& local_result, std::vector<std::vector<double>>& result) {
+  int num_processes = world.size();
+  int local_size = n / num_processes;
+
+  std::vector<double> local_flat_result;
+  flatten_matrix(local_result, local_flat_result);
+
+  std::vector<double> flat_result(n * n);
+  boost::mpi::gather(world, local_flat_result.data(), local_size * n, flat_result.data(), 0);
+
+  unflatten_matrix(flat_result, result, n, n);
+}
+
+void StrassenAlgorithmMPI::flatten_matrix(const std::vector<std::vector<double>>& matrix, std::vector<double>& flat_matrix) {
+  flat_matrix.clear();
   for (const auto& row : matrix) {
-    flat.insert(flat.end(), row.begin(), row.end());
+    flat_matrix.insert(flat_matrix.end(), row.begin(), row.end());
   }
-  return flat;
 }
 
-std::vector<std::vector<double>> StrassenAlgorithmParallel::unflatten_matrix(const std::vector<double>& flat, size_t rows, size_t cols) {
-  std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols));
-  for (size_t i = 0; i < rows; ++i) {
-    for (size_t j = 0; j < cols; ++j) {
-      matrix[i][j] = flat[i * cols + j];
+void StrassenAlgorithmMPI::unflatten_matrix(const std::vector<double>& flat_matrix, std::vector<std::vector<double>>& matrix, int rows, int cols) {
+  matrix.clear();
+  matrix.resize(rows, std::vector<double>(cols, 0.0));
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      matrix[i][j] = flat_matrix[i * cols + j];
     }
   }
-  return matrix;
 }
 
-}  // namespace nasedkin_e_strassen_algorithm_mpi
+}  // namespace nasedkin_e_strassen_algorithm
