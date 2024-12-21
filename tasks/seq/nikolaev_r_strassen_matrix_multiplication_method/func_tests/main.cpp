@@ -134,7 +134,29 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_5x5_matrices) {
   }
 }
 
-TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_non_valid_outputs_count) {
+TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_non_valid_input) {
+  const size_t N = 2;
+
+  std::vector<double> A = {1.0, 2.0, 3.0, 4.0};
+  std::vector<double> B = {5.0, 6.0, 7.0, 8.0};
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(A.size());
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskData->inputs_count.emplace_back(B.size());
+
+  std::vector<double> out(N, 0.0);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  auto testTaskSequential =
+      std::make_shared<nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultiplicationSequential>(
+          taskData);
+
+  ASSERT_FALSE(testTaskSequential->validation());
+}
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_non_valid_outputs_size) {
   const size_t N = 2;
 
   std::vector<double> A = {1.0, 2.0, 3.0, 4.0};

@@ -120,7 +120,24 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_squared_matr
   }
 }
 
-TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_valid_outputs_count) {
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_valid_input) {
+  boost::mpi::communicator world;
+  std::vector<double> A = {1.0, 2.0, 3.0, 4.0, 5.0};
+  std::vector<double> B = {6.0, 7.0, 8.0, 9.0, 10.0};
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A.data()));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs_count.emplace_back(B.size());
+
+    nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+        taskDataPar);
+    ASSERT_FALSE(strassenMatrixMultPar.validation());
+  }
+}
+
+TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_valid_outputs_size) {
   boost::mpi::communicator world;
 
   const size_t N = 2;

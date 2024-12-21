@@ -14,8 +14,8 @@ bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultipl
 
 bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] == taskData->inputs_count[1] && is_square_matrix_size(taskData->inputs_count[0]) &&
-         taskData->inputs_count[0] == taskData->outputs_count[0];
+  return taskData->inputs.size() != 0 && taskData->inputs_count[0] == taskData->inputs_count[1] &&
+         is_square_matrix_size(taskData->inputs_count[0]) && taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationSequential::run() {
@@ -47,8 +47,8 @@ bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultipl
 bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] == taskData->inputs_count[1] && is_square_matrix_size(taskData->inputs_count[0]) &&
-           taskData->inputs_count[0] == taskData->outputs_count[0];
+    return taskData->inputs.size() != 0 && taskData->inputs_count[0] == taskData->inputs_count[1] &&
+           is_square_matrix_size(taskData->inputs_count[0]) && taskData->inputs_count[0] == taskData->outputs_count[0];
   }
   return true;
 }
@@ -273,33 +273,29 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
     }
   }
 
-  std::vector<double> M1_global(half_squared, 0.0);
-  std::vector<double> M2_global(half_squared, 0.0);
-  std::vector<double> M3_global(half_squared, 0.0);
-  std::vector<double> M4_global(half_squared, 0.0);
-  std::vector<double> M5_global(half_squared, 0.0);
-  std::vector<double> M6_global(half_squared, 0.0);
-  std::vector<double> M7_global(half_squared, 0.0);
+  std::vector<double> M_global(7 * half_squared, 0.0);
 
-  boost::mpi::reduce(active_comm, M1.data(), M1.size(), M1_global.data(), std::plus<>(), 0);
-  boost::mpi::reduce(active_comm, M2.data(), M2.size(), M2_global.data(), std::plus<>(), 0);
-  boost::mpi::reduce(active_comm, M3.data(), M3.size(), M3_global.data(), std::plus<>(), 0);
-  boost::mpi::reduce(active_comm, M4.data(), M4.size(), M4_global.data(), std::plus<>(), 0);
-  boost::mpi::reduce(active_comm, M5.data(), M5.size(), M5_global.data(), std::plus<>(), 0);
-  boost::mpi::reduce(active_comm, M6.data(), M6.size(), M6_global.data(), std::plus<>(), 0);
-  boost::mpi::reduce(active_comm, M7.data(), M7.size(), M7_global.data(), std::plus<>(), 0);
+  std::vector<std::vector<double>> matrices = {M1, M2, M3, M4, M5, M6, M7};
+  for (size_t i = 0; i < matrices.size(); ++i) {
+    boost::mpi::reduce(active_comm, matrices[i].data(), matrices[i].size(), M_global.data() + i * half_squared,
+                       std::plus(), 0);
+  }
 
   if (rank == 0) {
     std::vector<double> result_ext(newSize * newSize, 0.0);
 
     for (size_t i = 0; i < half; ++i) {
       for (size_t j = 0; j < half; ++j) {
-        result_ext[i * newSize + j] =
-            M1_global[i * half + j] + M4_global[i * half + j] - M5_global[i * half + j] + M7_global[i * half + j];
-        result_ext[i * newSize + j + half] = M3_global[i * half + j] + M5_global[i * half + j];
-        result_ext[(i + half) * newSize + j] = M2_global[i * half + j] + M4_global[i * half + j];
+        result_ext[i * newSize + j] = M_global[i * half + j] + M_global[3 * half_squared + i * half + j] -
+                                      M_global[4 * half_squared + i * half + j] +
+                                      M_global[6 * half_squared + i * half + j];
+        result_ext[i * newSize + j + half] =
+            M_global[2 * half_squared + i * half + j] + M_global[4 * half_squared + i * half + j];
+        result_ext[(i + half) * newSize + j] =
+            M_global[1 * half_squared + i * half + j] + M_global[3 * half_squared + i * half + j];
         result_ext[(i + half) * newSize + j + half] =
-            M1_global[i * half + j] - M2_global[i * half + j] + M3_global[i * half + j] + M6_global[i * half + j];
+            M_global[i * half + j] - M_global[1 * half_squared + i * half + j] +
+            M_global[2 * half_squared + i * half + j] + M_global[5 * half_squared + i * half + j];
       }
     }
 
