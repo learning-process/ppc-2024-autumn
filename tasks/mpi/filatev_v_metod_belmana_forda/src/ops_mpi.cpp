@@ -102,19 +102,6 @@ bool filatev_v_metod_belmana_forda_mpi::MetodBelmanaFordaMPI::run() {
     prev = teck;
   }
 
-  // if (world.rank() == 0) {
-  //   std::string s = "\n count: ";
-  //   for (int i = 0; i < world.size(); i++) {
-  //     s += std::to_string(distribution[i]) + " ";
-  //   }
-  //   std::cerr << s << "\n";
-  //   s = "\n position: ";
-  //   for (int i = 0; i < world.size(); i++) {
-  //     s += std::to_string(displacement[i]) + " ";
-  //   }
-  //   std::cerr << s << "\n";
-  // }
-
   int local_size = distribution[world.rank()];
   std::vector<int> local_Adjncy(local_size);
   std::vector<int> local_Eweights(local_size);
