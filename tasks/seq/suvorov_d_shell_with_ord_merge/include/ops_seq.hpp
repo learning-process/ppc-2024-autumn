@@ -20,7 +20,7 @@ class TaskShellSortSeq : public ppc::core::Task {
   std::vector<int> data_to_sort;
   std::vector<int> sorted_data;
 
-  std::vector<int> shell_sort(const std::vector<int>&) const;
+  static std::vector<int> shell_sort(const std::vector<int>&) const;
 };
 
 }  // namespace suvorov_d_shell_with_ord_merge_seq

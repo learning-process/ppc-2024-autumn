@@ -5,8 +5,7 @@
 
 using namespace std::chrono_literals;
 
-std::vector<int> suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::shell_sort(
-    const std::vector<int>& vec_to_sort) const {
+std::vector<int> suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::shell_sort(const std::vector<int>& vec_to_sort) {
   std::vector<int> result_vec = vec_to_sort;
   size_t n = result_vec.size();
 
@@ -29,7 +28,7 @@ std::vector<int> suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::shell_sor
 bool suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::pre_processing() {
   internal_order_test();
 
-  size_t data_size = static_cast<size_t>(taskData->inputs_count[0]);
+  auto data_size = static_cast<size_t>(taskData->inputs_count[0]);
   int* data_tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   data_to_sort.assign(data_tmp_ptr, data_tmp_ptr + data_size);
 
