@@ -1,9 +1,11 @@
 #pragma once
 
+#include <mpi.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <mpi.h>
 #include <random>
+#include <list>
 
 #include "core/task/include/task.hpp"
 

@@ -1,16 +1,14 @@
+#include "seq/sidorina_p_convex_hull_binary_image_seq/include/ops_seq.hpp"
+
 #include <algorithm>
 #include <cstring>
 #include <iostream>
 #include <random>
-#include <vector>
 #include <unordered_map>
-
-#include "seq/sidorina_p_convex_hull_binary_image_seq/include/ops_seq.hpp"
+#include <vector>
 
 namespace sidorina_p_convex_hull_binary_image_seq {
-double distanceSq(const Point& p1, const Point& p2) {
-  return pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2);
-}
+double distanceSq(const Point& p1, const Point& p2) { return pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2); }
 
 double mix_mult(const Point& p1, const Point& p2, const Point& p3) {
   int dx12 = p2.x - p1.x, dy13 = p3.y - p1.y, dy12 = p2.y - p1.y, dx13 = p3.x - p1.x;
@@ -52,7 +50,7 @@ void mark_contours(std::vector<int>& image, int width, int height, int num) {
 
   const auto& func = [&](int i, int j) -> void {
     int del = image[i * width + j];
-    int a = 0, b = 0; //a - left/right, b - up/low
+    int a = 0, b = 0;  // a - left/right, b - up/low
 
     if (del == 0) return;
 
@@ -62,11 +60,15 @@ void mark_contours(std::vector<int>& image, int width, int height, int num) {
       image[i * width + j] = std::max(a, b);
     }
 
-    if (j == 0) a = 0;
-    else a = image[i * width + (j - 1)];
+    if (j == 0)
+        a = 0;
+    else
+        a = image[i * width + (j - 1)];
 
-    if (i == 0) b = 0;
-    else b = image[(i - 1) * width + j];
+    if (i == 0)
+        b = 0;
+    else
+        b = image[(i - 1) * width + j];
   };
 
   switch (num) {
@@ -93,7 +95,7 @@ std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int widt
   mark_contours(label_image, width, height, 2);
 
   std::unordered_map<int, std::list<Point>> components;
-  
+
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       if (image[i * width + j] == 0) continue;
@@ -104,9 +106,9 @@ std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int widt
       component.push_back({j, i});
     }
   }
-  std::vector<std::vector<Point>> result; 
+  std::vector<std::vector<Point>> result;
   for (const auto& [label, points] : components) {
-    result.push_back( {points.begin(), points.end()} );
+    result.push_back({points.begin(), points.end()});
   }
   return result;
 }
@@ -115,37 +117,34 @@ std::vector<Point> jarvis(std::vector<Point> points) {
   if (points.empty()) return {};
 
   struct ComparePoints {
-    bool operator()(const Point& a, const Point& b) { 
-      return (a.y < b.y) || (a.y == b.y && a.x < b.x);
-    }
+    bool operator()(const Point& a, const Point& b) { return (a.y < b.y) || (a.y == b.y && a.x < b.x); }
   };
 
   Point min_point = points[0];
   for (size_t i = 1; i < points.size(); i++) {
-    if (points[i].x < min_point.x || 
-        (points[i].x == min_point.x && points[i].y < min_point.y)) {
-        min_point = points[i];
+    if (points[i].x < min_point.x || (points[i].x == min_point.x && points[i].y < min_point.y)) {
+      min_point = points[i];
     }
   }
-  
+
   struct Comparator {
     const Point& min_point;
 
     Comparator(const Point& min_point) : min_point(min_point) {}
 
     bool operator()(const Point& p1, const Point& p2) {
-        int mult = mix_mult(min_point, p1, p2); 
-        if (mult != 0) return mult > 0;
-        return distanceSq(min_point, p1) < distanceSq(min_point, p2);
+      int mult = mix_mult(min_point, p1, p2);
+      if (mult != 0) return mult > 0;
+      return distanceSq(min_point, p1) < distanceSq(min_point, p2);
     }
   };
 
   std::sort(points.begin(), points.end(), Comparator(min_point));
 
-  std::vector<Point> hull = {min_point}; 
+  std::vector<Point> hull = {min_point};
   for (size_t i = 1; i < points.size(); i++) {
     while (hull.size() > 1 && mix_mult(hull[hull.size() - 2], hull.back(), points[i]) <= 0) {
-        hull.pop_back();
+      hull.pop_back();
     }
     hull.push_back(points[i]);
   }
@@ -156,24 +155,23 @@ std::vector<Point> jarvis(std::vector<Point> points) {
 bool ConvexHullBinImgSeq::validation() {
   internal_order_test();
 
-  if (taskData->inputs_count.size() < 2 || taskData->outputs_count.empty() || 
-      taskData->inputs[0] == nullptr || taskData->outputs.empty() || 
-      taskData->inputs_count[1] <= 0 || taskData->inputs_count[2] <= 0 ||
+  if (taskData->inputs_count.size() < 2 || taskData->outputs_count.empty() || taskData->inputs[0] == nullptr ||
+      taskData->outputs.empty() || taskData->inputs_count[1] <= 0 || taskData->inputs_count[2] <= 0 ||
       taskData->outputs_count[0] <= 0) {
     return false;
   }
 
-  image = std::vector<int>(taskData->inputs_count[0]); 
+  image = std::vector<int>(taskData->inputs_count[0]);
 
   std::memcpy(image.data(), reinterpret_cast<int*>(taskData->inputs[0]), taskData->inputs_count[0] * sizeof(int));
 
   bool is_valid_image = true;
 
   for (auto i = image.begin(); i != image.end(); ++i) {
-      if (*i != 0 && *i != 1) {
-          is_valid_image = false;
-          break;
-      }
+    if (*i != 0 && *i != 1) {
+      is_valid_image = false;
+      break;
+    }
   }
 
   return is_valid_image;

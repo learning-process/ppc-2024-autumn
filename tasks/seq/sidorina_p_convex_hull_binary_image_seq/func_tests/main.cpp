@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <memory>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "seq/sidorina_p_convex_hull_binary_image_seq/include/ops_seq.hpp"
 

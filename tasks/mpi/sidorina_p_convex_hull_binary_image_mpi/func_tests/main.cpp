@@ -161,6 +161,6 @@ TEST(sidorina_p_convex_hull_binary_image_mpi, Test_all_px_0) {
   TestTaskMPI.post_processing();
 
   if (world.rank() == 0) {
-     ASSERT_EQ(image, hull);
+    ASSERT_EQ(image, hull);
   }
 }
