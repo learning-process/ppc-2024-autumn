@@ -13,10 +13,13 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pipeline_run) {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   size_t dim = 3;
   std::vector<double> values{0.0, 0.0, 0.0};
-  auto f = [](const std::vector<double> &f_values) { return f_values[0] + f_values[1] + f_values[2]; };
-  std::vector<double> in_lower_limits{-30, -13, 11};
-  std::vector<double> in_upper_limits{15, 20, 17};
-  double epsilon = 0.001;
+  auto f = [](const std::vector<double> &f_values) {
+    return std::cos(f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]) *
+           (1 + f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]);
+  };
+  std::vector<double> in_lower_limits{-1, 2, -3};
+  std::vector<double> in_upper_limits{8, 8, 2};
+  double epsilon = 0.1;
   std::vector<double> out_I(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
@@ -62,10 +65,13 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_task_run) {
   MPI_Comm_rank(MPI_COMM_WORLD, &ProcRank);
   size_t dim = 3;
   std::vector<double> values{0.0, 0.0, 0.0};
-  auto f = [](const std::vector<double> &f_values) { return f_values[0] + f_values[1] + f_values[2]; };
-  std::vector<double> in_lower_limits{-30, -13, 11};
-  std::vector<double> in_upper_limits{15, 20, 17};
-  double epsilon = 0.001;
+  auto f = [](const std::vector<double> &f_values) {
+    return std::cos(f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]) *
+           (1 + f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]);
+  };
+  std::vector<double> in_lower_limits{-1, 2, -3};
+  std::vector<double> in_upper_limits{8, 8, 2};
+  double epsilon = 0.1;
   std::vector<double> out_I(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {

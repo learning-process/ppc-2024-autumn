@@ -9,10 +9,13 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_pipeline_run) {
   // Create data
   size_t dim = 3;
   std::vector<double> values{0.0, 0.0, 0.0};
-  auto f = [](const std::vector<double> &f_values) { return f_values[0] + f_values[1] + f_values[2]; };
-  std::vector<double> in_lower_limits{-30, -13, 11};
-  std::vector<double> in_upper_limits{15, 20, 17};
-  double epsilon = 0.001;
+  auto f = [](const std::vector<double> &f_values) {
+    return std::cos(f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]) *
+           (1 + f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]);
+  };
+  std::vector<double> in_lower_limits{-1, 2, -3};
+  std::vector<double> in_upper_limits{8, 8, 2};
+  double epsilon = 0.1;
   std::vector<double> out_I(1, 0.0);
 
   auto *f_object = new std::function<double(const std::vector<double> &)>(f);
@@ -59,10 +62,13 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
   // Create data
   size_t dim = 3;
   std::vector<double> values{0.0, 0.0, 0.0};
-  auto f = [](const std::vector<double> &f_values) { return f_values[0] + f_values[1] + f_values[2]; };
-  std::vector<double> in_lower_limits{-30, -13, 11};
-  std::vector<double> in_upper_limits{15, 20, 17};
-  double epsilon = 0.001;
+  auto f = [](const std::vector<double> &f_values) {
+    return std::cos(f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]) *
+           (1 + f_values[0] * f_values[0] + f_values[1] * f_values[1] + f_values[2] * f_values[2]);
+  };
+  std::vector<double> in_lower_limits{-1, 2, -3};
+  std::vector<double> in_upper_limits{8, 8, 2};
+  double epsilon = 0.1;
   std::vector<double> out_I(1, 0.0);
 
   auto *f_object = new std::function<double(const std::vector<double> &)>(f);
@@ -100,7 +106,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   delete f_object;
 }
