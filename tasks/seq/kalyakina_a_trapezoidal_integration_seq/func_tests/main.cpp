@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "seq/kalyakina_a_trapezoidal_integration_seq/include/ops_seq.hpp"
 
