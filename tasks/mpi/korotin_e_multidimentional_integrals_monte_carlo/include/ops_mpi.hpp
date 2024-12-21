@@ -33,7 +33,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   size_t N;
   double variance{};
   double M{};
-  double (*f)(const double*, int) = nullptr;
+  double (*f)(double*, int) = nullptr;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -54,7 +54,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   size_t N, n;
   double variance, local_variance;
   double M, local_M;
-  double (*f)(const double*, int) = nullptr;
+  double (*f)(double*, int) = nullptr;
   boost::mpi::communicator world;
 };
 
