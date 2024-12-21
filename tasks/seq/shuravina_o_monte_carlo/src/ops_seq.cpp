@@ -1,6 +1,5 @@
 #include <iostream>
 #include <random>
-
 #include <seq/shuravina_o_monte_carlo/include/ops_seq.hpp>
 
 bool shuravina_o_monte_carlo::MonteCarloIntegrationTaskSequential::pre_processing() {
