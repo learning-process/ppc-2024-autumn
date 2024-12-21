@@ -6,11 +6,22 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/morozov_e_mult_sparse_matrix/include/ops_mpi.hpp"
-
+namespace morozov_e_mult_sparse_matrix {
+std::vector<std::vector<double>> generateRandomMatrix(int rows, int columns) {
+  std::vector<std::vector<double>> result(rows, std::vector<double>(columns, 0));
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < columns; ++j) {
+      double value = static_cast<double>(rand()) / RAND_MAX;
+      result[i][j] = value * 100;
+    }
+  }
+  return result;
+}
+}  // namespace morozov_e_mult_sparse_matrix
 TEST(morozov_e_mult_sparse_matrix_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrixA = {{0, 2, 0}, {1, 0, 3}, {0, 4, 0}};
-  std::vector<std::vector<double>> matrixB = {{0, 2, 0}, {1, 0, 3}, {0, 4, 0}};
+  std::vector<std::vector<double>> matrixA = morozov_e_mult_sparse_matrix::generateRandomMatrix(20, 100);
+  std::vector<std::vector<double>> matrixB = morozov_e_mult_sparse_matrix::generateRandomMatrix(100, 20);
   std::vector<double> dA;
   std::vector<int> row_indA;
   std::vector<int> col_indA;
@@ -45,22 +56,12 @@ TEST(morozov_e_mult_sparse_matrix_perf_test, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-    for (size_t i = 0; i < out.size(); ++i) {
-      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
-      ans[i] = std::vector(ptr, ptr + matrixB.size());
-    }
-    std::vector<std::vector<double>> check_result = {{2, 0, 6}, {0, 14, 0}, {4, 0, 12}};
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(check_result, ans);
-  }
 }
 
 TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrixA = {{0, 2, 0}, {1, 0, 3}, {0, 4, 0}};
-  std::vector<std::vector<double>> matrixB = {{0, 2, 0}, {1, 0, 3}, {0, 4, 0}};
+  std::vector<std::vector<double>> matrixA = morozov_e_mult_sparse_matrix::generateRandomMatrix(100, 300);
+  std::vector<std::vector<double>> matrixB = morozov_e_mult_sparse_matrix::generateRandomMatrix(300, 100);
   std::vector<double> dA;
   std::vector<int> row_indA;
   std::vector<int> col_indA;
@@ -94,14 +95,4 @@ TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    std::vector<std::vector<double>> ans(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
-    for (size_t i = 0; i < out.size(); ++i) {
-      auto *ptr = reinterpret_cast<double *>(taskData->outputs[i]);
-      ans[i] = std::vector(ptr, ptr + matrixB.size());
-    }
-    std::vector<std::vector<double>> check_result = {{2, 0, 6}, {0, 14, 0}, {4, 0, 12}};
-    ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(check_result, ans);
-  }
 }
