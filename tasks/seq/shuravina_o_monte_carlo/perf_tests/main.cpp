@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "seq/shuravina_o_monte_carlo/include/ops_seq.hpp"
 #include "core/perf/include/perf.hpp"
+#include "seq/shuravina_o_monte_carlo/include/ops_seq.hpp"
 
 TEST(MonteCarloIntegrationTaskSequential, test_pipeline_run) {
   std::vector<double> out(1, 0.0);

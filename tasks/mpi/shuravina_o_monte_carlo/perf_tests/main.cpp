@@ -3,8 +3,8 @@
 #include <boost/mpi/timer.hpp>
 #include <vector>
 
-#include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 #include "core/perf/include/perf.hpp"
+#include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
 TEST(MonteCarloIntegrationTaskParallel, test_pipeline_run) {
   boost::mpi::communicator world;
