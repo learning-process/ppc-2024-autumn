@@ -11,9 +11,9 @@ double mix_mult(const Point& p1, const Point& p2, const Point& p3) {
 
 int count_rem(int rem, int i) {
   if (i < rem)
-      return 1;
+    return 1;
   else
-      return 0;
+    return 0;
 }
 
 std::vector<int> conv_vec(const std::vector<Point>& points) {
@@ -81,14 +81,14 @@ void mark_contours(std::vector<int>& image, int width, int height, int num) {
     }
 
     if (j == 0)
-        a = 0;
+      a = 0;
     else
-        a = image[i * width + (j - 1)];
+      a = image[i * width + (j - 1)];
 
     if (i == 0)
-        b = 0;
+      b = 0;
     else
-        b = image[(i - 1) * width + j];
+      b = image[(i - 1) * width + j];
   };
 
   switch (num) {
@@ -143,7 +143,7 @@ std::vector<Point> jarvis(std::vector<Point> points) {
   Point min_point = points[0];
   for (size_t i = 1; i < points.size(); i++) {
     if (points[i].x < min_point.x || (points[i].x == min_point.x && points[i].y < min_point.y)) {
-        min_point = points[i];
+      min_point = points[i];
     }
   }
   
@@ -153,7 +153,7 @@ std::vector<Point> jarvis(std::vector<Point> points) {
     Comparator(const Point& min_point) : min_point(min_point) {}
 
     bool operator()(const Point& p1, const Point& p2) {
-      int mult = mix_mult(min_point, p1, p2); 
+      int mult = mix_mult(min_point, p1, p2);
       if (mult != 0) return mult > 0;
       return distanceSq(min_point, p1) < distanceSq(min_point, p2);
     }

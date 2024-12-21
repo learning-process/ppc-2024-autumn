@@ -61,14 +61,14 @@ void mark_contours(std::vector<int>& image, int width, int height, int num) {
     }
 
     if (j == 0)
-        a = 0;
+      a = 0;
     else
-        a = image[i * width + (j - 1)];
+      a = image[i * width + (j - 1)];
 
     if (i == 0)
-        b = 0;
+      b = 0;
     else
-        b = image[(i - 1) * width + j];
+      b = image[(i - 1) * width + j];
   };
 
   switch (num) {
