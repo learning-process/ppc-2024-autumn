@@ -274,8 +274,8 @@ bool ConvexHullBinImgMpi::run() {
 
   int c_size = components.size();
   int w_size = world.size();
-  int count = c_size / size;
-  int rem = c_size % size;
+  int count = c_size / w_size;
+  int rem = c_size % w_size;
 
   if (world.rank() == 0) {
     int tmp = 0;
