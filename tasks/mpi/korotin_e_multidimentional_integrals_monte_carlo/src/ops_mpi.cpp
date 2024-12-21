@@ -5,6 +5,7 @@
 #include <boost/serialization/vector.hpp>
 #include <cmath>
 #include <functional>
+#include <iostaream>
 #include <thread>
 #include <vector>
 
@@ -72,7 +73,7 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential
 double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential::possible_error() {
   double volume = 1.0;
   for (int i = 0; i < dim; i++) volume *= (input_[i].second - input_[i].first);
-
+  std::cout << "SEQ volume: " << volume << "\n";
   if (variance < 0) {
     if (rng.size() == N) {
       M *= (-M / N);
@@ -83,6 +84,7 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequenti
     } else
       return -1.0;
   }
+  std::cout << "SEQ var: " << variance << "\n";
   return 6 * std::abs(volume) * variance;
 }
 
@@ -171,6 +173,9 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::
 double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::possible_error() {
   double volume = 1.0;
   for (int i = 0; i < dim; i++) volume *= (input_right_[i] - input_left_[i]);
+  if (world.rank() == 0) {
+    std::cout << "MPI volume: " << volume << "\n";
+  }
   if (variance < 0) {
     if (rng.size() == n) {
       for (size_t i = 0; i < n; i++) {
@@ -184,9 +189,10 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel
     if (world.rank() == 0) {
       M *= (M / N);
       variance -= M;
+      std::cout << "MPI var: " << variance << std::endl;
     }
 
     broadcast(world, variance, 0);
   }
-  return 6 * std::abs(volume) * sqrt(variance);
+  return 6 * std::abs(volume) * sqrt(std::abs(variance));
 }
