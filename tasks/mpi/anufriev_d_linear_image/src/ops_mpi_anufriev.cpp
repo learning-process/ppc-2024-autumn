@@ -137,22 +137,22 @@ void SimpleIntMPI::exchangeHalo() {
   MPI_Request reqs_right[2];
   int req_count_left = 0;
   int req_count_right = 0;
-
-if (left != MPI_PROC_NULL) {
+  
+  if (left != MPI_PROC_NULL) {
     MPI_Sendrecv(send_left.data(), height_, MPI_INT, left, 0,
-                 recv_left.data(), height_, MPI_INT, left, 1,
-                 comm, MPI_STATUS_IGNORE);
-} else {
+      recv_left.data(), height_, MPI_INT, left, 1,
+      comm, MPI_STATUS_IGNORE);
+  } else {
     std::copy(send_left.begin(), send_left.end(), recv_left.begin());
-}
+  }
 
-if (right != MPI_PROC_NULL) {
+  if (right != MPI_PROC_NULL) {
     MPI_Sendrecv(send_right.data(), height_, MPI_INT, right, 1,
-                 recv_right.data(), height_, MPI_INT, right, 0,
-                 comm, MPI_STATUS_IGNORE);
-} else {
+      recv_right.data(), height_, MPI_INT, right, 0,
+      comm, MPI_STATUS_IGNORE);
+  } else {
     std::copy(send_right.begin(), send_right.end(), recv_right.begin());
-}
+  }
 
   if (req_count_left > 0) {
     MPI_Waitall(req_count_left, reqs_left, MPI_STATUSES_IGNORE);
@@ -165,13 +165,13 @@ if (right != MPI_PROC_NULL) {
   if (left != MPI_PROC_NULL) {
     std::copy(recv_left.begin(), recv_left.end(), local_data_.begin());
   } else {
-    std::copy(send_left.begin(), send_left.end(), local_data_.begin());
+    std::copy(&local_data_[height_], &local_data_[2 * height_], local_data_.begin());
   }
 
   if (right != MPI_PROC_NULL) {
-    std::copy(recv_right.begin(), recv_right.end(), &local_data_[(local_width_ + 1) * height_]);
+    std::copy(recv_right.begin(), recv_right.end(), &local_data_[(local_width_ +1) * height_]);
   } else {
-    std::copy(send_right.begin(), send_right.end(), &local_data_[(local_width_ + 1) * height_]);
+    std::copy(&local_data_[(local_width_) * height_], &local_data_[(local_width_ +1) * height_], &local_data_[(local_width_ +1) * height_]);
   }
 }
 
