@@ -248,7 +248,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
   auto global_ptr = std::make_shared<std::vector<int>>(global_out);
 
   if (world.rank() == 0) {
-    vector=kolodkin_g_random_function::create_random_vector(1000);
+    vector = kolodkin_g_random_function::create_random_vector(1000);
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
