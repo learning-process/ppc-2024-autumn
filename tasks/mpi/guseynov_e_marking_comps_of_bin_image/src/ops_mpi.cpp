@@ -70,9 +70,9 @@ void unite(std::map<int, std::set<int>>& parent, int new_label, int neighbour_la
   }
 }
 
-void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows, int columns, int min_label,
+void labeling(std::vector<int>& image, std::vector<int>& labeled_image, int rows, int columns, int min_label_param,
               std::map<int, std::set<int>>& parent) {
-  int current_label = min_label;
+  int current_label = min_label_param;
   // Displacements for neighbours
   int dx[] = {-1, 0, -1};
   int dy[] = {0, -1, 1};
@@ -277,7 +277,7 @@ bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel::run() {
   std::vector<char> map_buffer;
 
   if (world.rank() == 0) {
-    map_buffer_size = std::accumulate(string_sizes.begin(), string_sizes.end(), 0, std::plus<int>());
+    map_buffer_size = std::accumulate(string_sizes.begin(), string_sizes.end(), 0, std::plus<>());
     map_buffer = std::vector<char>(map_buffer_size);
   }
   std::vector<char> send_ser_data(serialized_data.begin(), serialized_data.end());
