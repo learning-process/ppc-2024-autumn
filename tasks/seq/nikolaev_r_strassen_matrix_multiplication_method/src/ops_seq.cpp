@@ -16,7 +16,7 @@ bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultipl
 
 bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultiplicationSequential::validation() {
   internal_order_test();
-  return taskData->inputs.size() != 0 && taskData->inputs_count[0] == taskData->inputs_count[1] &&
+  return !taskData->inputs.empty() && taskData->inputs_count[0] == taskData->inputs_count[1] &&
          is_square_matrix_size(taskData->inputs_count[0]) && taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
