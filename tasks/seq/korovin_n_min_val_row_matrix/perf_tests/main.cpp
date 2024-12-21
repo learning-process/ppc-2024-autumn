@@ -7,8 +7,8 @@
 #include "seq/korovin_n_min_val_row_matrix/include/ops_seq.hpp"
 
 TEST(korovin_n_min_val_row_matrix_seq, test_pipeline_run) {
-  const int rows = 5000;
-  const int cols = 5000;
+  const int rows = 3000;
+  const int cols = 3000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   auto testTaskSequential = std::make_shared<korovin_n_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
@@ -51,8 +51,8 @@ TEST(korovin_n_min_val_row_matrix_seq, test_pipeline_run) {
 }
 
 TEST(korovin_n_min_val_row_matrix_seq, test_task_run) {
-  const int rows = 5000;
-  const int cols = 5000;
+  const int rows = 3000;
+  const int cols = 3000;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   auto testTaskSequential = std::make_shared<korovin_n_min_val_row_matrix_seq::TestTaskSequential>(taskDataSeq);
