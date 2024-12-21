@@ -38,6 +38,6 @@ bool pikarychev_i_monte_carlo_seq::TestTaskSequential::run() {
 
 bool pikarychev_i_monte_carlo_seq::TestTaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<double*>(taskData->outputs[0])[0] = (double)res;
+  reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
   return true;
 }

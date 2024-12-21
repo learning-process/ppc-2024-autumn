@@ -25,7 +25,7 @@ class TestTaskSequential : public ppc::core::Task {
   int num_samples;
   int seed;
   double range_width;
-  double res;
+  res;
 };
 
 }  // namespace pikarychev_i_monte_carlo_seq
