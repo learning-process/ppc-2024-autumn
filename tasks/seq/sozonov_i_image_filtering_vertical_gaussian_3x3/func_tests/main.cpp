@@ -5,6 +5,72 @@
 
 #include "seq/sozonov_i_image_filtering_vertical_gaussian_3x3/include/ops_seq.hpp"
 
+TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_image_less_than_3x3) {
+  const int width = 2;
+  const int height = 2;
+
+  // Create data
+  std::vector<double> in = {4, 6, 8, 24};
+  std::vector<double> out(width * height, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(width);
+  taskDataSeq->inputs_count.emplace_back(height);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
+
+TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_wrong_pixels) {
+  const int width = 5;
+  const int height = 3;
+
+  // Create data
+  std::vector<double> in = {143, 6, 853, 24, 31, 25, 1, 5, 7, 361, 28, 98, 45, 982, 461};
+  std::vector<double> out(width * height, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(width);
+  taskDataSeq->inputs_count.emplace_back(height);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
+
+TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_wrong_input_count) {
+  const int width = 100;
+  const int height = 50;
+
+  // Create data
+  std::vector<double> in(150, 1);
+  std::vector<double> out(width * height, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(width);
+  taskDataSeq->inputs_count.emplace_back(height);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
+
 TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_3x3) {
   const int width = 3;
   const int height = 3;

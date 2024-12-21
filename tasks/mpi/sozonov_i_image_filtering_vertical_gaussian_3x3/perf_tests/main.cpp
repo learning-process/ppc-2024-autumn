@@ -10,8 +10,8 @@
 TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 3000;
+  const int height = 3000;
 
   std::vector<double> global_img(width * height, 1);
   std::vector<double> global_ans(width * height, 0);
@@ -66,8 +66,8 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_pipeline_run) {
 TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_task_run) {
   boost::mpi::communicator world;
 
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 3000;
+  const int height = 3000;
 
   std::vector<double> global_img(width * height, 1);
   std::vector<double> global_ans(width * height, 0);

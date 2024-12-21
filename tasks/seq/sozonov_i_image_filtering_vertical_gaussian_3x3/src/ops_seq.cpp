@@ -20,8 +20,18 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential::pr
 
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential::validation() {
   internal_order_test();
-  // Check input and output count
-  return taskData->inputs_count[0] > 0;
+  // Init image
+  image = std::vector<double>(taskData->inputs_count[0]);
+  auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], image.begin());
+
+  size_t size = taskData->inputs_count[1] * taskData->inputs_count[2];
+
+  bool check_pixels = std::all_of(image.begin(), image.end(), [](double pixel) { return pixel >= 0 && pixel <= 255; });
+
+  // Check input and output count and pixels range from 0 to 255
+  return taskData->inputs_count[0] == size && taskData->outputs_count[0] == size && check_pixels &&
+         taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3;
 }
 
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_seq::TestTaskSequential::run() {

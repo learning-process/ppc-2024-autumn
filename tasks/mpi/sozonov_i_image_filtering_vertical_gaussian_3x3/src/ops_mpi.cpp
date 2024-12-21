@@ -23,8 +23,18 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskSequential:
 
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  // Check input and output count
-  return taskData->inputs_count[0] > 0;
+  // Init image
+  image = std::vector<double>(taskData->inputs_count[0]);
+  auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
+  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], image.begin());
+
+  size_t size = taskData->inputs_count[1] * taskData->inputs_count[2];
+
+  bool check_pixels = std::all_of(image.begin(), image.end(), [](double pixel) { return pixel >= 0 && pixel <= 255; });
+
+  // Check input and output count and pixels range from 0 to 255
+  return taskData->inputs_count[0] == size && taskData->outputs_count[0] == size && check_pixels &&
+         taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3;
 }
 
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskSequential::run() {
@@ -81,8 +91,19 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskParallel::p
 bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    // Check input and output count
-    return taskData->inputs_count[0] > 0;
+    // Init image
+    image = std::vector<double>(taskData->inputs_count[0]);
+    auto *tmp_ptr = reinterpret_cast<double *>(taskData->inputs[0]);
+    std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], image.begin());
+
+    size_t size = taskData->inputs_count[1] * taskData->inputs_count[2];
+
+    bool check_pixels =
+        std::all_of(image.begin(), image.end(), [](double pixel) { return pixel >= 0 && pixel <= 255; });
+
+    // Check input and output count and pixels range from 0 to 255
+    return taskData->inputs_count[0] == size && taskData->outputs_count[0] == size && check_pixels &&
+           taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3;
   }
   return true;
 }
@@ -110,33 +131,41 @@ bool sozonov_i_image_filtering_vertical_gaussian_3x3_mpi::TestMPITaskParallel::r
   std::vector<double> local_image(delta * height, 0);
   std::vector<double> send_image(delta * height);
 
-  if (world.rank() == 0) {
+  if (world.size() == 1) {
     for (int i = 0; i < height; ++i) {
-      for (int j = 0; j < delta - 1; ++j) {
-        local_image[i * delta + j + 1] = image[i * width + j];
+      for (int j = 1; j < width + 1; ++j) {
+        local_image[i * (width + 2) + j] = image[i * width + j - 1];
       }
-    }
-    int idx = delta - 2;
-    for (int proc = 1; proc < world.size(); ++proc) {
-      send_image = std::vector<double>(delta * height, 0);
-      if (proc == world.size() - 1) {
-        for (int i = 0; i < height; ++i) {
-          for (int j = -1; j < col_num[proc] - 2; ++j) {
-            send_image[i * col_num[proc] + j + 1] = image[i * width + j + idx];
-          }
-        }
-      } else {
-        for (int i = 0; i < height; ++i) {
-          for (int j = -1; j < col_num[proc] - 1; ++j) {
-            send_image[i * col_num[proc] + j + 1] = image[i * width + j + idx];
-          }
-        }
-        idx += col_num[proc] - 2;
-      }
-      world.send(proc, 0, send_image.data(), col_num[proc] * height);
     }
   } else {
-    world.recv(0, 0, local_image.data(), delta * height);
+    if (world.rank() == 0) {
+      for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < delta - 1; ++j) {
+          local_image[i * delta + j + 1] = image[i * width + j];
+        }
+      }
+      int idx = delta - 2;
+      for (int proc = 1; proc < world.size(); ++proc) {
+        send_image = std::vector<double>(delta * height, 0);
+        if (proc == world.size() - 1) {
+          for (int i = 0; i < height; ++i) {
+            for (int j = -1; j < col_num[proc] - 2; ++j) {
+              send_image[i * col_num[proc] + j + 1] = image[i * width + j + idx];
+            }
+          }
+        } else {
+          for (int i = 0; i < height; ++i) {
+            for (int j = -1; j < col_num[proc] - 1; ++j) {
+              send_image[i * col_num[proc] + j + 1] = image[i * width + j + idx];
+            }
+          }
+          idx += col_num[proc] - 2;
+        }
+        world.send(proc, 0, send_image.data(), col_num[proc] * height);
+      }
+    } else {
+      world.recv(0, 0, local_image.data(), delta * height);
+    }
   }
 
   std::vector<double> kernel = {0.0625, 0.125, 0.0625, 0.125, 0.25, 0.125, 0.0625, 0.125, 0.0625};

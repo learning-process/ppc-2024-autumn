@@ -8,8 +8,8 @@
 #include "seq/sozonov_i_image_filtering_vertical_gaussian_3x3/include/ops_seq.hpp"
 
 TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_pipeline_run) {
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 3000;
+  const int height = 3000;
 
   // Create data
   std::vector<double> in(width * height, 1);
@@ -60,8 +60,8 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_pipeline_run) {
 }
 
 TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_task_run) {
-  const int width = 1000;
-  const int height = 1000;
+  const int width = 3000;
+  const int height = 3000;
 
   // Create data
   std::vector<double> in(width * height, 1);
