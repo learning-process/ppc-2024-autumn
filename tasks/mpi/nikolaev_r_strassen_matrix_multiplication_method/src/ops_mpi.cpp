@@ -211,8 +211,14 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
 
   size_t half = newSize / 2;
 
-  std::vector<double> A11(half * half, 0.0), A12(half * half, 0.0), A21(half * half, 0.0), A22(half * half, 0.0);
-  std::vector<double> B11(half * half, 0.0), B12(half * half, 0.0), B21(half * half, 0.0), B22(half * half, 0.0);
+  std::vector<double> A11(half * half, 0.0);
+  std::vector<double> A12(half * half, 0.0);
+  std::vector<double> A21(half * half, 0.0);
+  std::vector<double> A22(half * half, 0.0);
+  std::vector<double> B11(half * half, 0.0);
+  std::vector<double> B12(half * half, 0.0);
+  std::vector<double> B21(half * half, 0.0);
+  std::vector<double> B22(half * half, 0.0);
 
   for (size_t i = 0; i < half; ++i) {
     for (size_t j = 0; j < half; ++j) {
