@@ -64,7 +64,10 @@ bool StrassenAlgorithmSequential::post_processing() {
   std::cout << "seq postprocessing done" << std::endl;
 }
 
+int recursion_depth = 0;
 void StrassenAlgorithmSequential::strassen(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
+  recursion_depth++;
+  std::cout << "Entering recursion depth: " << recursion_depth << std::endl;
   size_t n = A.size();
   if (n == 1) {
     C[0][0] = A[0][0] * B[0][0];
@@ -72,6 +75,12 @@ void StrassenAlgorithmSequential::strassen(const std::vector<std::vector<double>
   }
 
   size_t half = n / 2;
+
+  if (n % 2 != 0) {
+    throw std::logic_error("Matrix size must be a power of 2 for Strassen algorithm");
+  }
+
+  std::cout << "Matrix size: " << n << ", Half size: " << half << std::endl;
 
   std::vector<std::vector<double>> A11(half, std::vector<double>(half));
   std::vector<std::vector<double>> A12(half, std::vector<double>(half));
@@ -143,6 +152,8 @@ void StrassenAlgorithmSequential::strassen(const std::vector<std::vector<double>
       C[i + half][j + half] = C22[i][j];
     }
   }
+  recursion_depth--;
+  std::cout << "Exiting recursion depth: " << recursion_depth << std::endl;
 }
 
 void StrassenAlgorithmSequential::add(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
@@ -165,14 +176,16 @@ void StrassenAlgorithmSequential::subtract(const std::vector<std::vector<double>
 
 bool StrassenAlgorithmParallel::pre_processing() {
   internal_order_test();
+  std::cout << "Process " << world.rank() << ": Starting pre_processing" << std::endl;
+
+  sizes_a.resize(world.size());
+  displs_a.resize(world.size());
+  sizes_b.resize(world.size());
+  displs_b.resize(world.size());
 
   if (world.rank() == 0) {
-    std::cout << "Preprocessing: Initializing data" << std::endl;
-  }
+    std::cout << "Process 0: Initializing matrices" << std::endl;
 
-  world.barrier();
-
-  if (world.rank() == 0) {
     size_t matrix_size = *reinterpret_cast<size_t*>(taskData->inputs[0]);
 
     A_.assign(matrix_size, std::vector<double>(matrix_size, 0.0));
@@ -188,46 +201,45 @@ bool StrassenAlgorithmParallel::pre_processing() {
         B_[i][j] = B_input[i * matrix_size + j];
       }
     }
-    std::cout << "Process " << world.rank() << ": Matrices initialized" << std::endl;
+
+    calculate_distribution(matrix_size, matrix_size, world.size(), sizes_a, displs_a);
+    calculate_distribution(matrix_size, matrix_size, world.size(), sizes_b, displs_b);
+
+    std::cout << "Process 0: Matrices and distributions initialized" << std::endl;
   }
 
   world.barrier();
+
+  std::cout << "Process " << world.rank() << ": Pre_processing completed" << std::endl;
   return true;
 }
+
 
 
 bool StrassenAlgorithmParallel::validation() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    std::cout << "Validation: Checking taskData inputs and outputs" << std::endl;
-  }
+  std::cout << "Process " << world.rank() << ": Starting validation" << std::endl;
 
   if (taskData->inputs_count.size() != 3 || taskData->outputs_count.size() != 1) {
-    if (world.rank() == 0) {
-      std::cerr << "Validation failed: incorrect input or output sizes" << std::endl;
-    }
+    std::cerr << "Process " << world.rank() << ": Validation failed - inputs_count size = "
+              << taskData->inputs_count.size() << ", outputs_count size = "
+              << taskData->outputs_count.size() << std::endl;
     return false;
   }
 
   if (taskData->inputs[1] == nullptr || taskData->inputs[2] == nullptr) {
-    if (world.rank() == 0) {
-      std::cerr << "Validation failed: null pointer in inputs" << std::endl;
-    }
+    std::cerr << "Process " << world.rank() << ": Validation failed - Null pointer in inputs" << std::endl;
     return false;
   }
 
   n = *reinterpret_cast<size_t*>(taskData->inputs[0]);
   if (n <= 0) {
-    if (world.rank() == 0) {
-      std::cerr << "Validation failed: matrix size must be positive" << std::endl;
-    }
+    std::cerr << "Process " << world.rank() << ": Validation failed - matrix size = " << n << std::endl;
     return false;
   }
 
-  if (world.rank() == 0) {
-    std::cout << "Validation passed with matrix size: " << n << std::endl;
-  }
+  std::cout << "Process " << world.rank() << ": Validation passed with matrix size = " << n << std::endl;
   return true;
 }
 
@@ -235,9 +247,7 @@ bool StrassenAlgorithmParallel::validation() {
 bool StrassenAlgorithmParallel::run() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    std::cout << "Broadcasting sizes and displacements" << std::endl;
-  }
+  std::cout << "Process " << world.rank() << ": Broadcasting sizes and displacements" << std::endl;
 
   boost::mpi::broadcast(world, sizes_a, 0);
   boost::mpi::broadcast(world, sizes_b, 0);
@@ -245,11 +255,10 @@ bool StrassenAlgorithmParallel::run() {
   boost::mpi::broadcast(world, displs_b, 0);
   boost::mpi::broadcast(world, n, 0);
 
-  if (world.rank() == 0) {
-    std::cout << "Sizes and displacements broadcasted successfully" << std::endl;
-  }
+  std::cout << "Process " << world.rank() << ": Broadcast complete, n = " << n << std::endl;
 
   int loc_mat_size = sizes_a[world.rank()];
+
   std::cout << "Process " << world.rank() << ": Local matrix size = " << loc_mat_size << std::endl;
 
   std::vector<double> local_A_flat(loc_mat_size * n);
@@ -260,15 +269,16 @@ bool StrassenAlgorithmParallel::run() {
     auto A_flat = flatten_matrix(A_);
     auto B_flat = flatten_matrix(B_);
 
-    std::cout << "Process " << world.rank() << ": Flattened matrices" << std::endl;
+    std::cout << "Process 0: Flattened matrices" << std::endl;
 
     boost::mpi::scatterv(world, A_flat, sizes_a, displs_a, local_A_flat.data(), sizes_a[0], 0);
     boost::mpi::scatterv(world, B_flat, sizes_b, displs_b, local_B_flat.data(), sizes_b[0], 0);
 
-    std::cout << "Process " << world.rank() << ": Scatterv completed" << std::endl;
+    std::cout << "Process 0: Scatterv completed" << std::endl;
   } else {
     boost::mpi::scatterv(world, local_A_flat.data(), sizes_a[world.rank()], 0);
     boost::mpi::scatterv(world, local_B_flat.data(), sizes_b[world.rank()], 0);
+
     std::cout << "Process " << world.rank() << ": Received data via scatterv" << std::endl;
   }
 
@@ -285,7 +295,8 @@ bool StrassenAlgorithmParallel::run() {
     std::vector<double> C_flat(n * n);
     boost::mpi::gatherv(world, local_C_flat.data(), sizes_a[world.rank()], C_flat.data(), sizes_a, displs_a, 0);
     C_ = unflatten_matrix(C_flat, n, n);
-    std::cout << "Process " << world.rank() << ": Gathered result matrix" << std::endl;
+
+    std::cout << "Process 0: Gathered result matrix" << std::endl;
   } else {
     boost::mpi::gatherv(world, local_C_flat.data(), sizes_a[world.rank()], 0);
     std::cout << "Process " << world.rank() << ": Sent result matrix via gatherv" << std::endl;
@@ -293,6 +304,7 @@ bool StrassenAlgorithmParallel::run() {
 
   return true;
 }
+
 
 
 bool StrassenAlgorithmParallel::post_processing() {
