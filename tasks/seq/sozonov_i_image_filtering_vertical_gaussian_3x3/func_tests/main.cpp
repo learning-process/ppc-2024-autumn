@@ -32,7 +32,7 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_seq, test_wrong_pixels) {
   const int height = 3;
 
   // Create data
-  std::vector<double> in = {143, 6, 853, 24, 31, 25, 1, 5, 7, 361, 28, 98, 45, 982, 461};
+  std::vector<double> in = {143, 6, 853, -24, 31, -25, 1, 5, -7, 361, 28, 98, -45, 982, 461};
   std::vector<double> out(width * height, 0);
 
   // Create TaskData

@@ -51,7 +51,7 @@ TEST(sozonov_i_image_filtering_vertical_gaussian_3x3_mpi, test_wrong_pixels) {
   const int width = 5;
   const int height = 3;
 
-  std::vector<double> global_img = {143, 6, 853, 24, 31, 25, 1, 5, 7, 361, 28, 98, 45, 982, 461};
+  std::vector<double> global_img = {143, 6, 853, -24, 31, 25, 1, -5, 7, 361, -28, 98, -45, 982, 461};
   std::vector<double> global_ans(width * height, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
