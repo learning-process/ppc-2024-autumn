@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi.hpp>
-#include <vector>
 #include <numbers>
+#include <vector>
 
 #include "mpi/shuravina_o_monte_carlo/include/ops_mpi.hpp"
 
