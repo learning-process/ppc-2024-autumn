@@ -17,7 +17,9 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential
   N = (reinterpret_cast<size_t*>(taskData->inputs[2]))[0];
   input_ = std::vector<std::pair<double, double>>(dim);
   auto* start = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[1]);
-  std::copy(start, start + dim, input_.begin());
+  for (int i = 0; i < dim; i++) {
+    input_[i] = start[i];
+  }
   f = (reinterpret_cast<double (**)(double*, int)>(taskData->inputs[0]))[0];
   // Init value for output
   res = 0.0;
@@ -35,8 +37,8 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential
 bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  std::uniform_real_distribution<double>* rng_bord = new std::uniform_real_distribution<double>[dim];
-  double* mas = new double[dim];
+  auto* rng_bord = new std::uniform_real_distribution<double>[dim];
+  auto* mas = new double[dim];
 
   for (int i = 0; i < dim; i++) {
     if (input_[i].first > input_[i].second)
@@ -52,12 +54,17 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequential
     for (int j = 0; j < dim; j++) mas[j] = rng_bord[j](gen);
     rng[i] = f(mas, dim) / N;
   }
-  M = std::accumulate(rng.begin(), rng.end(), M);
+  M = 0.0;
+  for (size_t i = 0; i < N; i++) {
+    M += rng[i];
+  }
 
   double volume = 1.0;
   for (int i = 0; i < dim; i++) volume *= (input_[i].second - input_[i].first);
   res = volume * M;
 
+  delete [] rng_bord;
+  delete [] mas;
   return true;
 }
 
@@ -77,7 +84,10 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskSequenti
       for (size_t i = 0; i < N; i++) {
         rng[i] *= rng[i];
       }
-      variance = std::accumulate(rng.begin(), rng.end(), M);
+      variance = M;
+      for (size_t i = 0; i < N; i++) {
+        variance += rng[i];
+      }
     } else
       return -1.0;
   }
@@ -93,14 +103,19 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::
     input_right_ = std::vector<double>(dim);
     auto* start1 = reinterpret_cast<double*>(taskData->inputs[1]);
     auto* start2 = reinterpret_cast<double*>(taskData->inputs[2]);
-    std::copy(start1, start1 + dim, input_left_.begin());
-    std::copy(start2, start2 + dim, input_right_.begin());
+    for (int i = 0; i < dim; i++) {
+      input_left_[i] = start1[i];
+    }
+    for (int i = 0; i < dim; i++) {
+      input_right_[i] = start2[i];
+    }
   }
   f = (reinterpret_cast<double (**)(double*, int)>(taskData->inputs[0])[0]);
   res = 0.0;
   M = 0.0;
   local_M = 0.0;
   variance = -1.0;
+  local_variance = 0.0;
   return true;
 }
 
@@ -121,8 +136,8 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::
   broadcast(world, input_left_, 0);
   broadcast(world, input_right_, 0);
 
-  std::uniform_real_distribution<double>* rng_bord = new std::uniform_real_distribution<double>[dim];
-  double* mas = new double[dim];
+  auto* rng_bord = new std::uniform_real_distribution<double>[dim];
+  auto* mas = new double[dim];
   if (world.rank() < static_cast<int>(N % world.size()))
     n = N / world.size() + 1;
   else
@@ -142,7 +157,10 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::
     for (int j = 0; j < dim; j++) mas[j] = rng_bord[j](gen);
     rng[i] = f(mas, dim) / N;
   }
-  local_M = std::accumulate(rng.begin(), rng.end(), local_M);
+  M = 0.0;
+  for (size_t i = 0; i < n; i++) {
+    local_M += rng[i];
+  }
 
   reduce(world, local_M, M, std::plus(), 0);
 
@@ -173,7 +191,9 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel
       for (size_t i = 0; i < n; i++) {
         rng[i] *= rng[i];
       }
-      local_variance = std::accumulate(rng.begin(), rng.end(), local_variance);
+      for (size_t i = 0; i < n; i++) {
+        local_variance += rng[i];
+      }
     } else
       return -1.0;
   }

@@ -7,7 +7,7 @@
 
 namespace korotin_e_multidimentional_integrals_monte_carlo_seq {
 
-double test_func(double *x, int x_size) {
+double test_func(const double *x, int x_size) {
   double res = 0.0;
   for (int i = 0; i < x_size; i++) {
     res += x[i] * x[i];
