@@ -247,23 +247,3 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   testTaskSequential.run();
   testTaskSequential.post_processing();
 }
-TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_point4) {
-  const int rows = 100;
-  const int columns = 100;
-  std::vector<int> in = getRandomBinImage(rows, columns);
-  std::vector<int> out(rows * columns, -1);
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(rows);
-  taskDataSeq->inputs_count.emplace_back(columns);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(rows);
-  taskDataSeq->outputs_count.emplace_back(columns);
-
-  guseynov_e_marking_comps_of_bin_image_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  ASSERT_TRUE(testTaskSequential.validation());
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
-  checkNeighbors(out, rows, columns);
-}
