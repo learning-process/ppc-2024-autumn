@@ -95,11 +95,11 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_different_size_m
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs_count.emplace_back(B.size());
-  }
 
-  nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
-      taskDataPar);
-  ASSERT_FALSE(strassenMatrixMultPar.validation());
+    nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+        taskDataPar);
+    ASSERT_FALSE(strassenMatrixMultPar.validation());
+  }
 }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_squared_matrices) {
@@ -113,11 +113,11 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_squared_matr
     taskDataPar->inputs_count.emplace_back(A.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
     taskDataPar->inputs_count.emplace_back(B.size());
-  }
 
-  nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
-      taskDataPar);
-  ASSERT_FALSE(strassenMatrixMultPar.validation());
+    nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+        taskDataPar);
+    ASSERT_FALSE(strassenMatrixMultPar.validation());
+  }
 }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_valid_outputs_count) {
@@ -136,8 +136,9 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_non_valid_output
     taskDataPar->inputs_count.emplace_back(B.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_par.data()));
     taskDataPar->outputs_count.emplace_back(out_par.size());
+
+    nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
+        taskDataPar);
+    ASSERT_FALSE(strassenMatrixMultPar.validation());
   }
-  nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationParallel strassenMatrixMultPar(
-      taskDataPar);
-  ASSERT_FALSE(strassenMatrixMultPar.validation());
 }
