@@ -1,9 +1,9 @@
 #include "mpi/sidorina_p_convex_hull_binary_image_mpi/include/ops_mpi.hpp"
 
 namespace sidorina_p_convex_hull_binary_image_mpi {
-double distanceSq(const Point& p1, const Point& p2) { return pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2); }
+int distanceSq(const Point& p1, const Point& p2) { return pow(p1.x - p2.x, 2) + pow(p1.y - p2.y, 2); }
 
-double mix_mult(const Point& p1, const Point& p2, const Point& p3) {
+int mix_mult(const Point& p1, const Point& p2, const Point& p3) {
   int dx12 = p2.x - p1.x, dy13 = p3.y - p1.y, dy12 = p2.y - p1.y, dx13 = p3.x - p1.x;
 
   return dx12 * dy13 - dy12 * dx13;
@@ -278,7 +278,6 @@ bool ConvexHullBinImgMpi::run() {
   int rem = c_size % size;
 
   if (world.rank() == 0) {
-
     int tmp = 0;
     for (int i = 1; i < w_size; i++) {
       int c_send = count + count_rem(rem, i);
