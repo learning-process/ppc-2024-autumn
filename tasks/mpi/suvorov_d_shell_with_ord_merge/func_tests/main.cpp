@@ -33,7 +33,7 @@ void check_correctness_cases(const std::vector<int> &correct_test_data) {
   ShellSortMpi.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<int32_t> sorted_result_seq(count_of_elems, 0);
+    std::vector<int> sorted_result_seq(count_of_elems, 0);
 
     std::shared_ptr<ppc::core::TaskData> taskDataForSortingSeq = std::make_shared<ppc::core::TaskData>();
     taskDataForSortingSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(data_to_sort.data()));
