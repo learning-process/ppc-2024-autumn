@@ -15,7 +15,6 @@
 
 namespace zinoviev_a_sum_cols_matrix_mpi {
 
-std::vector<int> generateRandomVector(int size);
 int computeLinearCoordinates(int x, int y, int width);
 std::vector<int> calculateMatrixSumSequential(const std::vector<int>& matrix, int width, int height, int startX,
                                               int endX);
