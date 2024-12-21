@@ -12,7 +12,7 @@
 TEST(filatev_v_metod_belmana_forda_mpi, test_simpel_path) {
   boost::mpi::communicator world;
   int n = 6;
-  int m = 10;
+  int m = 9;
   int start = 0;
   std::vector<int> Adjncy;
   std::vector<int> Xadj;
@@ -22,9 +22,9 @@ TEST(filatev_v_metod_belmana_forda_mpi, test_simpel_path) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    Adjncy = {1, 2, 3, 4, 1, 4, 5, 4, 5, 5};
-    Xadj = {0, 2, 4, 7, 9, 10, 10};
-    Eweights = {7, 9, -1, -2, -3, 2, 1, 1, 3, 3};
+    Adjncy = {1, 2, 3, 4, 1, 4, 4, 5, 5};
+    Xadj = {0, 2, 4, 6, 8, 9, 9};
+    Eweights = {7, 9, -1, -2, -3, 2, 1, 3, 3};
     d.resize(n);
 
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(Adjncy.data()));
