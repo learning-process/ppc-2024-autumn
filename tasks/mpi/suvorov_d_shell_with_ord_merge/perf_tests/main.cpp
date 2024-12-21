@@ -21,7 +21,7 @@ std::vector<int> get_rand_vector(const size_t vec_size, const int min_int = -100
 }
 }  // namespace suvorov_d_shell_with_ord_merge_mpi
 
-TEST(mpi_example_perf_test, test_pipeline_run) {
+TEST(suvorov_d_shell_with_ord_merge_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> data_to_sort;
   size_t count_of_elems;
@@ -30,8 +30,8 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataForSortingMpi = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    count_of_elems = 100000;
-    data_to_sort = get_rand_vector(count_of_elems);
+    count_of_elems = 1000000;
+    data_to_sort = suvorov_d_shell_with_ord_merge_mpi::get_rand_vector(count_of_elems);
     sorted_result_mpi.assign(count_of_elems, 0);
     taskDataForSortingMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(data_to_sort.data()));
     taskDataForSortingMpi->inputs_count.emplace_back(data_to_sort.size());
@@ -57,21 +57,20 @@ TEST(mpi_example_perf_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_TRUE(std::is_sorted(sorted_result.begin(), sorted_result.end()));
+    EXPECT_TRUE(std::is_sorted(sorted_result_mpi.begin(), sorted_result_mpi.end()));
   }
 }
 
-TEST(mpi_example_perf_test, test_task_run) {
+TEST(suvorov_d_shell_with_ord_merge_mpi, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> data_to_sort;
   size_t count_of_elems;
   std::vector<int> sorted_result_mpi;
 
   std::shared_ptr<ppc::core::TaskData> taskDataForSortingMpi = std::make_shared<ppc::core::TaskData>();
-  int count_of_elems;
   if (world.rank() == 0) {
-    count_of_elems = 100000;
-    data_to_sort = get_rand_vector(count_of_elems);
+    count_of_elems = 1000000;
+    data_to_sort = suvorov_d_shell_with_ord_merge_mpi::get_rand_vector(count_of_elems);
     sorted_result_mpi.assign(count_of_elems, 0);
     taskDataForSortingMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(data_to_sort.data()));
     taskDataForSortingMpi->inputs_count.emplace_back(data_to_sort.size());
@@ -80,7 +79,7 @@ TEST(mpi_example_perf_test, test_task_run) {
   }
 
   auto ShellSortMpi =
-      std::make_shared<suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel>(taskDataForSortingMpi, "+");
+      std::make_shared<suvorov_d_shell_with_ord_merge_mpi::TaskShellSortParallel>(taskDataForSortingMpi);
   ASSERT_EQ(ShellSortMpi->validation(), true);
   ShellSortMpi->pre_processing();
   ShellSortMpi->run();
@@ -97,6 +96,6 @@ TEST(mpi_example_perf_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    EXPECT_TRUE(std::is_sorted(sorted_result.begin(), sorted_result.end()));
+    EXPECT_TRUE(std::is_sorted(sorted_result_mpi.begin(), sorted_result_mpi.end()));
   }
 }

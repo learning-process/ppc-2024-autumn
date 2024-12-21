@@ -16,6 +16,7 @@
 namespace suvorov_d_shell_with_ord_merge_mpi {
 
 std::vector<int> shell_sort(const std::vector<int>&);
+void merge_vectors(const std::vector<int>& left, const std::vector<int>& right, std::vector<int>& result);
 
 class TaskShellSortSeq : public ppc::core::Task {
  public:
@@ -32,8 +33,7 @@ class TaskShellSortSeq : public ppc::core::Task {
 
 class TaskShellSortParallel : public ppc::core::Task {
  public:
-  explicit TaskShellSortParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  explicit TaskShellSortParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
