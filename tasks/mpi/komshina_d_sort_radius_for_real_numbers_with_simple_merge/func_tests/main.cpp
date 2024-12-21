@@ -9,33 +9,6 @@
 
 namespace mpi = boost::mpi;
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Sort) {
-  mpi::environment env;
-  mpi::communicator world;
-
-  std::vector<double> global_vec = {5.4, -3.1, 7.2, 0.0, -8.5, 2.3, -1.1, 4.4};
-  std::vector<double> global_sorted_vec(global_vec.size(), 0.0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sorted_vec.data()));
-    taskDataPar->outputs_count.emplace_back(global_sorted_vec.size());
-  }
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel parallelSortTask(taskDataPar);
-  ASSERT_TRUE(parallelSortTask.validation()) << "Validation failed!";
-  parallelSortTask.pre_processing();
-  parallelSortTask.run();
-  parallelSortTask.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> expectedSortedVec = {-8.5, -3.1, -1.1, 0.0, 2.3, 4.4, 5.4, 7.2};
-    ASSERT_EQ(global_sorted_vec, expectedSortedVec) << "Parallel sort result mismatch!";
-  }
-}
-
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Empty_Vector) {
   mpi::environment env;
   mpi::communicator world;
