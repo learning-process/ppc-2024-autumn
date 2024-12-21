@@ -5,8 +5,8 @@ Sadikov_I_Gauss_Linear_Filtration::LinearFiltration::LinearFiltration(std::share
 
 bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltration::validation() {
   internal_order_test();
-  if ((taskData->inputs_count[0] > 2 or taskData->inputs_count[0] == 0) and taskData->inputs_count[1] > 2 or
-      taskData->inputs_count[1] == 0) {
+  if ((taskData->inputs_count[0] > 2 || taskData->inputs_count[0] == 0) &&
+      (taskData->inputs_count[1] > 2 || taskData->inputs_count[1] == 0)) {
     return taskData->outputs_count[0] == taskData->inputs_count[0] * taskData->inputs_count[1];
   }
   return false;
