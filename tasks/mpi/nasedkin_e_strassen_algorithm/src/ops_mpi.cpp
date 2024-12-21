@@ -210,7 +210,7 @@ bool StrassenAlgorithmParallel::validation() {
     return false;
   }
 
-  if (!taskData->inputs[1] || !taskData->inputs[2]) {
+  if (taskData->inputs[1] == nullptr || taskData->inputs[2] == nullptr) {
     if (world.rank() == 0) {
       std::cerr << "Validation failed: null pointer in inputs" << std::endl;
     }
