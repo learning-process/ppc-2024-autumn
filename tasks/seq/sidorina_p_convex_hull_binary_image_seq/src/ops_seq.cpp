@@ -193,7 +193,7 @@ bool ConvexHullBinImgSeq::run() {
   std::vector<Point> points;
   for (const auto& component : components) {
     auto hull = jarvis(component);
-    for (const auto& point : hull) { 
+    for (const auto& point : hull) {
       points.push_back(point);
     }
   }

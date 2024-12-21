@@ -15,14 +15,6 @@ struct Point {
 
   bool operator==(const Point& other) const { return (x == other.x) && (y == other.y); }
 
-  Point& operator=(const Point& other) {
-    if (this != &other) {
-      x = other.x;
-      y = other.y;
-    }
-    return *this;
-  }
-
   bool operator!=(const Point& other) const { return (x != other.x) || (y != other.y); }
 
   Point operator-(const Point& other) const { return Point{x - other.x, y - other.y}; }

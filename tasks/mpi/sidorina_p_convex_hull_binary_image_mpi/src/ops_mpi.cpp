@@ -45,7 +45,7 @@ std::vector<int> bin_img(const std::vector<Point>& points, int width, int height
       std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.x < b.x; });
   auto [minY, maxY] =
       std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.y < b.y; });
- 
+
   for (int x = minX->x; x <= maxX->x; x++) {
     if (x >= 0 && x < width) {
       image[minY->y * width + x] = 1;
@@ -246,7 +246,7 @@ bool ConvexHullBinImgMpi::run() {
   std::vector<Point> h_local;
   for (const auto& component : local_components) {
     auto hull = jarvis(component);
-    std::copy(hull.begin(), hull.end(), std::back_inserter(h_local)); 
+    std::copy(hull.begin(), hull.end(), std::back_inserter(h_local));
   }
 
   if (world.rank() == 0) {
@@ -259,8 +259,8 @@ bool ConvexHullBinImgMpi::run() {
       for (int proc : group) {
         world.recv(proc, 2, h_ints); 
       }
-    auto hull = conv_point(h_ints);
-    h_merged.insert(h_merged.end(), hull.begin(), hull.end());
+      auto hull = conv_point(h_ints);
+      h_merged.insert(h_merged.end(), hull.begin(), hull.end());
     }
 
     image = bin_img(jarvis(h_merged), width, height);
