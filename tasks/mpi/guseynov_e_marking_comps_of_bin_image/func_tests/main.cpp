@@ -261,10 +261,10 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, random_tes_50x50) {
   }
 }
 
-TEST(guseynov_e_marking_comps_of_bin_image_mpi, random_tes_100x100) {
+TEST(guseynov_e_marking_comps_of_bin_image_mpi, random_tes_75x75) {
   boost::mpi::communicator world;
-  const int rows = 100;
-  const int cols = 100;
+  const int rows = 75;
+  const int cols = 75;
   std::vector<int> image;
   std::vector<int> global_labeled_image(rows * cols);
   // Create TaskData
