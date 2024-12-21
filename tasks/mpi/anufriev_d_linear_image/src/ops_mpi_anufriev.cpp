@@ -156,7 +156,7 @@ void SimpleIntMPI::exchangeHalo() {
   if (right != MPI_PROC_NULL) {
     std::copy(recv_right.begin(), recv_right.end(), &local_data_[(local_width_ + 1) * height_]);
   } else {
-    std::copy(&local_data_[(local_width_) * height_], &local_data_[(local_width_ + 1) * height_],
+    std::copy(&local_data_[(local_width_)*height_], &local_data_[(local_width_ + 1) * height_],
               &local_data_[(local_width_ + 1) * height_]);
   }
 }
