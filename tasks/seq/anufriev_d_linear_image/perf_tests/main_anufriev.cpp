@@ -16,7 +16,7 @@ std::vector<int> generate_random_image(int rows, int cols) {
   return image;
 }
 
-#define PERF_TEST_SEQ(test_name, rows_const, cols_const, num_runs)                 \
+#define PERF_TEST_SEQ(test_name, rows_const, cols_const, num_runs, perf_method)    \
   TEST(anufriev_d_linear_image_perf_seq, test_name) {                              \
     int rows = rows_const;                                                         \
     int cols = cols_const;                                                         \
@@ -42,12 +42,12 @@ std::vector<int> generate_random_image(int rows, int cols) {
     };                                                                             \
     auto perfResults = std::make_shared<ppc::core::PerfResults>();                 \
     auto perf = std::make_shared<ppc::core::Perf>(task);                           \
-    perf->pipeline_run(perfAttr, perfResults);                                     \
+    perf->perf_method(perfAttr, perfResults);                                      \
     ppc::core::Perf::print_perf_statistic(perfResults);                            \
   }
 
-PERF_TEST_SEQ(SmallImage, 100, 100, 10)
-PERF_TEST_SEQ(MediumImage, 500, 500, 5)
-PERF_TEST_SEQ(LargeImage, 1000, 1000, 1)
+PERF_TEST_SEQ(LargeImage, 5000, 5000, 1, pipeline_run)
+
+PERF_TEST_SEQ(LargeImageRun, 5000, 5000, 1, task_run)
 
 #undef PERF_TEST_SEQ

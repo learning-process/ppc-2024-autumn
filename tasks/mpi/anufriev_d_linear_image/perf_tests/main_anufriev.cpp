@@ -54,12 +54,8 @@ static std::vector<int> generate_random_image(int width, int height, int seed = 
     }                                                                                        \
   }
 
-PERF_TEST_IMAGE(SmallImagePerf, 100, 80, 5, pipeline_run)
-PERF_TEST_IMAGE(MediumImagePerf, 1000, 800, 3, pipeline_run)
-PERF_TEST_IMAGE(LargeImagePerf, 2000, 2000, 1, pipeline_run)
+PERF_TEST_IMAGE(LargeImagePerf, 5000, 5000, 1, pipeline_run)
 
-PERF_TEST_IMAGE(SmallImageTaskRunPerf, 100, 80, 5, task_run)
-PERF_TEST_IMAGE(MediumImageTaskRunPerf, 1000, 800, 3, task_run)
-PERF_TEST_IMAGE(LargeImageTaskRunPerf, 2000, 2000, 1, task_run)
+PERF_TEST_IMAGE(LargeImageTaskRunPerf, 5000, 5000, 1, task_run)
 
 #undef PERF_TEST_IMAGE
