@@ -6,7 +6,7 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #include <thread>
 #include <vector>
 
