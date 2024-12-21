@@ -22,12 +22,10 @@ std::vector<int> bin_img(const std::vector<Point>& points, int width, int height
   int size = points.size();
   if (size < 2) return image;
 
-  auto [minX, maxX] = std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { 
-      return a.x < b.x; 
-  });
-  auto [minY, maxY] = std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { 
-      return a.y < b.y; 
-  });
+  auto [minX, maxX] =
+      std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.x < b.x; });
+  auto [minY, maxY] =
+      std::minmax_element(points.begin(), points.end(), [](const Point& a, const Point& b) { return a.y < b.y; });
 
   for (int x = minX->x; x <= maxX->x; x++) {
     if (x >= 0 && x < width) {
@@ -144,10 +142,10 @@ std::vector<Point> jarvis(std::vector<Point> points) {
 
   std::vector<Point> hull = {min_point};
   for (size_t i = 1; i < points.size(); i++) {
-    hull.push_back(points[i]); 
     while (hull.size() > 1 && mix_mult(hull[hull.size() - 2], hull.back(), points[i]) <= 0) {
       hull.pop_back();
     }
+    hull.push_back(points[i]);
   }
 
   return hull;
