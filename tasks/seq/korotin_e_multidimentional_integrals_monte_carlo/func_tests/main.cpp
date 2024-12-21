@@ -7,7 +7,13 @@
 
 namespace korotin_e_multidimentional_integrals_monte_carlo_seq {
 
-double test_func(double *x, int x_size) { return x[0] * x[0] + x[1] * x[1] + x[2] * x[2]; }
+double test_func(double *x, int x_size) {
+  double res = 0.0;
+  for (int i = 0; i < x_size; i++) {
+    res += x[i] * x[i];
+  }
+  return res;
+}
 
 double ref_integration(const std::vector<std::pair<double, double>> &borders) {
   double res = 0.0;
@@ -71,15 +77,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, monte_carlo_pseudo_rn
   std::vector<std::pair<double, double>> borders(dimentions);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 500);
-  double (*lambda)(double *, int) = [](double *x, int x_size) -> double {
-    double res = 0.0;
-    for (int i = 0; i < x_size; i++) {
-      res += x[i] * x[i];
-    }
-    return res;
-  };
-  std::vector<double (*)(double *, int)> F(1, lambda);
-
+  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
   double ref;
 
   std::random_device rd;
