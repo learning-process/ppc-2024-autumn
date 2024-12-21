@@ -1,5 +1,5 @@
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
-
+#include <cstring>
 #include <vector>
 #include <cstring>
 
@@ -30,14 +30,14 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::post_processing() {
   internal_order_test();
   if (!sort.empty()) {
-    std::memcpy(taskData->outputs[0], sort.data(), sort.size() * sizeof(double));
+    memcpy(taskData->outputs[0], sort.data(), sort.size() * sizeof(double));
   }
   return true;
 }
 
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::CountingSort(double* inp, double* out,
-                                                                                        int byteNum, int size) {
-  unsigned char* mas = reinterpret_cast<unsigned char*>(inp);
+ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::CountingSort(double* inp, double* out, int byteNum,
+                                                                            int size) {
+  auto mas = reinterpret_cast<unsigned char*>(inp);
   int counter[256] = {0};
 
   for (int i = 0; i < size; i++) {
@@ -115,13 +115,4 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::SortDouble(s
   data.clear();
   data.insert(data.end(), out_negatives.rbegin(), out_negatives.rend());
   data.insert(data.end(), out_positives.begin(), out_positives.end());
-}
-
-bool CompareArrays(double* mas, double* gMas, int size) {
-  for (int i = 0; i < size; i++) {
-    if (mas[i] != gMas[i]) {
-      return false;
-    }
-  }
-  return true;
 }

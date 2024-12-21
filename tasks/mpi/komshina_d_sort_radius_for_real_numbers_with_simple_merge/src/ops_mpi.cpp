@@ -1,5 +1,5 @@
 #include <mpi.h>
-
+#include <cstring>
 #include <algorithm>
 #include <iterator>
 #include <mpi/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_mpi.hpp>
@@ -29,7 +29,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskS
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   if (!sort.empty()) {
-    std::memcpy(taskData->outputs[0], sort.data(), sort.size() * sizeof(double));
+    memcpy(taskData->outputs[0], sort.data(), sort.size() * sizeof(double));
   }
   return true;
 }
@@ -81,7 +81,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
 
 void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::CountingSort(double* inp, double* out, int byteNum,
                                                                                  int size) {
-  unsigned char* mas = reinterpret_cast<unsigned char*>(inp);
+  auto mas = reinterpret_cast<unsigned char*>(inp);
   int counter[256] = {0};
 
   for (int i = 0; i < size; i++) {

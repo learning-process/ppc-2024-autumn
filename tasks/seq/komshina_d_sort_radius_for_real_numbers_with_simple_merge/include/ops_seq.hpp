@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <cstring>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -21,5 +21,4 @@ class TestTaskSequential : public ppc::core::Task {
 
 void SortDouble(std::vector<double>& data);
 void CountingSort(double* inp, double* out, int byteNum, int size);
-bool CompareArrays(double* mas, double* gMas, int size);
 }  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq
