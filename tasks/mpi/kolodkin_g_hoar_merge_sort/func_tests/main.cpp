@@ -35,6 +35,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_one_elems) {
     kolodkin_g_hoar_merge_sort_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
 
     ASSERT_EQ(testTaskSequential.validation(), false);
+  }
 }
 
 TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_two_elems) {
