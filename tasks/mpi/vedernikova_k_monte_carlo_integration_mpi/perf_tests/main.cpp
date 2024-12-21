@@ -10,12 +10,9 @@
 TEST(vedernikova_k_monte_carlo_integration_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   size_t num_point = 1000000;
 
   double out = 0.0;
@@ -62,12 +59,9 @@ TEST(vedernikova_k_monte_carlo_integration_mpi_perf_test, test_pipeline_run) {
 
 TEST(vedernikova_k_monte_carlo_integration_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   size_t num_point = 1000000;
 
   double out = 0.0;

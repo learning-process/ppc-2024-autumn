@@ -42,12 +42,9 @@ TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_500000_seq) {
 }
 
 TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_1000000_seq) {
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   size_t num_point = 1000000;
 
   double out = 0.0;
@@ -76,12 +73,9 @@ TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_1000000_seq) {
   EXPECT_NEAR(expected_res, out, 1e-1);
 }
 TEST(vedernikova_k_monte_carlo_integration_mpi, validation_false) {
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   // size_t num_point = 1000000;
 
   double out = 0.0;
@@ -107,12 +101,9 @@ TEST(vedernikova_k_monte_carlo_integration_mpi, validation_false) {
 
 TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_1000000_mpi) {
   boost::mpi::communicator world;
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   size_t num_point = 1000000;
 
   double out = 0.0;
@@ -143,12 +134,9 @@ TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_1000000_mpi) {
 }
 TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_1500000_mpi) {
   boost::mpi::communicator world;
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   size_t num_point = 1500000;
 
   double out = 0.0;
@@ -179,12 +167,9 @@ TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_1500000_mpi) {
 }
 TEST(vedernikova_k_monte_carlo_integration_mpi, number_of_points_2000000_mpi) {
   boost::mpi::communicator world;
-  double ax = 0;
-  double bx = 2.0;
-  double ay = 0.0;
-  double by = std::numbers::pi;
-  double az = 0.0;
-  double bz = std::numbers::pi;
+  auto [ax, bx] = std::make_pair(0.0, 2.0);
+  auto [ay, by] = std::make_pair(0.0, std::numbers::pi);
+  auto [az, bz] = std::make_pair(0.0, std::numbers::pi);
   size_t num_point = 2000000;
 
   double out = 0.0;
