@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "seq/guseynov_e_marking_comps_of_bin_image/include/ops_seq.hpp"
-
 
 std::vector<int> getRandomBinImage(int r, int c) {
   std::random_device dev;
@@ -16,58 +15,55 @@ std::vector<int> getRandomBinImage(int r, int c) {
   return vec;
 }
 
+void checkNeighbors(const std::vector<int> &matrix, int rows, int cols) {
+  // Направления: (dx, dy)
+  std::vector<std::pair<int, int>> directions = {
+      {0, 1},   // вправо
+      {0, -1},  // влево
+      {1, 0},   // вниз
+      {-1, 0},  // вверх
+      {-1, 1},  // по диагонали вниз вправо
+      {1, -1}   // по диагонали вверх влево
+  };
 
-void checkNeighbors(const std::vector<int>& matrix, int rows, int cols) {
-    // Направления: (dx, dy)
-    std::vector<std::pair<int, int>> directions = {
-        {0, 1},   // вправо
-        {0, -1},  // влево
-        {1, 0},   // вниз
-        {-1, 0},  // вверх
-        {-1, 1},   // по диагонали вниз вправо
-        {1, -1}  // по диагонали вверх влево
-    };
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      int currentIndex = i * cols + j;
+      int currentValue = matrix[currentIndex];
 
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            int currentIndex = i * cols + j;
-            int currentValue = matrix[currentIndex];
+      // Пропускаем элемент, если он равен 1
+      if (currentValue == 1) {
+        continue;
+      }
 
-            // Пропускаем элемент, если он равен 1
-            if (currentValue == 1) {
-                continue;
-            }
+      bool shouldPrint = false;
 
-            bool shouldPrint = false;
+      // Проверяем соседей
+      for (const auto &dir : directions) {
+        int newRow = i + dir.first;
+        int newCol = j + dir.second;
 
-            // Проверяем соседей
-            for (const auto& dir : directions) {
-                int newRow = i + dir.first;
-                int newCol = j + dir.second;
+        // Проверяем границы матрицы
+        if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+          int neighborIndex = newRow * cols + newCol;
+          int neighborValue = matrix[neighborIndex];
 
-                // Проверяем границы матрицы
-                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                    int neighborIndex = newRow * cols + newCol;
-                    int neighborValue = matrix[neighborIndex];
-
-                    // Если сосед не равен текущему элементу и не равен 1
-                    if (neighborValue != currentValue && neighborValue != 1) {
-                        shouldPrint = true;
-                        break; // Достаточно одного такого соседа
-                    }
-                }
-            }
-
-            // Если условие выполнено, выводим элемент с запятой
-            if (shouldPrint) {
-                std::cout << "[" << i<< ", " << j << ", " << currentValue << "]" ;
-            }
+          // Если сосед не равен текущему элементу и не равен 1
+          if (neighborValue != currentValue && neighborValue != 1) {
+            shouldPrint = true;
+            break;  // Достаточно одного такого соседа
+          }
         }
+      }
+
+      // Если условие выполнено, выводим элемент с запятой
+      if (shouldPrint) {
+        std::cout << "[" << i << ", " << j << ", " << currentValue << "]";
+      }
     }
-    std::cout << std::endl; // Завершаем строку
+  }
+  std::cout << std::endl;  // Завершаем строку
 }
-
-
 
 TEST(guseynov_e_marking_comps_of_bin_image_seq, test_image_is_object) {
   const int rows = 3;
@@ -207,7 +203,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   ASSERT_EQ(expected_out, out);
 }
 
-
 TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_point2) {
   const int rows = 10;
   const int columns = 10;
@@ -232,16 +227,10 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
 TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_point3) {
   const int rows = 11;
   const int columns = 10;
-  std::vector<int> in = {1, 0, 1, 1, 1, 1, 0, 0, 1, 1,
-0, 1, 0, 1, 1, 0, 0, 0, 0, 0,
-1, 0, 1, 1, 0, 0, 0, 1, 1, 1,
-1, 0, 0, 0, 1, 1, 1, 0, 1, 0,
-1, 1, 1, 1, 0, 1, 0, 0, 1, 0,
-1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
-1, 1, 0, 1, 0, 1, 0, 1, 1, 1,
-0, 1, 0, 1, 0, 1, 0, 0, 1, 0,
-1, 0, 0, 0, 0, 0, 1, 1, 0, 1,
-0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
+  std::vector<int> in = {1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0,
+                         0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0,
+                         1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0,
+                         1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1};
   std::vector<int> out(rows * columns, -1);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -258,7 +247,6 @@ TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_po
   testTaskSequential.run();
   testTaskSequential.post_processing();
 }
-
 
 TEST(guseynov_e_marking_comps_of_bin_image_seq, test_one_column_with_isolated_point4) {
   const int rows = 100;

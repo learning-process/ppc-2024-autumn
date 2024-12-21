@@ -2,39 +2,39 @@
 
 #include <algorithm>
 #include <map>
-#include <set>
 #include <queue>
+#include <set>
 
 int findParent(std::map<int, std::set<int>>& parent, int labl) {
-    auto srch = parent.find(labl);
-    if (srch != parent.end()){
-      return *srch->second.begin();
-    }
+  auto srch = parent.find(labl);
+  if (srch != parent.end()) {
+    return *srch->second.begin();
+  }
 
-    return labl;
+  return labl;
 }
 
-void fixTable(std::map<int, std::set<int>>& parent){
-  for (auto& pair : parent){
-    for (auto value : pair.second){
-        parent[value].insert(pair.second.begin(), pair.second.end());
+void fixTable(std::map<int, std::set<int>>& parent) {
+  for (auto& pair : parent) {
+    for (auto value : pair.second) {
+      parent[value].insert(pair.second.begin(), pair.second.end());
     }
   }
 }
 
-void fixLabels(std::vector<int>& labeled_image, int rows, int cols){
+void fixLabels(std::vector<int>& labeled_image, int rows, int cols) {
   std::map<int, int> labels_equivalence;
   int min_label = 2;
-  for (int x = 0; x < rows; x++){
-    for (int y = 0; y < cols; y++){
+  for (int x = 0; x < rows; x++) {
+    for (int y = 0; y < cols; y++) {
       int position = x * cols + y;
-      if (labeled_image[position] > 1){
+      if (labeled_image[position] > 1) {
         int final_label;
         auto srch_label = labels_equivalence.find(labeled_image[position]);
-        if (srch_label == labels_equivalence.end()){
+        if (srch_label == labels_equivalence.end()) {
           final_label = min_label;
           labels_equivalence[labeled_image[position]] = min_label++;
-        }else{
+        } else {
           final_label = srch_label->second;
         }
 
@@ -42,29 +42,28 @@ void fixLabels(std::vector<int>& labeled_image, int rows, int cols){
       }
     }
   }
-} 
-
+}
 
 void unite(std::map<int, std::set<int>>& parent, int new_label, int neighbour_label) {
-  if (new_label == neighbour_label){
+  if (new_label == neighbour_label) {
     return;
   }
 
   auto srch1 = parent.find(new_label);
   auto srch2 = parent.find(neighbour_label);
 
-  if (srch1 == parent.end() && srch2 == parent.end()){
+  if (srch1 == parent.end() && srch2 == parent.end()) {
     parent[new_label].insert(neighbour_label);
     parent[new_label].insert(new_label);
     parent[neighbour_label].insert(new_label);
     parent[neighbour_label].insert(neighbour_label);
-  }else if(srch1 != parent.end() && srch2 == parent.end()){
+  } else if (srch1 != parent.end() && srch2 == parent.end()) {
     parent[new_label].insert(neighbour_label);
     parent[neighbour_label] = parent[new_label];
-  }else if(srch1 == parent.end() && srch2 != parent.end()){
+  } else if (srch1 == parent.end() && srch2 != parent.end()) {
     parent[neighbour_label].insert(new_label);
     parent[new_label] = parent[neighbour_label];
-  }else{
+  } else {
     std::set<int> tmp_set = parent[new_label];
     parent[new_label].insert(parent[neighbour_label].begin(), parent[neighbour_label].end());
     parent[neighbour_label].insert(parent[new_label].begin(), parent[new_label].end());
@@ -147,12 +146,11 @@ bool guseynov_e_marking_comps_of_bin_image_seq::TestTaskSequential::run() {
       int position = x * columns + y;
       if (labeled_image[position] > 1) {
         int find_label = findParent(parent, labeled_image[position]);
-        
-        labeled_image[position] = find_label;       
-        
-        }
+
+        labeled_image[position] = find_label;
       }
     }
+  }
   fixLabels(labeled_image, rows, columns);
   return true;
 }

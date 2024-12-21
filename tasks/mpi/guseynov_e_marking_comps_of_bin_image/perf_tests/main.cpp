@@ -47,7 +47,8 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(columns);
   }
 
-  auto testMpiTaskParallel = std::make_shared<guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_TRUE(testMpiTaskParallel->validation());
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -72,7 +73,7 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_pipeline_run) {
 }
 
 TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_task_run) {
-   boost::mpi::communicator world;
+  boost::mpi::communicator world;
   const int rows = 500;
   const int columns = 500;
   std::vector<int> in(rows * columns);
@@ -111,7 +112,8 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(columns);
   }
 
-  auto testMpiTaskParallel = std::make_shared<guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel =
+      std::make_shared<guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
