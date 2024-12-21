@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "mpi/tyshkevich_a_monte_carlo/include/ops_mpi.hpp"
+#include "mpi/tyshkevich_a_monte_carlo/include/test_include.hpp"
 
 namespace tyshkevich_a_monte_carlo_mpi {
 

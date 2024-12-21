@@ -4,6 +4,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/tyshkevich_a_monte_carlo/include/ops_mpi.hpp"
+#include "mpi/tyshkevich_a_monte_carlo/include/test_include.hpp"
 
 TEST(tyshkevich_a_monte_carlo_mpi, test_pipeline_run) {
   boost::mpi::communicator world;

@@ -2,6 +2,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/tyshkevich_a_monte_carlo/include/ops_seq.hpp"
+#include "seq/tyshkevich_a_monte_carlo/include/test_include.hpp"
 
 TEST(tyshkevich_a_monte_carlo_seq, test_pipeline_run) {
   std::function<double(const std::vector<double> &)> function = tyshkevich_a_monte_carlo_seq::function_sin_sum;

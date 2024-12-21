@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "seq/tyshkevich_a_monte_carlo/include/ops_seq.hpp"
+#include "seq/tyshkevich_a_monte_carlo/include/test_include.hpp"
 
 namespace tyshkevich_a_monte_carlo_seq {
 
