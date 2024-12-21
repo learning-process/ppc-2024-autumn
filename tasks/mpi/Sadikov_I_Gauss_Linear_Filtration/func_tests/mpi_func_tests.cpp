@@ -83,7 +83,16 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation2) {
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image) {
   boost::mpi::communicator world;
-  std::vector<Point<double>> in(std::move(Sadikov_I_Gauss_Linear_Filtration_tests::squareImage));
+  std::vector<Point<double>> squareImage{
+      Point(44.0, 2.0, 1.0),      Point(56.0, 11.0, 23.0),   Point(51.0, 75.0, 100.0),
+      Point(100.0, 245.0, 140.0), Point(98.0, 134.0, 61.0),  Point(100.0, 100.0, 100.0),
+      Point(19.0, 200.0, 98.0),   Point(44.0, 128.0, 128.0), Point(67.0, 198.0, 11.0)};
+  std::vector<Point<double>> squareImageCheck{
+    Point(35.0, 42.0, 24.0),  Point(50.0, 54.0, 42.0),  Point(37.0, 39.0, 40.0),
+    Point(47.0, 102.0, 59.0), Point(70.0, 122.0, 76.0), Point(54.0, 81.0, 53.0),
+    Point(29.0, 97.0, 57.0),  Point(46.0, 117.0, 65.0), Point(38.0, 78.0, 35.0)};
+
+  std::vector<Point<double>> in(std::move(squareImage));
   std::vector<int> in_index{3, 3};
   std::vector<Point<double>> out(9);
   auto taskData = std::make_shared<ppc::core::TaskData>();
@@ -102,7 +111,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image) {
   if (world.rank() == 0) {
     bool flag = true;
     for (size_t i = 0; i < out.size(); ++i) {
-      if (out[i] != Sadikov_I_Gauss_Linear_Filtration_tests::squareImageCheck[i]) {
+      if (out[i] != squareImageCheck[i]) {
         flag = false;
       }
     }
