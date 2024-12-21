@@ -61,22 +61,19 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Single_
   }
 }
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Large_Vector) {
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_All_Equal_Elements) {
   mpi::environment env;
   mpi::communicator world;
 
-  std::vector<double> global_vec(1000000, 0.0);
-  for (int i = 0; i < 1000000; ++i) {
-    global_vec[i] = rand() % 1000;
-  }
-  std::vector<double> global_sorted_vec(global_vec.size(), 0.0);
+  std::vector<double> equal_vec(1000, 42.0);
+  std::vector<double> sorted_equal_vec(equal_vec.size(), 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
-    taskDataPar->inputs_count.emplace_back(global_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_sorted_vec.data()));
-    taskDataPar->outputs_count.emplace_back(global_sorted_vec.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(equal_vec.data()));
+    taskDataPar->inputs_count.emplace_back(equal_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_equal_vec.data()));
+    taskDataPar->outputs_count.emplace_back(sorted_equal_vec.size());
   }
 
   komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel parallelSortTask(taskDataPar);
@@ -86,7 +83,34 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Large_V
   parallelSortTask.post_processing();
 
   if (world.rank() == 0) {
-    std::sort(global_vec.begin(), global_vec.end());
-    ASSERT_EQ(global_sorted_vec, global_vec) << "Large vector sort result mismatch!";
+    ASSERT_EQ(sorted_equal_vec, equal_vec) << "Equal elements vector was not sorted correctly!";
+  }
+}
+
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Mixed_Positive_Negative) {
+  mpi::environment env;
+  mpi::communicator world;
+
+  std::vector<double> mixed_vec = {-3.14, 2.71, -42.0, 0.0, 7.5, -1.23};
+  std::vector<double> expected_sorted_vec = {-42.0, -3.14, -1.23, 0.0, 2.71, 7.5};
+  std::vector<double> sorted_mixed_vec(mixed_vec.size(), 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(mixed_vec.data()));
+    taskDataPar->inputs_count.emplace_back(mixed_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_mixed_vec.data()));
+    taskDataPar->outputs_count.emplace_back(sorted_mixed_vec.size());
+  }
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel parallelSortTask(taskDataPar);
+  ASSERT_TRUE(parallelSortTask.validation()) << "Validation failed!";
+  parallelSortTask.pre_processing();
+  parallelSortTask.run();
+  parallelSortTask.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(sorted_mixed_vec, expected_sorted_vec)
+        << "Mixed positive and negative numbers were not sorted correctly!";
   }
 }
