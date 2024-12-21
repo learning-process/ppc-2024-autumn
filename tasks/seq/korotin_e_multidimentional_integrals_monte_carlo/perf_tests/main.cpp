@@ -23,7 +23,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, test_pipeline_run) {
   std::vector<std::pair<double, double>> borders(3);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 100000);
-  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
+  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
   double ref = 32.0;
 
   borders[0] = borders[1] = borders[2] = std::pair<double, double>(0.0, 2.0);
@@ -71,7 +71,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_seq, test_task_run) {
   std::vector<std::pair<double, double>> borders(3);
   std::vector<double> res(1, 0);
   std::vector<size_t> N(1, 100000);
-  std::vector<double (*)(double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
+  std::vector<double (*)(const double *, int)> F(1, &korotin_e_multidimentional_integrals_monte_carlo_seq::test_func);
 
   double ref = 32.0;
 
