@@ -94,10 +94,6 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::pre_processing() {
 
   CRS(matrix);
 
-  boost::mpi::broadcast(world, row_offsets_, 0);
-  boost::mpi::broadcast(world, col_indices_, 0);
-  boost::mpi::broadcast(world, weights_, 0);
-
   distances_.resize(vertices_, INT_MAX);
   distances_[source_] = 0;
 
@@ -115,6 +111,10 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::validation() {
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+
+  boost::mpi::broadcast(world, row_offsets_, 0);
+  boost::mpi::broadcast(world, col_indices_, 0);
+  boost::mpi::broadcast(world, weights_, 0);
 
   int local_start = world.rank() * (vertices_ / world.size()) + std::min(world.rank(), vertices_ % world.size());
   int local_end = local_start + (vertices_ / world.size()) + (world.rank() < vertices_ % world.size() ? 1 : 0);
