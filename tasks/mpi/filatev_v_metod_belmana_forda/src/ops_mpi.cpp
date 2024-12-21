@@ -33,7 +33,6 @@ bool filatev_v_metod_belmana_forda_mpi::MetodBelmanaFordaMPI::pre_processing() {
     this->Xadj.assign(temp, temp + n + 1);
     temp = reinterpret_cast<int*>(taskData->inputs[2]);
     this->Eweights.assign(temp, temp + m);
-    d.resize(n);
   }
   return true;
 }
