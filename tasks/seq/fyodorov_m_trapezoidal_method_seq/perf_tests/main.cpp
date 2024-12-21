@@ -12,36 +12,36 @@ namespace {
 
 bool almost_equal(double a, double b, double epsilon = 1e-6) { return std::abs(a - b) < epsilon; }
 
-double test_func_1(const std::vector<double>& x) { return x[0] * x[0] + x[1] * x[1]; }
+//double test_func_1(const std::vector<double>& x) { return x[0] * x[0] + x[1] * x[1]; }
 
 double test_func_2(const std::vector<double>& x) { return x[0]; }
 
 double test_func_3(const std::vector<double>& x) { return x[0] + x[1] + x[2]; }
 
-double test_func_4(const std::vector<double>& x) { return std::sin(x[0]); }
+//double test_func_4(const std::vector<double>& x) { return std::sin(x[0]); }
 
-double test_func_5(const std::vector<double>& x) { return x[0] * x[0] * x[0]; }
+//double test_func_5(const std::vector<double>& x) { return x[0] * x[0] * x[0]; }
 
-double test_func_6(const std::vector<double>& x) { return x[0] * x[1]; }
+//double test_func_6(const std::vector<double>& x) { return x[0] * x[1]; }
 
-double test_func_7(const std::vector<double>& x) {
-  (void)x;
-  return 1.0;
-}
+// double test_func_7(const std::vector<double>& x) {
+//   (void)x;
+//   return 1.0;
+// }
 
-double test_func_8(const std::vector<double>& x) { return x[0] * x[0]; }
+//double test_func_8(const std::vector<double>& x) { return x[0] * x[0]; }
 
 // f(x, y) = x + y/2
-double test_func_9(const std::vector<double>& x) { return x[0] + x[1] / 2.0; }
+//double test_func_9(const std::vector<double>& x) { return x[0] + x[1] / 2.0; }
 
 // f(x) = x/2
-double test_func_10(const std::vector<double>& x) { return x[0] / 2.0; }
+//double test_func_10(const std::vector<double>& x) { return x[0] / 2.0; }
 
 // f(x, y) = x^2 * y
-double test_func_11(const std::vector<double>& x) { return x[0] * x[0] * x[1]; }
+//double test_func_11(const std::vector<double>& x) { return x[0] * x[0] * x[1]; }
 
 // f(x, y, z) = x*y*z
-double test_func_12(const std::vector<double>& x) { return x[0] * x[1] * x[2]; }
+//double test_func_12(const std::vector<double>& x) { return x[0] * x[1] * x[2]; }
 
 }  // namespace
 
