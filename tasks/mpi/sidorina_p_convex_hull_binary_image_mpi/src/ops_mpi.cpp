@@ -122,13 +122,14 @@ std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int widt
 
       int component_label = image[i * width + j];
 
-      auto& component = components[component_label];
-      component.push_back({j, i});
+      auto& comp = components[component_label];
+      comp.push_back({j, i});
     }
   }
   std::vector<std::vector<Point>> result;
+  result.reserve(components.size());
   for (const auto& [label, points] : components) {
-    result.push_back({points.begin(), points.end()});
+    result.emplace_back(points.begin(), points.end());
   }
   return result;
 }
@@ -254,12 +255,12 @@ bool ConvexHullBinImgMpi::run() {
       }
     }
 
-    MPI_Gatherv(&h_local[0], h_local.size(), MPI_INT, &h_merged[0], count_ptr, nullptr, MPI_INT, 0, world);
+    MPI_Gatherv(h_local.data(), h_local.size(), MPI_INT, h_merged.data(), count_ptr, nullptr, MPI_INT, 0, world);
     delete[] count_ptr;
 
     image = bin_img(jarvis(h_merged), width, height);
   } else {
-    MPI_Gatherv(&h_local[0], h_local.size(), MPI_INT, nullptr, nullptr, nullptr, MPI_INT, 0, world);
+    MPI_Gatherv(h_local.data(), h_local.size(), MPI_INT, nullptr, nullptr, nullptr, MPI_INT, 0, world);
   }
 
   return true;

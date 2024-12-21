@@ -5,6 +5,7 @@
 #include <iostream>
 #include <random>
 #include <unordered_map>
+#include <list>
 #include <vector>
 
 namespace sidorina_p_convex_hull_binary_image_seq {
@@ -22,7 +23,7 @@ std::vector<int> bin_img(const std::vector<Point>& points, int width, int height
   if (size < 2) return image;
 
   int mX = points[0].x, MX = points[0].x, mY = points[0].y, MY = points[0].y;
-  for (size_t i = 1; i < size; i++) {
+  for (int i = 1; i < size; i++) {
     mX = std::min(mX, points[i].x);
     MX = std::max(MX, points[i].x);
     mY = std::min(mY, points[i].y);
