@@ -40,7 +40,7 @@ bool kolodkin_g_hoar_merge_sort_seq::TestTaskSequential::pre_processing() {
 
 bool kolodkin_g_hoar_merge_sort_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0;
+  return taskData->inputs_count[0] > 1;
 }
 
 bool kolodkin_g_hoar_merge_sort_seq::TestTaskSequential::run() {
