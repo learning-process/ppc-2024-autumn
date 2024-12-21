@@ -257,7 +257,7 @@ bool ConvexHullBinImgMpi::run() {
     for (auto& group : process_groups) {
       std::vector<int> h_ints;
       for (int proc : group) {
-        world.recv(proc, 2, h_ints); 
+        world.recv(proc, 2, h_ints);
       }
       auto hull = conv_point(h_ints);
       h_merged.insert(h_merged.end(), hull.begin(), hull.end());
