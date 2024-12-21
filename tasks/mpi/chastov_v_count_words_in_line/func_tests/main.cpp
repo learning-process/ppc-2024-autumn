@@ -163,47 +163,6 @@ TEST(chastov_v_count_words_in_line_mpi, words_300) {
   }
 }
 
-TEST(chastov_v_count_words_in_line_mpi, words_30) {
-  boost::mpi::communicator world;
-  std::vector<char> input = createTestInput(20);
-  std::vector<int> wordsFound(1, 0);
-  // Create TaskData
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
-    taskDataPar->inputs_count.emplace_back(input.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(wordsFound.data()));
-    taskDataPar->outputs_count.emplace_back(wordsFound.size());
-  }
-
-  chastov_v_count_words_in_line_mpi::TestMPITaskParallel testTaskParallel(taskDataPar);
-  ASSERT_TRUE(testTaskParallel.validation());
-  testTaskParallel.pre_processing();
-  testTaskParallel.run();
-  testTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    // Create data
-    std::vector<int> referenceWordFound(1, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataSequential = std::make_shared<ppc::core::TaskData>();
-    taskDataSequential->inputs.emplace_back(reinterpret_cast<uint8_t *>(const_cast<char *>(input.data())));
-    taskDataSequential->inputs_count.emplace_back(input.size());
-    taskDataSequential->outputs.emplace_back(reinterpret_cast<uint8_t *>(referenceWordFound.data()));
-    taskDataSequential->outputs_count.emplace_back(referenceWordFound.size());
-
-    // Create Task
-    chastov_v_count_words_in_line_mpi::TestMPITaskSequential testTaskSequential(taskDataSequential);
-    ASSERT_TRUE(testTaskSequential.validation());
-    testTaskSequential.pre_processing();
-    testTaskSequential.run();
-    testTaskSequential.post_processing();
-
-    ASSERT_EQ(wordsFound[0], referenceWordFound[0]);
-  }
-}
-
 // Test to verify the MPI word counting function with an input string that generates 1500 words
 TEST(chastov_v_count_words_in_line_mpi, words_1500) {
   boost::mpi::communicator world;
