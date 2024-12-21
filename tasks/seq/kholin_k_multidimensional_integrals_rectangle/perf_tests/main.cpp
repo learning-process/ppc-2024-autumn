@@ -109,4 +109,4 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   delete f_object;
-}
+}//
