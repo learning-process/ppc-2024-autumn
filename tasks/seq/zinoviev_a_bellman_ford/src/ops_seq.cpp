@@ -35,13 +35,13 @@ bool BellmanFordSeq::pre_processing() {
 bool BellmanFordSeq::validation() {
   internal_order_test();
 
-  size_t V = taskData->inputs_count[0];
+  size_t V_count = taskData->inputs_count[0];
   size_t E_expected = taskData->inputs_count[1];
   size_t E_actual = 0;
 
   auto* input_matrix = reinterpret_cast<int*>(taskData->inputs[0]);
 
-  for (size_t i = 0; i < V * V; ++i) {
+  for (size_t i = 0; i < V_count * V_count; ++i) {
     if (input_matrix[i] != 0) {
       E_actual++;
     }
@@ -51,10 +51,10 @@ bool BellmanFordSeq::validation() {
     return false;
   }
 
-  for (size_t i = 0; i < V - 1; ++i) {
+  for (size_t i = 0; i < V_count - 1; ++i) {
     bool has_outgoing = false;
-    for (size_t j = 0; j < V; ++j) {
-      if (input_matrix[i * V + j] != 0) {
+    for (size_t j = 0; j < V_count; ++j) {
+      if (input_matrix[i * V_count + j] != 0) {
         has_outgoing = true;
         break;
       }
@@ -64,13 +64,13 @@ bool BellmanFordSeq::validation() {
     }
   }
 
-  for (size_t i = 0; i < V; ++i) {
-    if (input_matrix[i * V + i] != 0) {
+  for (size_t i = 0; i < V_count; ++i) {
+    if (input_matrix[i * V_count + i] != 0) {
       return false;
     }
   }
 
-  return V == taskData->outputs_count[0];
+  return V_count == taskData->outputs_count[0];
 }
 
 bool BellmanFordSeq::Iteration(std::vector<int>& paths) {
