@@ -6,8 +6,8 @@
 #include "seq/koshkin_n_linear_histogram_stretch/include/ops_seq.hpp"
 
 TEST(koshkin_n_linear_histogram_stretch_seq, test_pipeline_run) {
-  const int width = 173;
-  const int height = 173;
+  const int width = 4000;
+  const int height = 4000;
   const int count_size_vector = width * height * 3;
 
   std::vector<int> in_vec = koshkin_n_linear_histogram_stretch_seq::getRandomImage(count_size_vector);
@@ -68,8 +68,8 @@ TEST(koshkin_n_linear_histogram_stretch_seq, test_pipeline_run) {
 }
 
 TEST(koshkin_n_linear_histogram_stretch_seq, test_task_run) {
-  const int width = 173;
-  const int height = 173;
+  const int width = 4000;
+  const int height = 4000;
   const int count_size_vector = width * height * 3;
 
   std::vector<int> in_vec = koshkin_n_linear_histogram_stretch_seq::getRandomImage(count_size_vector);

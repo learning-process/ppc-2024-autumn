@@ -14,8 +14,6 @@
 
 namespace koshkin_n_linear_histogram_stretch_mpi {
 
-std::vector<int> getRandomImage(int sz);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

@@ -1,16 +1,28 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <functional>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/koshkin_n_linear_histogram_stretch/include/ops_mpi.hpp"
 
+std::vector<int> getRandomImage(int sz) {
+  std::mt19937 gen(42);
+  std::uniform_int_distribution<int> dist(0, 255);
+  std::vector<int> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = dist(gen);
+  }
+  return vec;
+}
+
 TEST(koshkin_n_linear_histogram_stretch_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const int width = 173;
-  const int height = 173;
+  const int width = 3550;
+  const int height = 3550;
 
   std::vector<int> in_vec;
   const int count_size_vector = width * height * 3;
@@ -19,7 +31,7 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in_vec = koshkin_n_linear_histogram_stretch_mpi::getRandomImage(count_size_vector);
+    in_vec = getRandomImage(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
     taskDataPar->inputs_count.emplace_back(in_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec_par.data()));
@@ -70,8 +82,8 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_pipeline_run) {
 TEST(koshkin_n_linear_histogram_stretch_mpi, test_task_run) {
   boost::mpi::communicator world;
 
-  const int width = 173;
-  const int height = 173;
+  const int width = 3550;
+  const int height = 3550;
 
   std::vector<int> in_vec;
   const int count_size_vector = width * height * 3;
@@ -80,7 +92,7 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    in_vec = koshkin_n_linear_histogram_stretch_mpi::getRandomImage(count_size_vector);
+    in_vec = getRandomImage(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
     taskDataPar->inputs_count.emplace_back(in_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec_par.data()));

@@ -1,21 +1,8 @@
 #include "mpi/koshkin_n_linear_histogram_stretch/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-std::vector<int> koshkin_n_linear_histogram_stretch_mpi::getRandomImage(int sz) {
-  std::mt19937 gen(42);
-  std::uniform_int_distribution<int> dist(0, 255);
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = dist(gen);
-  }
-  return vec;
-}
 
 bool koshkin_n_linear_histogram_stretch_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
