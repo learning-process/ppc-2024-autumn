@@ -162,8 +162,8 @@ bool ConvexHullBinImgSeq::validation() {
       taskData->outputs.empty() || taskData->inputs_count[1] <= 0 || taskData->inputs_count[2] <= 0 ||
       taskData->outputs_count[0] <= 0) {
     return false;
-
   }
+
   image = std::vector<int>(taskData->inputs_count[0]);
 
   auto* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
