@@ -98,7 +98,6 @@ bool pikarychev_i_monte_carlo_parallel::TestMPITaskParallel::run() {
     x = distribution(generator);
     local_sum += function_double(x);
   }
-  std::cout << "ls=" << local_sum << std::endl;
   double global_sum = 0.0;
   boost::mpi::reduce(world, local_sum, global_sum, std::plus<>(), 0);
 
