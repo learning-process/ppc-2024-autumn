@@ -55,7 +55,7 @@ TEST_P(sidorina_p_convex_hull_binary_image_mpi_test, Test_image) {
   }
 }
 
-INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_mpi_test,
+INSTANTIATE_TEST_SUITE_P(sidorina_p_convex_hull_binary_image_mpi_test_val, sidorina_p_convex_hull_binary_image_mpi_test,
                          ::testing::Values(Params(3, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}),
                                            Params(3, 3, {0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}),
                                            Params(3, 3, {0, 1, 1, 0, 0, 0, 0, 0, 1}, {0, 1, 1, 0, 1, 1, 0, 1, 1})));
@@ -89,6 +89,7 @@ TEST_P(sidorina_p_convex_hull_binary_image_mpi_test_val, Test_validation) {
   }
 }
 
-INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_mpi_test_val,
+INSTANTIATE_TEST_SUITE_P(sidorina_p_convex_hull_binary_image_mpi_test_val,
+                         sidorina_p_convex_hull_binary_image_mpi_test_val,
                          ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(-3, -4, {0}),
                                            Params_val(5, 5, {2})));

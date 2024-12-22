@@ -51,7 +51,7 @@ TEST_P(sidorina_p_convex_hull_binary_image_seq_test, Test_image) {
   ASSERT_EQ(ref, hull);
 }
 
-INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_seq_test,
+INSTANTIATE_TEST_SUITE_P(sidorina_p_convex_hull_binary_image_seq_test, sidorina_p_convex_hull_binary_image_seq_test,
                          ::testing::Values(Params(3, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}),
                                            Params(3, 3, {0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}),
                                            Params(3, 3, {0, 1, 1, 0, 0, 0, 0, 0, 1}, {0, 1, 1, 0, 1, 1, 0, 1, 1})));
@@ -82,6 +82,6 @@ TEST_P(sidorina_p_convex_hull_binary_image_seq_test_val, Test_validation) {
   ASSERT_FALSE(TestTaskSequential.validation());
 }
 
-INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_seq_test_val,
+INSTANTIATE_TEST_SUITE_P(sidorina_p_convex_hull_binary_image_seq_test, sidorina_p_convex_hull_binary_image_seq_test_val,
                          ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(-3, -4, {0}),
                                            Params_val(5, 5, {2})));
