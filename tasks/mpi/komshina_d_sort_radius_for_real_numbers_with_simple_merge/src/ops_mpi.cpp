@@ -1,11 +1,20 @@
 #include <mpi.h>
+
 #include <algorithm>
-#include <string>
 #include <iterator>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
 #include <mpi/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_mpi.hpp>
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
+
+  if (taskData->inputs.empty() || taskData->inputs_count.empty() || taskData->inputs_count[0] <= 0) {
+    throw std::runtime_error("Invalid input data.");
+  }
+
   auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
   input = std::vector<double>(input_ptr, input_ptr + taskData->inputs_count[0]);
   return true;
@@ -18,7 +27,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskS
     return true;
   }
 
-  if (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == taskData->inputs_count[0]) {
+  if (taskData->outputs_count[0] == taskData->inputs_count[0]) {
     return true;
   }
 
@@ -42,9 +51,13 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   internal_order_test();
 
   if (rank == 0) {
+    if (taskData->inputs.empty() || taskData->inputs_count.empty() || taskData->inputs_count[0] <= 0) {
+      throw std::runtime_error("Invalid input data.");
+    }
     auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     input = std::vector<double>(input_ptr, input_ptr + taskData->inputs_count[0]);
   }
+
   return true;
 }
 
@@ -61,8 +74,8 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
         return false;
       }
     }
-    return true;
   }
+
   return true;
 }
 
@@ -125,12 +138,9 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
   std::vector<double> sorted_positives(out_positives.size());
   std::vector<double> sorted_negatives(out_negatives.size());
 
-  double* inp_ptr;
-  double* out_ptr;
-
   if (!out_positives.empty()) {
-    inp_ptr = out_positives.data();
-    out_ptr = sorted_positives.data();
+    double* inp_ptr = out_positives.data();
+    double* out_ptr = sorted_positives.data();
 
     for (int i = 0; i < 8; i++) {
       CountingSort(inp_ptr, out_ptr, i, out_positives.size());
@@ -143,8 +153,8 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
   }
 
   if (!out_negatives.empty()) {
-    inp_ptr = out_negatives.data();
-    out_ptr = sorted_negatives.data();
+    double* inp_ptr = out_negatives.data();
+    double* out_ptr = sorted_negatives.data();
 
     for (int i = 0; i < 8; i++) {
       CountingSort(inp_ptr, out_ptr, i, out_negatives.size());
@@ -161,8 +171,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
   }
 
   data.clear();
-  data.insert(data.end(), out_negatives.rbegin(),
-              out_negatives.rend());
+  data.insert(data.end(), out_negatives.rbegin(), out_negatives.rend());
   data.insert(data.end(), out_positives.begin(), out_positives.end());
 }
 
