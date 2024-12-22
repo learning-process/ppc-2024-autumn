@@ -8,7 +8,7 @@
 
 namespace solovyev_d_convex_hull_binary_image_components_seq {
 
-double Point::relativeAngle(Point other) { return std::atan2((other.y * -1) - (y * -1), other.x - x); }
+double Point::relativeAngle(Point other) const { return std::atan2((other.y * -1) - (y * -1), other.x - x); }
 
 Image::Image() {
   image = std::vector<Point>{};
@@ -32,10 +32,9 @@ Image::Image(std::vector<int> data, int dimX, int dimY) {
 Point Image::getPoint(int x, int y) {
   if (x >= 0 && x <= sizeX && y >= 0 && y <= sizeY) {
     return image[y * sizeX + x];
-  } else {
-    Point point = {x, y, 0};
-    return point;
   }
+  Point point = {x, y, 0};
+  return point;
 }
 
 void Image::setPoint(int x, int y, int value) { image[y * sizeX + x].value = value; }
@@ -73,6 +72,10 @@ void ConvexHullBinaryImageComponentsSequential::coutImage() {
     }
     std::cout << std::endl;
   }
+}
+
+static int crossProduct(Point a, Point b, Point c) {
+  return (b.x - a.x) * (-1 * c.y - -1 * a.y) - (-1 * b.y - -1 * a.y) * (c.x - a.x);
 }
 
 std::vector<Point>
@@ -113,10 +116,6 @@ solovyev_d_convex_hull_binary_image_components_seq::ConvexHullBinaryImageCompone
   }
   std::reverse(result.begin(), result.end());
   return result;
-}
-
-int ConvexHullBinaryImageComponentsSequential::crossProduct(Point a, Point b, Point c) {
-  return (b.x - a.x) * (-1 * c.y - -1 * a.y) - (-1 * b.y - -1 * a.y) * (c.x - a.x);
 }
 
 bool ConvexHullBinaryImageComponentsSequential::pre_processing() {

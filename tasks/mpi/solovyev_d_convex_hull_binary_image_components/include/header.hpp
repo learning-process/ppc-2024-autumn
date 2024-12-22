@@ -17,7 +17,7 @@ struct Point {
   int x;
   int y;
   int value;
-  double relativeAngle(Point other);
+  double relativeAngle(Point other) const;
   template <class Archive>
   void serialize(Archive& ar, unsigned int version) {
     ar & x;
@@ -65,10 +65,9 @@ class ConvexHullBinaryImageComponentsMPI : public ppc::core::Task {
   Image image;
   std::vector<eqUnit> equivalenceTable;
   boost::mpi::communicator world;
-  int crossProduct(Point a, Point b, Point c);
   std::vector<Point> convexHull(std::vector<Point> component);
 
-  std::vector<int> linearizePoints(std::vector<Point> points) {
+  static std::vector<int> linearizePoints(std::vector<Point> points) {
     std::vector<int> linear;
     for (size_t i = 0; i < points.size(); i++) {
       linear.push_back(points[i].x);
