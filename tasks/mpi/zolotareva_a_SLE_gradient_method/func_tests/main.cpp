@@ -8,10 +8,10 @@
 #include "mpi/zolotareva_a_SLE_gradient_method/include/ops_mpi.hpp"
 
 namespace zolotareva_a_SLE_gradient_method_mpi {
-void generateSLE(std::vector<double>& A, std::vector<double>& b, int n) {
+void generateSLE(std::vector<double>& A, std::vector<double>& b, int n, double min, double max) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dist(-100.0f, 100.0f);
+  std::uniform_real_distribution<double> dist(min, max);
 
   for (int i = 0; i < n; ++i) {
     b[i] = dist(gen);
@@ -23,7 +23,7 @@ void generateSLE(std::vector<double>& A, std::vector<double>& b, int n) {
   }
 
   for (int i = 0; i < n; ++i) {
-    A[i * n + i] += n * 100.0f;  // Обеспечение доминирования диагонали
+    A[i * n + i] += n * max;  // Обеспечение доминирования диагонали
   }
 }
 
@@ -35,7 +35,7 @@ void form(int n_) {
   std::vector<double> mpi_x(n);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    generateSLE(A, b, n);
+    generateSLE(A, b, n, -100.0f, 100.0f);
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(b.data()));
     taskDataPar->inputs_count.push_back(n * n);
