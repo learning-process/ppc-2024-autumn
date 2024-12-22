@@ -54,7 +54,6 @@ class TestMPITaskParallel : public ppc::core::Task {
         upper_bound_(upper_bound),
         function_(std::move(function)),
         num_steps_(num_steps),
-        result_(0.0),
         world(boost::mpi::communicator()) {}
 
   bool pre_processing() override;
