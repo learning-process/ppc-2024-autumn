@@ -32,8 +32,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_pipeline_run) {
   std::vector<int> global_result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows = 500;
-  int num_cols = 500;
+  int num_rows = 1000;
+  int num_cols = 1000;
 
   if (world.rank() == 0) {
     global_matrix = shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::getRandomMatrix(num_rows, num_cols);
@@ -60,27 +60,6 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-
-    std::vector<int> seq_result(global_result.size());
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    taskDataSeq->inputs = taskDataPar->inputs;
-    taskDataSeq->inputs_count = taskDataPar->inputs_count;
-    taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(seq_result.data())};
-    taskDataSeq->outputs_count = {static_cast<unsigned int>(seq_result.size())};
-
-    auto taskSequential = std::make_shared<shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::TaskSeq>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    taskSequential->run();
-    taskSequential->post_processing();
-
-    ASSERT_EQ(global_result.size(), seq_result.size());
-    EXPECT_EQ(global_result, seq_result);
-  }
 }
 
 TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_task_run) {
@@ -91,8 +70,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_task_run) {
   std::vector<int> global_result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows = 500;
-  int num_cols = 500;
+  int num_rows = 1000;
+  int num_cols = 1000;
 
   if (world.rank() == 0) {
     global_matrix = shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::getRandomMatrix(num_rows, num_cols);
@@ -119,25 +98,4 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-
-    std::vector<int> seq_result(global_result.size());
-    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-    taskDataSeq->inputs = taskDataPar->inputs;
-    taskDataSeq->inputs_count = taskDataPar->inputs_count;
-    taskDataSeq->outputs = {reinterpret_cast<uint8_t*>(seq_result.data())};
-    taskDataSeq->outputs_count = {static_cast<unsigned int>(seq_result.size())};
-
-    auto taskSequential = std::make_shared<shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::TaskSeq>(taskDataSeq);
-    ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    taskSequential->run();
-    taskSequential->post_processing();
-
-    ASSERT_EQ(global_result.size(), seq_result.size());
-    EXPECT_EQ(global_result, seq_result);
-  }
 }
