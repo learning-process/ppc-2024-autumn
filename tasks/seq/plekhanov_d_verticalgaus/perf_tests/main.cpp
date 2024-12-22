@@ -51,13 +51,13 @@ TEST(plekhanov_d_verticalgaus_seq, pipeline_run) {
 
 
   for (int i = 0; i < num_cols; i++) {
-    expected_result[i] = 0.0;                              
-    expected_result[(num_rows - 1) * num_cols + i] = 0.0;  
+    expected_result[i] = 0.0;
+    expected_result[(num_rows - 1) * num_cols + i] = 0.0;
   }
 
   for (int i = 1; i < num_rows - 1; i++) {
-    expected_result[i * num_cols] = 0.0;                   
-    expected_result[i * num_cols + (num_cols - 1)] = 0.0;  
+    expected_result[i * num_cols] = 0.0;
+    expected_result[i * num_cols + (num_cols - 1)] = 0.0; 
   }
   EXPECT_EQ(output_result, expected_result);
 }
@@ -106,12 +106,12 @@ TEST(plekhanov_d_verticalgaus_seq, task_run) {
   std::vector<double> expected_result(num_rows * num_cols, 1.0);
 
   for (int i = 0; i < num_cols; i++) {
-    expected_result[i] = 0.0;                             
-    expected_result[(num_rows - 1) * num_cols + i] = 0.0;  
+    expected_result[i] = 0.0;
+    expected_result[(num_rows - 1) * num_cols + i] = 0.0;
   }
 
   for (int i = 1; i < num_rows - 1; i++) {
-    expected_result[i * num_cols] = 0.0;                   
+    expected_result[i * num_cols] = 0.0;
     expected_result[i * num_cols + (num_cols - 1)] = 0.0;  
   }
   EXPECT_EQ(output_result, expected_result);

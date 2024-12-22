@@ -41,23 +41,21 @@ void run_test(int num_rows, int num_cols, const std::vector<double>& input_matri
 TEST(plekhanov_d_verticalgaus_seq, Matrix1x1) { plekhanov_d_verticalgaus_seq::run_test(1, 1, {1}, {0}, false); }
 
 TEST(plekhanov_d_verticalgaus_seq, Matrix_3x5) {
-  plekhanov_d_verticalgaus_seq::run_test(3, 5,
-                                  {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0},
-                                  {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.0, 8.0, 9.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+  plekhanov_d_verticalgaus_seq::run_test(
+      3, 5,{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0},
+      {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 7.0, 8.0, 9.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
 }
 
 TEST(plekhanov_d_verticalgaus_seq, Matrix_5x3) {
-  plekhanov_d_verticalgaus_seq::run_test(5, 3, 
-                                  {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0},
-                                  {0, 0, 0, 0, 5, 0, 0, 8, 0, 0, 11, 0, 0, 0, 0});
+  plekhanov_d_verticalgaus_seq::run_test(
+      5, 3, {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0},
+      {0, 0, 0, 0, 5, 0, 0, 8, 0, 0, 11, 0, 0, 0, 0});
 }
 
 TEST(plekhanov_d_verticalgaus_seq, Matrix_4x4) {
-  plekhanov_d_verticalgaus_seq::run_test(4, 4,
-                                  {1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0},
-                                  {0, 0, 0, 0, 0, 6, 7, 0, 0, 10, 11, 0, 0, 0, 0, 0});
+  plekhanov_d_verticalgaus_seq::run_test(
+      4, 4,{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0},
+      {0, 0, 0, 0, 0, 6, 7, 0, 0, 10, 11, 0, 0, 0, 0, 0});
 }
 
-TEST(plekhanov_d_verticalgaus_seq, Matrix0x0) {
-  plekhanov_d_verticalgaus_seq::run_test(0, 0, {}, {}, false);
-}
+TEST(plekhanov_d_verticalgaus_seq, Matrix0x0) { plekhanov_d_verticalgaus_seq::run_test(0, 0, {}, {}, false); }

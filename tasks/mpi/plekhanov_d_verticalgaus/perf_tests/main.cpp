@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/plekhanov_d_verticalgaus/include/ops_mpi.hpp"
 
-    TEST(plekhanov_d_verticalgaus_mpi, test_pipeline_run) {
+TEST(plekhanov_d_verticalgaus_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
   const int width = 3000;
@@ -38,8 +38,7 @@
     taskDataPar->outputs_count.emplace_back(global_ans.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -94,8 +93,7 @@ TEST(plekhanov_d_verticalgaus_mpi, test_task_run) {
     taskDataPar->outputs_count.emplace_back(global_ans.size());
   }
 
-  auto testMpiTaskParallel =
-      std::make_shared<plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
