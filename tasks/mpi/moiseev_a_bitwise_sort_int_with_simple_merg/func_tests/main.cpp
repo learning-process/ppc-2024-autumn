@@ -155,3 +155,95 @@ TEST(moiseev_a_radix_merge, test_empty_vector) {
     ASSERT_EQ(out, ref);
   }
 }
+
+TEST(moiseev_a_radix_merge, test_compare_with_std_sort_large) {
+  boost::mpi::communicator world;
+
+  std::vector<int> in;
+  std::vector<int> out;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    const int count_size_vector = 300;
+    in = getRandomVector(count_size_vector);
+    out.resize(count_size_vector);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  moiseev_a_radix_merge_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> ref = in;
+    std::sort(ref.begin(), ref.end());
+
+    ASSERT_EQ(out, ref);
+  }
+}
+
+TEST(moiseev_a_radix_merge, test_fixed_values) {
+  boost::mpi::communicator world;
+
+  std::vector<int> in = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5};
+  std::vector<int> out;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    out.resize(in.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  moiseev_a_radix_merge_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> ref = in;
+    std::sort(ref.begin(), ref.end());
+
+    ASSERT_EQ(out, ref);
+  }
+}
+
+TEST(moiseev_a_radix_merge, test_negative_values) {
+  boost::mpi::communicator world;
+
+  std::vector<int> in = {-3, -1, -4, -1, -5};
+  std::vector<int> out;
+
+  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    out.resize(in.size());
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(in.data()));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
+    taskDataPar->outputs_count.emplace_back(out.size());
+  }
+
+  moiseev_a_radix_merge_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> ref = in;
+    std::sort(ref.begin(), ref.end());
+
+    ASSERT_EQ(out, ref);
+  }
+}

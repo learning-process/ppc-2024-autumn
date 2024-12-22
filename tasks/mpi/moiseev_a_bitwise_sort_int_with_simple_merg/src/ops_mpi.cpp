@@ -11,7 +11,7 @@
 int getDigit(int num, int place) { return (abs(num) / place) % 10; }
 
 void countingSortByDigit(std::vector<int>& arr, int place) {
-  std::vector<int> output(arr.size());
+  std::vector<int> output(arr.size(), 0);
   std::vector<int> count(10, 0);
 
   for (size_t i = 0; i < arr.size(); i++) {
