@@ -76,7 +76,7 @@ bool TestMPITaskSequential::post_processing() {
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-double naumov_b_simpson_method_mpi::parallel_integrir_1d(const func_1d_t &func, double lower_bound, double upper_bound,
+double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double upper_bound,
                                                          int num_steps, boost::mpi::communicator &world) {
   double step_size = (upper_bound - lower_bound) / num_steps;
 
