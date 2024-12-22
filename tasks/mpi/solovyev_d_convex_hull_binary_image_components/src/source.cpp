@@ -81,8 +81,7 @@ static int crossProduct(Point a, Point b, Point c) {
   return (b.x - a.x) * (-1 * c.y - -1 * a.y) - (-1 * b.y - -1 * a.y) * (c.x - a.x);
 }
 
-std::vector<Point> solovyev_d_convex_hull_binary_image_components_mpi::ConvexHullBinaryImageComponentsMPI::convexHull(
-    std::vector<Point> component) {
+static std::vector<Point> convexHull(std::vector<Point> component) {
   std::sort(component.begin(), component.end(), [](const Point &L, const Point &R) { return L.y < R.y; });
   Point point = component.back();
   std::sort(component.begin(), component.end(), [&](const Point &L, const Point &R) {

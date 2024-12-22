@@ -58,8 +58,6 @@ class ConvexHullBinaryImageComponentsSequential : public ppc::core::Task {
   Image image;
   std::vector<eqUnit> equivalenceTable;
 
-  std::vector<Point> convexHull(std::vector<Point> component);
-
   static std::vector<int> linearizePoints(std::vector<Point> points) {
     std::vector<int> linear;
     for (size_t i = 0; i < points.size(); i++) {

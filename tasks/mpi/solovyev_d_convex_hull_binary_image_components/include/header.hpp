@@ -65,7 +65,6 @@ class ConvexHullBinaryImageComponentsMPI : public ppc::core::Task {
   Image image;
   std::vector<eqUnit> equivalenceTable;
   boost::mpi::communicator world;
-  std::vector<Point> convexHull(std::vector<Point> component);
 
   static std::vector<int> linearizePoints(std::vector<Point> points) {
     std::vector<int> linear;
