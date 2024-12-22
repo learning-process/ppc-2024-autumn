@@ -28,6 +28,10 @@ bool LinearHistogramStretch::validation() const { return image_size_ > 0 && imag
 bool LinearHistogramStretch::pre_processing() {
   if (!validation()) return false;
 
+  if (image_data_ == nullptr) {
+    return false;
+  }
+
   distribute_data();
   return true;
 }
