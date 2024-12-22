@@ -74,7 +74,7 @@ bool filatev_v_metod_belmana_forda_mpi::MetodBelmanaFordaMPI::run() {
 
   int rank = world.rank();
 
-  int start_v = (wrank < ost) ? (delta + 1) * rank : (delta + 1) * ost + (rank - ost) * delta;
+  int start_v = (rank < ost) ? (delta + 1) * rank : (delta + 1) * ost + (rank - ost) * delta;
   int stop_v = (rank < ost) ? (delta + 1) * (rank + 1) : (delta + 1) * ost + (rank - ost + 1) * delta;
 
   if (world.rank() != 0) {
