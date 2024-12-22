@@ -34,7 +34,8 @@ bool LinearHistogramStretch::run() {
   int local_max = *std::max_element(local_data_, local_data_ + local_size_);
 
   // Compute global min and max
-  int global_min, global_max;
+  int global_min;
+  int global_max;
   MPI_Allreduce(&local_min, &global_min, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
   MPI_Allreduce(&local_max, &global_max, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
