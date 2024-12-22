@@ -16,15 +16,8 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskS
   if (taskData->inputs_count[0] == 0) {
     return true;
   }
-
-  if (input.empty()) {
-    std::cerr << "Error: Input data is empty!" << std::endl;
-    return false;
-  }
-
   return taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == taskData->inputs_count[0];
 }
-
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential::run() {
   internal_order_test();
@@ -59,11 +52,6 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
       return true;
     }
 
-    if (input.empty()) {
-      std::cerr << "Error: Input data is empty!" << std::endl;
-      return false;
-    }
-
     if (taskData->inputs_count.size() != taskData->outputs_count.size()) {
       return false;
     }
@@ -78,6 +66,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
 
   return true;
 }
+
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::run() {
   internal_order_test();
