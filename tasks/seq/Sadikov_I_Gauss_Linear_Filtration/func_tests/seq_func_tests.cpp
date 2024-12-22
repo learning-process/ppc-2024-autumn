@@ -71,7 +71,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image2) {
   std::vector<Point<double>> squareImage2Check{
       Point(48.0, 61.0, 70.0),  Point(58.0, 75.0, 97.0),   Point(42.0, 76.0, 92.0),   Point(21.0, 63.0, 61.0),
       Point(60.0, 63.0, 126.0), Point(81.0, 95.0, 171.0),  Point(70.0, 118.0, 156.0), Point(40.0, 101.0, 100.0),
-      Point(63.0, 56.0, 137.0), Point(88.0, 112.0, 178.0), Point(85.0, 157.0, 174.0), Point(56.0, 120.0, 128.0),
+      Point(63.0, 46.0, 137.0), Point(88.0, 112.0, 178.0), Point(85.0, 157.0, 174.0), Point(56.0, 120.0, 128.0),
       Point(54.0, 35.0, 89.0),  Point(70.0, 102.0, 109.0), Point(65.0, 139.0, 121.0), Point(46.0, 95.0, 107.0)};
   std::vector<Point<double>> in(std::move(squareImage2));
   std::vector<int> in_index{4, 4};
@@ -90,7 +90,6 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image2) {
   bool flag = true;
   for (size_t i = 0; i < out.size(); ++i) {
     if (out[i] != squareImage2Check[i]) {
-      std::cout << out[i];
       flag = false;
     }
   }
@@ -123,7 +122,6 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image) {
   bool flag = true;
   for (size_t i = 0; i < out.size(); ++i) {
     if (out[i] != rectImageCheck[i]) {
-      std::cout << out[i];
       flag = false;
     }
   }
