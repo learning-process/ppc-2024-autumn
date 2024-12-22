@@ -94,7 +94,7 @@ TEST(korotin_e_multidimentional_integrals_monte_carlo_mpi, monte_carlo_rng_borde
     bool ans = (std::abs(res[0] - ref[0]) < err + seq_err);
     printf("MPI res: %f\nSEQ res: %f\n", res[0], ref[0]);
     printf("MPI err: %f\nSEQ err: %f\n", err, seq_err);
-    printf("ABS: %f\n", std::abs(res[0] - ref[0]));
+    printf("ABS: %f\n", std::fabs(res[0] - ref[0]));
     printf("SUM err: %f\n", err + seq_err);
     ASSERT_EQ(ans, true);
   }
