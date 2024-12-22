@@ -70,9 +70,9 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::pre_processing()
     numColsA_RowsB_ = taskData->inputs_count[1];
     numColsB_ = taskData->inputs_count[2];
     auto* a_data = reinterpret_cast<double*>(taskData->inputs[0]);
-    A_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
+    A_original_.assign(a_data, a_data + (numRowsA_ * numColsA_RowsB_));
     auto* b_data = reinterpret_cast<double*>(taskData->inputs[1]);
-    B_.assign(b_data, b_data + (numColsA_RowsB_ * numColsB_));
+    B_original_.assign(b_data, b_data + (numColsA_RowsB_ * numColsB_));
   }
 
   return true;
@@ -102,6 +102,11 @@ bool korovin_n_matrix_multiple_cannon_mpi::TestMPITaskParallel::run() {
   int rank;
   MPI_Comm_size(world, &size);
   MPI_Comm_rank(world, &rank);
+
+  if (rank == 0) {
+    A_ = A_original_;
+    B_ = B_original_;
+  }
 
   MPI_Bcast(&numRowsA_, 1, MPI_INT, 0, world);
   MPI_Bcast(&numColsA_RowsB_, 1, MPI_INT, 0, world);

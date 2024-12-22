@@ -48,6 +48,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   int numRowsA_;
   int numColsA_RowsB_;
   int numColsB_;
+  std::vector<double> A_original_;
+  std::vector<double> B_original_;
 };
 
 }  // namespace korovin_n_matrix_multiple_cannon_mpi
