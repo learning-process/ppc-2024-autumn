@@ -34,9 +34,9 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_empty_image) {
     test->inputs_count.emplace_back(m);
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+    poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
 TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_0x100_image) {
@@ -54,9 +54,9 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_0x100_image) {
     test->inputs_count.emplace_back(m);
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
+    poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+    ASSERT_EQ(testMPITaskParallel.validation(), false);
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
 TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_random_1x1_image) {
@@ -75,12 +75,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_rand
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     if (tmp[0] == 0) {
       std::vector<std::pair<int, int>> ans(m * n + 2);
@@ -110,12 +110,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_4x3_
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {{0, 0}, {3, 0}, {3, 2}, {0, 2}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
@@ -140,12 +140,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_2x5_
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {{0, 0}, {1, 0}, {1, 4}, {0, 4}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
@@ -170,12 +170,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_10x1
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {{0, 0}, {9, 0}, {9, 9}, {0, 9}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
@@ -202,12 +202,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_11x1
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {{0, 2}, {4, 0},   {10, 0}, {10, 10}, {1, 10}, {0, 8},
                                             {0, 2}, {-1, -1}, {1, 0},  {2, 0},   {1, 0},  {-1, -1}};
@@ -235,12 +235,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_11x1
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {{0, 0},  {0, 0},   {-1, -1}, {0, 2},  {2, 0}, {6, 0},   {9, 1},
                                             {10, 4}, {10, 5},  {1, 9},   {0, 7},  {0, 2}, {-1, -1}, {3, 8},
@@ -284,12 +284,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_25x2
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {
         {0, 0},   {21, 0},  {24, 14}, {24, 24}, {6, 24},  {4, 23},  {0, 13},  {0, 0},   {-1, -1}, {0, 15},  {2, 14},
@@ -323,12 +323,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_13x1
     test->inputs_count.emplace_back(n);
     test->outputs.emplace_back(reinterpret_cast<uint8_t *>(result.data()));
   }
-  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testTaskSequential(test);
-  ASSERT_EQ(testTaskSequential.validation(), true);
+  poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel testMPITaskParallel(test);
+  ASSERT_EQ(testMPITaskParallel.validation(), true);
 
-  testTaskSequential.pre_processing();
-  testTaskSequential.run();
-  testTaskSequential.post_processing();
+  testMPITaskParallel.pre_processing();
+  testMPITaskParallel.run();
+  testMPITaskParallel.post_processing();
   if (world.rank() == 0) {
     std::vector<std::pair<int, int>> ans = {
         {0, 0},  {2, 0},  {5, 1},   {6, 4},  {5, 5},   {3, 5},   {0, 2},   {0, 0},  {-1, -1}, {0, 5},
