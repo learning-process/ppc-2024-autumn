@@ -13,16 +13,16 @@ TEST(plekhanov_d_verticalgaus_seq, pipeline_run) {
   std::vector<double> output_result(num_rows * num_cols);
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_matrix.data()));
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_rows));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_rows));
   taskDataSeq->inputs_count.emplace_back(1);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_cols));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_cols));
   taskDataSeq->inputs_count.emplace_back(1);
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_result.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_result.data()));
   taskDataSeq->outputs_count.emplace_back(output_result.size());
 
   auto taskSequential = std::make_shared<plekhanov_d_verticalgaus_seq::VerticalGausSequential>(taskDataSeq);
@@ -56,7 +56,7 @@ TEST(plekhanov_d_verticalgaus_seq, pipeline_run) {
 
   for (int i = 1; i < num_rows - 1; i++) {
     expected_result[i * num_cols] = 0.0;
-    expected_result[i * num_cols + (num_cols - 1)] = 0.0; 
+    expected_result[i * num_cols + (num_cols - 1)] = 0.0;
   }
   EXPECT_EQ(output_result, expected_result);
 }
@@ -68,16 +68,16 @@ TEST(plekhanov_d_verticalgaus_seq, task_run) {
   std::vector<double> output_result(num_rows * num_cols);
 
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_matrix.data()));
   taskDataSeq->inputs_count.emplace_back(input_matrix.size());
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_rows));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_rows));
   taskDataSeq->inputs_count.emplace_back(1);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&num_cols));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_cols));
   taskDataSeq->inputs_count.emplace_back(1);
 
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_result.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_result.data()));
   taskDataSeq->outputs_count.emplace_back(output_result.size());
 
   auto taskSequential = std::make_shared<plekhanov_d_verticalgaus_seq::VerticalGausSequential>(taskDataSeq);
@@ -111,7 +111,7 @@ TEST(plekhanov_d_verticalgaus_seq, task_run) {
 
   for (int i = 1; i < num_rows - 1; i++) {
     expected_result[i * num_cols] = 0.0;
-    expected_result[i * num_cols + (num_cols - 1)] = 0.0;   
+    expected_result[i * num_cols + (num_cols - 1)] = 0.0;
   }
   EXPECT_EQ(output_result, expected_result);
 }
