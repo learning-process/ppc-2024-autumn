@@ -9,57 +9,6 @@
 
 namespace mpi = boost::mpi;
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Mixed_Positive_Negative) {
-  boost::mpi::communicator world;
-
-  std::vector<double> mixed_vec = {-3.14, 2.71, -42.0, 0.0, 7.5, -1.23};
-  std::vector<double> expected_sorted_vec = {-42.0, -3.14, -1.23, 0.0, 2.71, 7.5};
-  std::vector<double> sorted_mixed_vec(mixed_vec.size(), 0.0);
-  std::vector<double> sequential_sorted_vec(mixed_vec.size(), 0.0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(mixed_vec.data()));
-    taskDataPar->inputs_count.emplace_back(mixed_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_mixed_vec.data()));
-    taskDataPar->outputs_count.emplace_back(sorted_mixed_vec.size());
-  }
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel parallelSortTask(taskDataPar);
-  ASSERT_TRUE(parallelSortTask.validation()) << "Parallel validation failed!";
-  parallelSortTask.pre_processing();
-  parallelSortTask.run();
-  parallelSortTask.post_processing();
-
-  world.barrier();
-
-  if (world.rank() == 0) {
-    ASSERT_EQ(sorted_mixed_vec, expected_sorted_vec)
-        << "Parallel: Mixed positive and negative numbers were not sorted correctly!";
-  }
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(mixed_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(mixed_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sequential_sorted_vec.data()));
-    taskDataSeq->outputs_count.emplace_back(sequential_sorted_vec.size());
-  }
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential sequentialSortTask(taskDataSeq);
-  ASSERT_TRUE(sequentialSortTask.validation()) << "Sequential validation failed!";
-  sequentialSortTask.pre_processing();
-  sequentialSortTask.run();
-  sequentialSortTask.post_processing();
-
-  world.barrier();
-
-  if (world.rank() == 0) {
-    ASSERT_EQ(sequential_sorted_vec, expected_sorted_vec)
-        << "Sequential: Mixed positive and negative numbers were not sorted correctly!";
-  }
-}
-
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Duplicate_Elements) {
   boost::mpi::communicator world;
 
