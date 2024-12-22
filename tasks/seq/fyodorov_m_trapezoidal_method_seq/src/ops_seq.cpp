@@ -36,13 +36,35 @@ bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::pre_processing() {
 
 bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::validation() {
   internal_order_test();
+  if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != 1) {
+    return false;
+  }
+
+  // Проверка на корректные границы интегрирования
+  for (size_t i = 0; i < lower_bounds_.size(); ++i) {
+    if (lower_bounds_[i] >= upper_bounds_[i]) {
+      return false;
+    }
+  }
+
+  // Проверка на корректные интервалы
   for (size_t i = 0; i < intervals_.size(); ++i) {
     if (intervals_[i] <= 0) {
       return false;
-    } else {
-      return taskData->outputs_count[0] == 1;
     }
   }
+
+  // Проверка на корректность функции
+  if (!func_) {
+    return false;
+  }
+
+  // Проверка на соответствие размеров векторов
+  if (lower_bounds_.size() != upper_bounds_.size() || lower_bounds_.size() != intervals_.size()) {
+    return false;
+  }
+
+  return true;
 }
 
 bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::run() {
