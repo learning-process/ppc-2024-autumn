@@ -81,7 +81,6 @@ bool moiseev_a_radix_merge_mpi::TestMPITaskSequential::validation() {
 
 bool moiseev_a_radix_merge_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-
   std::copy(input_.begin(), input_.end(), res_.begin());
   radixSort(res_);
 
