@@ -89,10 +89,11 @@ bool guseynov_e_marking_comps_of_bin_image_seq::TestTaskSequential::validation()
 
   int tmp_rows = taskData->inputs_count[0];
   int tmp_columns = taskData->inputs_count[1];
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
   for (int x = 0; x < tmp_rows; x++) {
     for (int y = 0; y < tmp_columns; y++) {
-      int pixel = static_cast<int>(taskData->inputs[0][x * tmp_columns + y]);
+      int pixel = tmp_ptr[x * tmp_columns + y];
       if (pixel < 0 || pixel > 1) {
         return false;
       }
