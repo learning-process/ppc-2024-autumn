@@ -70,7 +70,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   double upper_bound_;
   int num_steps_;
   func_1d_t function_;
-  double result_;
   double local_result_;
 
   boost::mpi::communicator world;
