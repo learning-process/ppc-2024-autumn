@@ -106,6 +106,7 @@ bool korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel::
   M = 0.0;
   local_M = 0.0;
   variance = -1.0;
+  local_variance = 0.0;
   return true;
 }
 
