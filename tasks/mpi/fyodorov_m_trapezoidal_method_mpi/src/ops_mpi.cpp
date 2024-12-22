@@ -49,7 +49,14 @@ bool fyodorov_m_trapezoidal_method_mpi::TestTaskSequential::pre_processing() {
 
 bool fyodorov_m_trapezoidal_method_mpi::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] == 1;
+
+  for (size_t i = 0; i < intervals_.size(); ++i) {
+    if (intervals_[i] <= 0) {
+      return false;
+    } else {
+      return taskData->outputs_count[0] == 1;
+    }
+  }
 }
 
 bool fyodorov_m_trapezoidal_method_mpi::TestTaskSequential::run() {
@@ -116,7 +123,13 @@ bool fyodorov_m_trapezoidal_method_mpi::TestMPITaskParallel::pre_processing() {
 
 bool fyodorov_m_trapezoidal_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
-  return (world.rank() != 0) || taskData->outputs_count[0] == 1;
+  for (size_t i = 0; i < intervals_.size(); ++i) {
+    if (intervals_[i] <= 0) {
+      return false;
+    } else {
+      return taskData->outputs_count[0] == 1;
+    }
+  }
 }
 
 bool fyodorov_m_trapezoidal_method_mpi::TestMPITaskParallel::run() {

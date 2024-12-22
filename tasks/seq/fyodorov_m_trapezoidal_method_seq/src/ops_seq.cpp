@@ -36,7 +36,13 @@ bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::pre_processing() {
 
 bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->outputs_count[0] == 1;
+  for (size_t i = 0; i < intervals_.size(); ++i) {
+    if (intervals_[i] <= 0) {
+      return false;
+    } else {
+      return taskData->outputs_count[0] == 1;
+    }
+  }
 }
 
 bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::run() {
