@@ -26,8 +26,8 @@ TEST(vavilov_v_bellman_ford_mpi, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  const int num_vertices = 1000;
-  const int edges_count = 999;
+  const int num_vertices = 5000;
+  const int edges_count = 4999;
   const int source = 0;
 
   auto matrix = generate_linear_graph(num_vertices);
@@ -71,8 +71,8 @@ TEST(vavilov_v_bellman_ford_mpi, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  const int num_vertices = 1000;
-  const int edges_count = 999;
+  const int num_vertices = 5000;
+  const int edges_count = 4999;
   const int source = 0;
 
   auto matrix = generate_linear_graph(num_vertices);
