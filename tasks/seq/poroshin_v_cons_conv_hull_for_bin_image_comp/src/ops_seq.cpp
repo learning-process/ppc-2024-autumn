@@ -68,8 +68,8 @@ std::vector<std::vector<std::pair<int, int>>>
 poroshin_v_cons_conv_hull_for_bin_image_comp_seq::TestTaskSequential::coordinates_connected_components(
     std::vector<std::vector<int>>& labeled_image, int count_components) {
   std::vector<std::vector<std::pair<int, int>>> coords(count_components - 1);
-  for (int i = 0; i < labeled_image.size(); ++i) {
-    for (int j = 0; j < labeled_image[0].size(); ++j) {
+  for (size_t i = 0; i < labeled_image.size(); i++) {
+    for (size_t j = 0; j < labeled_image[0].size(); j++) {
       if (labeled_image[i][j] != 0) {
         coords[labeled_image[i][j] - 2].push_back({i, j});
       }
@@ -82,8 +82,8 @@ poroshin_v_cons_conv_hull_for_bin_image_comp_seq::TestTaskSequential::coordinate
 int poroshin_v_cons_conv_hull_for_bin_image_comp_seq::TestTaskSequential::label_connected_components(
     std::vector<std::vector<int>>& image) {
   int label = 2;  // Start with 2 to avoid confusion with pixels 0 and 1
-  for (int i = 0; i < image.size(); ++i) {
-    for (int j = 0; j < image[0].size(); ++j) {
+  for (size_t i = 0; i < image.size(); i++) {
+    for (size_t j = 0; j < image[0].size(); j++) {
       if (image[i][j] == 1) {
         std::stack<std::pair<int, int>> pixelStack;
         pixelStack.push({i, j});
@@ -147,7 +147,7 @@ std::vector<std::pair<int, int>> poroshin_v_cons_conv_hull_for_bin_image_comp_se
 
   convexHull.push_back(minPoint);
 
-  for (size_t i = 1; i < inputPoints.size(); ++i) {
+  for (size_t i = 1; i < inputPoints.size(); i++) {
     while (convexHull.size() > 1 &&
            crossProduct(convexHull[convexHull.size() - 2], convexHull[convexHull.size() - 1], inputPoints[i]) <= 0) {
       convexHull.pop_back();
