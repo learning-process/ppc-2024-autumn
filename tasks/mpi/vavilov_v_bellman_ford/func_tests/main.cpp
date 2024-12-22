@@ -7,7 +7,7 @@
 
 namespace mpi = boost::mpi;
 
-std::vector<int> generate_random_crs_graph(int vertices, int edges_count) {
+static std::vector<int> generate_random_crs_graph(int vertices, int edges_count) {
   std::vector<int> graph(vertices * vertices, 0);
   std::random_device rd;
   std::mt19937 gen(rd());
