@@ -162,9 +162,9 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::run() {
   m_intermediateRes.resize(m_localInput.size());
   boost::mpi::scatterv(world, m_pixelsMatrix.data(), m_scatterSizes, m_displacements, m_localInput.data(),
                        m_scatterSizes[world.rank()], 0);
-  for (auto row = 0; row < m_rowsCount; ++row) {
-    for (auto column = 0; column < static_cast<int>(m_localInput.size()) / m_rowsCount; ++column) {
-      CalculateNewPixelValue(column, row);
+  for (auto row = 0; row < static_cast<int>(m_localInput.size() / m_rowsCount); ++row) {
+    for (auto column = 0; column < m_rowsCount; ++column) {
+      CalculateNewPixelValue(row, column);
     }
   }
   // for (auto &&it : m_intermediateRes) {
@@ -212,7 +212,8 @@ void Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::CalculateNewPixelVa
   auto index = 0;
   for (auto g = 0; g < 9; ++g) {
     if (g < 3) {
-      if (CheckRowIndex(iIndex - 1) and CheckColumnIndex(jIndex - 1 + g, m_rowsCount)) {
+      if (CheckRowIndex(iIndex - 1, m_localInput.size() / m_rowsCount) and
+          CheckColumnIndex(jIndex - 1 + g, m_rowsCount)) {
         index = (iIndex - 1) * m_rowsCount + jIndex - 1 + g;
         if (CheckIndex(index)) {
           m_intermediateRes[iIndex * m_rowsCount + jIndex] += m_localInput[index] * m_gaussMatrix[g];
@@ -226,7 +227,8 @@ void Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::CalculateNewPixelVa
         }
       }
     } else {
-      if (CheckRowIndex(iIndex + 1) and CheckColumnIndex(jIndex - 7 + g, m_rowsCount)) {
+      if (CheckRowIndex(iIndex + 1, m_localInput.size() / m_rowsCount) and
+          CheckColumnIndex(jIndex - 7 + g, m_rowsCount)) {
         index = (iIndex + 1) * m_rowsCount + jIndex - 7 + g;
         if (CheckIndex(index)) {
           m_intermediateRes[iIndex * m_rowsCount + jIndex] += m_localInput[index] * m_gaussMatrix[g];

@@ -59,7 +59,7 @@ class LinearFiltrationMPI : public ppc::core::Task {
   void CalculateGaussMatrix();
   void CalculateNewPixelValue(int iIndex, int jIndex);
   bool CheckIndex(int index) const noexcept { return index >= 0 and index < static_cast<int>(m_localInput.size()); }
-  bool CheckRowIndex(int index) const noexcept { return index >= 0 and index < m_rowsCount; }
+  bool CheckRowIndex(int index, int rowsCount) const noexcept { return index >= 0 and index < rowsCount; }
   bool static CheckColumnIndex(int index, int columnsCount) noexcept { return index >= 0 and index < columnsCount; }
 };
 }  // namespace Sadikov_I_Gauss_Linear_Filtration
