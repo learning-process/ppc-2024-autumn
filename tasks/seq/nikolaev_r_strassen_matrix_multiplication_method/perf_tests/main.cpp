@@ -19,7 +19,7 @@ std::vector<double> generate_random_square_matrix(int n, double minValue = -50.0
 }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_pipeline_run) {
-  const size_t N = 64;
+  const size_t N = 128;
 
   std::vector<double> A = generate_random_square_matrix(N);
   std::vector<double> B = generate_random_square_matrix(N);
@@ -58,7 +58,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_pipeline_run) {
 }
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_seq, test_task_run) {
-  const size_t N = 64;
+  const size_t N = 128;
 
   std::vector<double> A = generate_random_square_matrix(N);
   std::vector<double> B = generate_random_square_matrix(N);

@@ -188,6 +188,8 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
   int rank = active_comm.rank();
   int size = active_comm.size();
 
+  boost::mpi::broadcast(active_comm, n, 0);
+
   size_t newSize = n;
   if (!is_power_of_two(n)) {
     newSize = 1;

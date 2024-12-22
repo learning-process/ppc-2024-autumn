@@ -21,7 +21,7 @@ std::vector<double> generate_random_square_matrix(int n, double minValue = -50.0
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const size_t N = 128;
+  const size_t N = 256;
 
   std::vector<double> A = generate_random_square_matrix(N);
   std::vector<double> B = generate_random_square_matrix(N);
@@ -60,7 +60,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_pipeline_run) {
 
 TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const size_t N = 128;
+  const size_t N = 256;
 
   std::vector<double> A = generate_random_square_matrix(N);
   std::vector<double> B = generate_random_square_matrix(N);
@@ -92,6 +92,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
+
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
   }
