@@ -20,8 +20,8 @@ static std::vector<double> randv(size_t sz) {
 TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const uint8_t rows = 200;
-  const uint8_t cols = 200;
+  const int rows = 5000;
+  const int cols = 5000;
 
   // Create data
   std::vector<double> in;
@@ -65,8 +65,8 @@ TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_pipeline_run) {
 TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
 
-  const uint8_t rows = 200;
-  const uint8_t cols = 200;
+  const int rows = 5000;
+  const int cols = 5000;
 
   // Create data
   std::vector<double> in;

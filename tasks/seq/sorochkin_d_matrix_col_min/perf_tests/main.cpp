@@ -18,8 +18,8 @@ static std::vector<int> randv(size_t sz) {
 
 TEST(sorochkin_d_matrix_col_min_seq_perf_test, test_pipeline_run) {
   // Create data
-  const uint8_t rows = 200;
-  const uint8_t cols = 200;
+  const int rows = 2000;
+  const int cols = 2000;
   std::vector<int> in = randv(rows * cols);
   std::vector<int> out(cols);
 
@@ -56,8 +56,8 @@ TEST(sorochkin_d_matrix_col_min_seq_perf_test, test_pipeline_run) {
 
 TEST(sorochkin_d_matrix_col_min_seq_perf_test, test_task_run) {
   // Create data
-  const uint8_t rows = 200;
-  const uint8_t cols = 200;
+  const int rows = 2000;
+  const int cols = 2000;
   std::vector<int> in = randv(rows * cols);
   std::vector<int> out(cols);
 
