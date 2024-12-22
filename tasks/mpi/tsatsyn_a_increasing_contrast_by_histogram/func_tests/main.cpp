@@ -8,7 +8,10 @@
 #include <vector>
 
 #include "mpi/tsatsyn_a_increasing_contrast_by_histogram/include/ops_mpi.hpp"
-static std::vector<int> getRandomVector(int sz, int a, int b) {
+static std::vector<int> getRandomVector(int sz) {
+  int a, b;
+  a = 0;
+  b = 255;
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -35,7 +38,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_10x1) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -75,7 +78,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_10x10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -115,7 +118,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_100x1) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -155,7 +158,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_100x100) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -195,7 +198,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_1000x1) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -235,7 +238,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_1000x10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -275,7 +278,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_1000x100) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -315,7 +318,7 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_1000x500) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
@@ -355,13 +358,12 @@ TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_Random_Image) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = getRandomVector(count_size_vector, 0, 255);
+    global_vec = getRandomVector(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
-
   tsatsyn_a_increasing_contrast_by_histogram_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
