@@ -56,7 +56,6 @@ bool TestTaskSequential::run() {
 
   quicksort(resultArray_, 0, sizeArray - 1);
 
-
   return true;
 }
 
