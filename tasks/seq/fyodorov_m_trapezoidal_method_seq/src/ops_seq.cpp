@@ -54,16 +54,6 @@ bool fyodorov_m_trapezoidal_method_seq::TestTaskSequential::validation() {
     }
   }
 
-  // Проверка на корректность функции
-  if (!func_) {
-    return false;
-  }
-
-  // Проверка на соответствие размеров векторов
-  if (lower_bounds_.size() != upper_bounds_.size() || lower_bounds_.size() != intervals_.size()) {
-    return false;
-  }
-
   return true;
 }
 
