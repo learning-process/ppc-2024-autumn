@@ -2,13 +2,6 @@
 
 namespace lopatin_i_quick_batcher_mergesort_mpi {
 
-void heapsort(std::vector<int>& arr) {
-  std::make_heap(arr.begin(), arr.end());
-  for (auto i = arr.end(); i != arr.begin(); --i) {
-    std::pop_heap(arr.begin(), i);
-  }
-}
-
 void quicksort(std::vector<int>& arr, int low, int high) {
   if (low < high) {
     int pivotIndex = partition(arr, low, high);
@@ -59,11 +52,7 @@ bool TestMPITaskSequential::run() {
 
   resultArray_.assign(inputArray_.begin(), inputArray_.end());
 
-  if (sizeArray > 20) {
-    quicksort(resultArray_, 0, sizeArray - 1);
-  } else {
-    heapsort(resultArray_);
-  }
+  quicksort(resultArray_, 0, sizeArray - 1);
 
   return true;
 }
@@ -147,11 +136,7 @@ bool TestMPITaskParallel::run() {
     }
   }
 
-  if (actualChunkSize > 20) {
-    quicksort(localArray, 0, localArray.size() - 1);
-  } else {
-    heapsort(localArray);
-  }
+  quicksort(localArray, 0, localArray.size() - 1);
 
   for (int oddEvenStep = 0; oddEvenStep < world.size(); oddEvenStep++) {
     int border = world.size();

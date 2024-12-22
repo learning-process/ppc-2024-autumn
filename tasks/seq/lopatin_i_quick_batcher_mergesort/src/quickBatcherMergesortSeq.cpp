@@ -2,13 +2,6 @@
 
 namespace lopatin_i_quick_batcher_mergesort_seq {
 
-void heapsort(std::vector<int>& arr) {
-  std::make_heap(arr.begin(), arr.end());
-  for (auto i = arr.end(); i != arr.begin(); --i) {
-    std::pop_heap(arr.begin(), i);
-  }
-}
-
 void quicksort(std::vector<int>& arr, int low, int high) {
   if (low < high) {
     int pivotIndex = partition(arr, low, high);
@@ -61,11 +54,8 @@ bool TestTaskSequential::run() {
 
   resultArray_.assign(inputArray_.begin(), inputArray_.end());
 
-  if (sizeArray > 20) {
-    quicksort(resultArray_, 0, sizeArray - 1);
-  } else {
-    heapsort(resultArray_);
-  }
+  quicksort(resultArray_, 0, sizeArray - 1);
+
 
   return true;
 }

@@ -5,19 +5,21 @@
 
 namespace lopatin_i_quick_bathcer_sort_seq {
 
-std::vector<int> generateArray(int size) {
+std::vector<int> generateArray(int size, int minValue, int maxValue) {
   std::random_device dev;
   std::mt19937 gen(dev());
+  std::uniform_int_distribution<int> dist(minValue, maxValue);
+
   std::vector<int> outputArray(size);
   for (int i = 0; i < size; i++) {
-    outputArray[i] = (gen() % 200) - 99;
+    outputArray[i] = dist(gen);
   }
   return outputArray;
 }
 
 }  // namespace lopatin_i_quick_bathcer_sort_seq
 
-std::vector<int> testArray = lopatin_i_quick_bathcer_sort_seq::generateArray(48000);
+std::vector<int> testArray = lopatin_i_quick_bathcer_sort_seq::generateArray(48000, -999, 999);
 
 TEST(lopatin_i_quick_batcher_mergesort_seq, test_pipeline_run) {
   std::vector<int> inputArray = testArray;
