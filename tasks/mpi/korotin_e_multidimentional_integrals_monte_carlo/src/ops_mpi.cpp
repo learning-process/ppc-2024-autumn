@@ -184,7 +184,7 @@ double korotin_e_multidimentional_integrals_monte_carlo_mpi::TestMPITaskParallel
         rng[i] *= rng[i];
       }
       local_variance = std::accumulate(rng.begin(), rng.end(), local_variance);
-      prtinf("%i, %f\n", world.rank(), local_variance);
+      printf("%i, %f\n", world.rank(), local_variance);
     } else
       return -1.0;
     reduce(world, local_variance, variance, std::plus(), 0);
