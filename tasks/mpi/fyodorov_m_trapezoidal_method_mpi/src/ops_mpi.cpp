@@ -146,7 +146,6 @@ bool fyodorov_m_trapezoidal_method_mpi::TestMPITaskParallel::pre_processing() {
 bool fyodorov_m_trapezoidal_method_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (taskData->outputs_count.size() != 1 || taskData->outputs_count[0] != 1) {
-    std::cerr << "Error: Incorrect number of output values. Expected 1 output value." << std::endl;
     return false;
   }
 
@@ -162,15 +161,6 @@ bool fyodorov_m_trapezoidal_method_mpi::TestMPITaskParallel::validation() {
     if (intervals_[i] <= 0) {
       return false;
     }
-  }
-
-  // Проверка на корректность функции
-  if (!func_) {
-    return false;
-  }
-
-  // Проверка на соответствие размеров векторов
-  if (lower_bounds_.size() != upper_bounds_.size() || lower_bounds_.size() != intervals_.size()) {
   }
 
   return true;
