@@ -24,7 +24,7 @@ std::vector<int> getRandomMatrix(int rows, int cols) {
 
 }  // namespace shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi
 
-TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Pipeline_Run) {
+TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
@@ -32,8 +32,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Pipeline_Run) {
   std::vector<int> global_result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows = 100;
-  int num_cols = 100;
+  int num_rows = 500;
+  int num_cols = 500;
 
   if (world.rank() == 0) {
     global_matrix = shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::getRandomMatrix(num_rows, num_cols);
@@ -83,7 +83,7 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Pipeline_Run) {
   }
 }
 
-TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Task_Run) {
+TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
@@ -91,8 +91,8 @@ TEST(shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi, Performance_Task_Run) {
   std::vector<int> global_result;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int num_rows = 100;
-  int num_cols = 100;
+  int num_rows = 500;
+  int num_cols = 500;
 
   if (world.rank() == 0) {
     global_matrix = shurigin_lin_filtr_razbien_bloch_gaus_3x3_mpi::getRandomMatrix(num_rows, num_cols);
