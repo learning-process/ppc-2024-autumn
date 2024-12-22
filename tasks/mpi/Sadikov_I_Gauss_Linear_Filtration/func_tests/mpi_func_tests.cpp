@@ -147,6 +147,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image) {
     bool flag = true;
     for (size_t i = 0; i < out.size(); ++i) {
       if (out[i] != rectImageCheck[i]) {
+        std::cout << out[i] << rectImageCheck[i];
         flag = false;
       }
     }
