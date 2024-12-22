@@ -19,7 +19,7 @@ std::vector<int> gen(int width, int height) {
   return image;
 }
 
-using Params = std::tuple<int, int>;
+using Params = std::tuple<int, int, std::vector<int>, std::vector<int>>;
 
 class sidorina_p_convex_hull_binary_image_seq_test : public ::testing::TestWithParam<Params> {
  protected:
@@ -28,23 +28,12 @@ class sidorina_p_convex_hull_binary_image_seq_test : public ::testing::TestWithP
 TEST_P(sidorina_p_convex_hull_binary_image_seq_test, Test_image) {
   int width = std::get<0>(GetParam());
   int height = std::get<1>(GetParam());
-  std::vector<int> image = gen(width, height);
+  std::vector<int> image = std::get<2>(GetParam());
   std::vector<int> hull(width * height);
-  std::vector<int> ref(width * height, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  for (int j = 0; j < height; j++) {
-    ref[j * width + 0] = 1;
-    ref[j * width + width - 1] = 1;
-    if (j == 0 || j == height - 1) {
-      for (int i = 1; i < width - 1; i++) {
-        ref[j * width + i] = 1;
-      }
-    }
-  }
+  std::vector<int> ref = std::get<3>(GetParam());
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
   taskDataSeq->inputs_count.emplace_back(width * height);
   taskDataSeq->inputs_count.emplace_back(width);
@@ -62,7 +51,10 @@ TEST_P(sidorina_p_convex_hull_binary_image_seq_test, Test_image) {
   ASSERT_EQ(ref, hull);
 }
 
-INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_seq_test, ::testing::Values(Params(6, 6), Params(3, 3)));
+INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_seq_test,
+                         ::testing::Values(Params(3, 3, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}),
+                                           Params(3, 3, {0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}),
+                                           Params(3, 3, {0, 1, 1, 0, 0, 0, 0, 0, 1}, {0, 1, 1, 0, 1, 1, 0, 1, 1})));
 
 using Params_val = std::tuple<int, int, std::vector<int>>;
 
@@ -93,53 +85,3 @@ TEST_P(sidorina_p_convex_hull_binary_image_seq_test_val, Test_validation) {
 INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_seq_test_val,
                          ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(-3, -4, {0}),
                                            Params_val(5, 5, {2})));
-
-TEST(sidorina_p_convex_hull_binary_image_seq, Test_all_px_0) {
-  const int width = 15;
-  const int height = 15;
-  std::vector<int> image(width * height, 0);
-  std::vector<int> ref(width * height, 0);
-  std::vector<int> hull(width * height, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-  taskDataSeq->inputs_count.emplace_back(width * height);
-  taskDataSeq->inputs_count.emplace_back(width);
-  taskDataSeq->inputs_count.emplace_back(height);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-  taskDataSeq->outputs_count.emplace_back(width * height);
-
-  sidorina_p_convex_hull_binary_image_seq::ConvexHullBinImgSeq TestTaskSequential(taskDataSeq);
-
-  ASSERT_TRUE(TestTaskSequential.validation());
-  TestTaskSequential.pre_processing();
-  TestTaskSequential.run();
-  TestTaskSequential.post_processing();
-  ASSERT_EQ(ref, hull);
-}
-
-TEST(sidorina_p_convex_hull_binary_image_seq, Test_one_px_1) {
-  const int width = 15;
-  const int height = 15;
-  std::vector<int> image(width * height, 0);
-  std::vector<int> ref(width * height, 0);
-  std::vector<int> hull(width * height, 0);
-
-  image[1 * width + 2] = 1;
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-  taskDataSeq->inputs_count.emplace_back(width * height);
-  taskDataSeq->inputs_count.emplace_back(width);
-  taskDataSeq->inputs_count.emplace_back(height);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-  taskDataSeq->outputs_count.emplace_back(width * height);
-
-  sidorina_p_convex_hull_binary_image_seq::ConvexHullBinImgSeq TestTaskSequential(taskDataSeq);
-
-  ASSERT_TRUE(TestTaskSequential.validation());
-  TestTaskSequential.pre_processing();
-  TestTaskSequential.run();
-  TestTaskSequential.post_processing();
-  ASSERT_EQ(ref, hull);
-}
