@@ -35,6 +35,7 @@ class DiningPhilosophersMPI : public ppc::core::Task {
   State state;
 
  private:
+  int num_philosophers;
   bool check_for_termination();
   boost::mpi::communicator world;
   int left_neighbor, right_neighbor;
