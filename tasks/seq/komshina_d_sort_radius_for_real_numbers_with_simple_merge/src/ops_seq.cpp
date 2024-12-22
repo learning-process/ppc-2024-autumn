@@ -1,7 +1,6 @@
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
 #include <string>
 #include <vector>
-#include <cstring>
 
 using namespace std::chrono_literals;
 
@@ -35,7 +34,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
   return true;
 }
 
- void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::CountingSort(double* inp, double* out, int byteNum,
+void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::CountingSort(double* inp, double* out, int byteNum,
                                                                             int size) {
   auto* mas = reinterpret_cast<unsigned char*>(inp);
   int counter[256] = {0};

@@ -48,6 +48,10 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   internal_order_test();
 
   if (rank == 0) {
+    if (taskData->inputs_count[0] == 0) {
+      return true;
+    }
+
     if (taskData->inputs_count.size() != taskData->outputs_count.size()) {
       return false;
     }
@@ -59,8 +63,10 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
     }
     return true;
   }
+
   return true;
 }
+
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::run() {
   internal_order_test();
