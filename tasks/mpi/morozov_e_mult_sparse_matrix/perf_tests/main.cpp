@@ -20,8 +20,8 @@ std::vector<std::vector<double>> generateRandomMatrix(int rows, int columns) {
 }  // namespace morozov_e_mult_sparse_matrix
 TEST(morozov_e_mult_sparse_matrix_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrixA = morozov_e_mult_sparse_matrix::generateRandomMatrix(20, 100);
-  std::vector<std::vector<double>> matrixB = morozov_e_mult_sparse_matrix::generateRandomMatrix(100, 20);
+  std::vector<std::vector<double>> matrixA = morozov_e_mult_sparse_matrix::generateRandomMatrix(300, 3000);
+  std::vector<std::vector<double>> matrixB = morozov_e_mult_sparse_matrix::generateRandomMatrix(3000, 300);
   std::vector<double> dA;
   std::vector<int> row_indA;
   std::vector<int> col_indA;
@@ -60,8 +60,8 @@ TEST(morozov_e_mult_sparse_matrix_perf_test, test_pipeline_run) {
 
 TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrixA = morozov_e_mult_sparse_matrix::generateRandomMatrix(100, 300);
-  std::vector<std::vector<double>> matrixB = morozov_e_mult_sparse_matrix::generateRandomMatrix(300, 100);
+  std::vector<std::vector<double>> matrixA = morozov_e_mult_sparse_matrix::generateRandomMatrix(300, 3000);
+  std::vector<std::vector<double>> matrixB = morozov_e_mult_sparse_matrix::generateRandomMatrix(3000, 300);
   std::vector<double> dA;
   std::vector<int> row_indA;
   std::vector<int> col_indA;
@@ -72,6 +72,7 @@ TEST(morozov_e_mult_sparse_matrix, test_task_run) {
   morozov_e_mult_sparse_matrix::convertToCCS(matrixB, dB, row_indB, col_indB);
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<std::vector<double>> out(matrixA.size(), std::vector<double>(matrixB[0].size(), 0));
+
   if (world.rank() == 0) {
     morozov_e_mult_sparse_matrix::fillData(taskData, matrixA.size(), matrixA[0].size(), matrixB.size(),
                                            matrixB[0].size(), dA, row_indA, col_indA, dB, row_indB, col_indB, out);
