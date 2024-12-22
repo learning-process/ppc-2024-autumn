@@ -21,20 +21,20 @@ namespace frolova_e_Simpson_method_mpi {
     
 
     // one function
-double squaresOfX(const std::vector<double>& point, int dimension);
-double cubeOfX(const std::vector<double>& point, int dimension);
+double squaresOfX(const std::vector<double>& point);
+double cubeOfX(const std::vector<double>& point);
 
 // two functions
-double sumOfSquaresOfXandY(const std::vector<double>& point, int dimension);
-double ProductOfXAndY(const std::vector<double>& point, int dimension);
+double sumOfSquaresOfXandY(const std::vector<double>& point);
+double ProductOfXAndY(const std::vector<double>& point);
 
 // three functions
-double sumOfSquaresOfXandYandZ(const std::vector<double>& point, int dimension);
-double ProductOfSquaresOfXandYandZ(const std::vector<double>& point, int dimension);
+double sumOfSquaresOfXandYandZ(const std::vector<double>& point);
+double ProductOfSquaresOfXandYandZ(const std::vector<double>& point);
 
 //_______________________________________________________________________________________________________________
 
-static std::map<int, double (*)(const std::vector<double>&, int)> functionRegistry = {{1, squaresOfX},
+static std::map<int, double (*)(const std::vector<double>&)> functionRegistry = {{1, squaresOfX},
                                                                                       {2, cubeOfX},
                                                                                       {3, sumOfSquaresOfXandY},
                                                                                       {4, ProductOfXAndY},
@@ -46,13 +46,13 @@ static std::map<int, double (*)(const std::vector<double>&, int)> functionRegist
 
 double roundToTwoDecimalPlaces(double value);
 
-double Simpson_Method(double (*func)(const std::vector<double>&, int), size_t divisions, size_t dimension,
+double Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions, size_t dimension,
                       std::vector<double>& limits);
 
 class SimpsonmethodSequential : public ppc::core::Task {
  public:
   explicit SimpsonmethodSequential(std::shared_ptr<ppc::core::TaskData> taskData_,
-                                   double (*func_)(const std::vector<double>&, int))
+                                   double (*func_)(const std::vector<double>&))
       : Task(std::move(taskData_)), func(func_) {}
   bool pre_processing() override;
   bool validation() override;
@@ -60,7 +60,7 @@ class SimpsonmethodSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  double (*func)(const std::vector<double>&, int);
+  double (*func)(const std::vector<double>&);
   std::vector<double> limits;
   size_t divisions;
   size_t dimension;
@@ -78,7 +78,7 @@ class SimpsonmethodParallel : public ppc::core::Task {
 
  private:
 
-  double (*func)(const std::vector<double>&, int);
+  double (*func)(const std::vector<double>&);
 
   //for first process
   std::vector<double> limits;

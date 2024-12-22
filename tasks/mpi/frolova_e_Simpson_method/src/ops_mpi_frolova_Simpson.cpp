@@ -8,36 +8,36 @@
 #include <thread>
 #include <vector>
 
-double frolova_e_Simpson_method_mpi::squaresOfX(const std::vector<double>& point, int dimension) { 
+double frolova_e_Simpson_method_mpi::squaresOfX(const std::vector<double>& point) { 
      double x = point[0];
      return x * x;
 }
 
-double frolova_e_Simpson_method_mpi::cubeOfX(const std::vector<double>& point, int dimension) {
+double frolova_e_Simpson_method_mpi::cubeOfX(const std::vector<double>& point) {
      double x = point[0];
      return x * x * x;
 }
 
-double frolova_e_Simpson_method_mpi::sumOfSquaresOfXandY(const std::vector<double>& point, int dimension) {
+double frolova_e_Simpson_method_mpi::sumOfSquaresOfXandY(const std::vector<double>& point) {
      double x = point[0];
      double y = point[1];
      return x * x + y * y;
 }
 
-double frolova_e_Simpson_method_mpi::ProductOfXAndY(const std::vector<double>& point, int dimension) {
+double frolova_e_Simpson_method_mpi::ProductOfXAndY(const std::vector<double>& point) {
      double x = point[0];
      double y = point[1];
      return x * y;
 }
 
-double frolova_e_Simpson_method_mpi::sumOfSquaresOfXandYandZ(const std::vector<double>& point, int dimension) {
+double frolova_e_Simpson_method_mpi::sumOfSquaresOfXandYandZ(const std::vector<double>& point) {
      double x = point[0];
      double y = point[1];
      double z = point[2];
      return x * x + y * y + z * z;
 }
 
-double frolova_e_Simpson_method_mpi::ProductOfSquaresOfXandYandZ(const std::vector<double>& point, int dimension) {
+double frolova_e_Simpson_method_mpi::ProductOfSquaresOfXandYandZ(const std::vector<double>& point) {
      double x = point[0];
      double y = point[1];
      double z = point[2];
@@ -46,7 +46,7 @@ double frolova_e_Simpson_method_mpi::ProductOfSquaresOfXandYandZ(const std::vect
 
 double frolova_e_Simpson_method_mpi::roundToTwoDecimalPlaces(double value) { return std::round(value * 100.0) / 100.0; }
 
-double frolova_e_Simpson_method_mpi::Simpson_Method(double (*func)(const std::vector<double>&, int), size_t divisions,
+double frolova_e_Simpson_method_mpi::Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions,
                                                     size_t dimension, std::vector<double>& limits) {
   std::vector<double> h(dimension);
   std::vector<int> steps(dimension);
@@ -104,7 +104,7 @@ double frolova_e_Simpson_method_mpi::Simpson_Method(double (*func)(const std::ve
         weight *= 2.0;
     }
 
-    integral += weight * func(point, dimension);
+    integral += weight * func(point);
   }
 
   for (size_t i = 0; i < dimension; ++i) {
