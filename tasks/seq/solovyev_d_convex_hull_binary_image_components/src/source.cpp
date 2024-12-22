@@ -200,7 +200,7 @@ bool ConvexHullBinaryImageComponentsSequential::run() {
     std::vector<Point> component;
     for (int y = 0; y < image.sizeY; y++) {
       for (int x = 0; x < image.sizeX; x++) {
-        if (image.getPoint(x, y).value == j) {
+        if (image.getPoint(x, y).value == (int)j) {
           component.push_back(image.getPoint(x, y));
         }
       }
