@@ -161,7 +161,8 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
   }
 
   data.clear();
-  data.insert(data.end(), out_negatives.rbegin(), out_negatives.rend());
+  data.insert(data.end(), out_negatives.rbegin(),
+              out_negatives.rend());
   data.insert(data.end(), out_positives.begin(), out_positives.end());
 }
 
@@ -180,7 +181,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
 
   for (int i = 0; i < size; ++i) {
     send_counts[i] = base_size + (i < remainder ? 1 : 0);
-    displacements[i] = (i > 0) ? (displacements[i - 1] + send_counts[i - 1]) : 0;
+    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + send_counts[i - 1];
   }
 
   std::vector<double> local_data(local_size);
@@ -191,12 +192,12 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   SortDouble(local_data);
 
   std::vector<double> sorted_data(total_size);
+
   MPI_Gatherv(local_data.data(), local_size, MPI_DOUBLE, sorted_data.data(), send_counts.data(), displacements.data(),
               MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   if (rank == 0) {
     std::vector<double> merged_data = sorted_data;
-
     for (int i = 1; i < size; ++i) {
       int start = displacements[i];
       int end = start + send_counts[i];
