@@ -126,8 +126,7 @@ bool moiseev_a_radix_merge_mpi::TestMPITaskParallel::run() {
   if (world.rank() == 0) {
     res_ = std::move(loc);
     std::vector<int> rbuf;
-    std::vector<int> mergebuf;
-    mergebuf.reserve(sz);
+    std::vector<int> mergebuf(sz);
     for (int i = 1; i < std::min<int>(sz, world.size()); i++) {
       rbuf.resize(distrib[i]);
       world.recv(i, 0, rbuf.data(), distrib[i]);
