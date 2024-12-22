@@ -10,7 +10,7 @@ std::vector<int> poroshin_v_cons_conv_hull_for_bin_image_comp_seq::TestTaskSeque
   int n1 = std::max(n, m);
   int m1 = std::min(n, m);
 
-  for (int& t : tmp) {
+  for (int &t : tmp) {
     t = (n1 + (std::rand() % (m1 - n1 + 7))) % 2;  // Bin image
   }
 
