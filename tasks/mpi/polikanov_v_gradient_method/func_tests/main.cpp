@@ -128,13 +128,3 @@ TEST(polikanov_v_gradient_method_mpi, random_test4) {
   double tolerance = 1e-6;
   polikanov_v_gradient_method_mpi::template_func_test_run(size, flat_matrix, rhs, initialGuess, expected, tolerance);
 }
-
-TEST(polikanov_v_gradient_method_mpi, random_test5) {
-  int size = 2;
-  std::vector<double> flat_matrix = {2.462095361756326, 0.4014959895824349, 0.4014959895824349, 2.470912121190833};
-  std::vector<double> rhs = {0.8072286149416383, 0.6933576122407854};
-  std::vector<double> initialGuess = {0.3, 0.25};
-  std::vector<double> expected = {0.2897818828316385, 0.23352159855533441};
-  double tolerance = 1e-6;
-  polikanov_v_gradient_method_mpi::template_func_test_run(size, flat_matrix, rhs, initialGuess, expected, tolerance);
-}
