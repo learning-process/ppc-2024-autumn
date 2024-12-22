@@ -48,3 +48,66 @@ TEST(zinoviev_a_bellman_ford, Test_Medium_Graph_seq) {
   std::vector<int> expected = {0, 4, 12, 19, 21, 11, 9, 8, 14};
   ASSERT_EQ(shortest_paths, expected);
 }
+
+TEST(zinoviev_a_bellman_ford, Test_Multiple_Paths_Graph_seq) {
+  std::vector<int> graph = {0, 1, 4, 0, 0, 0, 2, 5, 0, 0, 0, 1, 0, 0, 0, 0};
+  std::vector<int> shortest_paths(4, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(4);
+  taskData->inputs_count.emplace_back(5);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(4);
+
+  zinoviev_a_bellman_ford_seq::BellmanFordSeq task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  std::vector<int> expected = {0, 1, 3, 4};
+  ASSERT_EQ(shortest_paths, expected);  // Expected shortest paths
+}
+
+TEST(zinoviev_a_bellman_ford, Test_Negative_Weights_No_Cycle_Graph_seq) {
+  std::vector<int> graph = {0, -1, 4, 0, 0, 0, 3, 2, 0, 0, 0, -1, 0, 0, 0, 0};
+  std::vector<int> shortest_paths(4, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(4);
+  taskData->inputs_count.emplace_back(5);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(4);
+
+  zinoviev_a_bellman_ford_seq::BellmanFordSeq task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  std::vector<int> expected = {0, -1, 2, 1};
+  ASSERT_EQ(shortest_paths, expected);  // Expected shortest paths
+}
+
+TEST(zinoviev_a_bellman_ford, Test_Small_Weights_Graph_seq) {
+  std::vector<int> graph = {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
+  std::vector<int> shortest_paths(4, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(4);
+  taskData->inputs_count.emplace_back(3);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(4);
+
+  zinoviev_a_bellman_ford_seq::BellmanFordSeq task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  std::vector<int> expected = {0, 1, 2, 3};
+  ASSERT_EQ(shortest_paths, expected);  // Expected shortest paths
+}

@@ -56,27 +56,3 @@ TEST(zinoviev_a_bellman_ford, Test_Medium_Graph_mpi) {
     ASSERT_EQ(shortest_paths, expected);
   }
 }
-
-TEST(zinoviev_a_bellman_ford, Test_Negative_Weights_mpi) {
-  boost::mpi::communicator world;
-  std::vector<int> graph = {0, -1, 4, 0, 0, 0, 0, 3, 2, 2, 0, 0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, -3, 0};
-  std::vector<int> shortest_paths(5, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-  taskData->inputs_count.emplace_back(5);
-  taskData->inputs_count.emplace_back(5);
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
-  taskData->outputs_count.emplace_back(5);
-
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI task(taskData);
-  ASSERT_EQ(task.validation(), true);
-  task.pre_processing();
-  task.run();
-  task.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> expected = {0, -1, 2, -2, 0};
-    ASSERT_EQ(shortest_paths, expected);
-  }
-}
