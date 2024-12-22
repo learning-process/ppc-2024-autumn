@@ -1,7 +1,10 @@
 #include <gtest/gtest.h>
 
+#include <chrono>
+#include <vector>
+
+#include "../include/ops_seq.hpp"
 #include "core/perf/include/perf.hpp"
-#include "seq/moiseev_a_ribbon_hor_scheme_splt_mat_a/include/ops_seq.hpp"
 
 template <typename DataType>
 static std::vector<DataType> generateRandomValues(int size) {
@@ -12,25 +15,20 @@ static std::vector<DataType> generateRandomValues(int size) {
   return vec;
 }
 
-TEST(moiseev_a_ribbon_hor_scheme_splt_mat_a_seq_test, test_pipeline_run) {
-  using DataType = float;
-  const size_t m = 100;
-  const size_t k = 100;
-  const size_t n = 100;
+TEST(moiseev_a_radix_merge_seq_perf, test_pipeline_run) {
+  using DataType = int32_t;
+  const size_t size = 1000000;
 
-  std::vector<DataType> A = generateRandomValues<float>(m * k);
-  std::vector<DataType> B = generateRandomValues<float>(n * k);
-  std::vector<DataType> C(m * n, 0.0f);
+  std::vector<DataType> input = generateRandomValues<DataType>(size);
+  std::vector<DataType> output(size, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-  taskData->inputs_count = {m, k, n};
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
-  taskData->outputs_count = {m * n};
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.emplace_back(size);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(size);
 
-  auto testTask =
-      std::make_shared<moiseev_a_ribbon_hor_scheme_splt_mat_a_seq::MatrixMultiplicationSequential<float>>(taskData);
+  auto testTask = std::make_shared<moiseev_a_radix_merge_seq::TestSEQTaskSequential>(taskData);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -47,28 +45,23 @@ TEST(moiseev_a_ribbon_hor_scheme_splt_mat_a_seq_test, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(C.size(), m * n);
+  ASSERT_EQ(output.size(), size);
 }
 
-TEST(moiseev_a_ribbon_hor_scheme_splt_mat_a_seq_test, test_task_run) {
-  using DataType = float;
-  const size_t m = 100;
-  const size_t k = 100;
-  const size_t n = 100;
+TEST(moiseev_a_radix_merge_seq_perf, test_task_run) {
+  using DataType = int32_t;
+  const size_t size = 1000000;
 
-  std::vector<DataType> A = generateRandomValues<float>(m * k);
-  std::vector<DataType> B = generateRandomValues<float>(n * k);
-  std::vector<DataType> C(m * n, 0.0f);
+  std::vector<DataType> input = generateRandomValues<DataType>(size);
+  std::vector<DataType> output(size, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-  taskData->inputs_count = {m, k, n};
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(C.data()));
-  taskData->outputs_count = {m * n};
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.emplace_back(size);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+  taskData->outputs_count.emplace_back(size);
 
-  auto testTask =
-      std::make_shared<moiseev_a_ribbon_hor_scheme_splt_mat_a_seq::MatrixMultiplicationSequential<float>>(taskData);
+  auto testTask = std::make_shared<moiseev_a_radix_merge_seq::TestSEQTaskSequential>(taskData);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -85,5 +78,5 @@ TEST(moiseev_a_ribbon_hor_scheme_splt_mat_a_seq_test, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(C.size(), m * n);
+  ASSERT_EQ(output.size(), size);
 }
