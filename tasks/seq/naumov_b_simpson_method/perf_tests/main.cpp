@@ -4,6 +4,7 @@
 #include <cmath>
 #include <functional>
 #include <memory>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/naumov_b_simpson_method/include/ops_seq.hpp"

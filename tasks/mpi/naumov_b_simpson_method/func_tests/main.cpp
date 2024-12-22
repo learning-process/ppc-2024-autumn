@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <vector>
 
 #include "mpi/naumov_b_simpson_method/include/ops_mpi.hpp"
 
