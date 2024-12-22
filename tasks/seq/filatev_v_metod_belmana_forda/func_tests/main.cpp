@@ -100,6 +100,38 @@ TEST(filatev_v_metod_belmana_forda_seq, test_simpel_path3) {
   ASSERT_EQ(tResh, d);
 }
 
+TEST(filatev_v_metod_belmana_forda_seq, test_simpel_path4) {
+  int inf = std::numeric_limits<int>::max();
+  int n = 6;
+  int m = 9;
+  int start = 1;
+  std::vector<int> Adjncy = {1, 2, 3, 4, 1, 4, 4, 5, 5};
+  std::vector<int> Xadj = {0, 2, 4, 6, 8, 9, 9};
+  std::vector<int> Eweights = {7, 9, -1, -2, -3, 2, 1, 3, 3};
+  std::vector<int> d(n);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(Adjncy.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(Xadj.data()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(Eweights.data()));
+  taskData->inputs_count.emplace_back(n);
+  taskData->inputs_count.emplace_back(m);
+  taskData->inputs_count.emplace_back(start);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(d.data()));
+  taskData->outputs_count.emplace_back(n);
+
+  filatev_v_metod_belmana_forda_seq::MetodBelmanaForda metodBelmanaForda(taskData);
+
+  ASSERT_TRUE(metodBelmanaForda.validation());
+  metodBelmanaForda.pre_processing();
+  metodBelmanaForda.run();
+  metodBelmanaForda.post_processing();
+
+  std::vector<int> tResh = {inf, 0, inf, -1, -2, 1};
+
+  ASSERT_EQ(tResh, d);
+}
+
 TEST(filatev_v_metod_belmana_forda_seq, test_error) {
   int n = 7;
   int start = 0;
