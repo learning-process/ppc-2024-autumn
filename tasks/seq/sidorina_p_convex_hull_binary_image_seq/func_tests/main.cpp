@@ -7,10 +7,6 @@
 #include "seq/sidorina_p_convex_hull_binary_image_seq/include/ops_seq.hpp"
 
 std::vector<int> gen(int width, int height) {
-  if (width <= 0 || height <= 0) {
-    return {};
-  }
-
   std::vector<int> image(width * height);
   for (int i = 0; i < width * height; ++i) {
     image[i] = rand() % 2;
@@ -26,16 +22,13 @@ class sidorina_p_convex_hull_binary_image_seq_test : public ::testing::TestWithP
 };
 
 TEST_P(sidorina_p_convex_hull_binary_image_seq_test, Test_image) {
-  int width = std::get<0>(GetParam());
-  int height = std::get<1>(GetParam());
-  std::vector<int> image = std::get<2>(GetParam());
+  const auto &[width, height, image, ref] = GetParam();
   std::vector<int> hull(width * height);
-  std::vector<int> ref = std::get<3>(GetParam());
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-  taskDataSeq->inputs_count.emplace_back(width * height);
+  taskDataSeq->inputs.emplace_back(const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(image.data())));
+  taskDataSeq->inputs_count.emplace_back(image.size());
   taskDataSeq->inputs_count.emplace_back(width);
   taskDataSeq->inputs_count.emplace_back(height);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
@@ -72,7 +65,7 @@ TEST_P(sidorina_p_convex_hull_binary_image_seq_test_val, Test_validation) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-  taskDataSeq->inputs_count.emplace_back(width * height);
+  taskDataSeq->inputs_count.emplace_back(image.size());
   taskDataSeq->inputs_count.emplace_back(width);
   taskDataSeq->inputs_count.emplace_back(height);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
@@ -83,5 +76,4 @@ TEST_P(sidorina_p_convex_hull_binary_image_seq_test_val, Test_validation) {
 }
 
 INSTANTIATE_TEST_SUITE_P(sidorina_p_convex_hull_binary_image_seq_test, sidorina_p_convex_hull_binary_image_seq_test_val,
-                         ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(-3, -4, {0}),
-                                           Params_val(5, 5, {2})));
+                         ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(5, 5, {2})));

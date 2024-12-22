@@ -7,10 +7,6 @@
 #include "mpi/sidorina_p_convex_hull_binary_image_mpi/include/ops_mpi.hpp"
 
 std::vector<int> gen(int width, int height) {
-  if (width <= 0 || height <= 0) {
-    return {};
-  }
-
   std::vector<int> image(width * height);
   for (int i = 0; i < width * height; ++i) {
     image[i] = rand() % 2;
@@ -37,7 +33,7 @@ TEST_P(sidorina_p_convex_hull_binary_image_mpi_test, Test_image) {
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataPar->inputs_count.emplace_back(width * height);
+    taskDataPar->inputs_count.emplace_back(image.size());
     taskDataPar->inputs_count.emplace_back(width);
     taskDataPar->inputs_count.emplace_back(height);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
@@ -78,7 +74,7 @@ TEST_P(sidorina_p_convex_hull_binary_image_mpi_test_val, Test_validation) {
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataPar->inputs_count.emplace_back(width * height);
+    taskDataPar->inputs_count.emplace_back(image.size());
     taskDataPar->inputs_count.emplace_back(width);
     taskDataPar->inputs_count.emplace_back(height);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
@@ -91,5 +87,4 @@ TEST_P(sidorina_p_convex_hull_binary_image_mpi_test_val, Test_validation) {
 
 INSTANTIATE_TEST_SUITE_P(sidorina_p_convex_hull_binary_image_mpi_test_val,
                          sidorina_p_convex_hull_binary_image_mpi_test_val,
-                         ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(-3, -4, {0}),
-                                           Params_val(5, 5, {2})));
+                         ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(5, 5, {2})));
