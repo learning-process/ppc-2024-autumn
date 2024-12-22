@@ -13,15 +13,19 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskS
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData && !taskData->inputs.empty() && !taskData->outputs.empty()) {
-    return true;
+
+  if (!taskData || taskData->inputs.empty() || taskData->outputs.empty()) {
+    return false;
   }
+
   if (taskData->inputs_count[0] == 0) {
     return true;
   }
+
   if (taskData->inputs_count[0] > 0 && taskData->outputs_count[0] == taskData->inputs_count[0]) {
     return true;
   }
+
   return false;
 }
 
@@ -185,11 +189,6 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   for (int i = 0; i < size; ++i) {
     send_counts[i] = base_size + (i < remainder ? 1 : 0);
     displacements[i] = (i > 0) ? (displacements[i - 1] + send_counts[i - 1]) : 0;
-
-    if (displacements[i] + send_counts[i] > total_size) {
-      std::cerr << "Error" << std::endl;
-      return;
-    }
   }
 
   std::vector<double> local_data(local_size);
