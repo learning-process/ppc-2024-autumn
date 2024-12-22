@@ -51,7 +51,7 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::ru
     for (size_t j = 0; j < coords[i].size(); j++) {
       res.push_back(coords[i][j]);
     }
-    res.push_back({-1, -1});  // The separating symbol for convex hulls of the connectivity component
+    res.emplace_back(-1, -1);  // The separating symbol for convex hulls of the connectivity component
   }
 
   return true;
@@ -142,7 +142,7 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel::run(
       for (size_t j = 0; j < local_input_[i].size(); j++) {
         res.push_back(local_input_[i][j]);
       }
-      res.push_back({-1, -1});  // The separating symbol for convex hulls of the connectivity component
+      res.emplace_back(-1, -1);  // The separating symbol for convex hulls of the connectivity component
     }
 
     return true;
@@ -235,7 +235,7 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel::run(
       for (size_t j = 0; j < local_input_[i].size(); j++) {
         res.push_back(local_input_[i][j]);
       }
-      res.push_back({-1, -1});  // The separating symbol for convex hulls of the connectivity component
+      res.emplace_back(-1, -1);  // The separating symbol for convex hulls of the connectivity component
     }
   }
 
@@ -259,7 +259,7 @@ poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordin
   for (size_t i = 0; i < labeled_image.size(); i++) {
     for (size_t j = 0; j < labeled_image[0].size(); j++) {
       if (labeled_image[i][j] != 0) {
-        coords[labeled_image[i][j] - 2].push_back({i, j});
+        coords[labeled_image[i][j] - 2].emplace_back(i, j);
       }
     }
   }
@@ -274,7 +274,7 @@ int poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::lab
     for (size_t j = 0; j < image[0].size(); ++j) {
       if (image[i][j] == 1) {
         std::stack<std::pair<int, int>> pixelStack;
-        pixelStack.push({i, j});
+        pixelStack.emplace(i, j);
 
         while (!pixelStack.empty()) {
           int x = pixelStack.top().first;
@@ -288,14 +288,14 @@ int poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::lab
 
           image[x][y] = label;
 
-          pixelStack.push({x + 1, y});      // Down
-          pixelStack.push({x - 1, y});      // Up
-          pixelStack.push({x, y + 1});      // Right
-          pixelStack.push({x, y - 1});      // Left
-          pixelStack.push({x - 1, y + 1});  // Top left corner
-          pixelStack.push({x + 1, y + 1});  // Top right corner
-          pixelStack.push({x - 1, y - 1});  // Lower left corner
-          pixelStack.push({x + 1, y - 1});  // Lower right corner
+          pixelStack.emplace(x + 1, y);      // Down
+          pixelStack.emplace(x - 1, y);      // Up
+          pixelStack.emplace(x, y + 1);      // Right
+          pixelStack.emplace(x, y - 1);      // Left
+          pixelStack.emplace(x - 1, y + 1);  // Top left corner
+          pixelStack.emplace(x + 1, y + 1);  // Top right corner
+          pixelStack.emplace(x - 1, y - 1);  // Lower left corner
+          pixelStack.emplace(x + 1, y - 1);  // Lower right corner
         }
         label++;
       }
