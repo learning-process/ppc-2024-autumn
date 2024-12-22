@@ -76,6 +76,7 @@ bool moiseev_a_radix_merge_mpi::TestMPITaskSequential::pre_processing() {
 
 bool moiseev_a_radix_merge_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
+
   return taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
