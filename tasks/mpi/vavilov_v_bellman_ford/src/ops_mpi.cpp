@@ -163,9 +163,7 @@ bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::run() {
   }
 
   has_negative_cycle = boost::mpi::all_reduce(world, has_negative_cycle, std::logical_or<>());
-  if (has_negative_cycle) {
-    return false;
-  }
+  return !has_negative_cycle;
 }
 
 bool vavilov_v_bellman_ford_mpi::TestMPITaskParallel::post_processing() {
