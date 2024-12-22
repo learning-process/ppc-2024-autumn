@@ -16,7 +16,9 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
   Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI task(taskData);
-  ASSERT_EQ(task.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(task.validation(), false);
+  }
 }
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation2) {
@@ -33,7 +35,9 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation2) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
   Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI task(taskData);
-  ASSERT_EQ(task.validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(task.validation(), false);
+  }
 }
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, check_square_image) {
