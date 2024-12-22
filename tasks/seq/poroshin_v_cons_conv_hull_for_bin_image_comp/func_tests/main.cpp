@@ -324,7 +324,6 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_seq, validation_and_check_25x2
       1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0,
       1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1,
       0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1};
-  
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
   test->inputs_count.emplace_back(n);
@@ -789,7 +788,6 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_seq, validation_and_check_128x
       1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1,
       0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1,
       1, 0, 0, 1, 0, 1};
-
   test->inputs.emplace_back(reinterpret_cast<uint8_t *>(tmp.data()));
   test->inputs_count.emplace_back(m);
   test->inputs_count.emplace_back(n);

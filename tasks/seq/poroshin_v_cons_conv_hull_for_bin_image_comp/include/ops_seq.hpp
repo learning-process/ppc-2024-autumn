@@ -1,11 +1,11 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <string>
-#include <vector>
-#include <utility>
-#include <stack>
 #include <algorithm>
+#include <stack>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -25,8 +25,8 @@ class TestTaskSequential : public ppc::core::Task {
   static std::vector<std::pair<int, int>> convex_hull(std::vector<std::pair<int, int>>& points);
 
  private:
-  std::vector<int> input_{};
-  std::vector<std::pair<int, int>> res{};
+  std::vector<int> input_;
+  std::vector<std::pair<int, int>> res;
 };
 
 }  // namespace poroshin_v_cons_conv_hull_for_bin_image_comp_seq

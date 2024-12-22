@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <vector>
 
-
 bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   return true;

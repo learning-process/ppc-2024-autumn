@@ -3,13 +3,13 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <string>
-#include <vector>
-#include <utility>
 #include <stack>
-#include <algorithm>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -30,8 +30,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   static std::vector<std::pair<int, int>> convex_hull(std::vector<std::pair<int, int>>& points);
 
  private:
-  std::vector<int> input_{};
-  std::vector<std::pair<int, int>> res{};
+  std::vector<int> input_;
+  std::vector<std::pair<int, int>> res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -44,9 +44,9 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> input_{};
-  std::vector<std::vector<std::pair<int, int>>> local_input_{};
-  std::vector<std::pair<int, int>> res{};
+  std::vector<int> input_;
+  std::vector<std::vector<std::pair<int, int>>> local_input_;
+  std::vector<std::pair<int, int>> res;
   boost::mpi::communicator world;
 };
 
