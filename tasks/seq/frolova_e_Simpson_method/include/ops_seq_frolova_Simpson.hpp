@@ -23,7 +23,7 @@ namespace frolova_e_Simpson_method_seq {
     double ProductOfSquaresOfXandYandZ(const std::vector<double>& point, int dimension);
 
 
-	double Simpson_Method(double (*func)(const std::vector<double>&, int), int divisions, int dimension,
+	double Simpson_Method(double (*func)(const std::vector<double>&, int), size_t divisions, size_t dimension,
                                      std::vector<double>& limits);
 
 class Simpsonmethod : public ppc::core::Task {

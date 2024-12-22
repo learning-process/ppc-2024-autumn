@@ -1,5 +1,5 @@
 // Copyright 2023 Nesterov Alexander
-#include "mpi/frolova_e_simpson_method/include/ops_mpi_frolova_Simpson.hpp"
+#include "mpi/frolova_e_Simpson_method/include/ops_mpi_frolova_Simpson.hpp"
 
 #include <algorithm>
 #include <functional>
@@ -46,8 +46,8 @@ double frolova_e_Simpson_method_mpi::ProductOfSquaresOfXandYandZ(const std::vect
 
 double frolova_e_Simpson_method_mpi::roundToTwoDecimalPlaces(double value) { return std::round(value * 100.0) / 100.0; }
 
-double frolova_e_Simpson_method_mpi::Simpson_Method(double (*func)(const std::vector<double>&, int), int divisions,
-                                                    int dimension, std::vector<double>& limits) {
+double frolova_e_Simpson_method_mpi::Simpson_Method(double (*func)(const std::vector<double>&, int), size_t divisions,
+                                                    size_t dimension, std::vector<double>& limits) {
   std::vector<double> h(dimension);
   std::vector<int> steps(dimension);
   std::vector<int> nodes(dimension);

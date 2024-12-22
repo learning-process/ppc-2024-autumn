@@ -47,8 +47,8 @@ double frolova_e_Simpson_method_seq::ProductOfSquaresOfXandYandZ(const std::vect
     return x * y * z;
 }
 
-double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&, int), int divisions,
-    int dimension, std::vector<double>& limits) {
+double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&, int), size_t divisions,
+    size_t dimension, std::vector<double>& limits) {
   std::vector<double> h(dimension);
   std::vector<int> steps(dimension); 
   std::vector<int> nodes(dimension);

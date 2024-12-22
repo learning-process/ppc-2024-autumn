@@ -46,7 +46,7 @@ static std::map<int, double (*)(const std::vector<double>&, int)> functionRegist
 
 double roundToTwoDecimalPlaces(double value);
 
-double Simpson_Method(double (*func)(const std::vector<double>&, int), int divisions, int dimension,
+double Simpson_Method(double (*func)(const std::vector<double>&, int), size_t divisions, size_t dimension,
                       std::vector<double>& limits);
 
 class SimpsonmethodSequential : public ppc::core::Task {
