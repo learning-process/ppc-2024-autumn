@@ -22,29 +22,9 @@ double integrir_1d(const func_1d_t &func, const bound_t &bound, int num_steps) {
   return result * step_size / 3.0;
 }
 
-bool TestTaskSequential::validation() {
-  internal_order_test();
-
-  // Проверяем входные данные
-  if (bounds_.first >= bounds_.second) {
-    return false;  // Границы должны быть корректными
-  }
-
-  if (num_steps_ < 2 || num_steps_ % 2 != 0) {
-    return false;  // Количество шагов должно быть чётным и >= 2
-  }
-
-  if (!function_) {
-    return false;  // Функция должна быть задана
-  }
-
-  return true;
-}
-
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
 
-  // Разделение интервала на сегменты
   double step_size = (bounds_.second - bounds_.first) / num_steps_;
   segments_.clear();
 
@@ -57,10 +37,27 @@ bool TestTaskSequential::pre_processing() {
   return true;
 }
 
+bool TestTaskSequential::validation() {
+  internal_order_test();
+
+  if (bounds_.first >= bounds_.second) {
+    return false;
+  }
+
+  if (num_steps_ < 2 || num_steps_ % 2 != 0) {
+    return false;
+  }
+
+  if (!function_) {
+    return false;
+  }
+
+  return true;
+}
+
 bool TestTaskSequential::run() {
   internal_order_test();
 
-  // Выполнение интегрирования по всем сегментам
   result_ = 0.0;
   for (const auto &segment : segments_) {
     result_ += integrir_1d(function_, segment, num_steps_);
@@ -72,7 +69,6 @@ bool TestTaskSequential::run() {
 bool TestTaskSequential::post_processing() {
   internal_order_test();
 
-  // Сохранение результата
   *reinterpret_cast<double *>(taskData->outputs[0]) = result_;
   return true;
 }

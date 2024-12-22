@@ -1,50 +1,78 @@
-// Copyright 2023 Nesterov Alexander
 #pragma once
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/vector.hpp>
+#include <cmath>
+#include <functional>
 #include <memory>
-#include <numeric>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace naumov_b_simpson_method_mpi {
 
-std::vector<int> getRandomVector(int sz);
+using bound_t = std::pair<double, double>;
+using func_1d_t = std::function<double(double)>;
+
+double integrir_1d(const func_1d_t& func, const bound_t& bound, int num_steps);
+
+double parallel_integrir_1d(const func_1d_t& func, double lower_bound, double upper_bound, int num_steps,
+                            boost::mpi::communicator& world);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> task_data, func_1d_t function, bound_t bounds,
+                        int num_steps)
+      : Task(std::move(task_data)),
+        function_(std::move(function)),
+        bounds_(std::move(bounds)),
+        num_steps_(num_steps),
+        result_(0.0) {}
+
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_;
-  int res{};
-  std::string ops;
+  bound_t bounds_;
+  int num_steps_;
+  func_1d_t function_;
+  double result_;
+  std::vector<bound_t> segments_;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_, std::string ops_)
-      : Task(std::move(taskData_)), ops(std::move(ops_)) {}
+  TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> task_data, func_1d_t function, double lower_bound,
+                      double upper_bound, int num_steps)
+      : Task(std::move(task_data)),
+        function_(std::move(function)),
+        lower_bound_(lower_bound),
+        upper_bound_(upper_bound),
+        num_steps_(num_steps),
+        result_(0.0),
+        world(boost::mpi::communicator()) {}
+
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  std::vector<int> input_, local_input_;
-  int res{};
-  std::string ops;
+  double local_lower_bound_;
+  double local_upper_bound_;
+  int local_steps_;
+  double lower_bound_;
+  double upper_bound_;
+  int num_steps_;
+  func_1d_t function_;
+  double result_;
+  double local_result_;
+
   boost::mpi::communicator world;
 };
 

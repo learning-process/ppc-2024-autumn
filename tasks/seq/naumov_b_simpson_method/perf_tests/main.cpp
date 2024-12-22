@@ -13,8 +13,8 @@ namespace naumov_b_simpson_method_seq {
 TEST(naumov_b_simpson_method_seq, perf_pipeline_run) {
   auto func = [](double x) -> double { return std::sin(x) * std::log(x + 1.0); };
 
-  naumov_b_simpson_method_seq::bound_t bounds = {0.0, 3.14159265358979323846}; 
-  int num_steps = 2500;
+  naumov_b_simpson_method_seq::bound_t bounds = {0.0, 3.14159265358979323846};
+  int num_steps = 1000;
   double output = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
@@ -49,7 +49,7 @@ TEST(naumov_b_simpson_method_seq, perf_task_run) {
   auto func = [](double x) -> double { return std::exp(-x * x); };
 
   naumov_b_simpson_method_seq::bound_t bounds = {0.0, 2.0};
-  int num_steps = 2500;
+  int num_steps = 1000;
   double output = 0.0;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();

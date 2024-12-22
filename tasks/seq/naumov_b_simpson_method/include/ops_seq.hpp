@@ -5,17 +5,16 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include <utility>  // Для std::pair
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace naumov_b_simpson_method_seq {
 
-using bound_t = std::pair<double, double>;        // Границы интегрирования
-using func_1d_t = std::function<double(double)>;  // Тип функции для интеграции
+using bound_t = std::pair<double, double>;
+using func_1d_t = std::function<double(double)>;
 
-// Функция интегрирования по методу Симпсона
 double integrir_1d(const func_1d_t &func, const bound_t &bound, int num_steps);
 
 class TestTaskSequential : public ppc::core::Task {
@@ -27,18 +26,17 @@ class TestTaskSequential : public ppc::core::Task {
         num_steps_(num_steps),
         result_(0.0) {}
 
-  // Переопределённые методы из базового класса
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-  bound_t bounds_;                 // Границы интегрирования [a, b]
-  int num_steps_;                  // Количество шагов
-  func_1d_t function_;             // Функция для интеграции
-  double result_;                  // Результат вычислений
-  std::vector<bound_t> segments_;  // Сегменты для интеграции
+  bound_t bounds_;
+  int num_steps_;
+  func_1d_t function_;
+  double result_;
+  std::vector<bound_t> segments_;
 };
 
 }  // namespace naumov_b_simpson_method_seq
