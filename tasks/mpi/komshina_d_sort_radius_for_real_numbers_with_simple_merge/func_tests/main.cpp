@@ -9,49 +9,6 @@
 
 namespace mpi = boost::mpi;
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Single_Element_Vector) {
-  boost::mpi::communicator world;
-
-  std::vector<double> single_vec = {42.0};
-  std::vector<double> sorted_single_vec(single_vec.size(), 0.0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(single_vec.data()));
-    taskDataPar->inputs_count.emplace_back(single_vec.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_single_vec.data()));
-    taskDataPar->outputs_count.emplace_back(sorted_single_vec.size());
-  }
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel parallelSortTask(taskDataPar);
-  ASSERT_TRUE(parallelSortTask.validation()) << "Parallel validation failed!";
-  parallelSortTask.pre_processing();
-  parallelSortTask.run();
-  parallelSortTask.post_processing();
-
-  if (world.rank() == 0) {
-    ASSERT_EQ(sorted_single_vec, single_vec) << "Parallel: Single element vector was not sorted correctly!";
-  }
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(single_vec.data()));
-    taskDataSeq->inputs_count.emplace_back(single_vec.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_single_vec.data()));
-    taskDataSeq->outputs_count.emplace_back(sorted_single_vec.size());
-  }
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential sequentialSortTask(taskDataSeq);
-  ASSERT_TRUE(sequentialSortTask.validation()) << "Sequential validation failed!";
-  sequentialSortTask.pre_processing();
-  sequentialSortTask.run();
-  sequentialSortTask.post_processing();
-
-  if (world.rank() == 0) {
-    ASSERT_EQ(sorted_single_vec, single_vec) << "Sequential: Single element vector was not sorted correctly!";
-  }
-}
-
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Mixed_Positive_Negative) {
   boost::mpi::communicator world;
 
@@ -144,10 +101,57 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Duplica
   }
 }
 
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Single_Element) {
+  boost::mpi::communicator world;
+
+  std::vector<double> single_elem_vec = {42.0};
+  std::vector<double> expected_sorted_vec = {42.0};
+  std::vector<double> sorted_single_elem_vec(single_elem_vec.size(), 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(single_elem_vec.data()));
+    taskDataPar->inputs_count.emplace_back(single_elem_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_single_elem_vec.data()));
+    taskDataPar->outputs_count.emplace_back(sorted_single_elem_vec.size());
+  }
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel parallelSortTask(taskDataPar);
+  ASSERT_TRUE(parallelSortTask.validation()) << "Parallel validation failed!";
+  parallelSortTask.pre_processing();
+  parallelSortTask.run();
+  parallelSortTask.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(sorted_single_elem_vec, expected_sorted_vec)
+        << "Parallel: Single element vector was not sorted correctly!";
+  }
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(single_elem_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(single_elem_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_single_elem_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(sorted_single_elem_vec.size());
+  }
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential sequentialSortTask(taskDataSeq);
+  ASSERT_TRUE(sequentialSortTask.validation()) << "Sequential validation failed!";
+  sequentialSortTask.pre_processing();
+  sequentialSortTask.run();
+  sequentialSortTask.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(sorted_single_elem_vec, expected_sorted_vec)
+        << "Sequential: Single element vector was not sorted correctly!";
+  }
+}
+
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Empty_Vector) {
   boost::mpi::communicator world;
 
   std::vector<double> empty_vec = {};
+  std::vector<double> expected_sorted_vec = {};
   std::vector<double> sorted_empty_vec(empty_vec.size(), 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -165,6 +169,24 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, Test_Empty_V
   parallelSortTask.post_processing();
 
   if (world.rank() == 0) {
-    ASSERT_EQ(sorted_empty_vec, empty_vec) << "Parallel: Empty vector was not sorted correctly!";
+    ASSERT_EQ(sorted_empty_vec, expected_sorted_vec) << "Parallel: Empty vector was not sorted correctly!";
+  }
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(empty_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(empty_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(sorted_empty_vec.data()));
+    taskDataSeq->outputs_count.emplace_back(sorted_empty_vec.size());
+  }
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential sequentialSortTask(taskDataSeq);
+  ASSERT_TRUE(sequentialSortTask.validation()) << "Sequential validation failed!";
+  sequentialSortTask.pre_processing();
+  sequentialSortTask.run();
+  sequentialSortTask.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(sorted_empty_vec, expected_sorted_vec) << "Sequential: Empty vector was not sorted correctly!";
   }
 }
