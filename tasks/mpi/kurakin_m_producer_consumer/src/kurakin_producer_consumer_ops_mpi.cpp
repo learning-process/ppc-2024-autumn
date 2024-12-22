@@ -134,7 +134,7 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
   } else if (world.rank() < producer_count) {  // producer
     int data_count;
     world.recv(0, 0, &data_count, 1);
-    
+
     boost::mpi::request r_buffer[2];
     boost::mpi::request r_message;
 
@@ -163,9 +163,9 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
     reduce(world, 0, res, std::plus(), 0);
   } else {  // consumer
     int cnt_data = 0;
-    
+
     boost::mpi::request r_buffer[2];
-    
+
     while (true) {
       std::vector<int> message_fw = {world.rank(), 2};
       r_buffer[0] = world.isend(0, 0, message_fw.data(), 2);
