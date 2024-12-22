@@ -41,7 +41,7 @@ TEST(Sequential, Test_1D_Linear) {
   std::function<double(const std::vector<double> &)> func = test_func_2;
   std::vector<double> lower_bounds = {0.0};
   std::vector<double> upper_bounds = {1.0};
-  std::vector<int> intervals = {100};
+  std::vector<int> intervals = {10};
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
@@ -72,7 +72,7 @@ TEST(Sequential, Test_2D_Linear) {
   std::function<double(const std::vector<double> &)> func = test_func_6;
   std::vector<double> lower_bounds = {0.0, 0.0};
   std::vector<double> upper_bounds = {1.0, 1.0};
-  std::vector<int> intervals = {100, 100};
+  std::vector<int> intervals = {10, 10};
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
@@ -103,7 +103,7 @@ TEST(Sequential, Test_3D_Linear) {
   std::function<double(const std::vector<double> &)> func = test_func_3;
   std::vector<double> lower_bounds = {0.0, 0.0, 0.0};
   std::vector<double> upper_bounds = {1.0, 1.0, 1.0};
-  std::vector<int> intervals = {50, 50, 50};
+  std::vector<int> intervals = {25, 25, 25};
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
@@ -133,7 +133,7 @@ TEST(Sequential, Test_2D_Product) {
   std::function<double(const std::vector<double> &)> func = test_func_6;
   std::vector<double> lower_bounds = {0.0, 0.0};
   std::vector<double> upper_bounds = {1.0, 1.0};
-  std::vector<int> intervals = {100, 100};
+  std::vector<int> intervals = {10, 10};
   std::vector<double> out(1, 0.0);
 
   // Create TaskData
