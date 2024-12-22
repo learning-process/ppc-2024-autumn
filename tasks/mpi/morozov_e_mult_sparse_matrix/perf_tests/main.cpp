@@ -11,8 +11,7 @@ std::vector<std::vector<double>> generateRandomMatrix(int rows, int columns) {
   std::vector<std::vector<double>> result(rows, std::vector<double>(columns, 0));
   for (int i = 0; i < rows; ++i) {
     for (int j = 0; j < columns; ++j) {
-      double value = static_cast<double>(rand()) / RAND_MAX;
-      result[i][j] = value * 100;
+      result[i][j] = (static_cast<double>(rand()) / RAND_MAX) * 2000 - 1000;
     }
   }
   return result;
