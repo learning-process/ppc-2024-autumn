@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
+#include <mpi.h>
 
-#include <boost/mpi.hpp>
 #include <random>
 
 #include "core/task/include/task.hpp"
@@ -16,13 +16,14 @@ std::vector<double> generateRandomData(int size, double minValue, double maxValu
   for (int i = 0; i < size; ++i) {
     data[i] = dis(gen);
   }
-  std::sort(data.rbegin(), data.rend());
+
   return data;
 }
 
 void runSortingTest(const std::vector<double>& testData) {
-  boost::mpi::environment env;
-  boost::mpi::communicator world;
+  int rank, size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
 
   int dataSize = testData.size();
   std::vector<double> parallelResult(dataSize, 0.0);
@@ -31,7 +32,7 @@ void runSortingTest(const std::vector<double>& testData) {
   auto parallelTaskData = std::make_shared<ppc::core::TaskData>();
   auto sequentialTaskData = std::make_shared<ppc::core::TaskData>();
 
-  if (world.rank() == 0) {
+  if (rank == 0) {
     parallelTaskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<double*>(testData.data())));
     parallelTaskData->inputs_count.emplace_back(dataSize);
     parallelTaskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(parallelResult.data()));
@@ -50,7 +51,7 @@ void runSortingTest(const std::vector<double>& testData) {
   parallelRadixSort.run();
   parallelRadixSort.post_processing();
 
-  if (world.rank() == 0) {
+  if (rank == 0) {
     sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestMPITaskSequential sequentialRadixSort(
         sequentialTaskData);
     ASSERT_TRUE(sequentialRadixSort.validation());

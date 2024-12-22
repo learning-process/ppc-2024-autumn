@@ -43,6 +43,8 @@ bool sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::TestM
   if (rank == 0) {
     auto* input_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
     input_data_.assign(input_ptr, input_ptr + taskData->inputs_count[0]);
+
+    std::sort(input_data_.rbegin(), input_data_.rend());
   }
   return true;
 }
