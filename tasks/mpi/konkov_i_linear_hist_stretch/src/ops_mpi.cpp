@@ -9,6 +9,10 @@ LinearHistogramStretch::LinearHistogramStretch(int image_size, int* image_data)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
   MPI_Comm_size(MPI_COMM_WORLD, &size_);
 
+  if (image_size_ <= 0 || image_data_ == nullptr) {
+    return;
+  }
+
   local_size_ = image_size_ / size_;
   if (rank_ < image_size_ % size_) {
     local_size_++;
