@@ -137,7 +137,9 @@ bool moiseev_a_radix_merge_mpi::TestMPITaskParallel::run() {
       std::swap(res_, mergebuf);
     }
   } else {
-    world.send(0, 0, loc.data(), distrib[world.rank()]);
+    if (world.rank() < std::min<int>(sz, world.size())) {
+      world.send(0, 0, loc.data(), distrib[world.rank()]);
+    }
   }
 
   return true;
