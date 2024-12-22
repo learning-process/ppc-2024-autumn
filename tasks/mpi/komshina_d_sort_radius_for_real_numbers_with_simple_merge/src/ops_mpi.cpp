@@ -1,5 +1,5 @@
 #include <mpi.h>
-#include <string>
+#include <cstring>
 #include <algorithm>
 #include <iterator>
 #include <mpi/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_mpi.hpp>
@@ -29,7 +29,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskS
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskSequential::post_processing() {
   internal_order_test();
   if (!sort.empty()) {
-    memcpy(taskData->outputs[0], sort.data(), sort.size() * sizeof(double));
+    std::copy(sort.begin(), sort.end(), reinterpret_cast<double*>(taskData->outputs[0]));
   }
   return true;
 }
@@ -48,10 +48,6 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   internal_order_test();
 
   if (rank == 0) {
-    if (taskData->inputs_count[0] == 0) {
-      return true;
-    }
-
     if (taskData->inputs_count.size() != taskData->outputs_count.size()) {
       return false;
     }
@@ -63,10 +59,8 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
     }
     return true;
   }
-
   return true;
 }
-
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::run() {
   internal_order_test();
@@ -169,12 +163,10 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
 
 void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::ParallelSortDouble() {
   int total_size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
   if (rank == 0) total_size = input.size();
   MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
-  if (rank == 0) {
-    std::cout << "Total size: " << total_size << std::endl;
-  }
 
   int base_size = total_size / size;
   int remainder = total_size % size;
@@ -188,25 +180,14 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
     displacements[i] = (i > 0) ? (displacements[i - 1] + send_counts[i - 1]) : 0;
   }
 
-  if (rank == 0) {
-    std::cout << "Send counts: ";
-    for (int i = 0; i < size; ++i) {
-      std::cout << send_counts[i] << " ";
-    }
-    std::cout << std::endl;
-  }
-
   std::vector<double> local_data(local_size);
 
   MPI_Scatterv(input.data(), send_counts.data(), displacements.data(), MPI_DOUBLE, local_data.data(), local_size,
                MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-  MPI_Barrier(MPI_COMM_WORLD);
-
   SortDouble(local_data);
 
   std::vector<double> sorted_data(total_size);
-
   MPI_Gatherv(local_data.data(), local_size, MPI_DOUBLE, sorted_data.data(), send_counts.data(), displacements.data(),
               MPI_DOUBLE, 0, MPI_COMM_WORLD);
 

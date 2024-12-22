@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 
+
 using namespace std::chrono_literals;
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::pre_processing() {
@@ -30,7 +31,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::post_processing() {
   internal_order_test();
   if (!sort.empty()) {
-    memcpy(taskData->outputs[0], sort.data(), sort.size() * sizeof(double));
+    std::copy(sort.begin(), sort.end(), reinterpret_cast<double*>(taskData->outputs[0]));
   }
   return true;
 }
