@@ -168,48 +168,52 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
 
 void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::ParallelSortDouble() {
   int total_size;
-
-  if (rank == 0) total_size = input.size();
+  if (rank == 0) {
+    total_size = input.size();
+  }
   MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   int base_size = total_size / size;
   int remainder = total_size % size;
   int local_size = base_size + (rank < remainder ? 1 : 0);
 
-  std::vector<int> send_counts(size);
-  std::vector<int> displacements(size);
+  std::vector<double> local_data(local_size);
+  std::vector<int> send_counts(size, base_size);
+  std::vector<int> displacements(size, 0);
 
-  for (int i = 0; i < size; ++i) {
-    send_counts[i] = base_size + (i < remainder ? 1 : 0);
-    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + send_counts[i - 1];
+  for (int i = 0; i < remainder; ++i) {
+    send_counts[i]++;
   }
 
-  std::vector<double> local_data(local_size);
+  for (int i = 1; i < size; ++i) {
+    displacements[i] = displacements[i - 1] + send_counts[i - 1];
+  }
 
   MPI_Scatterv(input.data(), send_counts.data(), displacements.data(), MPI_DOUBLE, local_data.data(), local_size,
                MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   SortDouble(local_data);
 
-  std::vector<double> sorted_data(total_size);
-
-  MPI_Gatherv(local_data.data(), local_size, MPI_DOUBLE, sorted_data.data(), send_counts.data(), displacements.data(),
-              MPI_DOUBLE, 0, MPI_COMM_WORLD);
-
+  std::vector<double> merged_data;
   if (rank == 0) {
-    std::vector<double> merged_data = sorted_data;
-    for (int i = 1; i < size; ++i) {
-      int start = displacements[i];
-      int end = start + send_counts[i];
-      std::vector<double> recv_data(sorted_data.begin() + start, sorted_data.begin() + end);
+    merged_data = local_data;
+    std::vector<double> recv_buffer;
+    MPI_Status status;
 
-      std::vector<double> temp_data;
-      std::merge(merged_data.begin(), merged_data.end(), recv_data.begin(), recv_data.end(),
-                 std::back_inserter(temp_data));
-      merged_data = temp_data;
+    for (int proc = 1; proc < size; ++proc) {
+      recv_buffer.resize(send_counts[proc]);
+      MPI_Recv(recv_buffer.data(), send_counts[proc], MPI_DOUBLE, proc, 0, MPI_COMM_WORLD, &status);
+
+      std::vector<double> temp_merged;
+      temp_merged.reserve(merged_data.size() + recv_buffer.size());
+      std::merge(merged_data.begin(), merged_data.end(), recv_buffer.begin(), recv_buffer.end(),
+                 std::back_inserter(temp_merged));
+      merged_data.swap(temp_merged);
     }
 
     sort = merged_data;
+  } else {
+    MPI_Send(local_data.data(), local_size, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
   }
 
   MPI_Barrier(MPI_COMM_WORLD);
