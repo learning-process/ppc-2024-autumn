@@ -188,3 +188,26 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort_Empty_Input_V
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
+
+TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort_Empty_Output_Vector) {
+  boost::mpi::communicator world;
+  int size_vector = world.size() * 10;
+  std::vector<int> unsorted_vector(size_vector);
+  std::vector<int32_t> sorted_vector;
+  std::vector<int32_t> result(size_vector);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
+    taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));
+    taskDataPar->outputs_count.emplace_back(sorted_vector.size());
+  }
+
+  if (world.rank() == 0) {
+    kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
+}
