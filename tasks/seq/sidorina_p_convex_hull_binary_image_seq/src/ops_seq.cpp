@@ -162,11 +162,12 @@ bool ConvexHullBinImgSeq::validation() {
       taskData->outputs.empty() || taskData->inputs_count[1] <= 0 || taskData->inputs_count[2] <= 0 ||
       taskData->outputs_count[0] <= 0) {
     return false;
-  }
 
+  }
   image = std::vector<int>(taskData->inputs_count[0]);
 
-  std::memcpy(image.data(), reinterpret_cast<int*>(taskData->inputs[0]), taskData->inputs_count[0] * sizeof(int));
+  auto* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
+  std::copy(tmp, tmp + taskData->inputs_count[0], image.data());
 
   bool is_valid_image = true;
 

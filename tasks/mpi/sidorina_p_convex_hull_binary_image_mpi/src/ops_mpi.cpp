@@ -186,7 +186,8 @@ bool ConvexHullBinImgMpi::validation() {
 
     image = std::vector<int>(taskData->inputs_count[0]);
 
-    std::memcpy(image.data(), reinterpret_cast<int*>(taskData->inputs[0]), taskData->inputs_count[0] * sizeof(int));
+    auto* tmp = reinterpret_cast<int*>(taskData->inputs[0]);
+    std::copy(tmp, tmp + taskData->inputs_count[0], image.data());
 
     bool is_valid_image = true;
 
