@@ -40,7 +40,7 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::ru
   int count_components =
       poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::label_connected_components(image);
   std::vector<std::vector<std::pair<int, int>>> coords =
-      poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordinates_ñonnected_ñomponents(
+      poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordinates_connected_components(
           image, count_components);
   for (std::vector<std::pair<int, int>>& t : coords) {
     t = poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::convex_hull(t);
@@ -121,7 +121,7 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel::run(
     int count_components =
         poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::label_connected_components(image);
     local_input_ =
-        poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordinates_ñonnected_ñomponents(
+        poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordinates_connected_components(
             image, count_components);
   }
 
@@ -255,7 +255,7 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel::post
 }
 
 std::vector<std::vector<std::pair<int, int>>>
-poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordinates_ñonnected_ñomponents(
+poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::coordinates_connected_components(
     std::vector<std::vector<int>>& labeled_image, int count_components) {
   std::vector<std::vector<std::pair<int, int>>> coords(count_components - 1);
   for (int i = 0; i < labeled_image.size(); ++i) {

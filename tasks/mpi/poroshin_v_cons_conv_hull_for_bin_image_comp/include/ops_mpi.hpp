@@ -25,7 +25,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
   static std::vector<int> gen(int m, int n);  // generate vector (matrix = image)
   static int label_connected_components(std::vector<std::vector<int>>& image);
-  static std::vector<std::vector<std::pair<int, int>>> coordinates_ñonnected_ñomponents(
+  static std::vector<std::vector<std::pair<int, int>>> coordinates_connected_components(
       std::vector<std::vector<int>>& labeled_image, int count_components);
   static std::vector<std::pair<int, int>> convex_hull(std::vector<std::pair<int, int>>& points);
 
@@ -50,4 +50,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace poroshin_v_count_min_val_row_matrix_all_reduce_mpi
+}  // namespace poroshin_v_cons_conv_hull_for_bin_image_comp_mpi
