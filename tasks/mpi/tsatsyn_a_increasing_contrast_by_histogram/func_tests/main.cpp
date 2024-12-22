@@ -9,7 +9,8 @@
 
 #include "mpi/tsatsyn_a_increasing_contrast_by_histogram/include/ops_mpi.hpp"
 static std::vector<int> getRandomVector(int sz) {
-  int a, b;
+  int a;
+  int b;
   a = 0;
   b = 255;
   std::random_device dev;
