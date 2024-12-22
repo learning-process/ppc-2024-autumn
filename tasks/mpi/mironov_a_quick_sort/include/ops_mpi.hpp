@@ -14,8 +14,6 @@
 
 namespace mironov_a_quick_sort_mpi {
 
-std::vector<int> get_random_vector(int sz);
-
 class QuickSortMPI : public ppc::core::Task {
  public:
   explicit QuickSortMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

@@ -6,8 +6,6 @@
 
 namespace mironov_a_quick_sort_seq {
 
-std::vector<int> get_random_vector(int sz);
-
 class QuickSortSequential : public ppc::core::Task {
  public:
   explicit QuickSortSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
