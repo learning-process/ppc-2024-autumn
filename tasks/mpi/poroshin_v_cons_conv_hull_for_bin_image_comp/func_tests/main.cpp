@@ -84,12 +84,12 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_rand
   if (world.rank() == 0) {
     if (tmp[0] == 0) {
       std::vector<std::pair<int, int>> ans(m * n + 2);
-      ASSERT_EQ(result, ans);
+      ASSERT_EQ(ans, result);
     } else {
       std::vector<std::pair<int, int>> ans = {{0, 0}, {0, 0}, {-1, -1}};
       std::vector<std::pair<int, int>> res(ans.size());
       std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-      ASSERT_EQ(res, ans);
+      ASSERT_EQ(ans, res);
     }
   }
 }
@@ -120,7 +120,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_4x3_
     std::vector<std::pair<int, int>> ans = {{0, 0}, {3, 0}, {3, 2}, {0, 2}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -150,7 +150,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_2x5_
     std::vector<std::pair<int, int>> ans = {{0, 0}, {1, 0}, {1, 4}, {0, 4}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -180,7 +180,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_10x1
     std::vector<std::pair<int, int>> ans = {{0, 0}, {9, 0}, {9, 9}, {0, 9}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -213,7 +213,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_11x1
                                             {0, 2}, {-1, -1}, {1, 0},  {2, 0},   {1, 0},  {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -248,7 +248,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_11x1
                                             {9, 9},  {10, 10}, {8, 10},  {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -299,7 +299,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_25x2
         {-1, -1}, {24, 11}, {24, 11}, {-1, -1}, {24, 18}, {24, 18}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -337,7 +337,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_13x1
         {7, 11}, {8, 11}, {8, 12},  {7, 11}, {-1, -1}, {12, 12}, {12, 12}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -366,7 +366,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, validation_and_check_500x
     std::vector<std::pair<int, int>> ans = {{0, 0}, {499, 0}, {499, 499}, {0, 499}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 

@@ -186,13 +186,12 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel::run(
           world.send(rank, 0, t.data() + i, tmp_size - epsilon * rank);
           rank++;
           break;
-        } else {
-          max_rank++;
-          world.send(rank, 0, max_rank);
-          world.send(rank, 0, epsilon);
-          world.send(rank, 0, t.data() + i, epsilon);
-          rank++;
         }
+        max_rank++;
+        world.send(rank, 0, max_rank);
+        world.send(rank, 0, epsilon);
+        world.send(rank, 0, t.data() + i, epsilon);
+        rank++;
       }
       while (rank < world.size()) {
         world.send(rank, 0, max_rank);
@@ -316,7 +315,7 @@ std::vector<std::pair<int, int>> poroshin_v_cons_conv_hull_for_bin_image_comp_mp
 
   std::vector<std::pair<int, int>> convexHull;
 
-  if (inputPoints.size() == 0) {
+  if (inputPoints.empty()) {
     return convexHull;
   }
 

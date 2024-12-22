@@ -127,7 +127,7 @@ std::vector<std::pair<int, int>> poroshin_v_cons_conv_hull_for_bin_image_comp_se
 
   std::vector<std::pair<int, int>> convexHull;
 
-  if (inputPoints.size() == 0) {
+  if (inputPoints.empty()) {
     return convexHull;
   }
 

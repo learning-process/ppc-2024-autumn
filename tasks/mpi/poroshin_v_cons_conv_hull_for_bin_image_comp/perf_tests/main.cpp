@@ -48,7 +48,7 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, test_pipeline_run) {
     std::vector<std::pair<int, int>> ans = {{0, 0}, {999, 0}, {999, 2999}, {0, 2999}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
 
@@ -93,6 +93,6 @@ TEST(poroshin_v_cons_conv_hull_for_bin_image_comp_mpi, test_task_run) {
     std::vector<std::pair<int, int>> ans = {{0, 0}, {999, 0}, {999, 2999}, {0, 2999}, {0, 0}, {-1, -1}};
     std::vector<std::pair<int, int>> res(ans.size());
     std::copy(result.begin(), result.begin() + ans.size(), res.begin());
-    ASSERT_EQ(res, ans);
+    ASSERT_EQ(ans, res);
   }
 }
