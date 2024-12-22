@@ -1,6 +1,6 @@
 #include <mpi.h>
-#include <cstring>
 #include <algorithm>
+#include <string>
 #include <iterator>
 #include <mpi/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_mpi.hpp>
 
@@ -163,8 +163,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::SortDouble(s
 
 void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::ParallelSortDouble() {
   int total_size;
-  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
   if (rank == 0) total_size = input.size();
   MPI_Bcast(&total_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
 

@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 
-
 using namespace std::chrono_literals;
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::pre_processing() {
