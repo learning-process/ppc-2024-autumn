@@ -215,7 +215,7 @@ bool ConvexHullBinaryImageComponentsMPI::run() {
       std::vector<Point> component;
       for (int y = 0; y < image.sizeY; y++) {
         for (int x = 0; x < image.sizeX; x++) {
-          if (image.getPoint(x, y).value == j) {
+          if (image.getPoint(x, y).value == (int)j) {
             component.push_back(image.getPoint(x, y));
           }
         }
@@ -226,7 +226,7 @@ bool ConvexHullBinaryImageComponentsMPI::run() {
     int remainder = (components.size() % world.size());
     sendCounts = std::vector<int>(world.size(), elementsCount);
     sendCounts[0] = sendCounts[0] + remainder;
-    for (int i = 1; i < sendCounts.size(); i++) {
+    for (size_t i = 1; i < sendCounts.size(); i++) {
       displacements[i] = displacements[i - 1] + sendCounts[i - 1];
     }
   }
