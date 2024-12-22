@@ -79,14 +79,14 @@ double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::ve
   double integral = 0.0;
 
   int totalIterations = 1;
-  for (int i = 0; i < dimension; ++i) {
+  for (size_t i = 0; i < dimension; ++i) {
     totalIterations *= nodes[i];
   }
 
   for (int linearIndex = 0; linearIndex < totalIterations; ++linearIndex) {
     int temp = linearIndex;
 
-    for (int i = 0; i < dimension; ++i) {
+    for (size_t i = 0; i < dimension; ++i) {
       indices[i] = temp % nodes[i];
       temp /= nodes[i];
     }
@@ -96,7 +96,7 @@ double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::ve
     }
 
     double weight = 1.0;
-    for (int i = 0; i < dimension; ++i) {
+    for (size_t i = 0; i < dimension; ++i) {
       if (indices[i] == 0 || indices[i] == steps[i])
         weight *= 1.0;
       else if (indices[i] % 2 == 1)
@@ -108,7 +108,7 @@ double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::ve
     integral += weight * func(point, dimension);
   }
 
-  for (int i = 0; i < dimension; ++i) {
+  for (size_t i = 0; i < dimension; ++i) {
     integral *= h[i] / 3.0;
   }
 
