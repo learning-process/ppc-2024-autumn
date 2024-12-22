@@ -9,6 +9,7 @@ namespace mezhuev_m_most_different_neighbor_elements {
 
 bool MostDifferentNeighborElements::validation() {
   internal_order_test();
+
   if (!taskData || taskData->inputs.empty() || taskData->outputs.empty()) {
     return false;
   }
@@ -34,26 +35,6 @@ bool MostDifferentNeighborElements::validation() {
 
 bool MostDifferentNeighborElements::pre_processing() {
   internal_order_test();
-
-  if (taskData == nullptr) {
-    std::cerr << "Error: taskData is nullptr" << std::endl;
-    return false;
-  }
-
-  if (taskData->inputs_count.empty()) {
-    std::cerr << "Error: inputs_count is empty" << std::endl;
-    return false;
-  }
-
-  if (taskData->inputs_count[0] == 0) {
-    std::cerr << "Error: inputs_count[0] is 0" << std::endl;
-    return false;
-  }
-
-  if (taskData->inputs.size() != 1) {
-    std::cerr << "Error: inputs.size() is not 1" << std::endl;
-    return false;
-  }
 
   size_t data_size = taskData->inputs_count[0];
   result_[0] = 0;
@@ -130,9 +111,6 @@ bool MostDifferentNeighborElements::run() {
 
 bool MostDifferentNeighborElements::post_processing() {
   internal_order_test();
-  if (!taskData || taskData->outputs[0] == nullptr || taskData->outputs[1] == nullptr) {
-    return false;
-  }
 
   for (size_t i = 0; i < taskData->outputs_count[0]; ++i) {
     if (taskData->outputs[0][i] != 0) {

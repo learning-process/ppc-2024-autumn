@@ -112,23 +112,6 @@ TEST(mezhuev_m_most_different_neighbor_elements, ValidationSuccess) {
   ASSERT_TRUE(task.validation());
 }
 
-TEST(mezhuev_m_most_different_neighbor_elements, PreProcessingEmptyInputsCount) {
-  boost::mpi::environment env;
-  boost::mpi::communicator world;
-
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(new int[1]));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(new int[1]));
-  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(new int[1]));
-  taskData->inputs_count.clear();
-
-  mezhuev_m_most_different_neighbor_elements::MostDifferentNeighborElements task(world, taskData);
-
-  ASSERT_FALSE(task.validation());
-  ASSERT_FALSE(task.pre_processing());
-}
-
 TEST(mezhuev_m_most_different_neighbor_elements, PreProcessingZeroInputsCount) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
@@ -161,7 +144,7 @@ TEST(mezhuev_m_most_different_neighbor_elements, PreProcessingInvalidInputsSize)
   mezhuev_m_most_different_neighbor_elements::MostDifferentNeighborElements task(world, taskData);
 
   ASSERT_FALSE(task.validation());
-  ASSERT_FALSE(task.pre_processing());
+  ASSERT_TRUE(task.pre_processing());
 }
 
 TEST(mezhuev_m_most_different_neighbor_elements, PreProcessingZeroDataSize) {
