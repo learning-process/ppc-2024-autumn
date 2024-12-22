@@ -23,7 +23,7 @@ static void multiply_matrix_blocks(const std::vector<double>& A, const std::vect
 void perform_fox_algorithm_step(boost::mpi::communicator& my_world, int rank, int cnt_work_process, int K,
                                 std::vector<double>& local_A, std::vector<double>& local_B,
                                 std::vector<double>& local_C);
-  class TestMPITaskSequential : public ppc::core::Task {
+class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;

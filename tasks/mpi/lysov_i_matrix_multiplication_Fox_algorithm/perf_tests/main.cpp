@@ -2,8 +2,9 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
-#include <vector>
 #include <random>
+#include <vector>
+
 #include "core/perf/include/perf.hpp"
 #include "mpi/lysov_i_matrix_multiplication_Fox_algorithm/include/ops_mpi.hpp"
 
@@ -17,7 +18,6 @@ static std::vector<double> getRandomVector(int sz) {
   }
   return vec;
 }
-
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
