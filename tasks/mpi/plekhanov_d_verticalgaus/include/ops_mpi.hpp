@@ -12,7 +12,7 @@
 #include "core/task/include/task.hpp"
 
 namespace plekhanov_d_verticalgaus_mpi {
-    
+
 class VerticalGausSeqTest : public ppc::core::Task {
  public:
   explicit VerticalGausSeqTest(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
