@@ -21,7 +21,8 @@ std::vector<double> generateRandomData(int size, double minValue, double maxValu
 }
 
 void runSortingTest(const std::vector<double>& testData) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 

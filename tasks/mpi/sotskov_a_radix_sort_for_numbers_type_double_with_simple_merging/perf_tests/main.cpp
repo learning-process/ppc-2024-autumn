@@ -24,7 +24,8 @@ void generate_random_data(std::vector<double>& data, int N, double min = -1e9, d
 }  // namespace sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_pipeline_run) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -73,7 +74,8 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_task_run) {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
