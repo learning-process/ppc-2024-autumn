@@ -15,9 +15,8 @@ int mix_mult(const Point& p1, const Point& p2, const Point& p3) {
 int count_rem(int rem, int i) {
   if (i < rem) {
     return 1;
-  } else {
-    return 0;
   }
+  return 0;
 }
 
 std::vector<int> conv_vec(const std::vector<Point>& points) {

@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+
 #include <vector>
 
 #include "mpi/sidorina_p_convex_hull_binary_image_mpi/include/ops_mpi.hpp"
@@ -19,15 +20,72 @@ std::vector<int> gen(int width, int height) {
   return image;
 }
 
-TEST(sidorina_p_convex_hull_binary_image_mpi, Test_valid_vect_0) {
+using Params =
+    std::tuple<int, int>;
+
+class sidorina_p_convex_hull_binary_image_mpi_test : public ::testing::TestWithParam<Params> {
+ protected:
+
+};
+
+TEST_P(sidorina_p_convex_hull_binary_image_mpi_test, Test_image) {
   boost::mpi::communicator world;
+  int width = std::get<0>(GetParam());
+  int height = std::get<1>(GetParam());
+  std::vector<int> image = gen(width,height);
+  std::vector<int> hull(width * height);
+  std::vector<int> ref(width * height, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  for (int j = 0; j < height; j++) {
+    ref[j * width + 0] = 1;
+    ref[j * width + width - 1] = 1;
+    if (j == 0 || j == height - 1) {
+      for (int i = 1; i < width - 1; i++) {
+        ref[j * width + i] = 1;
+      }
+    }
+  }
 
   if (world.rank() == 0) {
-    const int width = 3;
-    const int height = 3;
-    std::vector<int> image;
-    std::vector<int> hull;
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
+    taskDataPar->inputs_count.emplace_back(width * height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
+    taskDataPar->outputs_count.emplace_back(width * height);
+  }
 
+  sidorina_p_convex_hull_binary_image_mpi::ConvexHullBinImgMpi TestTaskMPI(taskDataPar);
+  ASSERT_TRUE(TestTaskMPI.validation());
+  TestTaskMPI.pre_processing();
+  TestTaskMPI.run();
+  TestTaskMPI.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(ref, hull);
+  }
+}
+
+INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_mpi_test,
+                         ::testing::Values(Params(6, 6), Params(3, 3)));
+
+using Params_val = std::tuple<int, int, std::vector<int>>;
+
+class sidorina_p_convex_hull_binary_image_mpi_test_val : public ::testing::TestWithParam<Params_val> {
+ protected:
+};
+
+TEST_P(sidorina_p_convex_hull_binary_image_mpi_test_val, Test_validation) {
+  boost::mpi::communicator world;
+  int width = std::get<0>(GetParam());
+  int height = std::get<1>(GetParam());
+  std::vector<int> image = std::get<2>(GetParam());
+  std::vector<int> hull(width * height);
+  std::vector<int> ref(width * height, 0);
+
+  if (world.rank() == 0) {
     std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
@@ -42,104 +100,14 @@ TEST(sidorina_p_convex_hull_binary_image_mpi, Test_valid_vect_0) {
   }
 }
 
-TEST(sidorina_p_convex_hull_binary_image_mpi, Test_valid_width_0) {
-  boost::mpi::communicator world;
-
-  if (world.rank() == 0) {
-    const int width = 0;
-    const int height = 2;
-    std::vector<int> image = gen(width, height);
-    std::vector<int> hull(width * height);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataPar->inputs_count.emplace_back(width * height);
-    taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-    taskDataPar->outputs_count.emplace_back(width * height);
-
-    sidorina_p_convex_hull_binary_image_mpi::ConvexHullBinImgMpi TestTaskMPI(taskDataPar);
-    ASSERT_FALSE(TestTaskMPI.validation());
-  }
-}
-
-TEST(sidorina_p_convex_hull_binary_image_mpi, Test_valid_height_0) {
-  boost::mpi::communicator world;
-
-  if (world.rank() == 0) {
-    const int width = 3;
-    const int height = 0;
-    std::vector<int> image = gen(width, height);
-    std::vector<int> hull(width * height);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataPar->inputs_count.emplace_back(width * height);
-    taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-    taskDataPar->outputs_count.emplace_back(width * height);
-
-    sidorina_p_convex_hull_binary_image_mpi::ConvexHullBinImgMpi TestTaskMPI(taskDataPar);
-    ASSERT_FALSE(TestTaskMPI.validation());
-  }
-}
-
-TEST(sidorina_p_convex_hull_binary_image_mpi, Test_valid_neg) {
-  boost::mpi::communicator world;
-
-  if (world.rank() == 0) {
-    const int width = -2;
-    const int height = -1;
-    std::vector<int> image = gen(width, height);
-    std::vector<int> hull(width * height);
-
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataPar->inputs_count.emplace_back(width * height);
-    taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-    taskDataPar->outputs_count.emplace_back(width * height);
-
-    sidorina_p_convex_hull_binary_image_mpi::ConvexHullBinImgMpi TestTaskMPI(taskDataPar);
-    ASSERT_FALSE(TestTaskMPI.validation());
-  }
-}
-
-TEST(sidorina_p_convex_hull_binary_image_mpi, Test_valid_not_bin) {
-  boost::mpi::communicator world;
-
-  if (world.rank() == 0) {
-    const int width = 2;
-    const int height = 4;
-    std::vector<int> image = gen(width, height);
-    std::vector<int> hull(width * height);
-
-    image[2] = 2;
-
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(image.data()));
-    taskDataPar->inputs_count.emplace_back(width * height);
-    taskDataPar->inputs_count.emplace_back(width);
-    taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(hull.data()));
-    taskDataPar->outputs_count.emplace_back(width * height);
-
-    sidorina_p_convex_hull_binary_image_mpi::ConvexHullBinImgMpi TestTaskMPI(taskDataPar);
-    ASSERT_FALSE(TestTaskMPI.validation());
-  }
-}
+INSTANTIATE_TEST_SUITE_P(, sidorina_p_convex_hull_binary_image_mpi_test_val,
+                         ::testing::Values(Params_val(0, 6, {1}), Params_val(3, 0, {1}), Params_val(-3, -4, {0}),
+                                           Params_val(5, 5, {2})));
 
 TEST(sidorina_p_convex_hull_binary_image_mpi, Test_all_px_0) {
   boost::mpi::communicator world;
-  const int width = 10;
-  const int height = 10;
+  const int width = 15;
+  const int height = 15;
   std::vector<int> image(width * height, 0);
   std::vector<int> hull(width * height);
 
@@ -167,13 +135,13 @@ TEST(sidorina_p_convex_hull_binary_image_mpi, Test_all_px_0) {
 
 TEST(sidorina_p_convex_hull_binary_image_mpi, Test_one_px_1) {
   boost::mpi::communicator world;
-  const int width = 10;
-  const int height = 10;
+  const int width = 15;
+  const int height = 15;
   std::vector<int> image(width * height, 0);
   std::vector<int> ref(width * height, 0);
   std::vector<int> hull(width * height);
 
-  image[2 * width + 1] = 1;
+  image[5 * width + 1] = 1;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
