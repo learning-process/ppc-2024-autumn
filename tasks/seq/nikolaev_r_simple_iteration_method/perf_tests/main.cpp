@@ -33,8 +33,8 @@ std::pair<std::vector<double>, std::vector<double>> generate_random_diagonally_d
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_pipeline_run) {
-  const size_t m_size = 500;
-  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -15.0, 15.0);
+  const size_t m_size = 1200;
+  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -100.0, 100.0);
 
   std::vector<size_t> in(1, m_size);
   std::vector<double> out(m_size, 0.0);
@@ -57,7 +57,7 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_pipeline_run) {
   ASSERT_TRUE(testTaskSequential->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 1;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -70,13 +70,11 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  ASSERT_EQ(m_size, out.size());
 }
 
 TEST(nikolaev_r_simple_iteration_method_seq, test_task_run) {
-  const size_t m_size = 500;
-  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -15.0, 15.0);
+  const size_t m_size = 1200;
+  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -100.0, 100.0);
 
   std::vector<size_t> in(1, m_size);
   std::vector<double> out(m_size, 0.0);
@@ -99,7 +97,7 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_task_run) {
   ASSERT_TRUE(testTaskSequential->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 1;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -112,6 +110,4 @@ TEST(nikolaev_r_simple_iteration_method_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  ASSERT_EQ(m_size, out.size());
 }

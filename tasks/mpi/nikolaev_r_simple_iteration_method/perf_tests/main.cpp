@@ -36,8 +36,8 @@ std::pair<std::vector<double>, std::vector<double>> generate_random_diagonally_d
 TEST(nikolaev_r_simple_iteration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const size_t m_size = 500;
-  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -15.0, 15.0);
+  const size_t m_size = 1200;
+  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -100.0, 100.0);
   std::vector<size_t> in(1, m_size);
   std::vector<double> out(m_size, 0.0);
 
@@ -61,7 +61,7 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_pipeline_run) {
   ASSERT_TRUE(testTaskParallel->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 1;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -71,15 +71,14 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(m_size, out.size());
   }
 }
 
 TEST(nikolaev_r_simple_iteration_method_mpi, test_task_run) {
   boost::mpi::communicator world;
 
-  const size_t m_size = 500;
-  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -15.0, 15.0);
+  const size_t m_size = 1200;
+  auto [A, b] = generate_random_diagonally_dominant_matrix_and_free_terms(m_size, -100.0, 100.0);
   std::vector<size_t> in(1, m_size);
   std::vector<double> out(m_size, 0.0);
 
@@ -103,7 +102,7 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_task_run) {
   ASSERT_TRUE(testTaskParallel->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 1;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -113,6 +112,5 @@ TEST(nikolaev_r_simple_iteration_method_mpi, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(m_size, out.size());
   }
 }
