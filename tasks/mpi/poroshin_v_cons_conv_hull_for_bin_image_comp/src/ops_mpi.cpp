@@ -1,9 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/poroshin_v_cons_conv_hull_for_bin_image_comp/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <vector>
-
 bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   return true;
@@ -129,24 +126,8 @@ bool poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskParallel::run(
   if (world.rank() == 0) {
     size = static_cast<int>(local_input_.size());
   }
+
   boost::mpi::broadcast(world, size, 0);
-
-  if (world.size() == 1) {
-    for (std::vector<std::pair<int, int>>& t : local_input_) {
-      t = poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::convex_hull(t);
-    }
-
-    res.clear();
-
-    for (size_t i = 0; i < local_input_.size(); i++) {
-      for (size_t j = 0; j < local_input_[i].size(); j++) {
-        res.push_back(local_input_[i][j]);
-      }
-      res.emplace_back(-1, -1);  // The separating symbol for convex hulls of the connectivity component
-    }
-
-    return true;
-  }
 
   for (int s = 0; s < size; s++) {
     std::vector<std::pair<int, int>> coords;

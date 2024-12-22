@@ -1,8 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "seq/poroshin_v_cons_conv_hull_for_bin_image_comp/include/ops_seq.hpp"
 
 std::vector<int> poroshin_v_cons_conv_hull_for_bin_image_comp_seq::TestTaskSequential::gen(int m, int n) {

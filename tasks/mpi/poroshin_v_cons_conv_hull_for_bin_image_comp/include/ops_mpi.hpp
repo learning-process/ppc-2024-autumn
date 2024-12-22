@@ -7,7 +7,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <stack>
-#include <string>
 #include <utility>
 #include <vector>
 

@@ -1,8 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/poroshin_v_cons_conv_hull_for_bin_image_comp/include/ops_seq.hpp"
 

@@ -1,8 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/poroshin_v_cons_conv_hull_for_bin_image_comp/include/ops_seq.hpp"
 
-#include <thread>
-
 bool poroshin_v_cons_conv_hull_for_bin_image_comp_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   return true;
