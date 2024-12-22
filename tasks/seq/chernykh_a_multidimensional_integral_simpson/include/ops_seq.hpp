@@ -8,21 +8,14 @@
 
 namespace chernykh_a_multidimensional_integral_simpson_seq {
 
-using bound_t = std::pair<double, double>;
-using bounds_t = std::vector<bound_t>;
-using step_range_t = std::pair<int, int>;
-using func_args_t = std::vector<double>;
-using func_1d_t = std::function<double(double)>;
-using func_nd_t = std::function<double(const func_args_t &)>;
-
-double integrate_1d(const func_1d_t &func, const bound_t &bound, int num_steps);
-
-double integrate_nd(const func_nd_t &func, func_args_t &func_args, const bounds_t &bounds,
-                    const step_range_t &step_range, double tolerance, int dim);
+using func_nd_t = std::function<double(const std::vector<double>&)>;
+using bounds_t = std::vector<std::pair<double, double>>;
+using steps_t = std::vector<int>;
 
 class SequentialTask : public ppc::core::Task {
  public:
-  explicit SequentialTask(std::shared_ptr<ppc::core::TaskData> task_data) : Task(std::move(task_data)) {}
+  explicit SequentialTask(std::shared_ptr<ppc::core::TaskData> task_data, func_nd_t& func)
+      : Task(std::move(task_data)), func(func) {}
   bool validation() override;
   bool pre_processing() override;
   bool run() override;
@@ -30,11 +23,16 @@ class SequentialTask : public ppc::core::Task {
 
  private:
   func_nd_t func;
-  func_args_t func_args;
   bounds_t bounds;
-  step_range_t step_range;
-  double tolerance{};
+  steps_t steps;
   double result{};
+
+  std::vector<double> get_step_sizes() const;
+  int get_total_points() const;
+  std::vector<int> get_indices(int p) const;
+  std::vector<double> get_point(std::vector<int>& indices, std::vector<double>& step_sizes) const;
+  double get_weight(std::vector<int>& indices) const;
+  double get_scaling_factor(std::vector<double>& step_sizes) const;
 };
 
 }  // namespace chernykh_a_multidimensional_integral_simpson_seq
