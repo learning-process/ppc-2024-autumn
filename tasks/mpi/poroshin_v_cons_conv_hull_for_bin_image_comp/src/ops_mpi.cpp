@@ -282,7 +282,8 @@ int poroshin_v_cons_conv_hull_for_bin_image_comp_mpi::TestMPITaskSequential::lab
           int y = pixelStack.top().second;
           pixelStack.pop();
 
-          if (x < 0 || x >= image.size() || y < 0 || y >= image[0].size() || image[x][y] != 1) {
+          if (x < 0 || x >= static_cast<int>(image.size()) || y < 0 || y >= static_cast<int>(image[0].size()) ||
+              image[x][y] != 1) {
             continue;
           }
 
