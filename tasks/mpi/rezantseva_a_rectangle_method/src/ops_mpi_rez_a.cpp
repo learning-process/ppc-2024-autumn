@@ -1,20 +1,15 @@
 // mpi cpp rectangle method
 #include "mpi/rezantseva_a_rectangle_method/include/ops_mpi_rez_a.hpp"
 
-bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::check_integration_bounds(
-    std::vector<std::pair<double, double>>* ib) {
+bool rezantseva_a_rectangle_method_mpi::check_integration_bounds(std::vector<std::pair<double, double>>* ib) {
   if (ib == nullptr) {
     std::cerr << "Error: bounds pointer is null." << std::endl;
     return false;
   }
 
-  for (const auto& bound : *ib) {
-    if (bound.first >= bound.second) {
-      std::cout << "false";
-      return false;
-    }
-  }
-  return true;
+  bool result = std::ranges::all_of(*ib, [](const auto& bound) { return bound.first < bound.second; });
+
+  return result;
 }
 
 bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::validation() {
@@ -68,22 +63,6 @@ bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::run() {
 bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::post_processing() {
   internal_order_test();
   reinterpret_cast<double*>(taskData->outputs[0])[0] = result_;
-  return true;
-}
-
-bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::check_integration_bounds(
-    std::vector<std::pair<double, double>>* ib) {
-  if (ib == nullptr) {
-    std::cerr << "Error: bounds pointer is null." << std::endl;
-    return false;
-  }
-
-  for (const auto& bound : *ib) {
-    if (bound.first >= bound.second) {
-      return false;
-    }
-  }
-
   return true;
 }
 
@@ -167,7 +146,7 @@ bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::run() {
     }
   }
 
-  boost::mpi::reduce(world, local_sum, result_, std::plus<double>(), 0);
+  boost::mpi::reduce(world, local_sum, result_, std::plus<>(), 0);
   for (int i = 0; i < n_; i++) {
     result_ *= widths_[i];
   }
