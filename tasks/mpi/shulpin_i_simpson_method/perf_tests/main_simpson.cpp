@@ -9,7 +9,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/shulpin_i_simpson_method/include/simpson_method.hpp"
 
-constexpr double ESTIMATE = 1e-2;
+constexpr double ESTIMATE = 1e-5;
 
 TEST(shulpin_simpson_method_MPI, pipeline_run) {
   boost::mpi::environment env;

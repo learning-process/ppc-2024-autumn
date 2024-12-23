@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/shulpin_i_simpson_method/include/simpson_method.hpp"
 
-constexpr double ESTIMATE = 1e-2;
+constexpr double ESTIMATE = 1e-5;
 
 TEST(shulpin_simpson_method_seq, pipeline_run) {
   double a = 0.0;
@@ -18,7 +18,7 @@ TEST(shulpin_simpson_method_seq, pipeline_run) {
   int N = 4201;
 
   double global_integral = 0.0;
-  double ref_integral = 0.386;
+  double ref_integral = 0.38682;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -69,7 +69,7 @@ TEST(shulpin_simpson_method_seq, task_run) {
   int N = 4201;
 
   double global_integral = 0.0;
-  double ref_integral = 0.386;
+  double ref_integral = 0.38682;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 

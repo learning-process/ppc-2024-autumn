@@ -5,7 +5,7 @@
 
 #include "seq/shulpin_i_simpson_method/include/simpson_method.hpp"
 
-constexpr double ESTIMATE = 1e-2;
+constexpr double ESTIMATE = 1e-5;
 
 TEST(shulpin_simpson_method, x_plus_y_2n) {
   double a = 0.0;
@@ -88,7 +88,7 @@ TEST(shulpin_simpson_method, sin_plus_cos_2n) {
   int N = 100;
 
   double global_integral = 0.0;
-  double ref_integral = 10.204;
+  double ref_integral = 10.20396;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -124,7 +124,7 @@ TEST(shulpin_simpson_method, sin_mul_cos_2n) {
   int N = 100;
 
   double global_integral = 0.0;
-  double ref_integral = 0.168;
+  double ref_integral = 0.16848;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -232,7 +232,7 @@ TEST(shulpin_simpson_method, sin_plus_cos_2n_plus_1) {
   int N = 101;
 
   double global_integral = 0.0;
-  double ref_integral = 10.204;
+  double ref_integral = 10.20396;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -268,7 +268,7 @@ TEST(shulpin_simpson_method, sin_mul_cos_2n_plus_1) {
   int N = 101;
 
   double global_integral = 0.0;
-  double ref_integral = 0.168;
+  double ref_integral = 0.16848;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
