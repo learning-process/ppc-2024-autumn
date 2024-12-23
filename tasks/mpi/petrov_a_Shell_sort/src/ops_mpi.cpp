@@ -58,6 +58,9 @@ bool TestTaskMPI::run() {
     for (size_t i = gap; i < local_data_.size(); ++i) {
       int temp = local_data_[i];
       size_t j = i;
+
+      std::vector<int> temporary_buffer(local_data_.size());
+
       while (j >= gap && local_data_[j - gap] > temp) {
         local_data_[j] = local_data_[j - gap];
         j -= gap;
