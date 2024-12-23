@@ -154,7 +154,7 @@ TEST(vavilov_v_bellman_ford_mpi, Random_sparse_graph) {
   int source = 0;
   std::vector<int> output(vertices);
   std::vector<int> expected_output(vertices);
-  std::vector<int> matrix = generate_random_crs_graph(vertices, edges_count);
+  std::vector<int> matrix = generate_random_sparse_graph(vertices, edges_count);
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
