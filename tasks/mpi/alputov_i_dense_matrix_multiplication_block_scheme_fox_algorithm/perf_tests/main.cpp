@@ -2,7 +2,6 @@
 
 #include <boost/mpi/timer.hpp>
 #include <boost/serialization/map.hpp>
-#include <cmath>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -10,12 +9,12 @@
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
 
-  int N = 1000;
+  int N = 100 * x;
   std::vector<double> A(N * N, 0);
   std::vector<double> B(N * N, 0);
   std::vector<double> out(N * N, 0.0);
@@ -32,9 +31,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_mpi, test_
   auto testMpiTaskParallel =
       std::make_shared<alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
                            dense_matrix_multiplication_block_scheme_fox_algorithm_mpi>(taskDataPar);
+  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  std::cout << "pre_processing\n";
   testMpiTaskParallel->pre_processing();
+  std::cout << "run\n";
   testMpiTaskParallel->run();
+  std::cout << "post_processing\n";
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -56,12 +59,12 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_mpi, test_
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
 
-  int N = 1000;
+  int N = 100 * x;
   std::vector<double> A(N * N, 0);
   std::vector<double> B(N * N, 0);
   std::vector<double> out(N * N, 0.0);

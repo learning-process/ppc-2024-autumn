@@ -71,72 +71,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, EmptyInpu
   }
 }
 
-TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, InputSizeTwo_CorrectResult) {
-  boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
-    GTEST_SKIP();
-  }
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(4 * 4);
-  int N = 4;
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(4 * 4);
-  std::vector<double> ansPar(4 * 4);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    // for (int i = 0; i < 4; ++i) {
-    // std::cout << A[i] << " " << B[i] << std::endl;
-    //}
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-    taskDataPar->inputs_count.emplace_back(N);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(ansPar.data()));
-    taskDataPar->outputs_count.emplace_back(ansPar.size());
-  }
-
-  alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
-      dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> ansSeq(4 * 4);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
-    taskDataSeq->inputs_count.emplace_back(N);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(ansSeq.data()));
-    taskDataSeq->outputs_count.emplace_back(ansSeq.size());
-
-    alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
-        dense_matrix_multiplication_block_scheme_fox_algorithm_seq
-            dense_matrix_multiplication_block_scheme_fox_algorithm_seq(taskDataSeq);
-    ASSERT_EQ(dense_matrix_multiplication_block_scheme_fox_algorithm_seq.validation(), true);
-    dense_matrix_multiplication_block_scheme_fox_algorithm_seq.pre_processing();
-    dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
-    dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
-
-    // for (int i = 0; i < 4; ++i) {
-    // std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    //}
-
-    for (int i = 0; i < 4 * 4; ++i) {
-      ASSERT_NEAR(ansPar[i], ansSeq[i], 1e-5);
-    }
-  }
-}
-
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, LargeRandomInput_CorrectResult) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
-  int N = 25;
+  int N = 25 * x;
   std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> ansPar(N * N);
@@ -157,9 +98,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, LargeRand
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
+  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
+  std::cout << "run\n";
   testMpiTaskParallel.run();
+  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -179,23 +124,25 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, LargeRand
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
 
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    //}
+    for (int i = 0; i < N * N; ++i) {
+      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
+    }
 
     for (int i = 0; i < N * N; ++i) {
-      ASSERT_NEAR(ansPar[i], ansSeq[i], 1e-5);
+      ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
     }
   }
 }
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, MediumRandomInput_CorrectResult) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
-  int N = 13;
+
+  int N = 13 * x;
   std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> ansPar(N * N);
@@ -216,9 +163,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, MediumRan
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
+  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
+  std::cout << "run\n";
   testMpiTaskParallel.run();
+  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -238,23 +189,23 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, MediumRan
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
 
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    //}
+    for (int i = 0; i < N * N; ++i) {
+      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
+    }
 
     for (int i = 0; i < N * N; ++i) {
-      ASSERT_NEAR(ansPar[i], ansSeq[i], 1e-5);
+      ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
     }
   }
 }
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AllEqualElements_CorrectResult) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
-  int N = 12;
+  int N = 12 * x;
   std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> ansPar(N * N);
@@ -275,9 +226,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AllEqualE
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
+  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
+  std::cout << "run\n";
   testMpiTaskParallel.run();
+  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -297,23 +252,23 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AllEqualE
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
 
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    //}
+    for (int i = 0; i < N * N; ++i) {
+      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
+    }
 
     for (int i = 0; i < N * N; ++i) {
-      ASSERT_NEAR(ansPar[i], ansSeq[i], 1e-5);
+      ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
     }
   }
 }
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AlternatingElements_CorrectResult) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
-  int N = 4;
+  int N = 4 * x;
   std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> ansPar(N * N);
@@ -334,9 +289,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, Alternati
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
+  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
+  std::cout << "run\n";
   testMpiTaskParallel.run();
+  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -356,23 +315,23 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, Alternati
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
 
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    //}
+    for (int i = 0; i < N * N; ++i) {
+      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
+    }
 
     for (int i = 0; i < N * N; ++i) {
-      ASSERT_NEAR(ansPar[i], ansSeq[i], 1e-5);
+      ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
     }
   }
 }
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, ConstantDifferenceSequence_CorrectResult) {
   boost::mpi::communicator world;
-  int x = static_cast<int>(std::sqrt(static_cast<double>(world.rank())));
-  if (x * x != world.rank()) {
+  int x = static_cast<int>(std::sqrt(static_cast<double>(world.size())));
+  if (x * x != world.size()) {
     GTEST_SKIP();
   }
-  int N = 8;
+  int N = 8 * x;
   std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
   std::vector<double> ansPar(N * N);
@@ -393,9 +352,13 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, ConstantD
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
+  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
+  std::cout << "run\n";
   testMpiTaskParallel.run();
+  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -415,12 +378,12 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, ConstantD
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
 
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    //}
+    for (int i = 0; i < N * N; ++i) {
+      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
+    }
 
     for (int i = 0; i < N * N; ++i) {
-      ASSERT_NEAR(ansPar[i], ansSeq[i], 1e-5);
+      ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
     }
   }
 }

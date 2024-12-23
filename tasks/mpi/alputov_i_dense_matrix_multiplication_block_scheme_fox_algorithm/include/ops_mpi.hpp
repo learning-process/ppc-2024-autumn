@@ -6,7 +6,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
 #include <climits>
-#include <cmath>
 #include <memory>
 #include <numeric>
 #include <string>
@@ -18,14 +17,14 @@
 namespace alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm {
 /*
 void multiplyBlock(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& C, int blockSize,
-                   int n, int p) {
+                                   int n, int p) {
   for (int i = 0; i < blockSize; ++i) {
-    for (int j = 0; j < p; ++j) {
-      C[i * p + j] = 0.0;
-      for (int k = 0; k < n; ++k) {
-        C[i * p + j] += A[i * n + k] * B[k * p + j];
-      }
-    }
+        for (int j = 0; j < p; ++j) {
+          C[i * p + j] = 0.0;
+          for (int k = 0; k < n; ++k) {
+                C[i * p + j] += A[i * n + k] * B[k * p + j];
+          }
+        }
   }
 }
 */
@@ -57,6 +56,14 @@ class dense_matrix_multiplication_block_scheme_fox_algorithm_mpi : public ppc::c
  private:
   std::vector<double> A;
   std::vector<double> B;
+  std::vector<double> rectA;
+  std::vector<double> rectB;
+  std::vector<double> localA;
+  std::vector<double> localB;
+  std::vector<double> mult_block;
+  std::vector<double> block_A_to_send;
+  std::vector<double> block_B_to_send;
+  std::vector<double> resultM;
   int N;
   std::vector<double> C;
   boost::mpi::communicator world;
