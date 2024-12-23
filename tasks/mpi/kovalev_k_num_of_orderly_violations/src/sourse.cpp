@@ -62,6 +62,7 @@ bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::run(
 template <class T>
 bool kovalev_k_num_of_orderly_violations_mpi::NumOfOrderlyViolationsPar<T>::post_processing() {
   internal_order_test();
+  world.barrier();
   if (rank == 0) {
     reinterpret_cast<size_t*>(taskData->outputs[0])[0] = g_res;
   }
