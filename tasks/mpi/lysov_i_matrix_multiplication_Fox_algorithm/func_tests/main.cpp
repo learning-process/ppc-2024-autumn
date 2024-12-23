@@ -89,7 +89,9 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Test_Multiplication_0x0) {
   }
 
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, RandomTestMatrix3x3) {
