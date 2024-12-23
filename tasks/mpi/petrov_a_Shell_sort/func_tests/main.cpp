@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
+#include <boost/mpi.hpp>
 #include <random>
 #include <vector>
 
@@ -28,31 +26,27 @@ void template_test(const std::vector<int>& input_data) {
   int vector_size = static_cast<int>(data.size());
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
-  taskData->inputs_count.emplace_back(1);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+  taskData->inputs_count.emplace_back(data.size());
 
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    taskData->inputs_count.emplace_back(data.size());
-
     result_data.resize(vector_size);
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
     taskData->outputs_count.emplace_back(result_data.size());
   }
 
-  auto task = std::make_shared<TestTaskMPI>(taskData);
+  auto taskMPI = std::make_shared<TestTaskMPI>(taskData);
 
-  if (task->validation()) {
-    task->pre_processing();
-    task->run();
-    task->post_processing();
+  if (!taskMPI->validation()) {
+  }
+  if (!taskMPI->pre_processing()) {
+  }
+  taskMPI->run();
+  taskMPI->post_processing();
 
-    if (world.rank() == 0) {
-      std::sort(data.begin(), data.end());
-      EXPECT_EQ(data, result_data);
-    }
-  } else {
-    ASSERT_TRUE(false);
+  if (world.rank() == 0) {
+    std::sort(data.begin(), data.end());
+    EXPECT_EQ(data, result_data);
   }
 }
 
@@ -62,12 +56,12 @@ TEST(petrov_a_Shell_sort_mpi, test_sorted_ascending) {
   petrov_a_Shell_sort_mpi::template_test({1, 2, 3, 4, 5, 6, 7, 8});
 }
 
-TEST(petrov_a_Shell_sort_mpi, test_almost_sorted_random) {
-  petrov_a_Shell_sort_mpi::template_test({9, 7, 5, 3, 1, 2, 4, 6});
-}
-
 TEST(petrov_a_Shell_sort_mpi, test_sorted_descending) {
   petrov_a_Shell_sort_mpi::template_test({8, 7, 6, 5, 4, 3, 2, 1});
+}
+
+TEST(petrov_a_Shell_sort_mpi, test_almost_sorted_random) {
+  petrov_a_Shell_sort_mpi::template_test({9, 7, 5, 3, 1, 2, 4, 6});
 }
 
 TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements) {
