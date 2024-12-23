@@ -10,7 +10,7 @@ bool DijkstrasAlgorithmParallel::validation() {
 
   auto* graph = reinterpret_cast<SparseGraphCRS*>(taskData->inputs[0]);
 
-  if (graph->num_vertices == 0 || graph->num_vertices > 10000) {
+  if (graph->num_vertices == 0) {
     return false;
   }
 

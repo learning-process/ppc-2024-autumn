@@ -1,3 +1,4 @@
+#include <corecrt_math_defines.h>
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
@@ -8,24 +9,38 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/gusev_n_dijkstras_algorithm/include/ops_mpi.hpp"
 
+void create_cycle_graph(
+    std::shared_ptr<gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel::SparseGraphCRS>& graph,
+    int num_vertices) {
+  for (int i = 0; i < num_vertices; ++i) {
+    double weight = static_cast<double>(rand()) / RAND_MAX * 10.0 + 0.1;  // Random weight between 0.1 and 10.0
+    graph->add_edge(i, (i + 1) % num_vertices, weight);                   // Connect in a cycle
+  }
+}
+
+void create_bipartite_graph(
+    std::shared_ptr<gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel::SparseGraphCRS>& graph,
+    int num_vertices) {
+  int half = num_vertices / 2;
+  for (int u = 0; u < half; ++u) {
+    for (int v = half; v < num_vertices; ++v) {
+      double weight = static_cast<double>(rand()) / RAND_MAX * 10.0 + 0.1;  // Random weight between 0.1 and 10.0
+      graph->add_edge(u, v, weight);
+    }
+  }
+}
+
 TEST(gusev_n_dijkstras_algorithm_mpi, run_pipeline) {
   boost::mpi::communicator world;
 
   auto graph = std::make_shared<gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel::SparseGraphCRS>(100);
-
+  int num_vertices = 100;
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> weight_dist(0.1, 10.0);
   std::uniform_int_distribution<> vertex_dist(0, 99);
 
-  for (int i = 0; i < 1000; ++i) {
-    int u = vertex_dist(gen);
-    int v = vertex_dist(gen);
-    double weight = weight_dist(gen);
-    if (u != v) {
-      graph->add_edge(u, v, weight);
-    }
-  }
+  create_cycle_graph(graph, num_vertices);
 
   std::vector<double> output_data(100);
 
@@ -60,20 +75,13 @@ TEST(gusev_n_dijkstras_algorithm_mpi, run_task) {
   boost::mpi::communicator world;
 
   auto graph = std::make_shared<gusev_n_dijkstras_algorithm_mpi::DijkstrasAlgorithmParallel::SparseGraphCRS>(100);
-
+  int num_vertices = 100;
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> weight_dist(0.1, 10.0);
   std::uniform_int_distribution<> vertex_dist(0, 99);
 
-  for (int i = 0; i < 1000; ++i) {
-    int u = vertex_dist(gen);
-    int v = vertex_dist(gen);
-    double weight = weight_dist(gen);
-    if (u != v) {
-      graph->add_edge(u, v, weight);
-    }
-  }
+  create_bipartite_graph(graph, num_vertices);
 
   std::vector<double> output_data(100);
 
