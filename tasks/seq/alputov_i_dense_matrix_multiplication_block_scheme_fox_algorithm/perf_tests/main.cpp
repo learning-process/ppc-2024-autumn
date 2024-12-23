@@ -7,11 +7,11 @@
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, test_pipeline_run) {
   std::vector<double> A(1000 * 1000, 0);
-  size_t row_A = 1000;
-  size_t column_A = 1000;
+  int row_A = 1000;
+  int column_A = 1000;
   std::vector<double> B(1000 * 1000, 0);
-  size_t row_B = 1000;
-  size_t column_B = 1000;
+  int row_B = 1000;
+  int column_B = 1000;
   std::vector<double> out(1000 * 1000);
 
   std::vector<double> ans(1000 * 1000, 0);
@@ -50,11 +50,11 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, test_
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, test_task_run) {
   std::vector<double> A(1000 * 1000, 0);
-  size_t row_A = 1000;
-  size_t column_A = 1000;
+  int row_A = 1000;
+  int column_A = 1000;
   std::vector<double> B(1000 * 1000, 0);
-  size_t row_B = 1000;
-  size_t column_B = 1000;
+  int row_B = 1000;
+  int column_B = 1000;
   std::vector<double> out(1000 * 1000);
 
   std::vector<double> ans(1000 * 1000, 0);

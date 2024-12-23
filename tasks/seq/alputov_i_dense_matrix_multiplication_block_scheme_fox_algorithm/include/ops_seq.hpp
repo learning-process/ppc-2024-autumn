@@ -18,9 +18,9 @@ class dense_matrix_multiplication_block_scheme_fox_algorithm_seq : public ppc::c
 
  private:
   std::vector<double> A;
-  size_t column_A, row_A;
+  int column_A, row_A;
   std::vector<double> B;
-  size_t column_B, row_B;
+  int column_B, row_B;
   std::vector<double> C;
 };
 
