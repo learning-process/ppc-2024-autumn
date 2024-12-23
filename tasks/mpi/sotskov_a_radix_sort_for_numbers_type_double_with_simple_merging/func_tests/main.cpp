@@ -78,7 +78,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, Verif
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, VerifySortingWithPreGeneratedData) {
-  std::vector<double> testData = {10.5, 2.3, 4.7, 8.0, 1.2, 3.5, 7.8, 6.1, 5.0};
+  std::vector<double> testData = {10.5, 2.3, 4.7, 8.0, 1.2, 3.5, 7.8, 6.1, 5.1};
   sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi::runSortingTest(testData);
 }
 
