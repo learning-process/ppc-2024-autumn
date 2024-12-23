@@ -32,8 +32,8 @@ std::vector<std::vector<double>> gen_rand_matrix(int rows, int cols, int non_zer
   return matrix;
 }
 
-std::vector<std::vector<double>> multiply_matrices(const std::vector<std::vector<double>>& A,
-                                                   const std::vector<std::vector<double>>& B) {
+std::vector<std::vector<double>> multiply_matrices(const std::vector<std::vector<double>> &A,
+                                                   const std::vector<std::vector<double>> &B) {
   int rows_A = A.size();
   int cols_A = A[0].size();
   int cols_B = B[0].size();
@@ -51,7 +51,7 @@ std::vector<std::vector<double>> multiply_matrices(const std::vector<std::vector
   return result;
 }
 
-void func_test_template(const std::vector<std::vector<double>>& A_, const std::vector<std::vector<double>>& B_) {
+void func_test_template(const std::vector<std::vector<double>> &A_, const std::vector<std::vector<double>> &B_) {
   boost::mpi::communicator world;
   std::vector<double> A_val;
   std::vector<int> A_row_ind;
@@ -82,37 +82,37 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
   convert_to_CCS(B_, rows_B, cols_B, B_val, B_row_ind, B_col_ptr);
 
   std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows_A));
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&rows_A));
   task_data->inputs_count.emplace_back(1);
-  task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols_A));
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cols_A));
   task_data->inputs_count.emplace_back(1);
-  task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows_B));
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&rows_B));
   task_data->inputs_count.emplace_back(1);
-  task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols_B));
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cols_B));
   task_data->inputs_count.emplace_back(1);
 
   if (world.rank() == 0) {
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_val.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(A_val.data()));
     task_data->inputs_count.emplace_back(A_val.size());
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_row_ind.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(A_row_ind.data()));
     task_data->inputs_count.emplace_back(A_row_ind.size());
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(A_col_ptr.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(A_col_ptr.data()));
     task_data->inputs_count.emplace_back(A_col_ptr.size());
 
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_val.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(B_val.data()));
     task_data->inputs_count.emplace_back(B_val.size());
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_row_ind.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(B_row_ind.data()));
     task_data->inputs_count.emplace_back(B_row_ind.size());
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(B_col_ptr.data()));
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(B_col_ptr.data()));
     task_data->inputs_count.emplace_back(B_col_ptr.size());
 
     C_val.resize(exp_C_val.size());
     C_row_ind.resize(exp_C_row_ind.size());
     C_col_ptr.resize(exp_C_col_ptr.size());
 
-    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_val.data()));
-    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_row_ind.data()));
-    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_col_ptr.data()));
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(C_val.data()));
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(C_row_ind.data()));
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(C_col_ptr.data()));
   }
 
   MatrixMultiplyCCS task(task_data);
@@ -130,8 +130,63 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
     }
   }
 }
+void val_test_template(const std::vector<std::vector<double>> &A_, const std::vector<std::vector<double>> &B_) {
+  int rows_A;
+  int cols_A;
+  if (A_.empty()) {
+    rows_A = 0;
+    cols_A = 0;
+  } else {
+    rows_A = A_.size();
+    cols_A = A_[0].size();
+  }
+
+  std::vector<double> B_val;
+  std::vector<int> B_row_ind;
+  std::vector<int> B_col_ptr;
+  int rows_B;
+  int cols_B;
+  if (B_.empty()) {
+    rows_B = 0;
+    cols_B = 0;
+  } else {
+    rows_B = B_.size();
+    cols_B = B_[0].size();
+  }
+
+  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&rows_A));
+  task_data->inputs_count.emplace_back(1);
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cols_A));
+  task_data->inputs_count.emplace_back(1);
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&rows_B));
+  task_data->inputs_count.emplace_back(1);
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cols_B));
+  task_data->inputs_count.emplace_back(1);
+
+  MatrixMultiplyCCS task(task_data);
+  EXPECT_FALSE(task.validation());
+}
 
 }  // namespace muradov_m_matrix_multiply_ccs_mpi
+
+TEST(muradov_m_matrix_multiply_ccs_mpi, ValEmptyA) {
+  std::vector<std::vector<double>> A_ = {};
+  std::vector<std::vector<double>> B_ = {{0, 4, 0, 0, 1}, {5, 0, 0, 2, 0}, {0, 0, 3, 0, 6}};
+  muradov_m_matrix_multiply_ccs_mpi::val_test_template(A_, B_);
+}
+
+TEST(muradov_m_matrix_multiply_ccs_mpi, ValEmptyB) {
+  std::vector<std::vector<double>> A_ = {{1, 0, 2}, {0, 3, 0}};
+  std::vector<std::vector<double>> B_ = {};
+  muradov_m_matrix_multiply_ccs_mpi::val_test_template(A_, B_);
+}
+
+TEST(muradov_m_matrix_multiply_ccs_mpi, ValEmptyAB) {
+  std::vector<std::vector<double>> A_ = {};
+  std::vector<std::vector<double>> B_ = {};
+  muradov_m_matrix_multiply_ccs_mpi::val_test_template(A_, B_);
+}
 
 TEST(muradov_m_matrix_multiply_ccs_mpi, SmallMatrices) {
   std::vector<std::vector<double>> A_ = {{1, 0, 2}, {0, 3, 0}};

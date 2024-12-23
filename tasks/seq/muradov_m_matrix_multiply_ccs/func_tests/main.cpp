@@ -118,7 +118,63 @@ void func_test_template(const std::vector<std::vector<double>> &A_, const std::v
   }
 }
 
+void val_test_template(const std::vector<std::vector<double>> &A_, const std::vector<std::vector<double>> &B_) {
+  int rows_A;
+  int cols_A;
+  if (A_.empty()) {
+    rows_A = 0;
+    cols_A = 0;
+  } else {
+    rows_A = A_.size();
+    cols_A = A_[0].size();
+  }
+
+  std::vector<double> B_val;
+  std::vector<int> B_row_ind;
+  std::vector<int> B_col_ptr;
+  int rows_B;
+  int cols_B;
+  if (B_.empty()) {
+    rows_B = 0;
+    cols_B = 0;
+  } else {
+    rows_B = B_.size();
+    cols_B = B_[0].size();
+  }
+
+  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&rows_A));
+  task_data->inputs_count.emplace_back(1);
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cols_A));
+  task_data->inputs_count.emplace_back(1);
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&rows_B));
+  task_data->inputs_count.emplace_back(1);
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&cols_B));
+  task_data->inputs_count.emplace_back(1);
+
+  MatrixMultiplyCCS task(task_data);
+  EXPECT_FALSE(task.validation());
+}
+
 }  // namespace muradov_m_matrix_multiply_ccs_seq
+
+TEST(muradov_m_matrix_multiply_ccs_seq, ValEmptyA) {
+  std::vector<std::vector<double>> A_ = {};
+  std::vector<std::vector<double>> B_ = {{0, 4, 0, 0, 1}, {5, 0, 0, 2, 0}, {0, 0, 3, 0, 6}};
+  muradov_m_matrix_multiply_ccs_seq::val_test_template(A_, B_);
+}
+
+TEST(muradov_m_matrix_multiply_ccs_seq, ValEmptyB) {
+  std::vector<std::vector<double>> A_ = {{1, 0, 2}, {0, 3, 0}};
+  std::vector<std::vector<double>> B_ = {};
+  muradov_m_matrix_multiply_ccs_seq::val_test_template(A_, B_);
+}
+
+TEST(muradov_m_matrix_multiply_ccs_seq, ValEmptyAB) {
+  std::vector<std::vector<double>> A_ = {};
+  std::vector<std::vector<double>> B_ = {};
+  muradov_m_matrix_multiply_ccs_seq::val_test_template(A_, B_);
+}
 
 TEST(muradov_m_matrix_multiply_ccs_seq, SmallMatrices) {
   std::vector<std::vector<double>> A_ = {{1, 0, 2}, {0, 3, 0}};
