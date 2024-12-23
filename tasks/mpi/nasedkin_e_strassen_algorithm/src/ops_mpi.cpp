@@ -57,7 +57,7 @@ namespace nasedkin_e_strassen_algorithm {
         return true;
     }
 
-    std::vector<double> matrix_add(const std::vector<double>& matrixA,
+    std::vector<double> StrassenAlgorithmMPI::matrix_add(const std::vector<double>& matrixA,
                                    const std::vector<double>& matrixB,
                                    size_t size) {
         std::vector<double> result(size * size);
@@ -67,7 +67,7 @@ namespace nasedkin_e_strassen_algorithm {
         return result;
     }
 
-    std::vector<double> matrix_subtract(const std::vector<double>& matrixA,
+    std::vector<double> StrassenAlgorithmMPI::matrix_subtract(const std::vector<double>& matrixA,
                                         const std::vector<double>& matrixB,
                                         size_t size) {
         std::vector<double> result(size * size);
@@ -90,7 +90,7 @@ namespace nasedkin_e_strassen_algorithm {
         return sqrt_val * sqrt_val == matrixSize;
     }
 
-    std::vector<double> pad_matrix(const std::vector<double>& matrix, size_t original_size, size_t new_size) {
+    std::vector<double> StrassenAlgorithmMPI::pad_matrix(const std::vector<double>& matrix, size_t original_size, size_t new_size) {
         std::vector<double> padded_matrix(new_size * new_size, 0.0);
         for (size_t i = 0; i < original_size; ++i) {
             for (size_t j = 0; j < original_size; ++j) {
