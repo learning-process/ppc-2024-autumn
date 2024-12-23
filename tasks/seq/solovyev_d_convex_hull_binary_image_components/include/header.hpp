@@ -5,7 +5,6 @@
 #include <cmath>
 #include <functional>
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -24,7 +23,6 @@ class Image {
   std::vector<int> components{0};
 
  public:
-  int size;
   int sizeX;
   int sizeY;
 

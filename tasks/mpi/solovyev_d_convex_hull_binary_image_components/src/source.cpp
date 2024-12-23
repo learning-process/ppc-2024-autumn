@@ -14,7 +14,6 @@ double Point::relativeAngle(Point other) const { return std::atan2((other.y * -1
 
 Image::Image() {
   image = std::vector<Point>{};
-  size = 0;
   sizeX = 0;
   sizeY = 0;
 }
@@ -26,7 +25,6 @@ Image::Image(std::vector<int> data, int dimX, int dimY) {
     Point point = {pointX, pointY, data[i]};
     image.push_back(point);
   }
-  size = data.size();
   sizeX = dimX;
   sizeY = dimY;
 }
@@ -126,7 +124,12 @@ bool ConvexHullBinaryImageComponentsMPI::pre_processing() {
 bool ConvexHullBinaryImageComponentsMPI::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return ((*reinterpret_cast<int *>(taskData->inputs[1]) >= 0 && *reinterpret_cast<int *>(taskData->inputs[2]) >= 0));
+    bool isSizeCorrect =
+        ((*reinterpret_cast<int *>(taskData->inputs[1])) * (*reinterpret_cast<int *>(taskData->inputs[2])) ==
+         (int)(taskData->inputs_count[0]));
+    return (
+        (*reinterpret_cast<int *>(taskData->inputs[1]) >= 0 && *reinterpret_cast<int *>(taskData->inputs[2]) >= 0) &&
+        isSizeCorrect);
   }
   return true;
 }

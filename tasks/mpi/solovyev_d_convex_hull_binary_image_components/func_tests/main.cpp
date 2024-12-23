@@ -7,6 +7,35 @@
 
 #include "mpi/solovyev_d_convex_hull_binary_image_components/include/header.hpp"
 
+TEST(solovyev_d_convex_hull_binary_image_components_mpi, Test_Wrong_Input_Dimensions) {
+  boost::mpi::communicator world;
+  int dimX = 1;
+  int dimY = 1;
+
+  std::vector<int> in = {1, 0, 1, 1, 1, 0, 1, 0};
+  std::vector<std::vector<int>> expected = {};
+  std::vector<std::vector<int>> out = {};
+
+  // Create data
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dimX));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dimY));
+    taskDataPar->inputs_count.emplace_back(in.size());
+    for (size_t i = 0; i < out.size(); i++) {
+      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
+      taskDataPar->outputs_count.emplace_back(out.size());
+    }
+  }
+  // Create Task
+  solovyev_d_convex_hull_binary_image_components_mpi::ConvexHullBinaryImageComponentsMPI
+      ConvexHullBinaryImageComponentsMPI(taskDataPar);
+  if (world.rank() == 0) {
+    ASSERT_EQ(ConvexHullBinaryImageComponentsMPI.validation(), false);
+  }
+}
+
 TEST(solovyev_d_convex_hull_binary_image_components_mpi, Test_Empty) {
   boost::mpi::communicator world;
   int dimX = 0;

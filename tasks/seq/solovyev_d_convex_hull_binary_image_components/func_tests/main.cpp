@@ -5,6 +5,31 @@
 
 #include "seq/solovyev_d_convex_hull_binary_image_components/include/header.hpp"
 
+TEST(solovyev_d_convex_hull_binary_image_components_seq, Test_Wrong_Input_Dimensions) {
+  int dimX = 1;
+  int dimY = 1;
+  // Create data
+  std::vector<int> in = {1, 0, 1, 1, 1, 0, 1, 0};
+  std::vector<std::vector<int>> expected = {};
+  std::vector<std::vector<int>> out = {};
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dimX));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&dimY));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  for (size_t i = 0; i < out.size(); i++) {
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out[i].data()));
+    taskDataSeq->outputs_count.emplace_back(out.size());
+  }
+
+  // Create Task
+  solovyev_d_convex_hull_binary_image_components_seq::ConvexHullBinaryImageComponentsSequential
+      ConvexHullBinaryImageComponentsSequential(taskDataSeq);
+  ASSERT_EQ(ConvexHullBinaryImageComponentsSequential.validation(), false);
+}
+
 TEST(solovyev_d_convex_hull_binary_image_components_seq, Test_Empty) {
   int dimX = 0;
   int dimY = 0;
