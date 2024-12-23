@@ -2,6 +2,7 @@
 
 #include <boost/mpi/timer.hpp>
 #include <boost/serialization/map.hpp>
+#include <cmath>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
