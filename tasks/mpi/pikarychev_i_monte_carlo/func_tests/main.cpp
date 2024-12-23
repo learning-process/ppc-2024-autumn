@@ -9,7 +9,7 @@
 
 #include "mpi/pikarychev_i_monte_carlo/include/ops_mpi.hpp"
 
-TEST(MonteCarloIntegration, SequentialVsParallel) {
+TEST(pikarychev_i_monte_carlo_mpi, SequentialVsParallel) {
   const double a = 0.0;
   const double b = 1.0;
   const int num_samples = 100000;
@@ -53,7 +53,7 @@ TEST(MonteCarloIntegration, SequentialVsParallel) {
   }
 }
 
-TEST(MonteCarloIntegration, SequentialVsParallel_1) {
+TEST(pikarychev_i_monte_carlo_mpi, SequentialVsParallel_1) {
   const double a = 0.0;
   const double b = 0.0;
   const int num_samples = 1;
@@ -92,7 +92,7 @@ TEST(MonteCarloIntegration, SequentialVsParallel_1) {
   }
 }
 
-TEST(MonteCarloIntegration, SequentialVsParallel_4) {
+TEST(pikarychev_i_monte_carlo_mpi, SequentialVsParallel_4) {
   const double a = -1.0;
   const double b = 1.0;
   const int num_samples = 100;
@@ -129,7 +129,7 @@ TEST(MonteCarloIntegration, SequentialVsParallel_4) {
   }
 }
 
-TEST(MonteCarloIntegration, SequentialVsParallel_5) {
+TEST(pikarychev_i_monte_carlo_mpi, SequentialVsParallel_5) {
   const double a = -1.0;
   const double b = -2.0;
   const int num_samples = 100;
@@ -166,7 +166,7 @@ TEST(MonteCarloIntegration, SequentialVsParallel_5) {
   }
 }
 
-TEST(MonteCarloIntegration, SequentialVsParallel_reg9) {
+TEST(pikarychev_i_monte_carlo_mpi, SequentialVsParallel_reg9) {
   std::random_device dev;
   std::mt19937 gen(dev());
   double a = (gen() % 100) / 100.0;
