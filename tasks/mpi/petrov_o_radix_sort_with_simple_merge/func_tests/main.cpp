@@ -517,7 +517,7 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_3n_size) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  TaskSequential testTaskSequential(taskDataSeq);
+  TaskSequential testTaskSequential(taskData);
 
   ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed";
   ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed";
@@ -553,7 +553,7 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_prime_value
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskData->outputs_count.emplace_back(out.size());
 
-  TaskSequential testTaskSequential(taskDataSeq);
+  TaskSequential testTaskSequential(taskData);
 
   ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed";
   ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed";
