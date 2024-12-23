@@ -26,14 +26,34 @@ void shell_sort(std::vector<int>& arr) {
 bool TestTaskMPI::validation() {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  if (data_.empty()) {
+
+  if (rank == 0 && data_.empty()) {
+    std::cerr << "Rank 0: Input data is empty. Validation failed." << std::endl;
+    return false;
+  }
+
+  int data_size = static_cast<int>(data_.size());
+  MPI_Bcast(&data_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  if (data_size == 0) {
     if (rank == 0) {
-      std::cerr << "Input data is empty. Validation failed." << std::endl;
+      std::cerr << "Validation failed: Data size is 0 across all ranks." << std::endl;
     }
     return false;
   }
+
+  int world_size;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  if (world_size > data_size) {
+    if (rank == 0) {
+      std::cerr << "Validation failed: Number of processes (" << world_size << ") exceeds data size (" << data_size
+                << ")." << std::endl;
+    }
+    return false;
+  }
+
   if (rank == 0) {
-    std::cerr << "Validation passed. Input data size: " << data_.size() << std::endl;
+    std::cerr << "Validation passed. Data size: " << data_size << ", Number of processes: " << world_size << "."
+              << std::endl;
   }
   return true;
 }

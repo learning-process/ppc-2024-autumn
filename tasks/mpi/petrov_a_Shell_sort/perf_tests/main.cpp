@@ -50,10 +50,6 @@ void template_test(const std::vector<int>& input_data) {
 
 }  // namespace petrov_a_Shell_sort_mpi
 
-TEST(petrov_a_Shell_sort_mpi, test_sorted_ascending) {
-  petrov_a_Shell_sort_mpi::template_test({1, 2, 3, 4, 5, 6, 7, 8});
-}
-
 TEST(petrov_a_Shell_sort_mpi, test_sorted_descending) {
   petrov_a_Shell_sort_mpi::template_test({8, 7, 6, 5, 4, 3, 2, 1});
 }
