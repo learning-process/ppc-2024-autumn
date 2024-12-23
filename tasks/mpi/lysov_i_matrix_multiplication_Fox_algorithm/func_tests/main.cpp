@@ -228,7 +228,9 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data) {
     taskDataPar->outputs_count.emplace_back(C_parallel.size());
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  if (world.rank()) ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank()) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data2) {
@@ -247,7 +249,9 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data2) {
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank()) ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank()) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data1) {
@@ -264,7 +268,9 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data1) {
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank()) ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank()) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data2) {
@@ -282,5 +288,7 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data2) {
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank()) ASSERT_FALSE(testMpiTaskParallel.validation());
+  if (world.rank()) {
+    ASSERT_FALSE(testMpiTaskParallel.validation());
+  }
 }
