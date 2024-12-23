@@ -108,12 +108,12 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskSequential::validation() {
       c++;
       if (one_row == -1)
         one_row = i / row_i;
-      else if ((one_row != -2) && (one_row != i / row_i))
+      else if ((one_row != -2) && (one_row != (int)(i / row_i)))
         one_row = -2;
 
       if (one_col == -1)
         one_col = i % row_i;
-      else if ((one_col != -2) && (one_col != i % row_i))
+      else if ((one_col != -2) && (one_col != (int)(i % row_i)))
         one_col = -2;
     }
     if ((one_row == -2) && (one_col == -2) && (c > 2)) return true;
@@ -202,12 +202,12 @@ bool vladimirova_j_jarvis_method_mpi::TestMPITaskParallel::validation() {
         c++;
         if (one_row == -1)
           one_row = i / row_i;
-        else if ((one_row != -2) && (one_row != i / row_i))
+        else if ((one_row != -2) && (one_row != (int)(i / row_i)))
           one_row = -2;
 
         if (one_col == -1)
           one_col = i % row_i;
-        else if ((one_col != -2) && (one_col != i % row_i))
+        else if ((one_col != -2) && (one_col != (int)(i % row_i)))
           one_col = -2;
       }
       if ((one_row == -2) && (one_col == -2) && (c > 2)) return true;
