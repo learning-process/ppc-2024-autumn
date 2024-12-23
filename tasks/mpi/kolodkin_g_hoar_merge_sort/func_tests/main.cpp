@@ -104,7 +104,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_three_elems) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } 
+  }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
@@ -155,7 +155,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_negative_elems) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } 
+  }
 
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
@@ -206,8 +206,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_vector_with_repeated_elems) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } 
-  
+  }
+
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -254,8 +254,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } 
-  
+  }
+
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -286,7 +286,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
   }
 }
 
-TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector_with_2^n_size) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector_with_2 ^ n_size) {
   boost::mpi::communicator world;
 
   // Create data
@@ -302,8 +302,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector_with_2^n_size) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } 
-  
+  }
+
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -350,8 +350,8 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector_with_simple_value_size) {
     taskDataMpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
     taskDataMpi->inputs_count.emplace_back(vector.size());
     taskDataMpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_ptr.get()));
-  } 
-  
+  }
+
   kolodkin_g_hoar_merge_sort_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataMpi);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
