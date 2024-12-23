@@ -14,7 +14,7 @@ std::vector<int> generateGraph(int V, int E) {
     int src = vertex_dist(rng);
     int dest = vertex_dist(rng);
 
-    if (src != dest && !graph[src * V + dest]) {
+    if (src != dest && graph[src * V + dest] == 0) {
       int weight = weight_dist(rng);
       graph[src * V + dest] = weight;
       graph[dest * V + src] = weight;
