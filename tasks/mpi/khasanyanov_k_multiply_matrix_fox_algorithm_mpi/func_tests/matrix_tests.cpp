@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../include/matrix_operations.hpp"
+#include "../include/tests.hpp"
 
 using namespace khasanyanov_k_fox_algorithm;
 
@@ -22,7 +23,7 @@ TEST(khasanyanov_k_matrix_tests, test_cant_add) {
 TEST(khasanyanov_k_matrix_tests, test_int_3_4_4_3) {
   matrix<int> A{3, 4, {5, 6, 7, 8, 5, 6, 8, 89, 8, 4, 6, 6}};
   matrix<int> B{4, 3, {8, 7, 8, 5, 87, 7, 6, 9, 0, 9, 79, 7}};
-  matrix<int> expected_solution{4, 4, {184, 1252, 138, 919, 7660, 705, 174, 932, 134}};
+  matrix<int> expected_solution{3, 3, {184, 1252, 138, 919, 7660, 705, 174, 932, 134}};
   matrix<int> actual_solution = MatrixOperations::multiply(A, B);
   ASSERT_EQ(expected_solution, actual_solution);
 }
@@ -58,4 +59,15 @@ TEST(khasanyanov_k_matrix_tests, test_hard_double_4_5_5_6) {
   for (size_t i = 0; i < expected_solution.size(); ++i) {
     EXPECT_NEAR(expected_solution[i], actual_solution[i], 1e05);
   }
+}
+
+TEST(khasanyanov_k_matrix_tests, test_int_sequential_multiply) {
+  matrix<int> A{3, 4, {5, 6, 7, 8, 5, 6, 8, 89, 8, 4, 6, 6}};
+  matrix<int> B{4, 3, {8, 7, 8, 5, 87, 7, 6, 9, 0, 9, 79, 7}};
+  matrix<int> expected_solution{3, 3, {184, 1252, 138, 919, 7660, 705, 174, 932, 134}};
+  matrix<int> actual_solution(3, 3);
+  std::shared_ptr<ppc::core::TaskData> taskData = create_task_data(A, B, actual_solution);
+  MatrixMultiplication<int> test(taskData);
+  RUN_TASK(test);
+  ASSERT_EQ(expected_solution, actual_solution);
 }
