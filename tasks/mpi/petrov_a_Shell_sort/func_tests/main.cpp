@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <boost/mpi.hpp>
 #include <random>
 #include <vector>
@@ -37,10 +38,8 @@ void template_test(const std::vector<int>& input_data) {
 
   auto taskMPI = std::make_shared<TestTaskMPI>(taskData);
 
-  if (!taskMPI->validation()) {
-  }
-  if (!taskMPI->pre_processing()) {
-  }
+  ASSERT_TRUE(taskMPI->validation());
+  ASSERT_TRUE(taskMPI->pre_processing());
   taskMPI->run();
   taskMPI->post_processing();
 
@@ -71,4 +70,9 @@ TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements) {
 TEST(petrov_a_Shell_sort_mpi, test_random_vector) {
   auto random_vec = petrov_a_Shell_sort_mpi::generate_random_vector(1000, -1000, 1000);
   petrov_a_Shell_sort_mpi::template_test(random_vec);
+}
+
+TEST(petrov_a_Shell_sort_mpi, test_large_random_vector) {
+  auto large_random_vec = petrov_a_Shell_sort_mpi::generate_random_vector(100000, -10000, 10000);
+  petrov_a_Shell_sort_mpi::template_test(large_random_vec);
 }

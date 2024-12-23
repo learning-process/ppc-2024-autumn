@@ -1,6 +1,5 @@
 #pragma once
 
-#include <boost/mpi.hpp>
 #include <memory>
 #include <vector>
 
@@ -21,7 +20,7 @@ class TestTaskMPI : public ppc::core::Task {
   std::vector<int> data_;
   std::vector<int> local_data_;
   std::vector<int> send_counts_;
-  std::vector<int> displacements_;
+  std::vector<int> displs_;
 };
 
 }  // namespace petrov_a_Shell_sort_mpi

@@ -1,51 +1,62 @@
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
+#include <mpi.h>
+
 #include <algorithm>
-#include <boost/mpi.hpp>
-#include <stdexcept>
+#include <iostream>
+#include <numeric>
 #include <vector>
 
 namespace petrov_a_Shell_sort_mpi {
 
-bool TestTaskMPI::validation() { return !data_.empty(); }
+bool TestTaskMPI::validation() {
+  int world_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+  if (data_.empty()) {
+    if (world_rank == 0) {
+      std::cerr << "Input data is empty." << std::endl;
+    }
+    return false;
+  }
+  return true;
+}
 
 bool TestTaskMPI::pre_processing() {
-  boost::mpi::communicator world;
-  int world_size = world.size();
-  int world_rank = world.rank();
-  int vector_size = static_cast<int>(data_.size());
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
+  int vector_size = static_cast<int>(data_.size());
   if (world_size > vector_size) {
+    if (world_rank == 0) {
+      std::cerr << "Number of processes exceeds the data size." << std::endl;
+    }
     return false;
   }
 
-  int base_size = vector_size / world_size;
+  send_counts_.resize(world_size, vector_size / world_size);
+  displs_.resize(world_size, 0);
+
   int remainder = vector_size % world_size;
-
-  send_counts_.resize(world_size);
-  displacements_.resize(world_size);
-
   for (int i = 0; i < world_size; ++i) {
-    send_counts_[i] = base_size + (i < remainder ? 1 : 0);
-    displacements_[i] = (i > 0) ? (displacements_[i - 1] + send_counts_[i - 1]) : 0;
+    if (i < remainder) {
+      send_counts_[i]++;
+    }
+    if (i > 0) {
+      displs_[i] = displs_[i - 1] + send_counts_[i - 1];
+    }
   }
 
   local_data_.resize(send_counts_[world_rank]);
-
-  if (world_rank == 0) {
-    for (int i = 1; i < world_size; ++i) {
-      world.send(i, 0, &data_[displacements_[i]], send_counts_[i]);
-    }
-    std::copy(data_.begin(), data_.begin() + send_counts_[0], local_data_.begin());
-  } else {
-    world.recv(0, 0, local_data_.data(), send_counts_[world_rank]);
-  }
+  MPI_Scatterv(data_.data(), send_counts_.data(), displs_.data(), MPI_INT, local_data_.data(), send_counts_[world_rank],
+               MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
 
 bool TestTaskMPI::run() {
-  for (size_t gap = local_data_.size() / 2; gap > 0; gap /= 2) {
+  for (int gap = static_cast<int>(local_data_.size()) / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < local_data_.size(); ++i) {
       int temp = local_data_[i];
       size_t j = i;
@@ -60,18 +71,19 @@ bool TestTaskMPI::run() {
 }
 
 bool TestTaskMPI::post_processing() {
-  boost::mpi::communicator world;
-  int world_rank = world.rank();
-  int world_size = world.size();
+  int world_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-  // Ручной сбор данных
   if (world_rank == 0) {
-    std::copy(local_data_.begin(), local_data_.end(), data_.begin());
-    for (int i = 1; i < world_size; ++i) {
-      world.recv(i, 1, &data_[displacements_[i]], send_counts_[i]);
+    data_.resize(std::accumulate(send_counts_.begin(), send_counts_.end(), 0));
+  }
+  MPI_Gatherv(local_data_.data(), local_data_.size(), MPI_INT, data_.data(), send_counts_.data(), displs_.data(),
+              MPI_INT, 0, MPI_COMM_WORLD);
+
+  if (world_rank == 0) {
+    for (size_t i = 1; i < send_counts_.size(); ++i) {
+      std::inplace_merge(data_.begin(), data_.begin() + displs_[i], data_.begin() + displs_[i] + send_counts_[i]);
     }
-  } else {
-    world.send(0, 1, local_data_.data(), send_counts_[world_rank]);
   }
 
   return true;
