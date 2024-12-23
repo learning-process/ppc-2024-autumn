@@ -28,7 +28,9 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() 
   while (true) {
     think();
     request_forks();
-    eat();
+    if (world.rank() < num_philosophers) {
+      eat();
+    }
     release_forks();
     if (check_deadlock()) return false;
     if (check_for_termination()) break;
