@@ -128,3 +128,13 @@ TEST(polikanov_v_gradient_method_seq, random_test4) {
   double tolerance = 1e-6;
   polikanov_v_gradient_method_seq::template_func_test_run(size, flat_matrix, rhs, initialGuess, expected, tolerance);
 }
+
+TEST(polikanov_v_gradient_method_seq, test_first_iter_solution) {
+  int size = 2;
+  std::vector<double> flat_matrix = {4, 1, 1, 3};
+  std::vector<double> rhs = {1, 2};
+  std::vector<double> initialGuess = {0.09090909, 0.63636364};
+  std::vector<double> expected = {0.09090909, 0.63636364};
+  double tolerance = 1e-6;
+  polikanov_v_gradient_method_seq::template_func_test_run(size, flat_matrix, rhs, initialGuess, expected, tolerance);
+}
