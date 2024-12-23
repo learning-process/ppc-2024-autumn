@@ -28,9 +28,12 @@ bool TestTaskMPI::validation() {
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   if (data_.empty()) {
     if (rank == 0) {
-      std::cerr << "Input data is empty." << std::endl;
+      std::cerr << "Input data is empty. Validation failed." << std::endl;
     }
     return false;
+  }
+  if (rank == 0) {
+    std::cerr << "Validation passed. Input data size: " << data_.size() << std::endl;
   }
   return true;
 }
@@ -43,6 +46,13 @@ bool TestTaskMPI::pre_processing() {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
   int vector_size = static_cast<int>(data_.size());
+  if (vector_size == 0) {
+    if (world_rank == 0) {
+      std::cerr << "Input vector is empty; cannot proceed with sorting." << std::endl;
+    }
+    return false;
+  }
+
   if (world_size > vector_size) {
     if (world_rank == 0) {
       std::cerr << "Number of processes exceeds the data size." << std::endl;
