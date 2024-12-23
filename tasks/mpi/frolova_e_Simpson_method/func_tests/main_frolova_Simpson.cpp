@@ -324,6 +324,7 @@ TEST(frolova_e_Simpson_method_mpi, two_dimensional_integral_ProductOfSquaresOfXa
 
     frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(
         taskDataSeq, frolova_e_Simpson_method_mpi::ProductOfSquaresOfXandYandZ);
+
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
