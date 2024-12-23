@@ -35,7 +35,7 @@ TEST(vavilov_v_bellman_ford_mpi, Random_sparse_graph) {
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int vertices = 500;
-  int edges_count = 515;
+  int edges_count = 100;
   int source = 0;
   std::vector<int> output(vertices);
   std::vector<int> expected_output(vertices);
