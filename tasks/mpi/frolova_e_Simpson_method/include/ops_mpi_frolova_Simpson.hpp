@@ -30,17 +30,13 @@ double sumOfSquaresOfXandYandZ(const std::vector<double>& point);
 double ProductOfSquaresOfXandYandZ(const std::vector<double>& point);
 
 //_______________________________________________________________________________________________________________
-
 static std::map<int, double (*)(const std::vector<double>&)> functionRegistry = {{1, squaresOfX},
                                                                                  {2, cubeOfX},
                                                                                  {3, sumOfSquaresOfXandY},
                                                                                  {4, ProductOfXAndY},
                                                                                  {5, sumOfSquaresOfXandYandZ},
                                                                                  {6, ProductOfSquaresOfXandYandZ}};
-
-
 //________________________________________________________________________________________________________________
-
 
 double roundToTwoDecimalPlaces(double value);
 

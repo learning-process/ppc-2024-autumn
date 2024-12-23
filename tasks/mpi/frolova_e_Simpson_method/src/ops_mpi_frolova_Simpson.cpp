@@ -126,7 +126,6 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodSequential::pre_processing() {
   for (int i = 0; i < static_cast<int>(taskData->inputs_count[1]); i++) {
     limits.push_back(value_2[i]);
   }
-
   return true;
 }
 
@@ -191,21 +190,20 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
+    int* value = reinterpret_cast<int*>(taskData->inputs[0]);
+    if (taskData->inputs_count[0] != 3) {
+      return false;
+    }
 
-      int* value = reinterpret_cast<int*>(taskData->inputs[0]);
-      if (taskData->inputs_count[0] != 3) {
-          return false;
-      }
+    auto div = static_cast<size_t>(value[0]);
+    if (static_cast<int>(div) % 2 != 0) {
+      return false;
+    }
 
-      auto div = static_cast<size_t>(value[0]);
-      if (static_cast<int>(div) % 2 != 0) {
-          return false;
-      }
-
-      auto dim = static_cast<size_t>(value[1]);
-      if (taskData->inputs_count[1] / dim != 2) {
-          return false;
-      }    
+    auto dim = static_cast<size_t>(value[1]);
+    if (taskData->inputs_count[1] / dim != 2) {
+      return false;
+    }
   }
   return true;
 }
@@ -217,20 +215,20 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::run() {
   broadcast(world, dimension, 0);
 
   if (world.rank() == 0) {
-      localdivisions = divisions / world.size();
-      if (localdivisions % 2 != 0) {
-          localdivisions++;
-      }
+    localdivisions = divisions / world.size();
+    if (localdivisions % 2 != 0) {
+      localdivisions++;
+    }
   }
   broadcast(world, localdivisions, 0);
 
   if (world.rank() == 0) {
-      size_t size = world.size();
+    size_t size = world.size();
 
-      for (size_t i = 0; i < size; i++) {
-          std::vector<double> loclim;
+    for (size_t i = 0; i < size; i++) {
+      std::vector<double> loclim;
 
-          for (size_t j = 0; j < dimension; j++) {
+      for (size_t j = 0; j < dimension; j++) {
         double a = limits[2 * j];
         double b = limits[2 * j + 1];
         double step = (b - a) / size;
@@ -257,15 +255,16 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::run() {
           loclim.push_back(lim1);
           loclim.push_back(lim2);
         }
-          }
-          if (i != 0) {
-        world.send(i, 0, loclim);
-          }
       }
+
+      if (i != 0) {
+        world.send(i, 0, loclim);
+      }
+    }
   }
 
   if (world.rank() != 0) {
-      world.recv(0, 0, localLimits);
+    world.recv(0, 0, localLimits);
   }
 
   func = frolova_e_Simpson_method_mpi::functionRegistry[functionid];
@@ -279,9 +278,10 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::run() {
 
 bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::post_processing() {
   internal_order_test();
+
   if (world.rank() == 0) {
-      reinterpret_cast<double*>(taskData->outputs[0])[0] = resIntegral;
+    reinterpret_cast<double*>(taskData->outputs[0])[0] = resIntegral;
   }
 
   return true;
- }
+}
