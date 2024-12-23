@@ -116,6 +116,7 @@ bool StronginParallel::run() {
       int remain = static_cast<int>(x.size() - 1) % size;
 
       for (int i = 1; i < size; ++i) {
+        std::cout << "Process 0 sending data to process " << i << std::endl;
         MPI_Send(x.data() + remain + i * part, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
       }
 
@@ -164,6 +165,7 @@ bool StronginParallel::run() {
     int part = 0;
     while (true) {
       MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+      std::cout << "Process " << rank << " receiving data" << std::endl;
       MPI_Get_count(&status, MPI_DOUBLE, &part);
 
       std::vector<double> x(part + 1);
