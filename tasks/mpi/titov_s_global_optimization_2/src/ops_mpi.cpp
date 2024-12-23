@@ -254,6 +254,9 @@ bool titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::pre_processing() 
   func_to_optimize_ = *func_ptr;
   auto* constraints_ptr = reinterpret_cast<std::vector<std::function<double(const Point&)>>*>(taskData->inputs[1]);
   constraints_funcs_ = *constraints_ptr;
+  step_size = *reinterpret_cast<double*>(taskData->inputs[2]);
+  tolerance = *reinterpret_cast<double*>(taskData->inputs[3]);
+  max_iterations_grad = *reinterpret_cast<size_t*>(taskData->inputs[4]);
   if (world.rank() == 0) {
     calculate_initial_search_area();
   }
@@ -470,9 +473,6 @@ double titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::MakeSimplefx(do
 titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIGlobalOpt2Parallel::find_next_point(
     const Point& x_new) {
   Point current_point = x_new;
-  double step_size = 0.05;
-  double tolerance = 0.0001;
-  size_t max_iterations = 100;
 
   auto local_constraints = constraints_funcs_;
   local_constraints.emplace_back([this](const Point& p) { return process_upper_bound_x_ - p.x; });
@@ -480,7 +480,7 @@ titov_s_global_optimization_2_mpi::Point titov_s_global_optimization_2_mpi::MPIG
   local_constraints.emplace_back([this](const Point& p) { return process_upper_bound_y_ - p.y; });
   local_constraints.emplace_back([this](const Point& p) { return p.y - process_lower_bound_y_; });
 
-  for (size_t iteration = 0; iteration < max_iterations; ++iteration) {
+  for (size_t iteration = 0; iteration < max_iterations_grad; ++iteration) {
     Point correction;
     correction.x = 0;
     correction.y = 0;

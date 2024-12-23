@@ -9,6 +9,9 @@
 
 TEST(titov_s_global_optimization_2_mpi, Test_rectangle) {
   boost::mpi::communicator world;
+  double step_size = 0.05;
+  double tolerance = 0.0001;
+  size_t max_iterations = 100;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x + p.y * p.y; };
   auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 4.0 - p.x; };
@@ -25,12 +28,16 @@ TEST(titov_s_global_optimization_2_mpi, Test_rectangle) {
   std::vector<titov_s_global_optimization_2_mpi::Point> outSeq;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&func));
   taskDataPar->inputs_count.emplace_back(1);
 
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
   taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
+
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&step_size));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&tolerance));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&max_iterations));
+  taskDataPar->inputs_count.emplace_back(3);
   if (world.rank() == 0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
     taskDataPar->outputs_count.emplace_back(outPar.size());
@@ -69,6 +76,9 @@ TEST(titov_s_global_optimization_2_mpi, Test_rectangle) {
 
 TEST(titov_s_global_optimization_2_mpi, Test_triangle) {
   boost::mpi::communicator world;
+  double step_size = 0.05;
+  double tolerance = 0.0001;
+  size_t max_iterations = 100;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) {
         return 10.0 * (p.x - 3.5) * (p.x - 3.5) + 20.0 * (p.y - 4.0) * (p.y - 4.0);
@@ -91,7 +101,10 @@ TEST(titov_s_global_optimization_2_mpi, Test_triangle) {
   taskDataPar->inputs_count.emplace_back(1);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
   taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
-
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&step_size));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&tolerance));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&max_iterations));
+  taskDataPar->inputs_count.emplace_back(3);
   if (world.rank() == 0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
     taskDataPar->outputs_count.emplace_back(outPar.size());
@@ -130,6 +143,9 @@ TEST(titov_s_global_optimization_2_mpi, Test_triangle) {
 
 TEST(titov_s_global_optimization_2_mpi, Test_triangle_2) {
   boost::mpi::communicator world;
+  double step_size = 0.05;
+  double tolerance = 0.0001;
+  size_t max_iterations = 100;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x - 12.0 * p.x + p.y * p.y - 4.0 * p.y; };
   auto constraint1 = [](const titov_s_global_optimization_2_mpi::Point& p) { return 2.0 * p.x + 4.0 - p.y; };
@@ -149,6 +165,10 @@ TEST(titov_s_global_optimization_2_mpi, Test_triangle_2) {
   taskDataPar->inputs_count.emplace_back(1);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
   taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&step_size));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&tolerance));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&max_iterations));
+  taskDataPar->inputs_count.emplace_back(3);
   if (world.rank() == 0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
     taskDataPar->outputs_count.emplace_back(outPar.size());
@@ -187,6 +207,9 @@ TEST(titov_s_global_optimization_2_mpi, Test_triangle_2) {
 
 TEST(titov_s_global_optimization_2_mpi, Test_4) {
   boost::mpi::communicator world;
+  double step_size = 0.05;
+  double tolerance = 0.0001;
+  size_t max_iterations = 100;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) { return p.x * p.x - 20.0 * p.x + p.y * p.y - 6.0 * p.y; };
 
@@ -207,6 +230,10 @@ TEST(titov_s_global_optimization_2_mpi, Test_4) {
   taskDataPar->inputs_count.emplace_back(1);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
   taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&step_size));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&tolerance));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&max_iterations));
+  taskDataPar->inputs_count.emplace_back(3);
   if (world.rank() == 0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
     taskDataPar->outputs_count.emplace_back(outPar.size());
@@ -245,6 +272,9 @@ TEST(titov_s_global_optimization_2_mpi, Test_4) {
 
 TEST(titov_s_global_optimization_2_mpi, Test_5_constraits_non_linear) {
   boost::mpi::communicator world;
+  double step_size = 0.05;
+  double tolerance = 0.0001;
+  size_t max_iterations = 100;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) {
         return (p.x - 5.0) * (p.x - 5.0) + (p.y - 5.0) * (p.y - 5.0);
@@ -269,6 +299,10 @@ TEST(titov_s_global_optimization_2_mpi, Test_5_constraits_non_linear) {
   taskDataPar->inputs_count.emplace_back(1);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
   taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&step_size));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&tolerance));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&max_iterations));
+  taskDataPar->inputs_count.emplace_back(3);
   if (world.rank() == 0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
     taskDataPar->outputs_count.emplace_back(outPar.size());
@@ -307,6 +341,9 @@ TEST(titov_s_global_optimization_2_mpi, Test_5_constraits_non_linear) {
 
 TEST(titov_s_global_optimization_2_mpi, Test_constraits_cubic) {
   boost::mpi::communicator world;
+  double step_size = 0.05;
+  double tolerance = 0.0001;
+  size_t max_iterations = 100;
   std::function<double(const titov_s_global_optimization_2_mpi::Point&)> func =
       [](const titov_s_global_optimization_2_mpi::Point& p) {
         return (p.x - 3.0) * (p.x - 3.0) + (p.y - 3.0) * (p.y - 3.0);
@@ -330,6 +367,10 @@ TEST(titov_s_global_optimization_2_mpi, Test_constraits_cubic) {
   taskDataPar->inputs_count.emplace_back(1);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(constraints_ptr.get()));
   taskDataPar->inputs_count.emplace_back(constraints_ptr->size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&step_size));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&tolerance));
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&max_iterations));
+  taskDataPar->inputs_count.emplace_back(3);
   if (world.rank() == 0) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(outPar.data()));
     taskDataPar->outputs_count.emplace_back(outPar.size());
