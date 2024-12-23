@@ -51,8 +51,9 @@ TEST(frolova_e_Simpson_method_mpi, one_dimensional_integral_squaresOfX_test) {
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_2.data()));
     taskDataSeq->outputs_count.emplace_back(res_2.size() * sizeof(double));
 
-    frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(
-        taskDataSeq,frolova_e_Simpson_method_mpi::squaresOfX);
+    frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(taskDataSeq,
+                                                                             frolova_e_Simpson_method_mpi::squaresOfX);
+
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
