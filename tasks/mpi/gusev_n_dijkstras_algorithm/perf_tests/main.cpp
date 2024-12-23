@@ -1,4 +1,3 @@
-#include <corecrt_math_defines.h>
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
