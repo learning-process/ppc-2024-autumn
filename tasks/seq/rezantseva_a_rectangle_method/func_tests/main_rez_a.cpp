@@ -20,12 +20,10 @@ TEST(rezantseva_a_rectangle_method_seq, check_1_dimension_integral) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  auto* bounds_data = new std::vector<std::pair<double, double>>(bounds);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(bounds_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&bounds));
   taskDataSeq->inputs_count.emplace_back(bounds.size());
 
-  auto* distrib_data = new std::vector<int>(distrib);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(distrib_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&distrib));
   taskDataSeq->inputs_count.emplace_back(distrib.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -39,8 +37,6 @@ TEST(rezantseva_a_rectangle_method_seq, check_1_dimension_integral) {
   RectangleMethodSequential.post_processing();
   double error = 0.0001;
   ASSERT_NEAR(312, out[0], error);
-  delete bounds_data;
-  delete distrib_data;
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_linear_func) {
@@ -62,12 +58,10 @@ TEST(rezantseva_a_rectangle_method_seq, check_linear_func) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  auto* bounds_data = new std::vector<std::pair<double, double>>(bounds);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(bounds_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&bounds));
   taskDataSeq->inputs_count.emplace_back(bounds.size());
 
-  auto* distrib_data = new std::vector<int>(distrib);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(distrib_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&distrib));
   taskDataSeq->inputs_count.emplace_back(distrib.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -81,8 +75,6 @@ TEST(rezantseva_a_rectangle_method_seq, check_linear_func) {
   RectangleMethodSequential.post_processing();
   double error = 0.001;
   ASSERT_NEAR(-1650, out[0], error);
-  delete bounds_data;
-  delete distrib_data;
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_1_dimension_integral_sin) {
@@ -102,12 +94,10 @@ TEST(rezantseva_a_rectangle_method_seq, check_1_dimension_integral_sin) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  auto* bounds_data = new std::vector<std::pair<double, double>>(bounds);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(bounds_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&bounds));
   taskDataSeq->inputs_count.emplace_back(bounds.size());
 
-  auto* distrib_data = new std::vector<int>(distrib);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(distrib_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&distrib));
   taskDataSeq->inputs_count.emplace_back(distrib.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -121,8 +111,6 @@ TEST(rezantseva_a_rectangle_method_seq, check_1_dimension_integral_sin) {
   RectangleMethodSequential.post_processing();
   double error = 0.001;
   ASSERT_NEAR(2436.18542, out[0], error);
-  delete bounds_data;
-  delete distrib_data;
 }
 TEST(rezantseva_a_rectangle_method_seq, check_2_dimension_integral_sin) {
   std::vector<double> out(1, 0);
@@ -143,12 +131,10 @@ TEST(rezantseva_a_rectangle_method_seq, check_2_dimension_integral_sin) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  auto* bounds_data = new std::vector<std::pair<double, double>>(bounds);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(bounds_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&bounds));
   taskDataSeq->inputs_count.emplace_back(bounds.size());
 
-  auto* distrib_data = new std::vector<int>(distrib);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(distrib_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&distrib));
   taskDataSeq->inputs_count.emplace_back(distrib.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -162,8 +148,6 @@ TEST(rezantseva_a_rectangle_method_seq, check_2_dimension_integral_sin) {
   RectangleMethodSequential.post_processing();
   double error = 0.001;
   ASSERT_NEAR(98587.1705290392, out[0], error);
-  delete bounds_data;
-  delete distrib_data;
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral) {
@@ -187,12 +171,10 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  auto* bounds_data = new std::vector<std::pair<double, double>>(bounds);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(bounds_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&bounds));
   taskDataSeq->inputs_count.emplace_back(bounds.size());
 
-  auto* distrib_data = new std::vector<int>(distrib);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(distrib_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&distrib));
   taskDataSeq->inputs_count.emplace_back(distrib.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -206,8 +188,6 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral) {
   RectangleMethodSequential.post_processing();
   double error = 0.001;
   ASSERT_NEAR(932886720.0, out[0], error);
-  delete bounds_data;
-  delete distrib_data;
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_with_exp) {
@@ -232,12 +212,10 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_with_exp) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  auto* bounds_data = new std::vector<std::pair<double, double>>(bounds);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(bounds_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&bounds));
   taskDataSeq->inputs_count.emplace_back(bounds.size());
 
-  auto* distrib_data = new std::vector<int>(distrib);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(distrib_data));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&distrib));
   taskDataSeq->inputs_count.emplace_back(distrib.size());
 
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
@@ -251,6 +229,4 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_with_exp) {
   RectangleMethodSequential.post_processing();
   double error = 0.1;
   ASSERT_NEAR(22154067.07, out[0], error);
-  delete bounds_data;
-  delete distrib_data;
 }

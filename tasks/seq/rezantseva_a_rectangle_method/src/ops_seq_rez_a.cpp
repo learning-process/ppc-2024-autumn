@@ -9,6 +9,7 @@ bool rezantseva_a_rectangle_method_seq::RectangleMethodSequential::check_integra
 
   for (const auto& bound : *ib) {
     if (bound.first >= bound.second) {
+      std::cout << "false";
       return false;
     }
   }
@@ -61,7 +62,7 @@ bool rezantseva_a_rectangle_method_seq::RectangleMethodSequential::run() {
     }
     result_ += func_(params);
   }
-  for (int i = 0; i < dimension; ++i) {
+  for (int i = 0; i < dimension; i++) {
     result_ *= widths[i];
   }
   return true;

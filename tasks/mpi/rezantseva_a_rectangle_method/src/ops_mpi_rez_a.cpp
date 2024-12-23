@@ -1,142 +1,186 @@
-// Copyright 2024 Nesterov Alexander
-// // mpi cpp rectangle method
-// #include "mpi/rezantseva_a_vector_dot_product/include/ops_mpi.hpp"
-//
-// int rezantseva_a_vector_dot_product_mpi::vectorDotProduct(const std::vector<int>& v1, const std::vector<int>& v2) {
-//  long long result = 0;
-//  for (size_t i = 0; i < v1.size(); i++) result += v1[i] * v2[i];
-//  return result;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::validation() {
-//  internal_order_test();
-//  // Check count elements of output
-//  return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
-//         (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
-//         (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 &&
-//         taskData->outputs_count[0] == 1;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::pre_processing() {
-//  internal_order_test();
-//  // Init value for input and output
-//
-//  input_ = std::vector<std::vector<int>>(taskData->inputs.size());
-//  for (size_t i = 0; i < input_.size(); i++) {
-//    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-//    input_[i] = std::vector<int>(taskData->inputs_count[i]);
-//    for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
-//      input_[i][j] = tmp_ptr[j];
-//    }
-//  }
-//  res = 0;
-//  return true;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::run() {
-//  internal_order_test();
-//  for (size_t i = 0; i < input_[0].size(); i++) {
-//    res += input_[0][i] * input_[1][i];
-//  }
-//
-//  return true;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskSequential::post_processing() {
-//  internal_order_test();
-//  reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-//  return true;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::validation() {
-//  internal_order_test();
-//  if (world.rank() == 0) {
-//    // Check count elements of output
-//    return (taskData->inputs.size() == taskData->inputs_count.size() && taskData->inputs.size() == 2) &&
-//           (taskData->inputs_count[0] == taskData->inputs_count[1]) &&
-//           (taskData->outputs.size() == taskData->outputs_count.size()) && taskData->outputs.size() == 1 &&
-//           taskData->outputs_count[0] == 1;
-//  }
-//  return true;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::pre_processing() {
-//  internal_order_test();
-//
-//  size_t total_elements = 0;
-//  size_t delta = 0;
-//  size_t remainder = 0;
-//
-//  if (world.rank() == 0) {
-//    total_elements = taskData->inputs_count[0];
-//    num_processes_ = world.size();
-//    delta = total_elements / num_processes_;      // Calculate base size for each process
-//    remainder = total_elements % num_processes_;  // Calculate remaining elements
-//  }
-//  boost::mpi::broadcast(world, num_processes_, 0);
-//
-//  counts_.resize(num_processes_);  // Vector to store counts for each process
-//
-//  if (world.rank() == 0) {
-//    // Distribute sizes to each process
-//    for (unsigned int i = 0; i < num_processes_; ++i) {
-//      counts_[i] = delta + (i < remainder ? 1 : 0);  // Assign 1 additional element to the first 'remainder' processes
-//    }
-//  }
-//  boost::mpi::broadcast(world, counts_.data(), num_processes_, 0);
-//
-//  if (world.rank() == 0) {
-//    input_ = std::vector<std::vector<int>>(taskData->inputs.size());
-//    for (size_t i = 0; i < input_.size(); i++) {
-//      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-//      input_[i] = std::vector<int>(taskData->inputs_count[i]);
-//      for (size_t j = 0; j < taskData->inputs_count[i]; j++) {
-//        input_[i][j] = tmp_ptr[j];
-//      }
-//    }
-//  }
-//
-//  res = 0;
-//  return true;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::run() {
-//  internal_order_test();
-//
-//  if (world.rank() == 0) {
-//    size_t offset_remainder = counts_[0];
-//    for (unsigned int proc = 1; proc < num_processes_; proc++) {
-//      size_t current_count = counts_[proc];
-//      world.send(proc, 0, input_[0].data() + offset_remainder, current_count);
-//      world.send(proc, 1, input_[1].data() + offset_remainder, current_count);
-//      offset_remainder += current_count;
-//    }
-//  }
-//
-//  local_input1_ = std::vector<int>(counts_[world.rank()]);
-//  local_input2_ = std::vector<int>(counts_[world.rank()]);
-//
-//  if (world.rank() > 0) {
-//    world.recv(0, 0, local_input1_.data(), counts_[world.rank()]);
-//    world.recv(0, 1, local_input2_.data(), counts_[world.rank()]);
-//  } else {
-//    local_input1_ = std::vector<int>(input_[0].begin(), input_[0].begin() + counts_[0]);
-//    local_input2_ = std::vector<int>(input_[1].begin(), input_[1].begin() + counts_[0]);
-//  }
-//
-//  int local_res = 0;
-//
-//  for (size_t i = 0; i < local_input1_.size(); i++) {
-//    local_res += local_input1_[i] * local_input2_[i];
-//  }
-//  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
-//  return true;
-//}
-//
-// bool rezantseva_a_vector_dot_product_mpi::TestMPITaskParallel::post_processing() {
-//  internal_order_test();
-//  if (world.rank() == 0) {
-//    reinterpret_cast<int*>(taskData->outputs[0])[0] = res;
-//  }
-//  return true;
-//}
+// mpi cpp rectangle method
+#include "mpi/rezantseva_a_rectangle_method/include/ops_mpi_rez_a.hpp"
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::check_integration_bounds(
+    std::vector<std::pair<double, double>>* ib) {
+  if (ib == nullptr) {
+    std::cerr << "Error: bounds pointer is null." << std::endl;
+    return false;
+  }
+
+  for (const auto& bound : *ib) {
+    if (bound.first >= bound.second) {
+      std::cout << "false";
+      return false;
+    }
+  }
+  return true;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::validation() {
+  internal_order_test();
+  auto* bounds = reinterpret_cast<std::vector<std::pair<double, double>>*>(taskData->inputs[0]);
+  return (taskData->inputs.size() == 2 && taskData->outputs_count[0] == 1 &&
+          (taskData->inputs_count[0] == taskData->inputs_count[1]) && check_integration_bounds(bounds));
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::pre_processing() {
+  internal_order_test();
+
+  auto* bounds = reinterpret_cast<std::vector<std::pair<double, double>>*>(taskData->inputs[0]);
+  integration_bounds_.assign(bounds->begin(), bounds->end());
+
+  auto* distribution_ptr = reinterpret_cast<std::vector<int>*>(taskData->inputs[1]);
+  distribution_.assign(distribution_ptr->begin(), distribution_ptr->end());
+
+  result_ = 0.0;
+
+  return true;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::run() {
+  internal_order_test();
+  int dimension = distribution_.size();
+  std::vector<double> widths(dimension);
+  int64_t rectangles = 1;
+
+  for (int i = 0; i < dimension; i++) {
+    widths[i] = (integration_bounds_[i].second - integration_bounds_[i].first) / static_cast<double>(distribution_[i]);
+    rectangles *= distribution_[i];
+  }
+  std::vector<double> params(dimension);
+
+  for (int i = 0; i < rectangles; i++) {
+    int x = i;
+    for (int j = 0; j < dimension; j++) {
+      int idDimention = x % distribution_[j];
+      params[j] = integration_bounds_[j].first + idDimention * widths[j] + widths[j] / 2;
+      x /= distribution_[j];
+    }
+    result_ += func_(params);
+  }
+  for (int i = 0; i < dimension; i++) {
+    result_ *= widths[i];
+  }
+  return true;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::post_processing() {
+  internal_order_test();
+  reinterpret_cast<double*>(taskData->outputs[0])[0] = result_;
+  return true;
+}
+
+//======================================================================================================\\
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::check_integration_bounds(
+    std::vector<std::pair<double, double>>* ib) {
+  if (ib == nullptr) {
+    std::cerr << "Error: bounds pointer is null." << std::endl;
+    return false;
+  }
+
+  for (const auto& bound : *ib) {
+    if (bound.first >= bound.second) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::validation() {
+  internal_order_test();
+  bool flag = true;
+
+  if (world.rank() == 0) {
+    auto* bounds = reinterpret_cast<std::vector<std::pair<double, double>>*>(taskData->inputs[0]);
+    flag = (taskData->inputs.size() == 2 && taskData->outputs_count[0] == 1 &&
+            (taskData->inputs_count[0] == taskData->inputs_count[1]) && check_integration_bounds(bounds));
+  }
+  return flag;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::pre_processing() {
+  internal_order_test();
+
+  if (world.rank() == 0) {
+    auto* bounds = reinterpret_cast<std::vector<std::pair<double, double>>*>(taskData->inputs[0]);
+    integration_bounds_.assign(bounds->begin(), bounds->end());
+
+    auto* distribution_ptr = reinterpret_cast<std::vector<int>*>(taskData->inputs[1]);
+    distribution_.assign(distribution_ptr->begin(), distribution_ptr->end());
+
+    num_processes_ = world.size();
+    n_ = integration_bounds_.size();
+    total_points_ = 1;
+    widths_.assign(distribution_.size(), 0.0);
+    for (int i = 0; i < n_; i++) {
+      widths_[i] =
+          (integration_bounds_[i].second - integration_bounds_[i].first) / static_cast<double>(distribution_[i]);
+      if (i != n_ - 1) {
+        total_points_ *= distribution_[i];
+      }
+    }
+  }
+
+  boost::mpi::broadcast(world, n_, 0);
+  boost::mpi::broadcast(world, total_points_, 0);
+  boost::mpi::broadcast(world, num_processes_, 0);
+  boost::mpi::broadcast(world, distribution_, 0);
+  boost::mpi::broadcast(world, widths_, 0);
+  boost::mpi::broadcast(world, integration_bounds_, 0);
+
+  result_ = 0.0;
+
+  return true;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::run() {
+  internal_order_test();
+
+  int remainder = total_points_ % num_processes_;
+  int delta = total_points_ / num_processes_ + (world.rank() < remainder ? 1 : 0);
+
+  std::vector<std::vector<double>> params(delta);
+
+  int offset = 0;
+  if (world.rank() < remainder) {
+    offset = world.rank() * delta;
+  } else {
+    offset = remainder * (delta + 1) + (world.rank() - remainder) * delta;
+  }
+
+  for (int i = 0; i < delta; i++) {
+    int x = offset + i;
+    for (int j = 0; j < n_ - 1; j++) {
+      int idDimention = x % distribution_[j];
+      params[i].push_back(integration_bounds_[j].first + idDimention * widths_[j] + widths_[j] / 2);
+      x /= distribution_[j];
+    }
+  }
+
+  double local_sum = 0.0;
+  for (int i = 0; i < delta; i++) {
+    for (int j = 0; j < distribution_[n_ - 1]; j++) {
+      params[i].push_back(integration_bounds_[n_ - 1].first + j * widths_[n_ - 1] + widths_[n_ - 1] / 2);
+      local_sum += func_(params[i]);
+      params[i].pop_back();
+    }
+  }
+
+  boost::mpi::reduce(world, local_sum, result_, std::plus<double>(), 0);
+  for (int i = 0; i < n_; i++) {
+    result_ *= widths_[i];
+  }
+
+  return true;
+}
+
+bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    reinterpret_cast<double*>(taskData->outputs[0])[0] = result_;
+  }
+  return true;
+}
