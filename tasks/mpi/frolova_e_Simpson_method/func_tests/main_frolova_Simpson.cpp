@@ -161,6 +161,7 @@ TEST(frolova_e_Simpson_method_mpi, two_dimensional_integral_sumOfSquaresOfXandY_
 
     frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(
         taskDataSeq, frolova_e_Simpson_method_mpi::sumOfSquaresOfXandY);
+
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();

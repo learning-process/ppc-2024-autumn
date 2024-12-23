@@ -43,7 +43,8 @@ double frolova_e_Simpson_method_seq::ProductOfSquaresOfXandYandZ(const std::vect
   return x * y * z;
 }
 
-double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions, size_t dimension, std::vector<double>& limits) {
+double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions,
+                                                    size_t dimension, std::vector<double>& limits) {
   std::vector<double> h(dimension);
   std::vector<int> steps(dimension);
   std::vector<int> nodes(dimension);
@@ -113,7 +114,7 @@ double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::ve
 bool frolova_e_Simpson_method_seq::Simpsonmethod::pre_processing() {
   internal_order_test();
 
-  int* value = reinterpret_cast<int*>(taskData->inputs[0]);//{divisions,dimension}
+  int* value = reinterpret_cast<int*>(taskData->inputs[0]);
   divisions = static_cast<size_t>(value[0]);
   dimension = static_cast<size_t>(value[1]);
 
@@ -134,23 +135,20 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::validation() {
   }
 
   auto div = static_cast<size_t>(value[0]);
-
   if (static_cast<int>(div) % 2 != 0) {
     return false;
   }
 
   auto dim = static_cast<size_t>(value[1]);
-
   if (taskData->inputs_count[1] / dim != 2) {
     return false;
   } 
-
   return true;
 }
 
 bool frolova_e_Simpson_method_seq::Simpsonmethod::run() {
   internal_order_test();
-  resIntegral = Simpson_Method(func, divisions, dimension,limits);
+  resIntegral = Simpson_Method(func, divisions, dimension, limits);
 
   return true;
 }
