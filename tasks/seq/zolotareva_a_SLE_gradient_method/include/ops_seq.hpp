@@ -14,11 +14,11 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static std::vector<double> conjugate_gradient(const std::vector<double>& A, const std::vector<double>& b,
+  static void conjugate_gradient(const std::vector<double>& A, const std::vector<double>& b,
                                                 std::vector<double>& x, int N);
-  static double dot_product(const std::vector<double>& vec1, const std::vector<double>& vec2, int n);
-  static std::vector<double> matrix_vector_mult(const std::vector<double>& matrix, const std::vector<double>& vector,
-                                                int n);
+  inline static void dot_product(double& sum, const std::vector<double>& vec1, const std::vector<double>& vec2, int n);
+  inline static void matrix_vector_mult(const std::vector<double>& matrix, const std::vector<double>& vector,
+                                        std::vector<double>& result, int n);
   static bool is_positive_and_simm(const double* A, int n);
 
  private:

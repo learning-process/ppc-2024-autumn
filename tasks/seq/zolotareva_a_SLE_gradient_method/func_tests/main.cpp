@@ -235,4 +235,4 @@ TEST(zolotareva_a_SLE_gradient_method_seq, test_correct_answer1) {
 TEST(zolotareva_a_SLE_gradient_method_seq, Test_Image_random_n_3) { zolotareva_a_SLE_gradient_method_seq::form(3); };
 TEST(zolotareva_a_SLE_gradient_method_seq, Test_Image_random_n_5) { zolotareva_a_SLE_gradient_method_seq::form(5); };
 TEST(zolotareva_a_SLE_gradient_method_seq, Test_Image_random_n_7) { zolotareva_a_SLE_gradient_method_seq::form(7); };
-TEST(zolotareva_a_SLE_gradient_method_seq, Test_Image_random_n_20) { zolotareva_a_SLE_gradient_method_seq::form(20); };
+TEST(zolotareva_a_SLE_gradient_method_seq, Test_Image_random_n_20) { zolotareva_a_SLE_gradient_method_seq::form(591); };
