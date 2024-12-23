@@ -4,13 +4,19 @@
 
 #include "seq/gordeeva_t_shell_sort_batcher_merge/include/ops_seq.hpp"
 
+static std::vector<int> rand_vec(int size, int down = -100, int upp = 100) {
+  std::vector<int> v(size);
+  for (auto &number : v) number = down + (std::rand() % (upp - down + 1));
+  return v;
+}
+
 TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_Zero_Value) {
   const int sz_vec = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  std::vector<int> vect = gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::rand_vec(sz_vec);
+  std::vector<int> vect = rand_vec(sz_vec);
 
   taskDataSeq->inputs_count.emplace_back(sz_vec);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vect.data()));
@@ -28,7 +34,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_Empty_Output) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  std::vector<int> vect = gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::rand_vec(sz_vec);
+  std::vector<int> vect = rand_vec(sz_vec);
 
   taskDataSeq->inputs_count.emplace_back(sz_vec);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vect.data()));
@@ -42,7 +48,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_100_with_random) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  std::vector<int> vect = gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::rand_vec(sz_vec);
+  std::vector<int> vect = rand_vec(sz_vec);
 
   taskDataSeq->inputs_count.emplace_back(sz_vec);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vect.data()));
@@ -67,7 +73,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_1000_with_random) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  std::vector<int> vect = gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::rand_vec(sz_vec);
+  std::vector<int> vect = rand_vec(sz_vec);
 
   taskDataSeq->inputs_count.emplace_back(sz_vec);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vect.data()));
@@ -92,7 +98,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_seq, Shell_sort_5000_with_random) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
-  std::vector<int> vect = gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::rand_vec(sz_vec);
+  std::vector<int> vect = rand_vec(sz_vec);
 
   taskDataSeq->inputs_count.emplace_back(sz_vec);
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vect.data()));

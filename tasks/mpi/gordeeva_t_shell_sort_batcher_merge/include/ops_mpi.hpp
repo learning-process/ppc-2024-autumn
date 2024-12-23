@@ -20,7 +20,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  static std::vector<int> rand_vec(int size, int down = -100, int upp = 100);
 
  private:
   std::vector<int> input_;

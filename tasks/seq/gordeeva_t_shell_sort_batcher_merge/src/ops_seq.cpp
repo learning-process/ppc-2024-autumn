@@ -14,12 +14,6 @@ void gordeeva_t_shell_sort_batcher_merge_seq::shellSort(std::vector<int>& arr, i
   }
 }
 
-std::vector<int> gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::rand_vec(int size, int down, int upp) {
-  std::vector<int> v(size);
-  for (auto& number : v) number = down + (std::rand() % (upp - down + 1));
-  return v;
-}
-
 bool gordeeva_t_shell_sort_batcher_merge_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 

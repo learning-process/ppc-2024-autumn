@@ -1,10 +1,23 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/gordeeva_t_shell_sort_batcher_merge/include/ops_mpi.hpp"
+
+std::vector<int> rand_vec(int size, int down = -100, int upp = 100) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(down, upp);
+
+  std::vector<int> v(size);
+  for (auto &number : v) {
+    number = dis(gen);
+  }
+  return v;
+}
 
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
@@ -16,7 +29,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    input_values = gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::rand_vec(size, 0, 1000);
+    input_values = rand_vec(size, 0, 1000);
   }
 
   if (world.rank() == 0) {
@@ -64,7 +77,7 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    input_values = gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::rand_vec(size, 0, 1000);
+    input_values = rand_vec(size, 0, 1000);
   }
 
   if (world.rank() == 0) {

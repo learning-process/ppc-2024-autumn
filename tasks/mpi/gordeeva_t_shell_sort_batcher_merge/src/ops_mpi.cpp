@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <functional>
-#include <random>
 #include <vector>
 
 using namespace std::chrono_literals;
@@ -18,18 +17,6 @@ void gordeeva_t_shell_sort_batcher_merge_mpi::shellSort(std::vector<int>& arr) {
       }
     }
   }
-}
-
-std::vector<int> gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::rand_vec(int size, int down, int upp) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(down, upp);
-
-  std::vector<int> v(size);
-  for (auto& number : v) {
-    number = dis(gen);
-  }
-  return v;
 }
 
 bool gordeeva_t_shell_sort_batcher_merge_mpi::TestMPITaskSequential::pre_processing() {

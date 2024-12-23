@@ -16,8 +16,6 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static std::vector<int> rand_vec(int size, int down = -100, int upp = 100);
-
  private:
   std::vector<int> input_;
   std::vector<int> res_;
