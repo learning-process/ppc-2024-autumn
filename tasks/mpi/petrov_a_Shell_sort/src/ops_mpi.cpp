@@ -32,7 +32,8 @@ bool TestTaskMPI::validation() {
 }
 
 bool TestTaskMPI::run() {
-  int rank, size;
+  int rank;
+  int size;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
@@ -40,7 +41,6 @@ bool TestTaskMPI::run() {
   std::vector<int> local_data;
 
   if (rank == 0) {
-    // Distribute data
     int chunk_size = (n + size - 1) / size;
     for (int i = 1; i < size; ++i) {
       int start_idx = i * chunk_size;
@@ -49,7 +49,6 @@ bool TestTaskMPI::run() {
     }
     local_data.assign(data_.begin(), data_.begin() + chunk_size);
   } else {
-    // Receive data
     MPI_Status status;
     int chunk_size = (n + size - 1) / size;
     int start_idx = rank * chunk_size;
@@ -59,7 +58,6 @@ bool TestTaskMPI::run() {
     MPI_Recv(local_data.data(), end_idx - start_idx, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
   }
 
-  // Perform Shell sort locally
   for (int gap = local_data.size() / 2; gap > 0; gap /= 2) {
     for (int i = gap; i < local_data.size(); ++i) {
       int temp = local_data[i];
@@ -71,7 +69,6 @@ bool TestTaskMPI::run() {
     }
   }
 
-  // Gather results
   if (rank == 0) {
     std::copy(local_data.begin(), local_data.end(), data_.begin());
     for (int i = 1; i < size; ++i) {
