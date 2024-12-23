@@ -7,9 +7,7 @@
 
 namespace petrov_a_Shell_sort_mpi {
 
-bool TestTaskMPI::validation() {
-  return !data_.empty();
-}
+bool TestTaskMPI::validation() { return !data_.empty(); }
 
 bool TestTaskMPI::pre_processing() {
   boost::mpi::communicator world;
@@ -46,20 +44,22 @@ bool TestTaskMPI::pre_processing() {
 }
 
 bool TestTaskMPI::run() {
-  for (int gap = local_data.size() / 2; gap > 0; gap /= 2) {
-    for (size_t i = gap; i < local_data.size(); ++i) {
+  int gap = static_cast<int>(local_data.size() / 2);
+  while (gap > 0) {
+    for (int i = gap; i < static_cast<int>(local_data.size()); ++i) {
       int temp = local_data[i];
-      size_t j = i;
+      int j = i;
       while (j >= gap && local_data[j - gap] > temp) {
         local_data[j] = local_data[j - gap];
         j -= gap;
       }
       local_data[j] = temp;
     }
+    gap /= 2;
   }
-
   return true;
 }
+
 
 bool TestTaskMPI::post_processing() {
   boost::mpi::communicator world;
