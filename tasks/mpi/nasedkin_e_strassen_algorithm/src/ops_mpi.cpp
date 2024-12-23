@@ -100,7 +100,7 @@ namespace nasedkin_e_strassen_algorithm {
         return padded_matrix;
     }
 
-    std::vector<double> strassen_recursive(const std::vector<double>& matrixA,
+    std::vector<double> StrassenAlgorithmMPI::strassen_recursive(const std::vector<double>& matrixA,
                                            const std::vector<double>& matrixB, size_t size) {
         if (size == 1) {
             return {matrixA[0] * matrixB[0]};
@@ -161,7 +161,7 @@ namespace nasedkin_e_strassen_algorithm {
         return result;
     }
 
-    std::vector<double> strassen_base(const std::vector<double>& matrixA,
+    std::vector<double> StrassenAlgorithmMPI::strassen_base(const std::vector<double>& matrixA,
                                       const std::vector<double>& matrixB, size_t size) {
         if (size == 1) {
             return {matrixA[0] * matrixB[0]};
@@ -193,7 +193,7 @@ namespace nasedkin_e_strassen_algorithm {
         return final_result;
     }
 
-    std::vector<double> strassen_multiply(const std::vector<double>& matrixA,
+    std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<double>& matrixA,
                                           const std::vector<double>& matrixB, size_t size) {
         boost::mpi::environment env;
         boost::mpi::communicator world;
