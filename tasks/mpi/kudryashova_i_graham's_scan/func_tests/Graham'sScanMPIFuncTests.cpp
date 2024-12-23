@@ -1,9 +1,9 @@
 ﻿#include <gtest/gtest.h>
+#include <numbers>
 
 #include <boost/mpi/environment.hpp>
 
 #include "mpi/kudryashova_i_graham's_scan/include/Graham'sScanMPI.hpp"
-const double PI = 3.14159265358979323846;
 
 void generateUniquePoints(int numPoints, int8_t minX, int8_t maxX, int8_t minY, int8_t maxY,
                           std::vector<int8_t> &xCoords, std::vector<int8_t> &yCoords) {
@@ -28,15 +28,15 @@ void generateUniquePoints(int numPoints, int8_t minX, int8_t maxX, int8_t minY, 
 
 void generateUniquePointsCircle(int numPoints, int8_t centerX, int8_t centerY, int radius, std::vector<int8_t> &xCoords,
                                 std::vector<int8_t> &yCoords) {
-  if (numPoints > 2 * PI * radius) {
+  if (numPoints > 2 * std::numbers::pi * radius) {
     std::cerr << "Error: Not enough unique points can be generated on the circle's surface." << std::endl;
     return;
   }
   std::vector<std::pair<int8_t, int8_t>> allPoints;
   for (int i = 0; i < numPoints; ++i) {
-    double angle = static_cast<double>(i) / numPoints * 2 * PI;
-    int8_t x = static_cast<int8_t>(centerX + radius * cos(angle));
-    int8_t y = static_cast<int8_t>(centerY + radius * sin(angle));
+    double angle = static_cast<double>(i) / numPoints * 2 * std::numbers::pi;
+    auto x = static_cast<int8_t>(centerX + radius * cos(angle));
+    auto y = static_cast<int8_t>(centerY + radius * sin(angle));
     allPoints.emplace_back(x, y);
   }
   std::random_device rd;
