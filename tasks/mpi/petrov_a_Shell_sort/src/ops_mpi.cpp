@@ -2,99 +2,80 @@
 
 #include <algorithm>
 #include <boost/mpi.hpp>
-#include <cstring>
+#include <stdexcept>
 #include <vector>
 
 namespace petrov_a_Shell_sort_mpi {
 
-bool TestTaskMPI::pre_processing() {
-  size_t input_size = taskData->inputs_count[0];
-  const auto* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
-
-  data_.resize(input_size);
-  std::memcpy(data_.data(), raw_data, input_size * sizeof(int));
-
-  return true;
+bool TestTaskMPI::validation() {
+  return !data_.empty();
 }
 
-bool TestTaskMPI::validation() {
-  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+bool TestTaskMPI::pre_processing() {
+  boost::mpi::communicator world;
+  int world_size = world.size();
+  int vector_size = static_cast<int>(data_.size());
+
+  if (world_size > vector_size) {
     return false;
   }
 
-  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
-    return false;
+  send_counts.resize(world_size);
+  displacements.resize(world_size);
+
+  int base_size = vector_size / world_size;
+  int remainder = vector_size % world_size;
+
+  for (int i = 0; i < world_size; ++i) {
+    send_counts[i] = base_size + (i < remainder ? 1 : 0);
+    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + send_counts[i - 1];
+  }
+
+  local_data.resize(send_counts[world.rank()]);
+
+  if (world.rank() == 0) {
+    for (int i = 1; i < world_size; ++i) {
+      MPI_Send(data_.data() + displacements[i], send_counts[i], MPI_INT, i, 0, MPI_COMM_WORLD);
+    }
+    std::copy(data_.begin(), data_.begin() + send_counts[0], local_data.begin());
+  } else {
+    MPI_Recv(local_data.data(), send_counts[world.rank()], MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
   }
 
   return true;
 }
 
 bool TestTaskMPI::run() {
-  boost::mpi::communicator world;
-
-  // Calculate the total size and divide work across processes
-  int total_size = static_cast<int>(data_.size());
-  int local_size = total_size / world.size() + (world.rank() < (total_size % world.size()) ? 1 : 0);
-
-  std::vector<int> local_data(local_size);
-
-  if (world.rank() == 0) {
-    // Flatten the data for scatterv
-    std::vector<int> send_counts(world.size(), total_size / world.size());
-    for (int i = 0; i < total_size % world.size(); ++i) {
-      send_counts[i]++;
-    }
-
-    std::vector<int> displacements(world.size(), 0);
-    for (size_t i = 1; i < displacements.size(); ++i) {
-      displacements[i] = displacements[i - 1] + send_counts[i - 1];
-    }
-
-    boost::mpi::scatterv(world, data_, send_counts, displacements, local_data, 0);
-  } else {
-    boost::mpi::scatterv(world, local_data, 0);
-  }
-
-  // Local Shell sort
   for (int gap = local_data.size() / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < local_data.size(); ++i) {
       int temp = local_data[i];
-      size_t j;
-      for (j = i; j >= gap && local_data[j - gap] > temp; j -= gap) {
+      size_t j = i;
+      while (j >= gap && local_data[j - gap] > temp) {
         local_data[j] = local_data[j - gap];
+        j -= gap;
       }
       local_data[j] = temp;
     }
-  }
-
-  // Gather sorted chunks
-  if (world.rank() == 0) {
-    std::vector<int> recv_counts(world.size(), total_size / world.size());
-    for (int i = 0; i < total_size % world.size(); ++i) {
-      recv_counts[i]++;
-    }
-
-    std::vector<int> displacements(world.size(), 0);
-    for (size_t i = 1; i < displacements.size(); ++i) {
-      displacements[i] = displacements[i - 1] + recv_counts[i - 1];
-    }
-
-    boost::mpi::gatherv(world, local_data, data_, recv_counts, displacements, 0);
-  } else {
-    boost::mpi::gatherv(world, local_data, 0);
   }
 
   return true;
 }
 
 bool TestTaskMPI::post_processing() {
-  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
-    return false;
-  }
+  boost::mpi::communicator world;
 
-  size_t output_size = taskData->outputs_count[0];
-  auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
-  std::memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
+  if (world.rank() == 0) {
+    data_.resize(send_counts[0]);
+    std::copy(local_data.begin(), local_data.end(), data_.begin());
+    for (int i = 1; i < world.size(); ++i) {
+      std::vector<int> temp(send_counts[i]);
+      MPI_Recv(temp.data(), send_counts[i], MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      data_.insert(data_.end(), temp.begin(), temp.end());
+    }
+    std::sort(data_.begin(), data_.end());
+  } else {
+    MPI_Send(local_data.data(), local_data.size(), MPI_INT, 0, 0, MPI_COMM_WORLD);
+  }
 
   return true;
 }

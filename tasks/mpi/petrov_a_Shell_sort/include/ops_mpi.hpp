@@ -19,6 +19,10 @@ class TestTaskMPI : public ppc::core::Task {
 
  private:
   std::vector<int> data_;
+  std::vector<int> local_data;
+  std::vector<int> send_counts;
+  std::vector<int> displacements;
+  std::vector<int> recv_counts;
 };
 
 }  // namespace petrov_a_Shell_sort_mpi
