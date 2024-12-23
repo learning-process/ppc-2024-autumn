@@ -39,7 +39,7 @@ bool TestTaskMPI::run() {
   std::vector<int> local_data(local_size);
 
   if (world.rank() == 0) {
-    // Flatten the data for scatter
+    // Flatten the data for scatterv
     std::vector<int> send_counts(world.size(), total_size / world.size());
     for (int i = 0; i < total_size % world.size(); ++i) {
       send_counts[i]++;
@@ -50,9 +50,9 @@ bool TestTaskMPI::run() {
       displacements[i] = displacements[i - 1] + send_counts[i - 1];
     }
 
-    boost::mpi::scatterv(world, data_.data(), send_counts, displacements, local_data.data(), 0);
+    boost::mpi::scatterv(world, data_, send_counts, displacements, local_data, 0);
   } else {
-    boost::mpi::scatterv(world, local_data.data(), 0);
+    boost::mpi::scatterv(world, local_data, 0);
   }
 
   // Local Shell sort
@@ -70,4 +70,33 @@ bool TestTaskMPI::run() {
   // Gather sorted chunks
   if (world.rank() == 0) {
     std::vector<int> recv_counts(world.size(), total_size / world.size());
-    for (int i = 0; i < total_size % world.s
+    for (int i = 0; i < total_size % world.size(); ++i) {
+      recv_counts[i]++;
+    }
+
+    std::vector<int> displacements(world.size(), 0);
+    for (size_t i = 1; i < displacements.size(); ++i) {
+      displacements[i] = displacements[i - 1] + recv_counts[i - 1];
+    }
+
+    boost::mpi::gatherv(world, local_data, data_, recv_counts, displacements, 0);
+  } else {
+    boost::mpi::gatherv(world, local_data, 0);
+  }
+
+  return true;
+}
+
+bool TestTaskMPI::post_processing() {
+  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
+    return false;
+  }
+
+  size_t output_size = taskData->outputs_count[0];
+  auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
+  std::memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
+
+  return true;
+}
+
+}  // namespace petrov_a_Shell_sort_mpi
