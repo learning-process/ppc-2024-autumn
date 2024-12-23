@@ -6,9 +6,9 @@
 #include "seq/grudzin_k_monte_carlo/include/ops_seq.hpp"
 
 namespace grudzin_k_montecarlo_seq {
-std::vector<double> GenDimDistr(int dim) {
+std::vector<double> GenDimDistr(int dim, double left = -5.0, double right = 5.0) {
   std::mt19937 rnd;
-  std::uniform_real_distribution<> dist(-5.0, 5.0);
+  std::uniform_real_distribution<> dist(left, right);
   std::vector<double> tmp;
   for (int i = 0; i < dim; ++i) {
     double start = dist(rnd);

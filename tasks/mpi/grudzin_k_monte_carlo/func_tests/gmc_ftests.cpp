@@ -7,9 +7,9 @@
 #include "mpi/grudzin_k_monte_carlo/include/gmc_include.hpp"
 
 namespace grudzin_k_montecarlo_mpi {
-std::vector<double> GenDimDistr(int dim) {
+std::vector<double> GenDimDistr(int dim, double left = -5.0, double right = 5.0) {
   std::mt19937 rnd;
-  std::uniform_real_distribution<> dist(-5.0, 5.0);
+  std::uniform_real_distribution<> dist(left, right);
   std::vector<double> tmp;
   for (int i = 0; i < dim; ++i) {
     double start = dist(rnd);
@@ -30,7 +30,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_1Dim) {
     { return 0.0 * x[0] + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -1.0, 1.0);
   double result_par = 0;
   double result_seq = 0;
 
@@ -73,7 +73,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_2Dim) {
     { return 0.0 * (x[0] + x[1]) + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -2.0, 2.0);
   double result_par = 0;
   double result_seq = 0;
 
@@ -116,7 +116,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_3Dim) {
     { return 0.0 * (x[0] + x[1] + x[2]) + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -3.0, 3.0);
   double result_par = 0;
   double result_seq = 0;
 
@@ -159,7 +159,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_3Dim_2k) {
     { return 0.0 * (x[0] + x[1] + x[2]) + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -4.0, 4.0);
   double result_par = 0;
   double result_seq = 0;
 
@@ -202,7 +202,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_3Dim_prime) {
     { return 0.0 * (x[0] + x[1] + x[2]) + 1.0; }
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -5.0, 5.0);
   double result_par = 0;
   double result_seq = 0;
 
@@ -245,7 +245,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_EXP) {
     return std::exp(x[0] + x[1] + x[2]);
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -6.0, 6.0);
   double result_par = 0;
   double result_seq = 0;
 
@@ -289,7 +289,7 @@ TEST(grudzin_k_monte_carlo_mpi, Test_Poly) {
     return std::pow(x[0], 3) + std::pow(x[1] + x[2], 2) + 2.0 * x[2];
   };
   std::shared_ptr<ppc::core::TaskData> MC1_Data = std::make_shared<ppc::core::TaskData>();
-  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions);
+  std::vector<double> dim = grudzin_k_montecarlo_mpi::GenDimDistr(dimensions, -7.0, 7.0);
   double result_par = 0;
   double result_seq = 0;
 
