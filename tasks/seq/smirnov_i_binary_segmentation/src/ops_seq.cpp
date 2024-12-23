@@ -5,6 +5,11 @@ using namespace std::chrono_literals;
 bool smirnov_i_binary_segmentation::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   mask = std::vector<int>(cols * rows, 1);
+  for(size_t i = 0; i < img.size(); i++) {
+    if (img[i] == 255) {
+      img[i] = 1;
+    }
+  }
   return true;
 }
 
@@ -20,7 +25,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskSequential::validation() {
 
   // check is binary
   for (size_t i = 0; i < img.size(); i++) {
-    if (img[i] != 0 && img[i] != 1) {
+    if (img[i] != 0 && img[i] != 255) {
       return false;
     }
   }

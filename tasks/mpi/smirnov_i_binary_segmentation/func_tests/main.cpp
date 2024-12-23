@@ -104,7 +104,8 @@ TEST(smirnov_i_binary_segmentation_mpi, get_mask_small) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    img = {0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1};
+    img = {0,   255, 0, 0,   255, 255, 0,   0,   255, 255, 255, 0, 255, 255, 0,   255,
+           255, 0,   0, 255, 255, 255, 255, 255, 255, 0,   255, 0, 255, 0,   255, 255};
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
     taskDataPar->inputs_count.emplace_back(rows);
     taskDataPar->inputs_count.emplace_back(cols);
@@ -162,7 +163,7 @@ TEST(smirnov_i_binary_segmentation_mpi, get_mask_prime_size) {
     img = std::vector<int>(cols * rows);
 
     for (int i = 0; i < cols * rows; i++) {
-      img[i] = dis(gen);
+      img[i] = dis(gen) * 255;
     }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
@@ -223,7 +224,7 @@ TEST(smirnov_i_binary_segmentation_mpi, get_mask_sizes_10_pow_and_2_pow) {
     img = std::vector<int>(cols * rows);
 
     for (int i = 0; i < cols * rows; i++) {
-      img[i] = dis(gen);
+      img[i] = dis(gen) * 255;
     }
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(img.data()));
