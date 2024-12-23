@@ -11,21 +11,8 @@
 #include <vector>
 using namespace std::chrono_literals;
 
-std::vector<int> lysov_i_matrix_multiplication_Fox_algorithm_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
-static void lysov_i_matrix_multiplication_Fox_algorithm_mpi::extract_submatrix_block(const std::vector<double>& matrix,
-                                                                                     double* block, int total_columns,
-                                                                                     int block_size,
-                                                                                     int block_row_index,
-                                                                                     int block_col_index) {
+static void extract_submatrix_block(const std::vector<double>& matrix, double* block, int total_columns, int block_size,
+                                    int block_row_index, int block_col_index) {
   for (int row = 0; row < block_size; ++row) {
     for (int col = 0; col < block_size; ++col) {
       block[row * block_size + col] =
@@ -34,10 +21,8 @@ static void lysov_i_matrix_multiplication_Fox_algorithm_mpi::extract_submatrix_b
   }
 }
 
-static void lysov_i_matrix_multiplication_Fox_algorithm_mpi::multiply_matrix_blocks(const std::vector<double>& A,
-                                                                                    const std::vector<double>& B,
-                                                                                    std::vector<double>& C,
-                                                                                    int block_size) {
+static void multiply_matrix_blocks(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& C,
+                                   int block_size) {
   for (int row = 0; row < block_size; ++row) {
     for (int col = 0; col < block_size; ++col) {
       double sum = 0.0;
@@ -49,11 +34,9 @@ static void lysov_i_matrix_multiplication_Fox_algorithm_mpi::multiply_matrix_blo
   }
 }
 
-void lysov_i_matrix_multiplication_Fox_algorithm_mpi::perform_fox_algorithm_step(boost::mpi::communicator& my_world,
-                                                                                 int rank, int cnt_work_process, int K,
-                                                                                 std::vector<double>& local_A,
-                                                                                 std::vector<double>& local_B,
-                                                                                 std::vector<double>& local_C) {
+static void perform_fox_algorithm_step(boost::mpi::communicator& my_world, int rank, int cnt_work_process, int K,
+                                       std::vector<double>& local_A, std::vector<double>& local_B,
+                                       std::vector<double>& local_C) {
   std::vector<double> temp_A(K * K);
   std::vector<double> temp_B(K * K);
 

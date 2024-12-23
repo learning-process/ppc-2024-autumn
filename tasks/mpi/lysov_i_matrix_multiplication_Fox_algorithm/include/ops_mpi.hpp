@@ -15,14 +15,6 @@
 
 namespace lysov_i_matrix_multiplication_Fox_algorithm_mpi {
 
-std::vector<int> getRandomVector(int sz);
-static void extract_submatrix_block(const std::vector<double>& matrix, double* block, int total_columns, int block_size,
-                                    int block_row_index, int block_col_index);
-static void multiply_matrix_blocks(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& C,
-                                   int block_size);
-void perform_fox_algorithm_step(boost::mpi::communicator& my_world, int rank, int cnt_work_process, int K,
-                                std::vector<double>& local_A, std::vector<double>& local_B,
-                                std::vector<double>& local_C);
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
