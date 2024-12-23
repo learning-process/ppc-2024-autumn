@@ -18,9 +18,6 @@
 
 namespace frolova_e_Simpson_method_mpi {
 
-    
-
-    // one function
 double squaresOfX(const std::vector<double>& point);
 double cubeOfX(const std::vector<double>& point);
 
@@ -35,11 +32,12 @@ double ProductOfSquaresOfXandYandZ(const std::vector<double>& point);
 //_______________________________________________________________________________________________________________
 
 static std::map<int, double (*)(const std::vector<double>&)> functionRegistry = {{1, squaresOfX},
-                                                                                      {2, cubeOfX},
-                                                                                      {3, sumOfSquaresOfXandY},
-                                                                                      {4, ProductOfXAndY},
-                                                                                      {5, sumOfSquaresOfXandYandZ},
-                                                                                      {6, ProductOfSquaresOfXandYandZ}};
+                                                                                 {2, cubeOfX},
+                                                                                 {3, sumOfSquaresOfXandY},
+                                                                                 {4, ProductOfXAndY},
+                                                                                 {5, sumOfSquaresOfXandYandZ},
+                                                                                 {6, ProductOfSquaresOfXandYandZ}};
+
 
 //________________________________________________________________________________________________________________
 
@@ -69,23 +67,19 @@ class SimpsonmethodSequential : public ppc::core::Task {
 
 class SimpsonmethodParallel : public ppc::core::Task {
  public:
-  explicit SimpsonmethodParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit SimpsonmethodParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
 
  private:
-
   double (*func)(const std::vector<double>&);
 
-  //for first process
   std::vector<double> limits;
   size_t divisions;
   double resIntegral;
 
-  //for all processes
   int functionid;
 
   std::vector<double> localLimits;
@@ -93,8 +87,6 @@ class SimpsonmethodParallel : public ppc::core::Task {
   size_t dimension;
 
   double localres;
-
-
   boost::mpi::communicator world;
 };
 

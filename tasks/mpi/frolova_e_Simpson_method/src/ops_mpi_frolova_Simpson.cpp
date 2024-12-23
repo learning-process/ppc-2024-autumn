@@ -8,40 +8,40 @@
 #include <thread>
 #include <vector>
 
-double frolova_e_Simpson_method_mpi::squaresOfX(const std::vector<double>& point) { 
-     double x = point[0];
-     return x * x;
+double frolova_e_Simpson_method_mpi::squaresOfX(const std::vector<double>& point) {
+  double x = point[0];
+  return x * x;
 }
 
 double frolova_e_Simpson_method_mpi::cubeOfX(const std::vector<double>& point) {
-     double x = point[0];
-     return x * x * x;
+  double x = point[0];
+  return x * x * x;
 }
 
 double frolova_e_Simpson_method_mpi::sumOfSquaresOfXandY(const std::vector<double>& point) {
-     double x = point[0];
-     double y = point[1];
-     return x * x + y * y;
+  double x = point[0];
+  double y = point[1];
+  return x * x + y * y;
 }
 
 double frolova_e_Simpson_method_mpi::ProductOfXAndY(const std::vector<double>& point) {
-     double x = point[0];
-     double y = point[1];
-     return x * y;
+  double x = point[0];
+  double y = point[1];
+  return x * y;
 }
 
 double frolova_e_Simpson_method_mpi::sumOfSquaresOfXandYandZ(const std::vector<double>& point) {
-     double x = point[0];
-     double y = point[1];
-     double z = point[2];
-     return x * x + y * y + z * z;
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
+  return x * x + y * y + z * z;
 }
 
 double frolova_e_Simpson_method_mpi::ProductOfSquaresOfXandYandZ(const std::vector<double>& point) {
-     double x = point[0];
-     double y = point[1];
-     double z = point[2];
-     return x * y * z;
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
+  return x * y * z;
 }
 
 double frolova_e_Simpson_method_mpi::roundToTwoDecimalPlaces(double value) { return std::round(value * 100.0) / 100.0; }
@@ -120,20 +120,12 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodSequential::pre_processing() {
   // Init value for input and output
   int* value = reinterpret_cast<int*>(taskData->inputs[0]);  //{divisions,dimension}
   divisions = static_cast<size_t>(value[0]);
-//  std::cout << "divisions =" << divisions << std::endl;
   dimension = static_cast<size_t>(value[1]);
-//  std::cout << "dimension =" << dimension << std::endl;
 
   double* value_2 = reinterpret_cast<double*>(taskData->inputs[1]);
   for (int i = 0; i < static_cast<int>(taskData->inputs_count[1]); i++) {
     limits.push_back(value_2[i]);
   }
-  // limits.assign(value_2, value_2 + taskData->inputs_count[1]);
-  //std::cout << "limits" << std::endl;
-  //for (double c : limits) {
-  //  std::cout << "[" << c << ",";
-  //}
-  //std::cout << "[" << std::endl;
 
   return true;
 }
@@ -143,21 +135,18 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodSequential::validation() {
 
   int* value = reinterpret_cast<int*>(taskData->inputs[0]);
   if (taskData->inputs_count[0] != 2) {
-//    std::cout << "(taskData->inputs_count[0] != 2) " << std::endl;
     return false;
   }
 
   auto div = static_cast<size_t>(value[0]);
 
   if (static_cast<int>(div) % 2 != 0) {
-//    std::cout << "(divisions%2 != 0) " << std::endl;
     return false;
   }
 
   auto dim = static_cast<size_t>(value[1]);
 
   if (taskData->inputs_count[1] / dim != 2) {
-//    std::cout << "(taskData->inputs_count[1] / dimension != 2) " << std::endl;
     return false;
   }
 
@@ -186,22 +175,13 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::pre_processing() {
     // Init value for input and output
     int* value = reinterpret_cast<int*>(taskData->inputs[0]);  //{divisions,dimension,functionid}
     divisions = static_cast<size_t>(value[0]);
-//    std::cout << "divisions =" << divisions << std::endl;
     dimension = static_cast<size_t>(value[1]);
-//    std::cout << "dimension =" << dimension << std::endl;
     functionid = static_cast<size_t>(value[2]);
-//    std::cout << "functionid =" << functionid << std::endl;
 
     double* value_2 = reinterpret_cast<double*>(taskData->inputs[1]);
     for (int i = 0; i < static_cast<int>(taskData->inputs_count[1]); i++) {
       limits.push_back(value_2[i]);
     }
-    // limits.assign(value_2, value_2 + taskData->inputs_count[1]);
-    //std::cout << "limits" << std::endl;
-    //for (double c : limits) {
-    //  std::cout << "[" << c << ",";
-    //}
-    //std::cout << "[" << std::endl;
   }
 
   return true;
@@ -214,24 +194,18 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::validation() {
 
       int* value = reinterpret_cast<int*>(taskData->inputs[0]);
       if (taskData->inputs_count[0] != 3) {
-//          std::cout << "(taskData->inputs_count[0] != 3) " << std::endl;
           return false;
       }
 
       auto div = static_cast<size_t>(value[0]);
-
       if (static_cast<int>(div) % 2 != 0) {
-//          std::cout << "(divisions%2 != 0) " << std::endl;
           return false;
       }
 
       auto dim = static_cast<size_t>(value[1]);
-
       if (taskData->inputs_count[1] / dim != 2) {
-//          std::cout << "(taskData->inputs_count[1] / dimension != 2) " << std::endl;
           return false;
-      }
-    
+      }    
   }
   return true;
 }
@@ -240,12 +214,8 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::run() {
   internal_order_test();
 
   broadcast(world, functionid, 0);
-
   broadcast(world, dimension, 0);
 
-
-
-  
   if (world.rank() == 0) {
       localdivisions = divisions / world.size();
       if (localdivisions % 2 != 0) {
@@ -254,93 +224,63 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::run() {
   }
   broadcast(world, localdivisions, 0);
 
-
   if (world.rank() == 0) {
-
-      
       size_t size = world.size();
-    
-      for (size_t i = 0; i < size; i++) {
 
+      for (size_t i = 0; i < size; i++) {
           std::vector<double> loclim;
 
           for (size_t j = 0; j < dimension; j++) {
-          
-              double a = limits[2 * j];
-              double b = limits[2 * j + 1];
-              double step = (b - a) / size;
+        double a = limits[2 * j];
+        double b = limits[2 * j + 1];
+        double step = (b - a) / size;
 
-              double lim1;
-              double lim2;
+        double lim1;
+        double lim2;
 
-              if (j == 0) {
-
-                  lim1 = a + i * step;
-                if (i < size - 1) {
-                    lim2 = a + (i + 1) * step;
-                } else {
-                    lim2 = b;
-                }
-
-              } else {
-                
-                  lim1 = a;
-                  lim2 = b;
-              }
-
-              if (i == 0) {
-                  localLimits.push_back(lim1);
-                  localLimits.push_back(lim2);
-              } else {
-                  loclim.push_back(lim1);
-                  loclim.push_back(lim2);
-              }
-
-
+        if (j == 0) {
+          lim1 = a + i * step;
+          if (i < size - 1) {
+            lim2 = a + (i + 1) * step;
+          } else {
+            lim2 = b;
           }
+        } else {
+          lim1 = a;
+          lim2 = b;
+        }
 
-          
-
+        if (i == 0) {
+          localLimits.push_back(lim1);
+          localLimits.push_back(lim2);
+        } else {
+          loclim.push_back(lim1);
+          loclim.push_back(lim2);
+        }
+          }
           if (i != 0) {
-              world.send(i, 0, loclim);
+        world.send(i, 0, loclim);
           }
-      
       }
-     
-
   }
 
   if (world.rank() != 0) {
-  
       world.recv(0, 0, localLimits);
-
   }
 
-  
   func = frolova_e_Simpson_method_mpi::functionRegistry[functionid];
-
-  /*if (functionRegistry.find(functionid) != functionRegistry.end()) {
-      func = functionRegistry[functionid];
-  }*/
 
   localres = frolova_e_Simpson_method_mpi::Simpson_Method(func, localdivisions, dimension, localLimits);
 
-
-   reduce(world, localres, resIntegral, std::plus<double>(), 0); 
-   
-
-
+  reduce(world, localres, resIntegral, std::plus<double>(), 0);
 
   return true;
 }
 
 bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::post_processing() {
   internal_order_test();
-
   if (world.rank() == 0) {
-    
       reinterpret_cast<double*>(taskData->outputs[0])[0] = resIntegral;
-
   }
 
   return true;

@@ -7,50 +7,45 @@ using namespace std::chrono_literals;
 
 double frolova_e_Simpson_method_seq::roundToTwoDecimalPlaces(double value) { return std::round(value * 100.0) / 100.0; }
 
-double frolova_e_Simpson_method_seq::squaresOfX(const std::vector<double>& point) { 
-    
-    double x = point[0];
-    return x * x;
+double frolova_e_Simpson_method_seq::squaresOfX(const std::vector<double>& point) {
+  double x = point[0];
+  return x * x;
 }
 
 double frolova_e_Simpson_method_seq::cubeOfX(const std::vector<double>& point) {
-
-    double x = point[0];
-    return x * x * x;
+  double x = point[0];
+  return x * x * x;
 }
 
-double frolova_e_Simpson_method_seq::sumOfSquaresOfXandY(const std::vector<double>& point) { 
-
-    double x = point[0];
-    double y = point[1];
-    return x * x + y * y;
+double frolova_e_Simpson_method_seq::sumOfSquaresOfXandY(const std::vector<double>& point) {
+  double x = point[0];
+  double y = point[1];
+  return x * x + y * y;
 }
 
 double frolova_e_Simpson_method_seq::ProductOfXAndY(const std::vector<double>& point) {
-
-    double x = point[0];
-    double y = point[1];
-    return x * y;
+  double x = point[0];
+  double y = point[1];
+  return x * y;
 }
 
 double frolova_e_Simpson_method_seq::sumOfSquaresOfXandYandZ(const std::vector<double>& point) {
-    double x = point[0];
-    double y = point[1];
-    double z = point[2];
-    return x * x + y * y + z * z;
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
+  return x * x + y * y + z * z;
 }
 
 double frolova_e_Simpson_method_seq::ProductOfSquaresOfXandYandZ(const std::vector<double>& point) {
-    double x = point[0];
-    double y = point[1];
-    double z = point[2];
-    return x * y * z;
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
+  return x * y * z;
 }
 
-double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions,
-    size_t dimension, std::vector<double>& limits) {
+double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions, size_t dimension, std::vector<double>& limits) {
   std::vector<double> h(dimension);
-  std::vector<int> steps(dimension); 
+  std::vector<int> steps(dimension);
   std::vector<int> nodes(dimension);
   std::vector<int> offset(dimension);
 
@@ -120,20 +115,13 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::pre_processing() {
 
   int* value = reinterpret_cast<int*>(taskData->inputs[0]);//{divisions,dimension}
   divisions = static_cast<size_t>(value[0]);
-//  std::cout << "divisions =" << divisions << std::endl;
   dimension = static_cast<size_t>(value[1]);
-//  std::cout << "dimension =" << dimension << std::endl;
 
   double* value_2 = reinterpret_cast<double*>(taskData->inputs[1]);
   for (int i = 0; i < static_cast<int>(taskData->inputs_count[1]); i++) {
     limits.push_back(value_2[i]);
   }
-  //limits.assign(value_2, value_2 + taskData->inputs_count[1]);
-  //std::cout << "limits" << std::endl; 
-  //for (double c : limits) {
-  //  std::cout << "[" << c << ",";
-  //}
-  //std::cout << "[" << std::endl; 
+
   return true;
 }
 
@@ -142,21 +130,18 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::validation() {
 
   int* value = reinterpret_cast<int*>(taskData->inputs[0]);
   if (taskData->inputs_count[0] != 2) {
-//    std::cout << "(taskData->inputs_count[0] != 2) " << std::endl;
     return false;
   }
 
   auto div = static_cast<size_t>(value[0]);
 
   if (static_cast<int>(div) % 2 != 0) {
-//    std::cout << "(divisions%2 != 0) " << std::endl;
     return false;
   }
 
   auto dim = static_cast<size_t>(value[1]);
 
   if (taskData->inputs_count[1] / dim != 2) {
-//    std::cout << "(taskData->inputs_count[1] / dimension != 2) " << std::endl;
     return false;
   } 
 
@@ -172,7 +157,6 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::run() {
 
 bool frolova_e_Simpson_method_seq::Simpsonmethod::post_processing() {
   internal_order_test();
-
   reinterpret_cast<double*>(taskData->outputs[0])[0] = resIntegral;
 
   return true;

@@ -21,15 +21,13 @@ TEST(frolova_e_Simpson_method_mpi, one_dimensional_integral_squaresOfX_test) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_1.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values_1.data()));
     taskDataPar->inputs_count.emplace_back(values_1.size());
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(values_2.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values_2.data()));
     taskDataPar->inputs_count.emplace_back(values_2.size());
 
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
     taskDataPar->outputs_count.emplace_back(res.size() * sizeof(double));
   }
 
@@ -54,7 +52,7 @@ TEST(frolova_e_Simpson_method_mpi, one_dimensional_integral_squaresOfX_test) {
     taskDataSeq->outputs_count.emplace_back(res_2.size() * sizeof(double));
 
     frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(taskDataSeq,
-                                                                   frolova_e_Simpson_method_mpi::squaresOfX);
+                                                                             frolova_e_Simpson_method_mpi::squaresOfX);
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
     testTaskSequential.run();
@@ -69,8 +67,6 @@ TEST(frolova_e_Simpson_method_mpi, one_dimensional_integral_cubeOfX_test) {
   std::vector<int> values_1 = {8, 1, 2};
   std::vector<int> values_11 = {8, 1};
   std::vector<double> values_2 = {0.0, 2.0};
-
-
 
   std::vector<double> res(1, 0);
 
