@@ -127,10 +127,10 @@ bool lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskSequential::val
 
 bool lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskSequential::run() {
   internal_order_test();
-  for (std::size_t i = 0; i < N; ++i) {
-    for (std::size_t j = 0; j < N; ++j) {
+  for (int i = 0; i < N; ++i) {
+    for (int j = 0; j < N; ++j) {
       double sum = 0.0;
-      for (std::size_t k = 0; k < N; ++k) {
+      for (int k = 0; k < N; ++k) {
         double a_ij = A[i * N + k];
         double b_kj = B[k * N + j];
         sum += a_ij * b_kj;
