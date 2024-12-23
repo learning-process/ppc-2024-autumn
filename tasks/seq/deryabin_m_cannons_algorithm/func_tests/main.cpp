@@ -21,8 +21,7 @@ TEST(deryabin_m_cannons_algorithm_seq, test_simple_matrix) {
   taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
   // Create Task
-  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(
-      taskDataSeq);
+  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(taskDataSeq);
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), true);
   cannons_algorithm_TaskSequential.pre_processing();
   cannons_algorithm_TaskSequential.run();
@@ -49,8 +48,7 @@ TEST(deryabin_m_cannons_algorithm_seq, test_triangular_matrix) {
   taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
   // Create Task
-  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(
-      taskDataSeq);
+  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(taskDataSeq);
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), true);
   cannons_algorithm_TaskSequential.pre_processing();
   cannons_algorithm_TaskSequential.run();
@@ -76,8 +74,7 @@ TEST(deryabin_m_cannons_algorithm_seq, test_null_matrix) {
   taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
   // Create Task
-  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(
-      taskDataSeq);
+  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(taskDataSeq);
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), true);
   cannons_algorithm_TaskSequential.pre_processing();
   cannons_algorithm_TaskSequential.run();
@@ -103,8 +100,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_identity_matrix) {
   taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
   // Create Task
-  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(
-      taskDataSeq);
+  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(taskDataSeq);
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), true);
   cannons_algorithm_TaskSequential.pre_processing();
   cannons_algorithm_TaskSequential.run();
@@ -130,8 +126,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_matrices_of_different_dimensio
   taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
   // Create Task
-  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(
-      taskDataSeq);
+  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(taskDataSeq);
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), false);
 }
 
@@ -153,7 +148,6 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_non_square_matrices) {
   taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
   // Create Task
-  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(
-      taskDataSeq);
+  deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential cannons_algorithm_TaskSequential(taskDataSeq);
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), false);
 }
