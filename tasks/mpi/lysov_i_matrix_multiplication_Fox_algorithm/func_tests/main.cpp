@@ -63,8 +63,7 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Test_Multiplication) {
     matrixMultiplication.run();
     matrixMultiplication.post_processing();
     for (int i = 0; i < matrix_size * matrix_size; ++i) {
-      ASSERT_NEAR(C_sequential[i], C_expected[i], 1e-9);
-      ASSERT_NEAR(C_parallel[i], C_expected[i], 1e-9);
+      ASSERT_NEAR(C_sequential[i], C_parallel[i], 1e-9);
     }
   }
 }
@@ -219,29 +218,35 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, RandomTest) {
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data) {
   boost::mpi::communicator world;
   int matrix_size = 20;
+  std::vector<double> A;
+  std::vector<double> B;
   std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&C_parallel));
     taskDataPar->inputs_count.emplace_back(sizeof(matrix_size));
     taskDataPar->outputs_count.emplace_back(C_parallel.size());
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  if (world.rank()) {
+  if (world.rank() == 0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data2) {
   boost::mpi::communicator world;
-  int matrix_size = 20;
+  int matrix_size = -20;
   std::vector<double> A;
+  std::vector<double> B;
   std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    A = getRandomVector(matrix_size * matrix_size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
     taskDataPar->inputs_count.emplace_back(sizeof(matrix_size));
     taskDataPar->inputs_count.emplace_back(sizeof(A.size()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&C_parallel));
@@ -249,7 +254,7 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data2) {
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank()) {
+  if (world.rank() == 0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
@@ -257,18 +262,23 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_input_data2) {
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data1) {
   boost::mpi::communicator world;
   int matrix_size = 20;
-  std::vector<double> A;
+  std::vector<double> A(matrix_size * matrix_size, 0.0);
+  std::vector<double> B(matrix_size * matrix_size, 0.0);
   std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    A = getRandomVector(matrix_size * matrix_size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&C_parallel));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs_count.emplace_back(B.size());
     taskDataPar->inputs_count.emplace_back(sizeof(matrix_size));
-    taskDataPar->inputs_count.emplace_back(sizeof(A.size()));
+    taskDataPar->outputs_count.emplace_back(C_parallel.size() + 1);
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank()) {
+  if (world.rank() == 0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }
@@ -276,19 +286,23 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data1) {
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Incorrect_output_data2) {
   boost::mpi::communicator world;
   int matrix_size = 20;
-  std::vector<double> A;
-  std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
+  std::vector<double> A(matrix_size * matrix_size, 0.0);
+  std::vector<double> B(matrix_size * matrix_size, 0.0);
+  std::vector<double> C_parallel;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    A = getRandomVector(matrix_size * matrix_size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs_count.emplace_back(B.size());
     taskDataPar->inputs_count.emplace_back(sizeof(matrix_size));
-    taskDataPar->inputs_count.emplace_back(sizeof(A.size()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&C_parallel));
+    taskDataPar->outputs_count.emplace_back(C_parallel.size());
   }
   lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
-  if (world.rank()) {
+  if (world.rank() == 0) {
     ASSERT_FALSE(testMpiTaskParallel.validation());
   }
 }

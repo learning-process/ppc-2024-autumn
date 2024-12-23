@@ -27,8 +27,8 @@ class TestMPITaskSequential : public ppc::core::Task {
   std::vector<double> A;
   std::vector<double> B;
   std::vector<double> C;
-  int N;
-  std::size_t block_size;
+  int N{};
+  std::size_t block_size{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {

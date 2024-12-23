@@ -150,7 +150,7 @@ bool lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel::valid
     if (dimension <= 0) {
       return false;
     }
-
+    std::cout << "3" << std::endl;
     if (taskData->inputs_count[2] != sizeof(int)) {
       return false;
     }
@@ -162,11 +162,9 @@ bool lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel::valid
     if (static_cast<int>(taskData->inputs_count[1]) != elements) {
       return false;
     }
-
     if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->outputs[0] == nullptr) {
       return false;
     }
-
     if (static_cast<int>(taskData->outputs_count[0]) != elements) {
       return false;
     }
