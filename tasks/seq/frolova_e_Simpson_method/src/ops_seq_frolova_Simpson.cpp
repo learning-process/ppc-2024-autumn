@@ -142,7 +142,7 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::validation() {
   auto dim = static_cast<size_t>(value[1]);
   if (taskData->inputs_count[1] / dim != 2) {
     return false;
-  } 
+  }
   return true;
 }
 

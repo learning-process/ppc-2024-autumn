@@ -159,8 +159,8 @@ TEST(frolova_e_Simpson_method_mpi, two_dimensional_integral_sumOfSquaresOfXandY_
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_2.data()));
     taskDataSeq->outputs_count.emplace_back(res_2.size() * sizeof(double));
 
-    frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(
-        taskDataSeq, frolova_e_Simpson_method_mpi::sumOfSquaresOfXandY);
+    frolova_e_Simpson_method_mpi::SimpsonmethodSequential testTaskSequential(taskDataSeq, 
+                                                                             frolova_e_Simpson_method_mpi::sumOfSquaresOfXandY);
 
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
