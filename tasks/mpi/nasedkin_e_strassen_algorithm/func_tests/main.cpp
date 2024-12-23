@@ -35,10 +35,7 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_2x2) {
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
-  if (world.rank() == 0) {
-    std::cout << "Test: TaskData inputs_count[0] = " << taskDataParallel->inputs_count[0]
-              << ", inputs_count[1] = " << taskDataParallel->inputs_count[1] << std::endl;
-  }
+
 
   if (world.rank() == 0) {
     taskDataParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixA.data()));
@@ -47,6 +44,11 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_2x2) {
     taskDataParallel->inputs_count.emplace_back(matrixB.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
     taskDataParallel->outputs_count.emplace_back(resultParallel.size());
+  }
+
+  if (world.rank() == 0) {
+    std::cout << "Test: TaskData inputs_count[0] = " << taskDataParallel->inputs_count[0]
+              << ", inputs_count[1] = " << taskDataParallel->inputs_count[1] << std::endl;
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
