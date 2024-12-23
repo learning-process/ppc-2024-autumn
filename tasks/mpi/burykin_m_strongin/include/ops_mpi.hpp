@@ -47,4 +47,4 @@ class StronginParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace burykin_m_strongin_opt
+}  // namespace burykin_m_strongin
