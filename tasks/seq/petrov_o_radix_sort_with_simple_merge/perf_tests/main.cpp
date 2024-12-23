@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <random>
 #include <algorithm>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/petrov_o_radix_sort_with_simple_merge/include/ops_seq.hpp"
