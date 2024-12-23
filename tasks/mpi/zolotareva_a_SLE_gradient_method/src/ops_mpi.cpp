@@ -166,7 +166,6 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
     boost::mpi::all_reduce(world, local_dot_pAp, global_dot_pAp, std::plus<>());
 
     if (global_dot_pAp == 0.0) break;
-
     double alpha = rs_global_old / global_dot_pAp;
 
     for (int i = 0; i < local_rows; ++i) {
@@ -179,7 +178,6 @@ bool zolotareva_a_SLE_gradient_method_mpi::TestMPITaskParallel::run() {
     boost::mpi::all_reduce(world, local_rs_new, rs_global_new, std::plus<>());
 
     if (rs_global_new < threshold) break;
-
     double beta = rs_global_new / rs_global_old;
     for (int i = 0; i < local_rows; ++i) p[i] = r[i] + beta * p[i];
     rs_global_old = rs_global_new;

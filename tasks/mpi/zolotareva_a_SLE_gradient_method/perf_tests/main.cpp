@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/zolotareva_a_SLE_gradient_method/include/ops_mpi.hpp"
