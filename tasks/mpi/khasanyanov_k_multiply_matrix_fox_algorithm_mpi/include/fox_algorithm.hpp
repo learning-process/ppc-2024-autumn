@@ -228,10 +228,7 @@ template <typename DataType>
 inline std::vector<int> FoxAlgorithm<DataType>::get_processors_grid(int size) {
   if (size < 1) throw std::invalid_argument("Number of processors must be 1 or more");
 
-  auto p = sqrt(size);
-  while (p != static_cast<int>(p)) {
-    p = sqrt(--size);
-  }
+  int p = floor(sqrt(size));
 
   std::vector<int> grid(p * p);
   std::iota(grid.begin(), grid.end(), 0);
