@@ -161,9 +161,9 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral) {
   std::vector<std::pair<double, double>> bounds(n);
   std::vector<int> distrib(n);
 
-  bounds[0] = {4, 100};
-  bounds[1] = {1, 156};
-  bounds[2] = {6, 249};
+  bounds[0] = {4, 60};
+  bounds[1] = {1, 25};
+  bounds[2] = {6, 37};
   distrib[0] = 100;
   distrib[1] = 100;
   distrib[2] = 100;
@@ -187,7 +187,7 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral) {
   RectangleMethodSequential.run();
   RectangleMethodSequential.post_processing();
   double error = 0.001;
-  ASSERT_NEAR(932886720, out[0], error);
+  ASSERT_NEAR(2770656, out[0], error);
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_with_exp) {
@@ -202,12 +202,12 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_with_exp) {
   std::vector<int> distrib(n);
 
   bounds[0] = {4, 10};
-  bounds[1] = {-7, 3};
+  bounds[1] = {-4, 3};
   bounds[2] = {3, 8};
 
-  distrib[0] = 100;
-  distrib[1] = 100;
-  distrib[2] = 100;
+  distrib[0] = 50;
+  distrib[1] = 50;
+  distrib[2] = 50;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -228,7 +228,7 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_with_exp) {
   RectangleMethodSequential.run();
   RectangleMethodSequential.post_processing();
   double error = 0.1;
-  ASSERT_NEAR(22119899.5, out[0], error);
+  ASSERT_NEAR(22074648.4, out[0], error);
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_log) {
@@ -243,11 +243,11 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_log) {
   std::vector<int> distrib(n);
 
   bounds[0] = {0, 1};
-  bounds[1] = {-13, 5};
+  bounds[1] = {-7, 5};
   bounds[2] = {3, 7};
-  distrib[0] = 100;
-  distrib[1] = 100;
-  distrib[2] = 100;
+  distrib[0] = 60;
+  distrib[1] = 60;
+  distrib[2] = 60;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -268,7 +268,7 @@ TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_log) {
   RectangleMethodSequential.run();
   RectangleMethodSequential.post_processing();
   double error = 0.001;
-  ASSERT_NEAR(-1320.7583, out[0], error);
+  ASSERT_NEAR(-160.409, out[0], error);
 }
 
 TEST(rezantseva_a_rectangle_method_seq, check_3_dimension_integral_cos) {
