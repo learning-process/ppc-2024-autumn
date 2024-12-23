@@ -29,7 +29,6 @@ bool koshkin_m_dining_philosophers::TestMPITaskParallel::validation() {
     bool outputs_count = taskData->outputs_count[0] == 1;
     bool num_procs = world.size() > 2;
     return outputs_count && num_procs;
-
   }
   return true;
 }
