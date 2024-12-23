@@ -20,6 +20,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pipeline_run) {
   std::vector<double> in_lower_limits{-1, 2, -3};
   std::vector<double> in_upper_limits{8, 8, 2};
   double epsilon = 0.1;
+  int n = 1;
   std::vector<double> out_I(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
@@ -28,6 +29,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_pipeline_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
     taskDataPar->inputs_count.emplace_back(values.size());
     taskDataPar->inputs_count.emplace_back(in_lower_limits.size());
     taskDataPar->inputs_count.emplace_back(in_upper_limits.size());
@@ -72,6 +74,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_task_run) {
   std::vector<double> in_lower_limits{-1, 2, -3};
   std::vector<double> in_upper_limits{8, 8, 2};
   double epsilon = 0.1;
+  int n = 1;
   std::vector<double> out_I(1, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (ProcRank == 0) {
@@ -80,6 +83,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_mpi, test_task_run) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
     taskDataPar->inputs_count.emplace_back(values.size());
     taskDataPar->inputs_count.emplace_back(in_lower_limits.size());
     taskDataPar->inputs_count.emplace_back(in_upper_limits.size());

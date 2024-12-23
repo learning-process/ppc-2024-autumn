@@ -31,6 +31,7 @@ class TestMPITaskSequential : public ppc::core::Task {
   std::vector<double> lower_limits;
   std::vector<double> upper_limits;
   double epsilon;
+  int start_n;
   double result;
 
   size_t dim;
@@ -46,7 +47,7 @@ class TestMPITaskSequential : public ppc::core::Task {
                                          size_t dim_, size_t n);
   double run_multistep_scheme_method_rectangle(const Function& f_, std::vector<double>& f_values_,
                                                const std::vector<double>& l_limits, const std::vector<double>& u_limits,
-                                               size_t dim_, double epsilon_);
+                                               size_t dim_, double epsilon_, int n);
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -68,6 +69,7 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::vector<double> lower_limits;
   std::vector<double> upper_limits;
   double epsilon;
+  int start_n;
 
   size_t dim;
   size_t sz_values;
@@ -86,7 +88,7 @@ class TestMPITaskParallel : public ppc::core::Task {
                                          size_t dim_, size_t n);
   double run_multistep_scheme_method_rectangle(const Function& f_, std::vector<double>& f_values_,
                                                const std::vector<double>& l_limits, const std::vector<double>& u_limits,
-                                               size_t dim_, double epsilon_);
+                                               size_t dim_, double epsilon_, int n);
   MPI_Datatype sz_t;
 };
 

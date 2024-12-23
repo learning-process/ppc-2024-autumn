@@ -24,6 +24,7 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<double> lower_limits;
   std::vector<double> upper_limits;
   double epsilon;
+  int start_n;
   double result;
 
   size_t dim;
@@ -39,7 +40,7 @@ class TestTaskSequential : public ppc::core::Task {
                                          size_t dim_, size_t n);
   double run_multistep_scheme_method_rectangle(const Function& f_, std::vector<double>& f_values_,
                                                const std::vector<double>& l_limits, const std::vector<double>& u_limits,
-                                               size_t dim_, double epsilon_);
+                                               size_t dim_, double epsilon_, int n);
 };
 
 }  // namespace kholin_k_multidimensional_integrals_rectangle_seq

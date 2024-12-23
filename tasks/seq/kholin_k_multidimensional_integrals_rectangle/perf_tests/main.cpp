@@ -16,6 +16,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_pipeline_run) {
   std::vector<double> in_lower_limits{-1, 2, -3};
   std::vector<double> in_upper_limits{8, 8, 2};
   double epsilon = 0.1;
+  int n = 1;
   std::vector<double> out_I(1, 0.0);
 
   auto *f_object = new std::function<double(const std::vector<double> &)>(f);
@@ -28,6 +29,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_pipeline_run) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
   taskDataSeq->inputs_count.emplace_back(values.size());
   taskDataSeq->inputs_count.emplace_back(in_lower_limits.size());
   taskDataSeq->inputs_count.emplace_back(in_upper_limits.size());
@@ -69,6 +71,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
   std::vector<double> in_lower_limits{-1, 2, -3};
   std::vector<double> in_upper_limits{8, 8, 2};
   double epsilon = 0.1;
+  int n = 1;
   std::vector<double> out_I(1, 0.0);
 
   auto *f_object = new std::function<double(const std::vector<double> &)>(f);
@@ -81,6 +84,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, test_task_run) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_lower_limits.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_upper_limits.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&n));
   taskDataSeq->inputs_count.emplace_back(values.size());
   taskDataSeq->inputs_count.emplace_back(in_lower_limits.size());
   taskDataSeq->inputs_count.emplace_back(in_upper_limits.size());
