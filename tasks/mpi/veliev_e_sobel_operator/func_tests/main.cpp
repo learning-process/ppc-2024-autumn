@@ -153,8 +153,8 @@ TEST(veliev_e_sobel_operator_mpi, TestStart1) {
 
 TEST(veliev_e_sobel_operator_mpi, TestStart2) {
   boost::mpi::communicator world;
-  int h = 100;
-  int w = 100;
+  int h = 200;
+  int w = 200;
   std::vector<double> in = veliev_e_sobel_operator_mpi::create_random_vector(h * w);
   std::vector<double> out(in.size(), 0);
   // Create TaskData
