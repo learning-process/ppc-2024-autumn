@@ -27,7 +27,7 @@ static std::vector<int> generatePowers(int sz, int base) {
   return vec;
 }
 
-static std::vector<int> generatePrimeNumbers(int sz) {
+static std::vector<int> generatePrimeNumbers(std::size_t sz) {
   std::vector<int> primes;
   int num = 2;
   while (primes.size() < sz) {
