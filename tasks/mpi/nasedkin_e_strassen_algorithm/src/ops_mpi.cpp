@@ -76,7 +76,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
     bool StrassenAlgorithmMPI::run() {
       internal_order_test();
-      std::cout << "Run: Starting Strassen multiplication..." << std::endl;
+      world.barrier();
+      std::cout << "Rank " << world.rank() << ": Starting Strassen_multiply with matrixSize = " << matrixSize << std::endl;
       outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
       std::cout << "Run: Strassen multiplication completed." << std::endl;
       return true;
@@ -246,6 +247,11 @@ bool StrassenAlgorithmMPI::pre_processing() {
       int rank = world.rank();
       int num_procs = world.size();
 
+      if (matrixA.empty() || matrixB.empty() || size == 0) {
+        std::cout << "Rank " << rank << ": Error! matrixA, matrixB are empty, or size is zero before Strassen_multiply" << std::endl;
+        return {};
+      }
+
       std::cout << "Strassen_multiply: Received matrix size = " << size << ", rank = " << rank << std::endl;
 
       if (size == 1) {
@@ -322,6 +328,10 @@ bool StrassenAlgorithmMPI::pre_processing() {
             for (int i = 0; i < 7; ++i) {
                 world.send(i % num_procs, 0, tasks[i]);
                 world.send(i % num_procs, 0, tasksB[i]);
+                std::cout << "Rank 0 sent taskA[" << i << "] (size = " << tasks[i].size()
+                          << ") and taskB[" << i << "] (size = " << tasksB[i].size()
+                          << ") to rank " << (i % num_procs) << std::endl;
+
             }
         }
 
