@@ -41,4 +41,4 @@ bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::post_proc
   internal_order_test();
   reinterpret_cast<std::vector<double> *>(taskData->outputs[0])[0] = output_matrix_C;
   return true;
-+}
+}
