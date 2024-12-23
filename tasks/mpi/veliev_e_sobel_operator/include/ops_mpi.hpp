@@ -51,6 +51,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-
-
 }  // namespace veliev_e_sobel_operator_mpi
