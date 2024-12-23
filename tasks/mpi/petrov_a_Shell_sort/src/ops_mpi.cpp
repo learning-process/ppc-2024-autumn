@@ -50,8 +50,14 @@ bool TestTaskMPI::pre_processing() {
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-  int vector_size = static_cast<int>(data_.size());
+  if (data_.empty()) {
+    if (world_rank == 0) {
+      std::cerr << "Input data is empty; cannot proceed with sorting." << std::endl;
+    }
+    return false;
+  }
 
+  int vector_size = static_cast<int>(data_.size());
   if (world_size > vector_size) {
     if (world_rank == 0) {
       std::cerr << "Number of processes exceeds the data size." << std::endl;
