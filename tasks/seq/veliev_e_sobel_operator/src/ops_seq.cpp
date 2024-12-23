@@ -56,7 +56,7 @@ bool veliev_e_sobel_operator_seq::TestTaskSequential::pre_processing() {
 bool veliev_e_sobel_operator_seq::TestTaskSequential::validation() {
   internal_order_test();
   if (taskData->inputs_count[1] < 3 || taskData->inputs_count[2] < 3) {
-    std::cerr << "Ошибка: Размеры матрицы должны быть >= 3x3\n";
+    std::cerr << "Error: Matrix dimensions must be >= 3x3.\n";
     return false;
   }
   return taskData->inputs_count[0] > 0;
