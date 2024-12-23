@@ -14,8 +14,6 @@ bool almost_equal(double a, double b, double epsilon = 1e-6) { return std::abs(a
 
 double test_func_1(const std::vector<double>& x) { return x[0]; }
 
-double test_func_3(const std::vector<double>& x) { return x[0] + x[1] + x[2]; }
-
 }  // namespace
 
 TEST(sequential_example_perf_test, test_int_task_pipeline_run) {
