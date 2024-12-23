@@ -66,7 +66,7 @@ void calculateDistribution(int total_elements, int cols, int num_proc, std::vect
   for (int i = 0; i < num_proc; ++i) {
     block_sizes[i] = base_block_size + (i < remaining ? 1 : 0);
     block_offsets[i] = current_offset;
-    current_offset += block_sizes[i];
+    current_offset += block_sizes[i];//del exp
   }
 }
 
