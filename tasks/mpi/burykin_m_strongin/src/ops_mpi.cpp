@@ -196,4 +196,4 @@ bool StronginParallel::post_processing() {
   return true;
 }
 
-}  // namespace burykin_m_strongin_opt
+}  // namespace burykin_m_strongin
