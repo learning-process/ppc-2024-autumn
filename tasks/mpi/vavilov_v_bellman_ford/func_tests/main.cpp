@@ -7,7 +7,42 @@
 
 namespace mpi = boost::mpi;
 
-static std::vector<int> generate_random_crs_graph(int vertices, int edges_count) {
+static std::vector<int> generate_random_tree(int vertices) {
+  std::vector<int> graph(vertices * vertices, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> weight_dist(-20, 20);
+
+  for (int i = 1; i < vertices; ++i) {
+    int u = i;
+    int v = std::uniform_int_distribution<int>(0, i - 1)(gen);
+    int weight = weight_dist(gen);
+
+    graph[u * vertices + v] = weight;
+    graph[v * vertices + u] = weight;
+  }
+
+  return graph;
+}
+
+static std::vector<int> generate_random_complete_graph(int vertices) {
+  std::vector<int> graph(vertices * vertices, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> weight_dist(-20, 20);
+
+  for (int u = 0; u < vertices; ++u) {
+    for (int v = u + 1; v < vertices; ++v) {
+      int weight = weight_dist(gen);
+      graph[u * vertices + v] = weight;
+      graph[v * vertices + u] = weight;
+    }
+  }
+
+  return graph;
+}
+
+static std::vector<int> generate_random_sparse_graph(int vertices, int edges_count) {
   std::vector<int> graph(vertices * vertices, 0);
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -19,25 +54,27 @@ static std::vector<int> generate_random_crs_graph(int vertices, int edges_count)
   while (added_edges < edges_count) {
     int u = vertex_dist(gen);
     int v = vertex_dist(gen);
+
     if (u != v && graph[u * vertices + v] == 0) {
       graph[u * vertices + v] = weight_dist(gen);
       ++added_edges;
     }
   }
+
   return graph;
 }
 
-TEST(vavilov_v_bellman_ford_mpi, Random_1) {
+TEST(vavilov_v_bellman_ford_mpi, Random_tree) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int vertices = 100;
-  int edges_count = 15;
+  int edges_count = 99;
   int source = 0;
   std::vector<int> output(vertices);
   std::vector<int> expected_output(vertices);
-  std::vector<int> matrix = generate_random_crs_graph(vertices, edges_count);
+  std::vector<int> matrix = generate_random_tree(vertices);
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -67,17 +104,17 @@ TEST(vavilov_v_bellman_ford_mpi, Random_1) {
   }
 }
 
-TEST(vavilov_v_bellman_ford_mpi, Random_2) {
+TEST(vavilov_v_bellman_ford_mpi, Random_complete_graph) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
-  int vertices = 200;
-  int edges_count = 50;
+  int vertices = 100;
+  int edges_count = 4950;
   int source = 0;
   std::vector<int> output(vertices);
   std::vector<int> expected_output(vertices);
-  std::vector<int> matrix = generate_random_crs_graph(vertices, edges_count);
+  std::vector<int> matrix = generate_random_complete_graph(vertices);
   taskDataPar->inputs_count.emplace_back(vertices);
   taskDataPar->inputs_count.emplace_back(edges_count);
   taskDataPar->inputs_count.emplace_back(source);
@@ -107,13 +144,13 @@ TEST(vavilov_v_bellman_ford_mpi, Random_2) {
   }
 }
 
-TEST(vavilov_v_bellman_ford_mpi, Random_3) {
+TEST(vavilov_v_bellman_ford_mpi, Random_sparse_graph) {
   mpi::communicator world;
   auto taskDataPar = std::make_shared<ppc::core::TaskData>();
   auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
   int vertices = 500;
-  int edges_count = 100;
+  int edges_count = 515;
   int source = 0;
   std::vector<int> output(vertices);
   std::vector<int> expected_output(vertices);
