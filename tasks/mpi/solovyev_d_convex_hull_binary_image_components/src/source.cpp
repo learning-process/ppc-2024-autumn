@@ -1,7 +1,6 @@
 #include <boost/mpi.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
-#include <iostream>
 #include <limits>
 #include <random>
 #include <stack>
@@ -65,15 +64,6 @@ void Image::removeComponent(int n) {
 void Image::fixComponents() {
   for (size_t i = 0; i < components.size(); i++) {
     components[i] = i;
-  }
-}
-
-void ConvexHullBinaryImageComponentsMPI::coutImage() {
-  for (int y = 0; y < image.sizeY; y++) {
-    for (int x = 0; x < image.sizeX; x++) {
-      std::cout << image.getPoint(x, y).value << " ";
-    }
-    std::cout << std::endl;
   }
 }
 
@@ -238,10 +228,6 @@ bool ConvexHullBinaryImageComponentsMPI::run() {
   boost::mpi::gatherv(world, localComponents, components.data(), sendCounts, displacements, 0);
   if (world.rank() == 0) {
     for (size_t i = 0; i < components.size(); i++) {
-      /*       std::cout << "Convex hull for " << i << "-th component:" << std::endl;
-            for (int k = 0; k < components[i].size(); k++) {
-              std::cout << k << "-th coords: " << components[i][k].x << "," << components[i][k].y << std::endl;
-            } */
       results.push_back(linearizePoints(components[i]));
     }
   }

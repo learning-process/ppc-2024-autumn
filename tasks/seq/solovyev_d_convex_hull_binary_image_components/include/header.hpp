@@ -68,7 +68,6 @@ class ConvexHullBinaryImageComponentsSequential : public ppc::core::Task {
   }
 
   std::vector<std::vector<int>> results;
-  void coutImage();
 };
 
 }  // namespace solovyev_d_convex_hull_binary_image_components_seq

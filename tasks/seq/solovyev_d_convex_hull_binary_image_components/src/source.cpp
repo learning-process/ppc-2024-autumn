@@ -1,4 +1,4 @@
-#include <iostream>
+
 #include <limits>
 #include <random>
 #include <stack>
@@ -62,15 +62,6 @@ void Image::removeComponent(int n) {
 void Image::fixComponents() {
   for (size_t i = 0; i < components.size(); i++) {
     components[i] = i;
-  }
-}
-
-void ConvexHullBinaryImageComponentsSequential::coutImage() {
-  for (int y = 0; y < image.sizeY; y++) {
-    for (int x = 0; x < image.sizeX; x++) {
-      std::cout << image.getPoint(x, y).value << " ";
-    }
-    std::cout << std::endl;
   }
 }
 
@@ -203,10 +194,6 @@ bool ConvexHullBinaryImageComponentsSequential::run() {
       }
     }
     std::vector<int> result = linearizePoints(convexHull(component));
-    /*     std::cout << "Convex hull for " << j << "-th component:" << std::endl;
-        for (int i = 0; i < result.size(); i = i + 2) {
-          std::cout << i / 2 << "-th coords: " << result[i] << "," << result[i + 1] << std::endl;
-        } */
     results.push_back(result);
   }
   return true;
