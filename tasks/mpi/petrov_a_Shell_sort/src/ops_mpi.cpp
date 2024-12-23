@@ -69,7 +69,7 @@ bool TestTaskMPI::post_processing() {
   int world_rank = world.rank();
   int world_size = world.size();
 
-  // Ручной сбор данных
+  // Р СѓС‡РЅРѕР№ СЃР±РѕСЂ РґР°РЅРЅС‹С…
   if (world_rank == 0) {
     std::copy(local_data_.begin(), local_data_.end(), data_.begin());
     for (int i = 1; i < world_size; ++i) {
