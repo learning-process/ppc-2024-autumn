@@ -27,7 +27,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_seq, test_pipeline_run_seq) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -70,7 +71,8 @@ TEST(petrov_o_radix_sort_with_simple_merge_seq, test_task_run_seq) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   taskDataSeq->outputs_count.emplace_back(out.size());
 
-  auto testTaskSequential = std::make_shared<petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential>(taskDataSeq);
+  auto testTaskSequential =
+      std::make_shared<petrov_o_radix_sort_with_simple_merge_seq::TestTaskSequential>(taskDataSeq);
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
