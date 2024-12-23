@@ -58,16 +58,13 @@ bool TestTaskMPI::run() {
     }
   }
 
-  if (world.rank() == 0) {
-    std::copy(local_data.begin(), local_data.end(), data_.begin());
-    for (int i = 1; i < world.size(); ++i) {
-      std::vector<int> received_data;
-      world.recv(i, 0, received_data);
-      data_.insert(data_.end(), received_data.begin(), received_data.end());
-    }
+  if (world.rank() != 0) {
+    std::vector<int> received_data;
+    world.recv(0, 0, received_data);
   } else {
-    world.send(0, 0, local_data);
+    world.send(1, 0, local_data);
   }
+
 
   return true;
 }
