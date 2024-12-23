@@ -1,7 +1,7 @@
 #include "seq/kapustin_dijk_alg_seq/include/seq_alg.hpp"
 
 void kapustin_i_dijkstra_algorithm::DijkstrasAlgorithmSequential::CRSconvert(const int* input_matrix) {
-  row_ptr.resize(V + 1);  
+  row_ptr.resize(V + 1);
   size_t non_zero_count = 0;
 
   for (size_t i = 0; i < V; ++i) {
@@ -40,7 +40,7 @@ bool kapustin_i_dijkstra_algorithm::DijkstrasAlgorithmSequential::run() {
   internal_order_test();
   std::vector<int> distances(V, INF);
   std::vector<bool> visited(V, false);
-  std::set<std::pair<int, int>> active_vertices; 
+  std::set<std::pair<int, int>> active_vertices;
 
   distances[0] = 0;
   active_vertices.insert({0, 0});
