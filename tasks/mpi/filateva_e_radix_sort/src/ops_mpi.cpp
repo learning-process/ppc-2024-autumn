@@ -38,7 +38,7 @@ bool filateva_e_radix_sort_mpi::RadixSort::run() {
   int delta = (world.size() == 1) ? 0 : size / (world.size() - 1);
   int ost = (world.size() == 1) ? size : size % (world.size() - 1);
   int local_size = (world.rank() == 0) ? ost : delta;
-  
+
   std::vector<std::list<int>> radix_list(kol);
   std::vector<std::list<int>> negativ_radix_list(kol);
   std::vector<int> local_vec(local_size, 0);
