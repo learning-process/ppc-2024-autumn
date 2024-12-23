@@ -107,6 +107,116 @@ TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Very_Large_and_Very_Small_Numbers
   lavrentyev_a_radix_sort_simple_merge_mpi::template_test({1e18, 1e-18, -1e18, -1e-18});
 }
 
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_1) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(2);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_2) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(4);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_3) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(8);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_4) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(16);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_5) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(32);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_6) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(64);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_7) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(128);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_8) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(256);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_9) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(512);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_2_pow_10) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(1024);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_3_pow_1) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(3);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_3_pow_2) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(9);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_3_pow_3) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(27);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_3_pow_4) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(81);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_3_pow_5) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(243);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_3_pow_6) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(729);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_Prime_7) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(7);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_Prime_13) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(13);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_Prime_17) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(17);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_Prime_23) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(23);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_Prime_47) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(47);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
+TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_Prime_59) {
+  auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(59);
+  lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
+}
+
 TEST(lavrentyev_a_radix_sort_simple_merge_mpi, Random_Vector_Size_10) {
   auto vec = lavrentyev_a_radix_sort_simple_merge_mpi::generate_random_vector(10);
   lavrentyev_a_radix_sort_simple_merge_mpi::template_test(vec);
