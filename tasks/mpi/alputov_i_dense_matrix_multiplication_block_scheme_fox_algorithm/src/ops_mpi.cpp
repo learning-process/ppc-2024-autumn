@@ -10,20 +10,17 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq::pre_processing() {
   internal_order_test();
 
-  double* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
   N = static_cast<int>(taskData->inputs_count[0]);
 
-  double* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
 
   A.resize(N * N);
   B.resize(N * N);
 
-  for (int i = 0; i < N * N; ++i) {
-    A[i] = input_A[i];
-  }
-  for (int i = 0; i < N * N; ++i) {
-    B[i] = input_B[i];
-  }
+  std::copy(input_A, input_A + N * N, A.begin());
+  std::copy(input_B, input_B + N * N, B.begin());
+
   C.resize(N * N, 0.0);
 
   return true;
@@ -33,7 +30,8 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq::validation() {
   internal_order_test();
 
-  return static_cast<int>(taskData->inputs_count[0]) > 1;
+  return static_cast<int>(taskData->inputs_count[0]) > 1 && static_cast<int>(taskData->outputs_count[0]) > 0 &&
+         taskData->inputs_count.empty() == false;
 }
 
 bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
@@ -65,19 +63,15 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
   internal_order_test();
 
   if (world.rank() == 0) {
-    double* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* input_A = reinterpret_cast<double*>(taskData->inputs[0]);
     N = static_cast<int>(taskData->inputs_count[0]);
-    double* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
+    auto* input_B = reinterpret_cast<double*>(taskData->inputs[1]);
 
     A.resize(N * N);
     B.resize(N * N);
 
-    for (int i = 0; i < N * N; ++i) {
-      A[i] = input_A[i];
-    }
-    for (int i = 0; i < N * N; ++i) {
-      B[i] = input_B[i];
-    }
+    std::copy(input_A, input_A + N * N, A.begin());
+    std::copy(input_B, input_B + N * N, B.begin());
 
     C.resize(N * N, 0.0);
   }
@@ -89,7 +83,8 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_mpi::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return static_cast<int>(taskData->inputs_count[0]) > 1;
+    return static_cast<int>(taskData->inputs_count[0]) > 1 && static_cast<int>(taskData->outputs_count[0]) > 0 &&
+           taskData->inputs_count.empty() == false;
   }
 
   return true;
@@ -99,7 +94,8 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_mpi::run() {
   internal_order_test();
 
-  int total_procs, proc_rank;
+  int total_procs;
+  int proc_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &proc_rank);
   MPI_Comm_size(MPI_COMM_WORLD, &total_procs);
 
@@ -267,7 +263,7 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
   internal_order_test();
 
   if (world.rank() == 0) {
-    double* res = reinterpret_cast<double*>(taskData->outputs[0]);
+    auto* res = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(C.begin(), C.end(), res);
   }
   return true;

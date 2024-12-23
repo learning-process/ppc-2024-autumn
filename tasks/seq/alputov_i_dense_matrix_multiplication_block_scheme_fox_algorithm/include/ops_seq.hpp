@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -17,9 +18,9 @@ class dense_matrix_multiplication_block_scheme_fox_algorithm_seq : public ppc::c
 
  private:
   std::vector<double> A;
-  int column_A, row_A;
+  size_t column_A, row_A;
   std::vector<double> B;
-  int column_B, row_B;
+  size_t column_B, row_B;
   std::vector<double> C;
 };
 
