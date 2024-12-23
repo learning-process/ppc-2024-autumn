@@ -22,13 +22,13 @@ std::vector<double> MatrixMult(const std::vector<double> &A, const std::vector<d
   return result;
 }
 
-std::vector<double> getRandomVector(int sz) {
+std::vector<double> getRandomMatrix(int sz, int lbound, int rbound) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<double> vec(sz);
-  vec[0] = gen() % 100;
-  for (int i = 1; i < sz; i++) {
-    vec[i] = (gen() % 100) - 49;
+  std::uniform_int_distribution<int> dist(lbound, rbound);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = dist(gen);
   }
   return vec;
 }
@@ -108,8 +108,8 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random100Test) {
   int l = 100;
   int m = 100;
   int n = 100;
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> A = getRandomMatrix(k * l, -100, 100);
+  std::vector<double> B = getRandomMatrix(m * n, -100, 100);
   std::vector<double> expres_par(k * n);
   std::vector<double> expres = MatrixMult(A, B, k, l, n);
   // Create TaskData
@@ -172,8 +172,8 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random150Test) {
   int l = 150;
   int m = 150;
   int n = 150;
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> A = getRandomMatrix(k * l, -100, 100);
+  std::vector<double> B = getRandomMatrix(m * n, -100, 100);
   std::vector<double> expres_par(k * n);
   std::vector<double> expres = MatrixMult(A, B, k, l, n);
   // Create TaskData
@@ -236,8 +236,8 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, Random50_100x100_50Test) {
   int l = 100;
   int m = 100;
   int n = 50;
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> A = getRandomMatrix(k * l, -100, 100);
+  std::vector<double> B = getRandomMatrix(m * n, -100, 100);
   std::vector<double> expres_par(k * n);
   std::vector<double> expres = MatrixMult(A, B, k, l, n);
   // Create TaskData
@@ -300,8 +300,8 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation1) {
   int l = 10;
   int m = 11;
   int n = 2;  // A cols not eq B rows
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> A = getRandomMatrix(k * l, -100, 100);
+  std::vector<double> B = getRandomMatrix(m * n, -100, 100);
   std::vector<double> expres_par(k * n);
   // std::vector<double> expres = MatrixMult(A, B, k, l, n);
   //  Create TaskData
@@ -353,8 +353,8 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation2) {
   int l = 10;
   int m = 10;
   int n = 2;
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> A = getRandomMatrix(k * l, -100, 100);
+  std::vector<double> B = getRandomMatrix(m * n, -100, 100);
   std::vector<double> expres_par(k * n);
   // std::vector<double> expres = MatrixMult(A, B, k, l, n);
   //  Create TaskData
@@ -506,8 +506,8 @@ TEST(drozhdinov_d_mult_matrix_fox_MPI, WrongValidation4) {
   int l = 10;
   int m = 10;
   int n = 2;
-  std::vector<double> A = getRandomVector(k * l);
-  std::vector<double> B = getRandomVector(m * n);
+  std::vector<double> A = getRandomMatrix(k * l, -100, 100);
+  std::vector<double> B = getRandomMatrix(m * n, -100, 100);
   std::vector<double> expres_par(k * n);
   // std::vector<double> expres = MatrixMult(A, B, k, l, n);
   //  Create TaskData
