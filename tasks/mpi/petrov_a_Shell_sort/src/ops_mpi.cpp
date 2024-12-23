@@ -82,6 +82,7 @@ bool TestTaskMPI::post_processing() {
               displs_.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   if (world_rank == 0) {
+    std::vector<int> temp_buffer;
     for (size_t i = 1; i < send_counts_.size(); ++i) {
       std::inplace_merge(data_.begin(), data_.begin() + displs_[i], data_.begin() + displs_[i] + send_counts_[i]);
     }
