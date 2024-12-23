@@ -10,7 +10,8 @@
 namespace petrov_a_Shell_sort_mpi {
 
 void shell_sort(std::vector<int>& arr) {
-  for (size_t gap = arr.size() / 2; gap > 0; gap /= 2) {
+  size_t gap = arr.size() / 2;
+  while (gap > 0) {
     for (size_t i = gap; i < arr.size(); ++i) {
       int temp = arr[i];
       size_t j = i;
@@ -20,6 +21,7 @@ void shell_sort(std::vector<int>& arr) {
       }
       arr[j] = temp;
     }
+    gap /= 2;
   }
 }
 
@@ -27,34 +29,17 @@ bool TestTaskMPI::validation() {
   int rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-  if (rank == 0 && data_.empty()) {
-    std::cerr << "Rank 0: Input data is empty. Validation failed." << std::endl;
-    return false;
-  }
-
-  int data_size = static_cast<int>(data_.size());
-  MPI_Bcast(&data_size, 1, MPI_INT, 0, MPI_COMM_WORLD);
-  if (data_size == 0) {
+  if (data_.empty()) {
     if (rank == 0) {
-      std::cerr << "Validation failed: Data size is 0 across all ranks." << std::endl;
-    }
-    return false;
-  }
-
-  int world_size;
-  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
-  if (world_size > data_size) {
-    if (rank == 0) {
-      std::cerr << "Validation failed: Number of processes (" << world_size << ") exceeds data size (" << data_size
-                << ")." << std::endl;
+      std::cerr << "Input data is empty. Validation failed." << std::endl;
     }
     return false;
   }
 
   if (rank == 0) {
-    std::cerr << "Validation passed. Data size: " << data_size << ", Number of processes: " << world_size << "."
-              << std::endl;
+    std::cerr << "Validation passed. Input data size: " << data_.size() << std::endl;
   }
+
   return true;
 }
 
@@ -66,12 +51,6 @@ bool TestTaskMPI::pre_processing() {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
   int vector_size = static_cast<int>(data_.size());
-  if (vector_size == 0) {
-    if (world_rank == 0) {
-      std::cerr << "Input vector is empty; cannot proceed with sorting." << std::endl;
-    }
-    return false;
-  }
 
   if (world_size > vector_size) {
     if (world_rank == 0) {
@@ -109,9 +88,11 @@ bool TestTaskMPI::post_processing() {
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
+  int vector_size = static_cast<int>(data_.size());
   if (world_rank == 0) {
     data_.resize(std::accumulate(send_counts_.begin(), send_counts_.end(), 0));
   }
+
   MPI_Gatherv(local_data_.data(), static_cast<int>(local_data_.size()), MPI_INT, data_.data(), send_counts_.data(),
               displs_.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
