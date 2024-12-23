@@ -6,11 +6,11 @@
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::pre_processing() {
   internal_order_test();
-  if (world.rank() >= num_philosophers) return false;
-  left_neighbor = (world.rank() + num_philosophers - 1) % num_philosophers;
-  right_neighbor = (world.rank() + 1) % num_philosophers;
+  left_neighbor = (world.rank() + world.size() - 1) % world.size();
+  right_neighbor = (world.rank() + 1) % world.size();
   state = THINKING;
-  generator.seed(static_cast<unsigned>(time(0)) + world.rank());
+  std::random_device rd;
+  generator.seed(rd() + world.rank());
   distribution = std::uniform_int_distribution<int>(1, 3);
   return true;
 }
@@ -19,13 +19,12 @@ template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::validation() {
   internal_order_test();
   num_philosophers = taskData->inputs_count[0];
-  return world.size() >= 2 && num_philosophers >= 2;
+  return world.size() >= 2 && num_philosophers >= 2 && num_philosophers <= world.size();
 }
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() {
   internal_order_test();
-  if (world.rank() >= num_philosophers) return true;
   while (true) {
     think();
     request_forks();
@@ -40,7 +39,6 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::post_processing() {
   internal_order_test();
-  if (world.rank() >= num_philosophers) return true;
   world.barrier();
   while (world.iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG)) {
     State leftover_message;
@@ -51,7 +49,6 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::post_p
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_deadlock() noexcept {
-  if (world.rank() >= num_philosophers) return false;
   int local_state = (state == HUNGRY) ? 1 : 0;
   std::vector<State> all_states(world.size(), THINKING);
   std::vector<int> gathered_states(world.size(), 0);
@@ -73,7 +70,6 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
 
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_for_termination() {
-  if (world.rank() >= num_philosophers) return true;
   bool all_thinking = true;
   std::vector<State> all_states(world.size(), THINKING);
   boost::mpi::all_gather(world, state, all_states);
@@ -89,15 +85,15 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::check_
 template <typename DataType>
 void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::think() {
   state = THINKING;
-  int sleep_time = distribution(generator) * 10;
-  std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+  int think_time = distribution(generator);
+  std::this_thread::sleep_for(std::chrono::milliseconds(think_time));
 }
 
 template <typename DataType>
 void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::eat() {
   state = EATING;
-  int sleep_time = distribution(generator) * 20;
-  std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+  int eat_time = distribution(generator);
+  std::this_thread::sleep_for(std::chrono::milliseconds(eat_time));
 }
 
 template <typename DataType>
