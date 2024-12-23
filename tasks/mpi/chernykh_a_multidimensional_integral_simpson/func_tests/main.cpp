@@ -10,7 +10,7 @@
 
 namespace chernykh_a_multidimensional_integral_simpson_mpi {
 
-void run_valid_task(func_nd_t func, bounds_t& bounds, steps_t& steps) {
+void run_valid_task(func_nd_t func, bounds_t& bounds, steps_t& steps, double tolerance) {
   auto world = boost::mpi::communicator();
 
   auto par_output = 0.0;
@@ -45,7 +45,7 @@ void run_valid_task(func_nd_t func, bounds_t& bounds, steps_t& steps) {
     ASSERT_TRUE(seq_task.pre_processing());
     ASSERT_TRUE(seq_task.run());
     ASSERT_TRUE(seq_task.post_processing());
-    EXPECT_NEAR(seq_output, par_output, 1e-5);
+    EXPECT_NEAR(seq_output, par_output, tolerance);
   }
 }
 
@@ -75,56 +75,64 @@ TEST(chernykh_a_multidimensional_integral_simpson_mpi, linear_2d_integration) {
   auto func = [](const auto& args) { return (2 * args[0]) + (3 * args[1]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 1.0}, {0.0, 2.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{2, 2};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, quadratic_3d_integration) {
   auto func = [](const auto& args) { return (args[0] * args[0]) + (args[1] * args[1]) + (args[2] * args[2]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{2, 2, 2};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, exponential_3d_integration) {
   auto func = [](const auto& args) { return std::exp(args[0] + args[1] + args[2]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 0.5}, {0.0, 0.5}, {0.0, 0.5}};
   auto steps = chernykh_a_mis_mpi::steps_t{4, 4, 4};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, trigonometric_2d_integration) {
   auto func = [](const auto& args) { return std::sin(args[0]) * std::cos(args[1]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, std::numbers::pi}, {0.0, std::numbers::pi / 2}};
   auto steps = chernykh_a_mis_mpi::steps_t{20, 20};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, polynomial_3d_integration) {
   auto func = [](const auto& args) { return (args[0] * args[1]) + (args[1] * args[2]) + (args[0] * args[2]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{2, 2, 2};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, linear_3d_integration) {
   auto func = [](const auto& args) { return args[0] + (2 * args[1]) + (3 * args[2]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 2.0}, {0.0, 1.0}, {0.0, 3.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{2, 2, 2};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, quadratic_2d_integration) {
   auto func = [](const auto& args) { return (args[0] * args[0]) + (args[1] * args[1]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 2.0}, {0.0, 3.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{2, 2};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, exponential_2d_integration) {
   auto func = [](const auto& args) { return std::exp(args[0] + args[1]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 1.0}, {0.0, 1.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{10, 10};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, trigonometric_3d_integration) {
@@ -135,14 +143,40 @@ TEST(chernykh_a_multidimensional_integral_simpson_mpi, trigonometric_3d_integrat
       {0.0, std::numbers::pi / 4},
   };
   auto steps = chernykh_a_mis_mpi::steps_t{16, 16, 16};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, cubic_2d_integration) {
   auto func = [](const auto& args) { return (args[0] * args[0] * args[0]) + (args[1] * args[1] * args[1]); };
   auto bounds = chernykh_a_mis_mpi::bounds_t{{0.0, 1.0}, {0.0, 2.0}};
   auto steps = chernykh_a_mis_mpi::steps_t{2, 2};
-  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps);
+  auto tolerance = 1e-5;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
+}
+
+TEST(chernykh_a_multidimensional_integral_simpson_mpi, small_range_linear_2d_integration) {
+  auto func = [](const auto& args) { return (2 * args[0]) + (3 * args[1]); };
+  auto bounds = chernykh_a_mis_mpi::bounds_t{{0.00000001, 0.00000003}, {0.00000002, 0.00000004}};
+  auto steps = chernykh_a_mis_mpi::steps_t{2, 2};
+  auto tolerance = 1e-23;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
+}
+
+TEST(chernykh_a_multidimensional_integral_simpson_mpi, small_range_quadratic_2d_integration) {
+  auto func = [](const auto& args) { return (args[0] * args[0]) + (args[1] * args[1]); };
+  auto bounds = chernykh_a_mis_mpi::bounds_t{{0.00000005, 0.00000006}, {0.00000001, 0.00000002}};
+  auto steps = chernykh_a_mis_mpi::steps_t{2, 2};
+  auto tolerance = 1e-32;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
+}
+
+TEST(chernykh_a_multidimensional_integral_simpson_mpi, small_range_exponential_2d_integration) {
+  auto func = [](const auto& args) { return std::exp(args[0] + args[1]); };
+  auto bounds = chernykh_a_mis_mpi::bounds_t{{0.00000003, 0.00000005}, {0.00000002, 0.00000004}};
+  auto steps = chernykh_a_mis_mpi::steps_t{2, 2};
+  auto tolerance = 1e-16;
+  chernykh_a_mis_mpi::run_valid_task(func, bounds, steps, tolerance);
 }
 
 TEST(chernykh_a_multidimensional_integral_simpson_mpi, empty_bounds_fails_validation) {
