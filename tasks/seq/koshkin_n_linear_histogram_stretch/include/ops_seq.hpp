@@ -18,6 +18,7 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
+  std::vector<int> I;  // Массив яркостей
   std::vector<int> image_input;
   std::vector<int> image_output;
 };

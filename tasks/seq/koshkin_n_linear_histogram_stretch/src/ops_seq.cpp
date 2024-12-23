@@ -20,6 +20,18 @@ bool koshkin_n_linear_histogram_stretch_seq::TestTaskSequential::pre_processing(
   image_input = std::vector<int>(size);
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   std::copy(tmp_ptr, tmp_ptr + size, image_input.begin());
+
+  int pixel_count = size / 3;
+  I.resize(pixel_count);
+  for (int i = 0, k = 0; i < size; i += 3, ++k) {
+    int r = image_input[i];
+    int g = image_input[i + 1];
+    int b = image_input[i + 2];
+
+    I[k] = static_cast<int>(0.299 * static_cast<double>(r) + 0.587 * static_cast<double>(g) +
+                            0.114 * static_cast<double>(b));
+  }
+
   image_output = {};
   return true;
 }
@@ -54,18 +66,9 @@ bool koshkin_n_linear_histogram_stretch_seq::TestTaskSequential::run() {
 
   // Перевод RGB в яркость (luminance) по стандартной формуле
   // Расчёт яркостей и нахождение Imin, Imax
-  std::vector<int> I(size / 3);  // Массив яркостей
-  for (int i = 0, k = 0; i < size; i += 3, ++k) {
-    int R = image_input[i];
-    int G = image_input[i + 1];
-    int B = image_input[i + 2];
-
-    // Вычисление яркости
-    I[k] = static_cast<int>(0.299 * static_cast<double>(R) + 0.587 * static_cast<double>(G) +
-                            0.114 * static_cast<double>(B));
-
-    if (I[k] < Imin) Imin = I[k];
-    if (I[k] > Imax) Imax = I[k];
+  for (int intensity : I) {
+    Imin = std::min(Imin, intensity);
+    Imax = std::max(Imax, intensity);
   }
 
   // Проверка, чтобы избежать деления на ноль

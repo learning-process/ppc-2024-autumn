@@ -111,7 +111,54 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_correct_image) {
   }
 }
 
+
 TEST(koshkin_n_linear_histogram_stretch_mpi, test_large_image) {
+  boost::mpi::communicator world;
+
+  const int width = 422;
+  const int height = 763;
+  const int count_size_vector = width * height * 3;
+  std::vector<int> in_vec = getRandomImageF(count_size_vector);
+  std::vector<int> out_vec_par(count_size_vector, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
+    taskDataPar->inputs_count.emplace_back(in_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec_par.data()));
+    taskDataPar->outputs_count.emplace_back(out_vec_par.size());
+  }
+
+  koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    // Create data
+    std::vector<int> out_vec_seq(count_size_vector, 0);
+
+    // Create TaskData
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
+    taskDataSeq->inputs_count.emplace_back(in_vec.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec_seq.data()));
+    taskDataSeq->outputs_count.emplace_back(out_vec_seq.size());
+
+    // Create Task
+    koshkin_n_linear_histogram_stretch_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    ASSERT_EQ(testMpiTaskSequential.validation(), true);
+    testMpiTaskSequential.pre_processing();
+    testMpiTaskSequential.run();
+    testMpiTaskSequential.post_processing();
+
+    ASSERT_EQ(out_vec_par, out_vec_seq);
+  }
+}
+
+TEST(koshkin_n_linear_histogram_stretch_mpi, test_large_image2) {
   boost::mpi::communicator world;
 
   const int width = 1024;
@@ -275,6 +322,50 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_incorrect_rgb_image) {
   const int height = 3;
   const int count_size_vector = width * height * 3;
   std::vector<int> in_vec = {-2, 20, 30, 0, 355, -25, 10, 260, 255};
+  std::vector<int> out_vec_par(count_size_vector, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
+    taskDataPar->inputs_count.emplace_back(in_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec_par.data()));
+    taskDataPar->outputs_count.emplace_back(out_vec_par.size());
+    koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
+
+TEST(koshkin_n_linear_histogram_stretch_mpi, test_incorrect_rgb_image2) {
+  boost::mpi::communicator world;
+
+  const int width = 2;
+  const int height = 3;
+  const int count_size_vector = width * height * 3;
+  std::vector<int> in_vec = {-2, 20, 30, 0, 355, -25, 10, 260, 255, -2, 20, 30, 22, 33, 44, 72, 89, 90};
+  std::vector<int> out_vec_par(count_size_vector, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_vec.data()));
+    taskDataPar->inputs_count.emplace_back(in_vec.size());
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec_par.data()));
+    taskDataPar->outputs_count.emplace_back(out_vec_par.size());
+    koshkin_n_linear_histogram_stretch_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
+
+TEST(koshkin_n_linear_histogram_stretch_mpi, test_incorrect_rgb_image3) {
+  boost::mpi::communicator world;
+
+  const int width = 70;
+  const int height = 15;
+  const int count_size_vector = width * height * 3;
+  std::vector<int> in_vec = getRandomImageF(count_size_vector);
+  in_vec[5] = -25;
+  in_vec[17] = 266;
   std::vector<int> out_vec_par(count_size_vector, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
