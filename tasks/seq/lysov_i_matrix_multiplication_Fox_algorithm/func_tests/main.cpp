@@ -36,9 +36,7 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_seq, Test_Matrix_Multiplication
   std::vector<double> A = {2, 3, 1, 4, 0, 5, 1, 2, 3};
   std::vector<double> B = {1, 2, 3, 0, 1, 0, 4, 0, 1};
   std::vector<double> C(N * N, 0);
-  std::vector<double> expected_C = {2 * 1 + 3 * 0 + 1 * 4, 2 * 2 + 3 * 1 + 1 * 0, 2 * 3 + 3 * 0 + 1 * 1,
-                                    4 * 1 + 0 * 0 + 5 * 4, 4 * 2 + 0 * 1 + 5 * 0, 4 * 3 + 0 * 0 + 5 * 1,
-                                    1 * 1 + 2 * 0 + 3 * 4, 1 * 2 + 2 * 1 + 3 * 0, 1 * 3 + 2 * 0 + 3 * 1};
+  std::vector<double> expected_C = {6.0, 7.0, 7.0, 24.0, 8.0, 17.0, 13.0, 4.0, 6.0};
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&N));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));

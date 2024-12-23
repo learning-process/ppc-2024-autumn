@@ -4,12 +4,8 @@
 #include <mpi.h>
 
 #include <algorithm>
-#include <functional>
 #include <random>
-#include <string>
-#include <thread>
 #include <vector>
-using namespace std::chrono_literals;
 
 static void extract_submatrix_block(const std::vector<double>& matrix, double* block, int total_columns, int block_size,
                                     int block_row_index, int block_col_index) {
@@ -152,7 +148,6 @@ bool lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel::valid
     if (dimension <= 0) {
       return false;
     }
-    std::cout << "3" << std::endl;
     if (taskData->inputs_count[2] != sizeof(int)) {
       return false;
     }

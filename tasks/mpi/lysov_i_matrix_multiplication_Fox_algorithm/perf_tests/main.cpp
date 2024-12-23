@@ -18,18 +18,14 @@ static std::vector<double> getRandomVector(int sz) {
   }
   return vec;
 }
-
+int matrix_size = 400;
+std::vector<double> A = getRandomVector(matrix_size * matrix_size);
+std::vector<double> B = getRandomVector(matrix_size * matrix_size);
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int matrix_size = 400;
-  std::vector<double> A;
-  std::vector<double> B;
-  std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   if (world.rank() == 0) {
-    A = getRandomVector(matrix_size * matrix_size);
-    B = getRandomVector(matrix_size * matrix_size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
@@ -62,15 +58,9 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, test_pipeline_run) {
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, taskrun) {
   boost::mpi::communicator world;
-  int matrix_size = 400;
-  std::vector<double> A;
-  std::vector<double> B;
-  std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
+  std::vector<double> C_parallel(matrix_size * matrix_size, 0.0);
   if (world.rank() == 0) {
-    A = getRandomVector(matrix_size * matrix_size);
-    B = getRandomVector(matrix_size * matrix_size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));

@@ -6,28 +6,23 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/lysov_i_matrix_multiplication_Fox_algorithm/include/ops_seq.hpp"
-static void generateMatrix(size_t num_rows, size_t num_cols, std::vector<double> &matrix) {
-  double min_val = -100.0;
-  double max_val = 100.0;
+static std::vector<double> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_real_distribution<float> dist(min_val, max_val);
-  matrix.resize(num_rows * num_cols);
-  for (size_t i = 0; i < num_rows; ++i) {
-    for (size_t j = 0; j < num_cols; ++j) {
-      matrix[i * num_cols + j] = dist(gen);
-    }
+  std::uniform_real_distribution<double> dist(-10.0, 10.0);
+  std::vector<double> vec(sz);
+  for (int i = 0; i < sz; ++i) {
+    vec[i] = dist(gen);
   }
+  return vec;
 }
 
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_seq, test_pipeline_run) {
   int N = 400;
   int block_size = 1;
-  std::vector<double> matrixA(N * N, 0.0);
-  std::vector<double> matrixB(N * N, 0.0);
+  std::vector<double> matrixA = getRandomVector(N * N);
+  std::vector<double> matrixB = getRandomVector(N * N);
   std::vector<double> matrixC(N * N, 0.0);
-  generateMatrix(N, N, matrixA);
-  generateMatrix(N, N, matrixB);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));
@@ -58,11 +53,9 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_seq, test_pipeline_run) {
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_seq, test_task_run) {
   int N = 400;
   int block_size = 1;
-  std::vector<double> matrixA(N * N, 0.0);
-  std::vector<double> matrixB(N * N, 0.0);
+  std::vector<double> matrixA = getRandomVector(N * N);
+  std::vector<double> matrixB = getRandomVector(N * N);
   std::vector<double> matrixC(N * N, 0.0);
-  generateMatrix(N, N, matrixA);
-  generateMatrix(N, N, matrixB);
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&N));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixA.data()));

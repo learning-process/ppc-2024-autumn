@@ -68,6 +68,30 @@ TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Test_Multiplication) {
   }
 }
 
+TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, Test_Multiplication_0x0) {
+  boost::mpi::communicator world;
+  int matrix_size = 0;
+  std::vector<double> A;
+  std::vector<double> B;
+  std::vector<double> C_parallel;
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&matrix_size));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&C_parallel));
+    taskDataPar->inputs_count.emplace_back(A.size());
+    taskDataPar->inputs_count.emplace_back(B.size());
+    taskDataPar->inputs_count.emplace_back(sizeof(matrix_size));
+    taskDataPar->outputs_count.emplace_back(C_parallel.size());
+  }
+
+  lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_FALSE(testMpiTaskParallel.validation());
+}
+
 TEST(lysov_i_matrix_multiplication_Fox_algorithm_mpi, RandomTestMatrix3x3) {
   boost::mpi::communicator world;
   int matrix_size = 20;
