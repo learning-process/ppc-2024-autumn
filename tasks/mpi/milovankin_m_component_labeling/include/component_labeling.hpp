@@ -40,6 +40,7 @@ class ComponentLabelingPar : public ppc::core::Task {
   boost::mpi::communicator world;
 
   std::vector<uint8_t> input_image_;
+  std::vector<uint8_t> local_image_;
   std::vector<uint32_t> labels_;
   size_t rows;
   size_t cols;
