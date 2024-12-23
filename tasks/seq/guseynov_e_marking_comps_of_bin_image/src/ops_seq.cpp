@@ -5,6 +5,7 @@
 #include <queue>
 #include <set>
 
+// Finding the parent label(min label in object)
 int findParent(std::map<int, std::set<int>>& parent, int labl) {
   auto srch = parent.find(labl);
   if (srch != parent.end()) {
@@ -14,6 +15,7 @@ int findParent(std::map<int, std::set<int>>& parent, int labl) {
   return labl;
 }
 
+// Fixing all connections in table after first pass
 void fixTable(std::map<int, std::set<int>>& parent) {
   for (auto& pair : parent) {
     for (auto value : pair.second) {
@@ -22,6 +24,7 @@ void fixTable(std::map<int, std::set<int>>& parent) {
   }
 }
 
+// Making all labels on labeled image in right order
 void fixLabels(std::vector<int>& labeled_image, int rows, int cols) {
   std::map<int, int> labels_equivalence;
   int min_label = 2;
@@ -44,6 +47,7 @@ void fixLabels(std::vector<int>& labeled_image, int rows, int cols) {
   }
 }
 
+// Connect all related labels
 void unite(std::map<int, std::set<int>>& parent, int new_label, int neighbour_label) {
   if (new_label == neighbour_label) {
     return;
