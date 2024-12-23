@@ -76,15 +76,21 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ::post_processing() 
 }
 
 void kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::CRSconvert(const int* input_matrix) {
-  row_ptr.push_back(0);
+  row_ptr.resize(V + 1);
+  size_t non_zero_count = 0;
+
   for (size_t i = 0; i < V; ++i) {
-    for (size_t j = 0; j < V; ++j) {
-      if (input_matrix[i * V + j] != 0) {
-        values.push_back(input_matrix[i * V + j]);
-        columns.push_back(j);
+    const int* row_start = input_matrix + i * V;
+    const int* row_end = row_start + V;
+
+    for (; row_start != row_end; ++row_start) {
+      if (*row_start != 0) {
+        values.push_back(*row_start);
+        columns.push_back(row_start - (input_matrix + i * V));
+        ++non_zero_count;
       }
     }
-    row_ptr.push_back(values.size());
+    row_ptr[i + 1] = non_zero_count;
   }
 
   values_size = values.size();
@@ -111,7 +117,6 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::validation() {
   if (taskData->outputs.empty() || taskData->outputs[0] == nullptr) return false;
   return true;
 }
-
 bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
   internal_order_test();
 
@@ -145,15 +150,16 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
   }
 
   boost::mpi::broadcast(world, res_.data(), V, 0);
-
-  for (int k = 0; k < V; k++) {
+  for (size_t k = 0; k < V; k++) {
     int local_min = INF;
     int local_index = -1;
-    for (int i = start_index; i < end_index; i++) {
+    int i = start_index;
+    while (i < end_index) {
       if (!visited[i] && res_[i] < local_min) {
         local_min = res_[i];
         local_index = i;
       }
+      i++;
     }
 
     std::pair<int, int> local_pair = {local_min, local_index};
@@ -164,7 +170,7 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
                              if (a.first > b.first) return b;
                              return (a.second < b.second) ? a : b;
                            });
-    if (global_pair.first == INF || global_pair.second == -1) {
+    if (global_pair.first == INF) {
       break;
     }
 
@@ -173,8 +179,7 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
       int v = columns[j];
       int w = values[j];
 
-      if (!visited[v] && res_[global_pair.second] != INF &&
-          (res_[global_pair.second] + w < res_[v])) {
+      if (!visited[v] && res_[global_pair.second] != INF && (res_[global_pair.second] + w < res_[v])) {
         res_[v] = res_[global_pair.second] + w;
       }
     }

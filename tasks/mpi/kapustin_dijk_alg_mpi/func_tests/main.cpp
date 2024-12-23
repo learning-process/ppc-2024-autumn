@@ -39,13 +39,11 @@ TEST(kapustin_dijkstras_algorithm_mpi, random_graph) {
   std::vector<int> resMPI(V, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
   taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
   taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(E));
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
   taskDataPar->outputs_count.emplace_back(resMPI.size());
-
   kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -125,13 +123,11 @@ TEST(kapustin_dijkstras_algorithm_mpi, simple_2nd) {
   std::vector<int> expected_res = {0, 7, 9, 20, 20, 11};
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
   taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
   taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(E));
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
   taskDataPar->outputs_count.emplace_back(resMPI.size());
-
   kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI testMpiTaskParallel(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
