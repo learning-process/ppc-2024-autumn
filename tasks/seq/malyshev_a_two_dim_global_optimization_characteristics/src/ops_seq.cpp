@@ -144,12 +144,16 @@ malyshev_a_two_dim_global_optimization_characteristics_seq::TestTaskSequential::
   double radius = std::min(data_.x_max - data_.x_min, data_.y_max - data_.y_min) * Constants::tunnel_rate;
   Point best_point = current_min;
 
-  for (int i = 0; i < 20; i++) {
-    double angle = 2 * M_PI * dis(gen);
-    double r = radius * std::sqrt(std::abs(dis(gen)));
+  double angle;
+  double r;
+  double new_x;
+  double new_y;
+  for (int i = 0; i < Constants::num_tunnels; i++) {
+    angle = 2 * M_PI * dis(gen);
+    r = radius * std::sqrt(std::abs(dis(gen)));
 
-    double new_x = current_min.x + r * std::cos(angle);
-    double new_y = current_min.y + r * std::sin(angle);
+    new_x = current_min.x + r * std::cos(angle);
+    new_y = current_min.y + r * std::sin(angle);
 
     if (new_x >= data_.x_min && new_x <= data_.x_max && new_y >= data_.y_min && new_y <= data_.y_max) {
       Point new_point = local_search(new_x, new_y);

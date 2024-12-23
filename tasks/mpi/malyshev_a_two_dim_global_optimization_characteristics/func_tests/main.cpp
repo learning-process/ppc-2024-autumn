@@ -72,6 +72,19 @@ TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, SimpleTest) {
   test_task(target, constraints, 0, 10, 0, 10, 1e-4, ref);
 }
 
+TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, SimpleTestSmallRanges) {
+  auto target = [](double x, double y) -> double { return pow(x - 2, 2) + pow(y - 3, 2); };
+
+  std::vector<malyshev_a_two_dim_global_optimization_characteristics_mpi::constraint_t> constraints{
+      [](double x, double y) -> bool { return x + y >= 0.000003; },
+      [](double x, double y) -> bool { return x - y < 0; }, [](double x, double y) -> bool { return x >= 0 && y == y; },
+      [](double x, double y) -> bool { return y >= 0 && x == x; }};
+
+  malyshev_a_two_dim_global_optimization_characteristics_mpi::Point ref(0.000002, 0.000002, target(0.000002, 0.000002));
+
+  test_task(target, constraints, 0.000001, 0.000002, 0.000001, 0.000002, 1e-6, ref);
+}
+
 TEST(malyshev_a_two_dim_global_optimization_characteristics_mpi, RastrigrinTest) {
   auto target = [](double x, double y) -> double {
     return 20 + (pow(x, 2) - 10 * cos(2 * M_PI * x)) + (pow(y, 2) - 10 * cos(2 * M_PI * y));
