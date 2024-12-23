@@ -1,3 +1,5 @@
+#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>

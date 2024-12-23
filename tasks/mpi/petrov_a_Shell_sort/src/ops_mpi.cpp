@@ -1,9 +1,10 @@
+#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
+
 #include <mpi.h>
 
 #include <algorithm>
 #include <boost/mpi.hpp>
 #include <iostream>
-#include <numeric>
 #include <vector>
 
 namespace petrov_a_Shell_sort_mpi {
