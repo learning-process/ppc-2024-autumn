@@ -14,8 +14,8 @@ class TestTaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static void conjugate_gradient(const std::vector<double>& A, const std::vector<double>& b,
-                                                std::vector<double>& x, int N);
+  static void conjugate_gradient(const std::vector<double>& A, const std::vector<double>& b, std::vector<double>& x,
+                                 int N);
   inline static void dot_product(double& sum, const std::vector<double>& vec1, const std::vector<double>& vec2, int n);
   inline static void matrix_vector_mult(const std::vector<double>& matrix, const std::vector<double>& vector,
                                         std::vector<double>& result, int n);
