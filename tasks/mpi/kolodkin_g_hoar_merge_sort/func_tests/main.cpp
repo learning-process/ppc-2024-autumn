@@ -286,7 +286,7 @@ TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector) {
   }
 }
 
-TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector_with_2 ^ n_size) {
+TEST(kolodkin_g_hoar_merge_sort_MPI, Test_big_vector_with_2n_size) {
   boost::mpi::communicator world;
 
   // Create data
