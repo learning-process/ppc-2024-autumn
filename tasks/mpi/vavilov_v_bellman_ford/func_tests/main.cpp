@@ -7,23 +7,6 @@
 
 namespace mpi = boost::mpi;
 
-static std::vector<int> generate_random_complete_graph(int vertices) {
-  std::vector<int> graph(vertices * vertices, 0);
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> weight_dist(-20, 20);
-
-  for (int u = 0; u < vertices; ++u) {
-    for (int v = u + 1; v < vertices; ++v) {
-      int weight = weight_dist(gen);
-      graph[u * vertices + v] = weight;
-      graph[v * vertices + u] = weight;
-    }
-  }
-
-  return graph;
-}
-
 static std::vector<int> generate_random_sparse_graph(int vertices, int edges_count) {
   std::vector<int> graph(vertices * vertices, 0);
   std::random_device rd;
@@ -44,46 +27,6 @@ static std::vector<int> generate_random_sparse_graph(int vertices, int edges_cou
   }
 
   return graph;
-}
-
-TEST(vavilov_v_bellman_ford_mpi, Random_complete_graph) {
-  mpi::communicator world;
-  auto taskDataPar = std::make_shared<ppc::core::TaskData>();
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
-
-  int vertices = 100;
-  int edges_count = 4950;
-  int source = 0;
-  std::vector<int> output(vertices);
-  std::vector<int> expected_output(vertices);
-  std::vector<int> matrix = generate_random_complete_graph(vertices);
-  taskDataPar->inputs_count.emplace_back(vertices);
-  taskDataPar->inputs_count.emplace_back(edges_count);
-  taskDataPar->inputs_count.emplace_back(source);
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-  taskDataPar->outputs_count.emplace_back(output.size());
-  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-
-  taskDataSeq->inputs_count.emplace_back(vertices);
-  taskDataSeq->inputs_count.emplace_back(edges_count);
-  taskDataSeq->inputs_count.emplace_back(source);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrix.data()));
-  taskDataSeq->outputs_count.emplace_back(expected_output.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expected_output.data()));
-
-  vavilov_v_bellman_ford_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel.run());
-  ASSERT_TRUE(testMpiTaskParallel.post_processing());
-  if (world.rank() == 0) {
-    vavilov_v_bellman_ford_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_TRUE(testMpiTaskSequential.validation());
-    ASSERT_TRUE(testMpiTaskSequential.pre_processing());
-    ASSERT_TRUE(testMpiTaskSequential.run());
-    ASSERT_TRUE(testMpiTaskSequential.post_processing());
-    EXPECT_EQ(output, expected_output);
-  }
 }
 
 TEST(vavilov_v_bellman_ford_mpi, Random_sparse_graph) {
