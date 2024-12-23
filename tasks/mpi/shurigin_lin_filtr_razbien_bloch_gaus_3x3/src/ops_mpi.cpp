@@ -58,30 +58,16 @@ void calculateDistribution(int total_elements, int cols, int num_proc, std::vect
   block_sizes.resize(num_proc);
   block_offsets.resize(num_proc);
 
-  double total_weight = 0;
-  std::vector<double> weights(num_proc);
+  int base_block_size = total_elements / num_proc;
+  int remaining = total_elements % num_proc;
 
-  for (int i = 0; i < num_proc; ++i) {
-    weights[i] = std::exp(-0.5 * i / num_proc);
-    total_weight += weights[i];
-  }
-
-  int remaining_elements = total_elements;
   int current_offset = 0;
 
-  for (int i = 0; i < num_proc - 1; ++i) {
-    double normalized_weight = weights[i] / total_weight;
-    block_sizes[i] = std::max(1, static_cast<int>(normalized_weight * total_elements));
-    if (block_sizes[i] > remaining_elements) {
-      block_sizes[i] = remaining_elements;
-    }
+  for (int i = 0; i < num_proc; ++i) {
+    block_sizes[i] = base_block_size + (i < remaining ? 1 : 0);
     block_offsets[i] = current_offset;
     current_offset += block_sizes[i];
-    remaining_elements -= block_sizes[i];
   }
-
-  block_sizes[num_proc - 1] = remaining_elements;
-  block_offsets[num_proc - 1] = current_offset;
 }
 
 std::vector<std::vector<std::pair<int, int>>> distributeWorkload(const std::vector<std::pair<int, int>>& indices,
