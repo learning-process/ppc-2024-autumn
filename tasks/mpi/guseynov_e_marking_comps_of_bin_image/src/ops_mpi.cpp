@@ -266,6 +266,7 @@ bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel::run() {
   local_image_ = std::vector<int>(sizes[world.rank()]);
   boost::mpi::scatterv(world, image_, sizes, local_image_.data(), 0);
 
+  // Local labeling
   std::vector<int> local_labeled_image(sizes[world.rank()], 1);
   int min_label = 100000 * world.rank() + 2;
   std::map<int, std::set<int>> local_parents;
@@ -273,6 +274,7 @@ bool guseynov_e_marking_comps_of_bin_image_mpi::TestMPITaskParallel::run() {
 
   boost::mpi::gatherv(world, local_labeled_image, labeled_image.data(), sizes, 0);
 
+  // Prepare table data to transfer
   std::ostringstream oss;
   saveMap(oss, local_parents);
   std::string serialized_data = oss.str();
