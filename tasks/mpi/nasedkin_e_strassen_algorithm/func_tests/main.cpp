@@ -13,6 +13,12 @@ std::vector<double> generateRandomMatrix(int size) {
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(-100.0, 100.0);
   std::vector<double> matrix(size * size);
+
+  if (size <= 0) {
+    std::cout << "generateRandomMatrix: Invalid size: " << size << std::endl;
+    return matrix;
+  }
+
   for (int i = 0; i < size * size; i++) {
     matrix[i] = dis(gen);
   }
