@@ -31,13 +31,10 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_mpi, test_
   auto testMpiTaskParallel =
       std::make_shared<alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
                            dense_matrix_multiplication_block_scheme_fox_algorithm_mpi>(taskDataPar);
-  std::cout << "validation\n";
+
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
-  std::cout << "pre_processing\n";
   testMpiTaskParallel->pre_processing();
-  std::cout << "run\n";
   testMpiTaskParallel->run();
-  std::cout << "post_processing\n";
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

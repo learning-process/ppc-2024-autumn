@@ -8,11 +8,15 @@
 #include "mpi/alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm/include/ops_mpi.hpp"
 
 namespace alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm {
-std::vector<double> generator(int sz) {
+std::vector<double> generator(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
-  std::uniform_real_distribution<double> dis(-100.0, 100.0);
+  if (a >= b) {
+    throw std::invalid_argument("error.");
+  }
+
+  std::uniform_int_distribution<> dis(a, b);
 
   std::vector<double> ans(sz);
   for (int i = 0; i < sz; ++i) {
@@ -78,17 +82,15 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, LargeRand
     GTEST_SKIP();
   }
   int N = 25 * x;
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
+  std::vector<double> A =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
+  std::vector<double> B =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
   std::vector<double> ansPar(N * N);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << A[i] << " " << B[i] << std::endl;
-    //}
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
@@ -98,13 +100,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, LargeRand
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
-  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
-  std::cout << "run\n";
   testMpiTaskParallel.run();
-  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -123,10 +121,6 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, LargeRand
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.pre_processing();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
-
-    for (int i = 0; i < N * N; ++i) {
-      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    }
 
     for (int i = 0; i < N * N; ++i) {
       ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
@@ -143,17 +137,15 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, MediumRan
   }
 
   int N = 13 * x;
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
+  std::vector<double> A =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
+  std::vector<double> B =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
   std::vector<double> ansPar(N * N);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << A[i] << " " << B[i] << std::endl;
-    //}
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
@@ -163,13 +155,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, MediumRan
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
-  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
-  std::cout << "run\n";
   testMpiTaskParallel.run();
-  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -188,10 +176,6 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, MediumRan
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.pre_processing();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
-
-    for (int i = 0; i < N * N; ++i) {
-      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    }
 
     for (int i = 0; i < N * N; ++i) {
       ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
@@ -206,17 +190,15 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AllEqualE
     GTEST_SKIP();
   }
   int N = 12 * x;
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
+  std::vector<double> A =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
+  std::vector<double> B =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
   std::vector<double> ansPar(N * N);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << A[i] << " " << B[i] << std::endl;
-    //}
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
@@ -226,13 +208,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AllEqualE
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
-  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
-  std::cout << "run\n";
   testMpiTaskParallel.run();
-  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -251,10 +229,6 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, AllEqualE
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.pre_processing();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
-
-    for (int i = 0; i < N * N; ++i) {
-      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    }
 
     for (int i = 0; i < N * N; ++i) {
       ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
@@ -269,17 +243,15 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, Alternati
     GTEST_SKIP();
   }
   int N = 4 * x;
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
+  std::vector<double> A =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
+  std::vector<double> B =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
   std::vector<double> ansPar(N * N);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << A[i] << " " << B[i] << std::endl;
-    //}
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
@@ -289,13 +261,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, Alternati
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
-  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
-  std::cout << "run\n";
   testMpiTaskParallel.run();
-  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -314,10 +282,6 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, Alternati
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.pre_processing();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
-
-    for (int i = 0; i < N * N; ++i) {
-      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    }
 
     for (int i = 0; i < N * N; ++i) {
       ASSERT_NEAR(ansPar[i], ansSeq[i], 1);
@@ -332,17 +296,15 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, ConstantD
     GTEST_SKIP();
   }
   int N = 8 * x;
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N);
+  std::vector<double> A =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
+  std::vector<double> B =
+      alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(N * N, -1000, 1000);
   std::vector<double> ansPar(N * N);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    // for (int i = 0; i < N * N; ++i) {
-    // std::cout << A[i] << " " << B[i] << std::endl;
-    //}
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(A.data()));
     taskDataPar->inputs_count.emplace_back(N);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(B.data()));
@@ -352,13 +314,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, ConstantD
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_mpi testMpiTaskParallel(taskDataPar);
-  std::cout << "validation\n";
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  std::cout << "pre_processing\n";
   testMpiTaskParallel.pre_processing();
-  std::cout << "run\n";
   testMpiTaskParallel.run();
-  std::cout << "post_processing\n";
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -377,10 +335,6 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm, ConstantD
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.pre_processing();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.run();
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq.post_processing();
-
-    for (int i = 0; i < N * N; ++i) {
-      std::cout << ansPar[i] << " " << ansSeq[i] << std::endl;
-    }
 
     for (int i = 0; i < N * N; ++i) {
       ASSERT_NEAR(ansPar[i], ansSeq[i], 1);

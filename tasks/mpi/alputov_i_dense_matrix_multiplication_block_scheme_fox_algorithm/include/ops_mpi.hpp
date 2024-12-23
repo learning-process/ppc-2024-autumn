@@ -15,19 +15,6 @@
 #include "core/task/include/task.hpp"
 
 namespace alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm {
-/*
-void multiplyBlock(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& C, int blockSize,
-                                   int n, int p) {
-  for (int i = 0; i < blockSize; ++i) {
-        for (int j = 0; j < p; ++j) {
-          C[i * p + j] = 0.0;
-          for (int k = 0; k < n; ++k) {
-                C[i * p + j] += A[i * n + k] * B[k * p + j];
-          }
-        }
-  }
-}
-*/
 class dense_matrix_multiplication_block_scheme_fox_algorithm_seq : public ppc::core::Task {
  public:
   explicit dense_matrix_multiplication_block_scheme_fox_algorithm_seq(std::shared_ptr<ppc::core::TaskData> taskData_)

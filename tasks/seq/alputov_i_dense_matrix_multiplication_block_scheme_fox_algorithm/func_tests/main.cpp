@@ -6,16 +6,19 @@
 #include "seq/alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm/include/ops_seq.hpp"
 
 namespace alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm {
-std::vector<double> generator(int sz) {
+std::vector<double> generator(int sz, int a, int b) {
   std::random_device dev;
   std::mt19937 gen(dev());
 
-  // Определяем диапазон для генерации случайных чисел
-  std::uniform_real_distribution<double> dis(-100.0, 100.0);
+  if (a >= b) {
+    throw std::invalid_argument("error.");
+  }
+
+  std::uniform_int_distribution<> dis(a, b);
 
   std::vector<double> ans(sz);
   for (int i = 0; i < sz; ++i) {
-    ans[i] = dis(gen);  // Генерируем случайное число типа double
+    ans[i] = dis(gen);
   }
 
   return ans;
@@ -144,7 +147,7 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, Empty
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, TestWithZerosA) {
   std::vector<double> A = {0.0, 0.0};
-  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(4);
+  std::vector<double> B = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(4, -1000, 1000);
   int column_A = 2;
   int row_A = 1;
   int column_B = 2;
@@ -164,19 +167,15 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, TestW
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_seq testTaskSequential(taskDataSeq);
-  std::cout << "validation\n";
   ASSERT_EQ(testTaskSequential.validation(), true);
-  std::cout << "pre_processing\n";
   testTaskSequential.pre_processing();
-  std::cout << "run\n";
   testTaskSequential.run();
-  std::cout << "post_processing\n";
   testTaskSequential.post_processing();
   ASSERT_EQ(ans, out);
 }
 
 TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, TestWithZerosB) {
-  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(2);
+  std::vector<double> A = alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::generator(2, -1000, 1000);
   std::vector<double> B = {0.0, 0.0, 0.0, 0.0};
   int column_A = 2;
   int row_A = 1;
@@ -197,13 +196,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, TestW
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_seq testTaskSequential(taskDataSeq);
-  std::cout << "validation\n";
   ASSERT_EQ(testTaskSequential.validation(), true);
-  std::cout << "pre_processing\n";
   testTaskSequential.pre_processing();
-  std::cout << "run\n";
   testTaskSequential.run();
-  std::cout << "post_processing\n";
   testTaskSequential.post_processing();
   ASSERT_EQ(ans, out);
 }
@@ -230,13 +225,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, NonZe
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_seq testTaskSequential(taskDataSeq);
-  std::cout << "validation\n";
   ASSERT_EQ(testTaskSequential.validation(), true);
-  std::cout << "pre_processing\n";
   testTaskSequential.pre_processing();
-  std::cout << "run\n";
   testTaskSequential.run();
-  std::cout << "post_processing\n";
   testTaskSequential.post_processing();
   ASSERT_EQ(ans, out);
 }
@@ -263,13 +254,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, NonZe
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_seq testTaskSequential(taskDataSeq);
-  std::cout << "validation\n";
   ASSERT_EQ(testTaskSequential.validation(), true);
-  std::cout << "pre_processing\n";
   testTaskSequential.pre_processing();
-  std::cout << "run\n";
   testTaskSequential.run();
-  std::cout << "post_processing\n";
   testTaskSequential.post_processing();
   ASSERT_EQ(ans, out);
 }
@@ -296,13 +283,9 @@ TEST(alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm_seq, HardT
 
   alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
       dense_matrix_multiplication_block_scheme_fox_algorithm_seq testTaskSequential(taskDataSeq);
-  std::cout << "validation\n";
   ASSERT_EQ(testTaskSequential.validation(), true);
-  std::cout << "pre_processing\n";
   testTaskSequential.pre_processing();
-  std::cout << "run\n";
   testTaskSequential.run();
-  std::cout << "post_processing\n";
   testTaskSequential.post_processing();
   for (int i = 0; i < row_A * column_B; ++i) {
     ASSERT_NEAR(ans[i], out[i], 1e-5);
