@@ -8,11 +8,9 @@
 namespace petrov_a_Shell_sort_mpi {
 
 bool TestTaskMPI::validation() {
-  if (data_.empty()) {
-    return false;
-  }
-  return true;
+  return !data_.empty();
 }
+
 
 bool TestTaskMPI::pre_processing() {
   boost::mpi::communicator world;
