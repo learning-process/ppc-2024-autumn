@@ -60,7 +60,6 @@ bool TestTaskMPI::run() {
   return true;
 }
 
-
 bool TestTaskMPI::post_processing() {
   boost::mpi::communicator world;
 
