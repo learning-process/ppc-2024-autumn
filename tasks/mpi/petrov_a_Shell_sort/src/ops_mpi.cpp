@@ -23,7 +23,8 @@ bool TestTaskMPI::validation() {
 }
 
 bool TestTaskMPI::pre_processing() {
-  int world_size, world_rank;
+  int world_size;
+  int world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
@@ -57,9 +58,9 @@ bool TestTaskMPI::pre_processing() {
 
 bool TestTaskMPI::run() {
   for (int gap = static_cast<int>(local_data_.size()) / 2; gap > 0; gap /= 2) {
-    for (size_t i = gap; i < local_data_.size(); ++i) {
+    for (int i = gap; i < static_cast<int>(local_data_.size()); ++i) {
       int temp = local_data_[i];
-      size_t j = i;
+      int j = i;
       while (j >= gap && local_data_[j - gap] > temp) {
         local_data_[j] = local_data_[j - gap];
         j -= gap;
