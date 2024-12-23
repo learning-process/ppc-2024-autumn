@@ -16,12 +16,13 @@ std::vector<int> get_rand_vector(const size_t vec_size, const int min_int = -100
 
   std::vector<int> new_vec(vec_size);
   std::generate(new_vec.begin(), new_vec.end(), [&]() { return distr(gen); });
+  std::sort(new_vec.begin(), new_vec.end(), std::greater<>());
   return new_vec;
 }
 }  // namespace suvorov_d_shell_with_ord_merge_seq
 
 TEST(suvorov_d_shell_with_ord_merge_seq, test_pipeline_run) {
-  const size_t count_of_elems = 100000;
+  const size_t count_of_elems = 10000000;
   std::vector<int> data_to_sort = suvorov_d_shell_with_ord_merge_seq::get_rand_vector(count_of_elems);
   std::vector<int> sorted_result(count_of_elems, 0);
 
@@ -51,7 +52,7 @@ TEST(suvorov_d_shell_with_ord_merge_seq, test_pipeline_run) {
 }
 
 TEST(suvorov_d_shell_with_ord_merge_seq, test_task_run) {
-  const size_t count_of_elems = 100000;
+  const size_t count_of_elems = 10000000;
   std::vector<int> data_to_sort = suvorov_d_shell_with_ord_merge_seq::get_rand_vector(count_of_elems);
   std::vector<int> sorted_result(count_of_elems, 0);
 

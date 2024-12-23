@@ -1,15 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include "mpi/suvorov_d_shell_with_ord_merge/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
-
-using namespace std::chrono_literals;
-
 std::vector<int> suvorov_d_shell_with_ord_merge_mpi::shell_sort(const std::vector<int>& vec_to_sort) {
   std::vector<int> result_vec = vec_to_sort;
   size_t n = result_vec.size();

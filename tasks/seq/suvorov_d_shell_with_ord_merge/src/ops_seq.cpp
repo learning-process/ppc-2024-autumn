@@ -1,10 +1,6 @@
 // Copyright 2024 Nesterov Alexander
 #include "seq/suvorov_d_shell_with_ord_merge/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 std::vector<int> suvorov_d_shell_with_ord_merge_seq::TaskShellSortSeq::shell_sort(const std::vector<int>& vec_to_sort) {
   std::vector<int> result_vec = vec_to_sort;
   size_t n = result_vec.size();

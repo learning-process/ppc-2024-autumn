@@ -17,6 +17,7 @@ std::vector<int> get_rand_vector(const size_t vec_size, const int min_int = -100
 
   std::vector<int> new_vec(vec_size);
   std::generate(new_vec.begin(), new_vec.end(), [&]() { return distr(gen); });
+  std::sort(new_vec.begin(), new_vec.end(), std::greater<>());
   return new_vec;
 }
 }  // namespace suvorov_d_shell_with_ord_merge_mpi
@@ -30,7 +31,7 @@ TEST(suvorov_d_shell_with_ord_merge_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataForSortingMpi = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    count_of_elems = 1000000;
+    count_of_elems = 10000000;
     data_to_sort = suvorov_d_shell_with_ord_merge_mpi::get_rand_vector(count_of_elems);
     sorted_result_mpi.assign(count_of_elems, 0);
     taskDataForSortingMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(data_to_sort.data()));
@@ -69,7 +70,7 @@ TEST(suvorov_d_shell_with_ord_merge_mpi, test_task_run) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataForSortingMpi = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    count_of_elems = 1000000;
+    count_of_elems = 10000000;
     data_to_sort = suvorov_d_shell_with_ord_merge_mpi::get_rand_vector(count_of_elems);
     sorted_result_mpi.assign(count_of_elems, 0);
     taskDataForSortingMpi->inputs.emplace_back(reinterpret_cast<uint8_t*>(data_to_sort.data()));
