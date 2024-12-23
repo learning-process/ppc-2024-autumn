@@ -66,7 +66,6 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_with_fixed) {
   ASSERT_EQ(result_parallel, result_seq);
 }
 
-
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_Zero_Value) {
   boost::mpi::environment env;
   boost::mpi::communicator world;

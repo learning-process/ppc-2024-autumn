@@ -33,11 +33,11 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_pipeline_run) {
   }
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_values.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_values.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<unsigned int>(input_values.size()));
 
     output_values.resize(input_values.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_values.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_values.data()));
     taskDataPar->outputs_count.emplace_back(static_cast<unsigned int>(output_values.size()));
   }
 
@@ -81,11 +81,11 @@ TEST(gordeeva_t_shell_sort_batcher_merge_mpi, test_task_run) {
   }
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_values.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input_values.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<unsigned int>(input_values.size()));
 
     output_values.resize(input_values.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_values.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output_values.data()));
     taskDataPar->outputs_count.emplace_back(static_cast<unsigned int>(output_values.size()));
   }
 
