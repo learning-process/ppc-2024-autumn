@@ -45,6 +45,21 @@ void testTemplate(const std::vector<double>& vec) {
 
 }  // namespace durynichev_d_radix_batcher_seq
 
+TEST(durynichev_d_radix_batcher_seq, sort_test_empty) {
+  std::vector<double> empty_vector;
+
+  EXPECT_NO_THROW(durynichev_d_radix_batcher_seq::radixSortDouble(empty_vector.begin(), empty_vector.end()));
+  EXPECT_TRUE(empty_vector.empty());
+}
+
+TEST(durynichev_d_radix_batcher_seq, sort_test_right_work) {
+  std::vector<double> data = {3.1, 2.4, 5.6, 1.2, 8.9, 7.3, 4.5, 6.7};
+  std::vector<double> expected = {1.2, 2.4, 3.1, 4.5, 5.6, 6.7, 7.3, 8.9};
+
+  durynichev_d_radix_batcher_seq::radixSortDouble(data.begin(), data.end());
+  EXPECT_EQ(data, expected);
+}
+
 TEST(durynichev_d_radix_batcher_seq, positive_numbers_size_8) {
   durynichev_d_radix_batcher_seq::testTemplate({2.0, 4.2, 1.3, 5.7, 0.1, 8.9, 7.4, 6.1});
 }
