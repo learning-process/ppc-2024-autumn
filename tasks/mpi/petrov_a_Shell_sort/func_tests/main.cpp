@@ -38,12 +38,14 @@ void template_test(const std::vector<int>& input_data) {
     if (taskMPI->pre_processing()) {
       taskMPI->run();
       taskMPI->post_processing();
-    } else {
-      return;
-    }
 
-    std::sort(data.begin(), data.end());
-    EXPECT_EQ(data, result_data);
+      std::sort(data.begin(), data.end());
+      EXPECT_EQ(data, result_data);
+    } else {
+      FAIL() << "Pre-processing failed.";
+    }
+  } else {
+    FAIL() << "Validation failed.";
   }
 }
 
@@ -68,4 +70,8 @@ TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements_mpi) {
 TEST(petrov_a_Shell_sort_mpi, test_random_vector_mpi) {
   auto random_vec = petrov_a_Shell_sort_mpi::generate_random_vector(1000, -1000, 1000);
   petrov_a_Shell_sort_mpi::template_test(random_vec);
+}
+
+TEST(petrov_a_Shell_sort_mpi, test_reverse_sorted_case_mpi) {
+  petrov_a_Shell_sort_mpi::template_test({10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
 }

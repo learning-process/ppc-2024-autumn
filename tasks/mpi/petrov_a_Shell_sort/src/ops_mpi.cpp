@@ -32,18 +32,60 @@ bool TestTaskMPI::validation() {
 }
 
 bool TestTaskMPI::run() {
-  int n = data_.size();
+  int rank, size;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  for (int gap = n / 2; gap > 0; gap /= 2) {
-    for (int i = gap; i < n; ++i) {
-      int temp = data_[i];
+  int n = data_.size();
+  std::vector<int> local_data;
+
+  if (rank == 0) {
+    // Distribute data
+    int chunk_size = (n + size - 1) / size;
+    for (int i = 1; i < size; ++i) {
+      int start_idx = i * chunk_size;
+      int end_idx = std::min(start_idx + chunk_size, n);
+      MPI_Send(data_.data() + start_idx, end_idx - start_idx, MPI_INT, i, 0, MPI_COMM_WORLD);
+    }
+    local_data.assign(data_.begin(), data_.begin() + chunk_size);
+  } else {
+    // Receive data
+    MPI_Status status;
+    int chunk_size = (n + size - 1) / size;
+    int start_idx = rank * chunk_size;
+    int end_idx = std::min(start_idx + chunk_size, n);
+
+    local_data.resize(end_idx - start_idx);
+    MPI_Recv(local_data.data(), end_idx - start_idx, MPI_INT, 0, 0, MPI_COMM_WORLD, &status);
+  }
+
+  // Perform Shell sort locally
+  for (int gap = local_data.size() / 2; gap > 0; gap /= 2) {
+    for (int i = gap; i < local_data.size(); ++i) {
+      int temp = local_data[i];
       int j;
-      for (j = i; j >= gap && data_[j - gap] > temp; j -= gap) {
-        data_[j] = data_[j - gap];
+      for (j = i; j >= gap && local_data[j - gap] > temp; j -= gap) {
+        local_data[j] = local_data[j - gap];
       }
-      data_[j] = temp;
+      local_data[j] = temp;
     }
   }
+
+  // Gather results
+  if (rank == 0) {
+    std::copy(local_data.begin(), local_data.end(), data_.begin());
+    for (int i = 1; i < size; ++i) {
+      MPI_Status status;
+      int chunk_size = (n + size - 1) / size;
+      int start_idx = i * chunk_size;
+      int end_idx = std::min(start_idx + chunk_size, n);
+
+      MPI_Recv(data_.data() + start_idx, end_idx - start_idx, MPI_INT, i, 0, MPI_COMM_WORLD, &status);
+    }
+  } else {
+    MPI_Send(local_data.data(), local_data.size(), MPI_INT, 0, 0, MPI_COMM_WORLD);
+  }
+
   return true;
 }
 
