@@ -13,10 +13,10 @@
 
 #include "mpi/beresnev_a_cannons_algorithm/include/ops_mpi.hpp"
 
-static std::vector<double> getRandomVector(int sz) {
+static std::vector<double> getRandomVector(int sz, double d) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_real_distribution<double> dist(-100.0, 100.0);
+  std::uniform_real_distribution<double> dist(-d, d);
   std::vector<double> vec(sz);
   for (int i = 0; i < sz; ++i) {
     vec[i] = dist(gen);
@@ -27,13 +27,14 @@ static std::vector<double> getRandomVector(int sz) {
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_in) {
   boost::mpi::communicator world;
   int n = 3;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inB = getRandomVector(n * n);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -55,14 +56,15 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_in) {
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_out) {
   boost::mpi::communicator world;
   int n = 3;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
     taskDataPar->inputs_count.emplace_back(inA.size());
@@ -83,14 +85,15 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Empty_out) {
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size) {
   boost::mpi::communicator world;
   int n = 3;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -112,14 +115,15 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size) {
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size_1) {
   boost::mpi::communicator world;
   int n = 3;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -141,14 +145,15 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Wrong_Size_1) {
 TEST(beresnev_a_cannons_algorithm_mpi, Test_m1_1) {
   boost::mpi::communicator world;
   int n = 1;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -187,7 +192,7 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_m1_1) {
     testMpiTaskSequential.post_processing();
 
     ASSERT_TRUE(std::equal(reference.begin(), reference.end(), outC.begin(),
-                           [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+                           [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }
 
@@ -222,20 +227,21 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Inverse) {
 
   if (world.rank() == 0) {
     ASSERT_TRUE(
-        std::equal(iden.begin(), iden.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+        std::equal(iden.begin(), iden.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden) {
   boost::mpi::communicator world;
   int n = 5;
+  double dist = 100.0;
   std::vector<double> inA = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inB = getRandomVector(n * n);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -256,20 +262,21 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden) {
 
   if (world.rank() == 0) {
     ASSERT_TRUE(
-        std::equal(inB.begin(), inB.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+        std::equal(inB.begin(), inB.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden_1) {
   boost::mpi::communicator world;
   int n = 5;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB = {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1};
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -290,21 +297,22 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Iden_1) {
 
   if (world.rank() == 0) {
     ASSERT_TRUE(
-        std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+        std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random) {
   boost::mpi::communicator world;
   int n = 7;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -343,27 +351,28 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random) {
     testMpiTaskSequential.post_processing();
 
     for (size_t i = 0; i < reference.size(); ++i) {
-      if (std::abs(reference[i] - outC[i]) >= 1e-5) {
+      if (std::abs(reference[i] - outC[i]) >= 1e-9) {
         std::cerr << "Mismatch at index " << i << ": reference = " << reference[i] << ", outC = " << outC[i]
                   << ", diff = " << std::abs(reference[i] - outC[i]) << std::endl;
       }
     }
     ASSERT_TRUE(std::equal(reference.begin(), reference.end(), outC.begin(),
-                           [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+                           [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_1) {
   boost::mpi::communicator world;
   int n = 80;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -402,27 +411,28 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_1) {
     testMpiTaskSequential.post_processing();
 
     for (size_t i = 0; i < reference.size(); ++i) {
-      if (std::abs(reference[i] - outC[i]) >= 1e-5) {
+      if (std::abs(reference[i] - outC[i]) >= 1e-9) {
         std::cerr << "Mismatch at index " << i << ": reference = " << reference[i] << ", outC = " << outC[i]
                   << ", diff = " << std::abs(reference[i] - outC[i]) << std::endl;
       }
     }
     ASSERT_TRUE(std::equal(reference.begin(), reference.end(), outC.begin(),
-                           [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+                           [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }
 
 TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_2) {
   boost::mpi::communicator world;
   int n = 211;
+  double dist = 100.0;
   std::vector<double> inA;
   std::vector<double> inB;
   std::vector<double> outC;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    inA = getRandomVector(n * n);
-    inB = getRandomVector(n * n);
+    inA = getRandomVector(n * n, dist);
+    inB = getRandomVector(n * n, dist);
     outC = std::vector<double>(n * n, 0.0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(inA.data()));
@@ -461,12 +471,12 @@ TEST(beresnev_a_cannons_algorithm_mpi, Test_Random_2) {
     testMpiTaskSequential.post_processing();
 
     for (size_t i = 0; i < reference.size(); ++i) {
-      if (std::abs(reference[i] - outC[i]) >= 1e-5) {
+      if (std::abs(reference[i] - outC[i]) >= 1e-9) {
         std::cerr << "Mismatch at index " << i << ": reference = " << reference[i] << ", outC = " << outC[i]
                   << ", diff = " << std::abs(reference[i] - outC[i]) << std::endl;
       }
     }
     ASSERT_TRUE(std::equal(reference.begin(), reference.end(), outC.begin(),
-                           [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+                           [](double a, double b) { return std::abs(a - b) < 1e-9; }));
   }
 }

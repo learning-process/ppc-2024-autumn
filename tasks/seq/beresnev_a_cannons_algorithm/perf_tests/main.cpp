@@ -8,7 +8,7 @@
 #include "seq/beresnev_a_cannons_algorithm/include/ops_seq.hpp"
 
 TEST(beresnev_a_cannons_algorithm_seq, test_pipeline_run) {
-  size_t n = 400;
+  size_t n = 500;
   std::vector<double> inA(n * n, 0.0);
   std::vector<double> inB(n * n, 1.0);
   std::vector<double> outC(n * n);
@@ -46,7 +46,7 @@ TEST(beresnev_a_cannons_algorithm_seq, test_pipeline_run) {
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, test_task_run) {
-  size_t n = 400;
+  size_t n = 500;
   std::vector<double> inA(n * n, 0.0);
   std::vector<double> inB(n * n, 1.0);
   std::vector<double> outC(n * n);

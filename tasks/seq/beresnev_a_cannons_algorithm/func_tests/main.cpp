@@ -136,7 +136,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_m1_1) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_TRUE(
-      std::equal(ans.begin(), ans.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+      std::equal(ans.begin(), ans.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, Test_Inverse) {
@@ -163,7 +163,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Inverse) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_TRUE(
-      std::equal(iden.begin(), iden.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+      std::equal(iden.begin(), iden.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, Test_Iden) {
@@ -188,7 +188,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Iden) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_TRUE(
-      std::equal(inB.begin(), inB.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+      std::equal(inB.begin(), inB.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, Test_Iden_1) {
@@ -213,7 +213,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Iden_1) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_TRUE(
-      std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+      std::equal(inA.begin(), inA.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, Test_Random) {
@@ -239,7 +239,7 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Random) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_TRUE(
-      std::equal(ans.begin(), ans.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+      std::equal(ans.begin(), ans.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
 }
 
 TEST(beresnev_a_cannons_algorithm_seq, Test_Random_1) {
@@ -265,5 +265,5 @@ TEST(beresnev_a_cannons_algorithm_seq, Test_Random_1) {
   testTaskSequential.run();
   testTaskSequential.post_processing();
   ASSERT_TRUE(
-      std::equal(ans.begin(), ans.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-5; }));
+      std::equal(ans.begin(), ans.end(), outC.begin(), [](double a, double b) { return std::abs(a - b) < 1e-9; }));
 }
