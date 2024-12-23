@@ -161,5 +161,23 @@ bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::run() {
 bool kazunin_n_dining_philosophers_mpi::DiningPhilosophersParallelMPI::post_processing() {
   internal_order_test();
 
+  world.barrier();
+
+  while (true) {
+    boost::optional<boost::mpi::status> status = world.iprobe(boost::mpi::any_source, RELEASE_FORK);
+
+    if (!status) {
+      break;
+    }
+
+    int source = status->source();
+    int tag = status->tag();
+
+    int message_data;
+    world.recv(source, tag, message_data);
+  }
+
+  world.barrier();
+
   return true;
 }
