@@ -53,13 +53,15 @@ static void perform_fox_algorithm_step(boost::mpi::communicator& my_world, int r
       for (int target_col = 0; target_col < cnt_work_process; ++target_col) {
         if (target_col != col) {
           int target_rank = row * cnt_work_process + target_col;
-          send_request1 = my_world.isend(target_rank, 0, local_A.data(), K * K);
+          auto request = my_world.isend(target_rank, 0, local_A.data(), K * K);
+          request.wait();
         }
       }
       temp_A = local_A;
     } else {
       int sender_rank = row * cnt_work_process + ((row + l) % cnt_work_process);
-      recv_request1 = my_world.irecv(sender_rank, 0, temp_A.data(), K * K);
+      auto request = my_world.irecv(sender_rank, 0, temp_A.data(), K * K);
+      request.wait();
     }
     send_request1.wait();
     recv_request1.wait();
@@ -202,7 +204,6 @@ bool lysov_i_matrix_multiplication_Fox_algorithm_mpi::TestMPITaskParallel::run()
 
   boost::mpi::communicator my_communicator(computation_comm, boost::mpi::comm_take_ownership);
   rank = my_communicator.rank();
-  size = my_communicator.size();
 
   std::vector<double> scatter_A(elements);
   std::vector<double> scatter_B(elements);
