@@ -9,11 +9,11 @@
 #include "mpi/kozlova_e_radix_batcher_sort/include/ops_mpi.hpp"
 
 namespace kozlova_e_utility_functions {
-std::vector<double> generate_random_double_vector(size_t size) {
+std::vector<double> generate_random_double_vector(size_t size, double min_val, double max_val) {
   std::vector<double> result(size);
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_real_distribution<double> dist(-100.0, 100.0);
+  std::uniform_real_distribution<double> dist(min_val, max_val);
 
   for (auto& value : result) {
     value = dist(gen);
@@ -32,7 +32,7 @@ TEST(kozlova_e_radix_batcher_sort_mpi, test_pipeline_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = kozlova_e_utility_functions::generate_random_double_vector(size);
+    global_vec = kozlova_e_utility_functions::generate_random_double_vector(size, -100.0, 100.0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(resMPI.data()));
@@ -89,7 +89,7 @@ TEST(kozlova_e_radix_batcher_sort_mpi, test_task_run) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vec = kozlova_e_utility_functions::generate_random_double_vector(size);
+    global_vec = kozlova_e_utility_functions::generate_random_double_vector(size, -100.0, 100.0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vec.data()));
     taskDataPar->inputs_count.emplace_back(global_vec.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(resMPI.data()));
