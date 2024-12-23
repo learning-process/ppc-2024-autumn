@@ -40,10 +40,10 @@ static void dense_to_crs(const std::vector<double>& dense, int M, int N, std::ve
 TEST(borisov_s_crs_mpi_test, Test_Pipeline_Run) {
   boost::mpi::communicator world;
 
-  const int M = 4000;
-  const int N = 4000;
-  const int K = 4000;
-  const double density = 0.01;
+  const int M = 5000;
+  const int N = 5000;
+  const int K = 5000;
+  const double density = 0.05;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;
@@ -94,7 +94,7 @@ TEST(borisov_s_crs_mpi_test, Test_Pipeline_Run) {
   mpiTask->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 5;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -110,10 +110,10 @@ TEST(borisov_s_crs_mpi_test, Test_Pipeline_Run) {
 TEST(borisov_s_crs_mpi_test, Test_Task_Run) {
   boost::mpi::communicator world;
 
-  const int M = 4000;
-  const int N = 4000;
-  const int K = 4000;
-  const double density = 0.01;
+  const int M = 5000;
+  const int N = 5000;
+  const int K = 5000;
+  const double density = 0.05;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;
@@ -164,7 +164,7 @@ TEST(borisov_s_crs_mpi_test, Test_Task_Run) {
   mpiTask->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 5;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
