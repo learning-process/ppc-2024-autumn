@@ -93,7 +93,7 @@ TEST(petrov_o_radix_sort_with_simple_merge_seq, DuplicateElementsTest) {
   ASSERT_EQ(expected, out);
 }
 
-TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest) {
+TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest_10n_size) {
   std::vector<int> in;
   std::vector<int> out;
   const size_t array_size = 1000;
@@ -124,5 +124,121 @@ TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest) {
 
   std::vector<int> expected = in;
   std::sort(expected.begin(), expected.end());
+  ASSERT_EQ(expected, out) << "Sorted array does not match the expected result.";
+}
+
+TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_2n_size) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  std::vector<int> in;
+  std::vector<int> out;
+  const size_t array_size = 1024;
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-1000000, 1000000);
+
+  in.resize(array_size);
+  for (size_t i = 0; i < array_size; ++i) {
+    in[i] = dist(gen);
+  }
+
+  out.resize(in.size(), 0);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  petrov_o_radix_sort_with_simple_merge_seq::TaskSequential testTaskSequential(taskData);
+
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed on rank " << world.rank();
+
+  std::vector<int> expected = in;
+  std::sort(expected.begin(), expected.end());
+
+  ASSERT_EQ(expected, out) << "Sorted array does not match the expected result.";
+}
+
+TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest_3n_size) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  std::vector<int> in;
+  std::vector<int> out;
+  const size_t array_size = 2187;
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-1000000, 1000000);
+
+  in.resize(array_size);
+  for (size_t i = 0; i < array_size; ++i) {
+    in[i] = dist(gen);
+  }
+
+  out.resize(in.size(), 0);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  petrov_o_radix_sort_with_simple_merge_seq::TaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed on rank " << world.rank();
+
+  std::vector<int> expected = in;
+  std::sort(expected.begin(), expected.end());
+
+  ASSERT_EQ(expected, out) << "Sorted array does not match the expected result.";
+}
+
+TEST(petrov_o_radix_sort_with_simple_merge_seq, RandomValuesTest_prime_values) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
+
+  std::vector<int> in;
+  std::vector<int> out;
+  const size_t array_size = 1013;
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-1000000, 1000000);
+
+  in.resize(array_size);
+  for (size_t i = 0; i < array_size; ++i) {
+    in[i] = dist(gen);
+  }
+
+  out.resize(in.size(), 0);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskData->inputs_count.emplace_back(in.size());
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskData->outputs_count.emplace_back(out.size());
+
+  petrov_o_radix_sort_with_simple_merge_seq::TaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed on rank " << world.rank();
+
+  std::vector<int> expected = in;
+  std::sort(expected.begin(), expected.end());
+
   ASSERT_EQ(expected, out) << "Sorted array does not match the expected result.";
 }
