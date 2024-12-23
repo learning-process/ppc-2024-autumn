@@ -24,7 +24,7 @@ void GeneratorVector(std::vector<int> &vec) {
 
 TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size = 200000;
+  int size = 400000;
   std::vector<int> vec;
   std::vector<int> answer;
   std::vector<int> tResh;
@@ -73,7 +73,7 @@ TEST(filateva_e_radix_sort_mpi, test_pipeline_run) {
 
 TEST(filateva_e_radix_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int size = 200000;
+  int size = 400000;
   std::vector<int> vec;
   std::vector<int> answer;
   std::vector<int> tResh;

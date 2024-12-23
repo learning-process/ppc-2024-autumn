@@ -23,7 +23,7 @@ void GeneratorVector(std::vector<int> &vec) {
 }  // namespace filateva_e_radix_sort_seq
 
 TEST(filateva_e_radix_sort_seq, test_pipeline_run) {
-  int size = 200000;
+  int size = 400000;
   std::vector<int> vec(size);
   std::vector<int> answer(size);
   std::vector<int> tResh;
@@ -68,7 +68,7 @@ TEST(filateva_e_radix_sort_seq, test_pipeline_run) {
 }
 
 TEST(filateva_e_radix_sort_seq, test_task_run) {
-  int size = 200000;
+  int size = 400000;
   std::vector<int> vec(size);
   std::vector<int> answer(size);
   std::vector<int> tResh;
