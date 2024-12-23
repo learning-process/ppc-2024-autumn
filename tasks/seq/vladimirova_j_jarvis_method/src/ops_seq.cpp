@@ -58,14 +58,28 @@ bool vladimirova_j_jarvis_method_seq::TestTaskSequential::pre_processing() {
 bool vladimirova_j_jarvis_method_seq::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  if (taskData->inputs_count[1] <= 0 || taskData->inputs_count[0] <= 0 || taskData->outputs_count[0] <= 0) return false;
-
+  size_t row_i = taskData->inputs_count[0];
+  size_t col_i = taskData->inputs_count[1];
+  if (row_i <= 1 || col_i <= 1 || taskData->outputs_count[0] <= 0) return false;
   auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
   size_t c = 0;
-  for (size_t i = 0; i < taskData->inputs_count[0] * taskData->inputs_count[1]; i++) {
-    if (tmp_ptr[i] != 255) c++;
+  int one_row = -1;
+  int one_col = -1;
+  for (size_t i = 0; i < row_i * col_i; i++) {
+    if (tmp_ptr[i] != 255) {
+      c++;
+      if (one_row == -1)
+        one_row = i / row_i;
+      else if ((one_row != -2) && (one_row != i / row_i))
+        one_row = -2;
+      if (one_col == -1)
+        one_col = i % row_i;
+      else if ((one_col != -2) && (one_col != i % row_i))
+        one_col = -2;
+    }
+    if ((one_row == -2) && (one_col == -2) && (c > 2)) return true;
   }
-  return (c > 2);
+  return ((c > 2) && (one_row == -2) && (one_col == -2));
 }
 
 bool vladimirova_j_jarvis_method_seq::TestTaskSequential::run() {
