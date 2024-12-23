@@ -22,7 +22,7 @@ std::vector<double> generate_random_input_with_same_integer_part(size_t size, in
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, test_pipeline_run) {
-  const int count = 200000;
+  const int count = 500000;
   std::vector<double> in = generate_random_input_with_same_integer_part(count, 1, 0.0, 0.99);
   std::vector<double> out(count);
 
@@ -57,7 +57,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, test_
 }
 
 TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_seq, test_task_run) {
-  const int count = 200000;
+  const int count = 500000;
   std::vector<double> in = generate_random_input_with_same_integer_part(count, 1, 0.0, 0.99);
   std::vector<double> out(count);
 

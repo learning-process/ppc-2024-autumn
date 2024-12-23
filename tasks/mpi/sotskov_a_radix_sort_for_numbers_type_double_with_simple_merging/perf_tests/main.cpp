@@ -29,7 +29,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int N = 1000000;
+  int N = 500000;
   std::vector<double> inputData(N);
   std::vector<double> xPar(N, 0.0);
 
@@ -79,7 +79,7 @@ TEST(sotskov_a_radix_sort_for_numbers_type_double_with_simple_merging_mpi, test_
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-  int N = 1000000;
+  int N = 500000;
   std::vector<double> inputData;
   std::vector<double> xPar(N, 0.0);
 
