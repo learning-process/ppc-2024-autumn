@@ -138,11 +138,11 @@ bool zaytsev_bitwise_sort_evenodd_Batcher::TestMPITaskParallel::run() {
   int local_min = local_data.empty() ? 0 : *std::min_element(local_data.begin(), local_data.end());
   int global_min = 0;
   MPI_Allreduce(&local_min, &global_min, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
-
-  for (int& num : local_data) {
-    num -= global_min;
+  if (global_min < 0) {
+    for (int& num : local_data) {
+      num -= global_min;
+    }
   }
-
   int max_value = local_data.empty() ? 0 : *std::max_element(local_data.begin(), local_data.end());
   int global_max_value = 0;
   MPI_Allreduce(&max_value, &global_max_value, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
