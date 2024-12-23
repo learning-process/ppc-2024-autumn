@@ -10,7 +10,6 @@ namespace petrov_a_Shell_sort_mpi {
 class TestTaskMPI : public ppc::core::Task {
  public:
   explicit TestTaskMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -18,9 +17,6 @@ class TestTaskMPI : public ppc::core::Task {
 
  private:
   std::vector<int> data_;
-  std::vector<int> local_data_;
-  std::vector<int> send_counts_;
-  std::vector<int> displs_;
 };
 
 }  // namespace petrov_a_Shell_sort_mpi
