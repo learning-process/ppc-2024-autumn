@@ -24,8 +24,14 @@ bool StrassenAlgorithmMPI::pre_processing() {
       return false;
     }
 
+    if (rank == 0) {
+      std::cout << "Pre-processing: inputs_count[0] = " << taskData->inputs_count[0] << std::endl;
+      std::cout << "Pre-processing: inputs_count[1] = " << taskData->inputs_count[1] << std::endl;
+    }
+
     matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
     std::cout << "Pre-processing: Matrix size = " << matrixSize << std::endl;
+
 
     if (matrixSize * matrixSize != taskData->inputs_count[0]) {
       std::cout << "Pre-processing failed: Input size mismatch. Expected: "
@@ -237,6 +243,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
       boost::mpi::environment env;
       boost::mpi::communicator world;
 
+      std::cout << "Strassen_multiply: Received matrix size = " << size << ", rank = " << rank << std::endl;
+
       int rank = world.rank();
       int num_procs = world.size();
 
@@ -323,8 +331,11 @@ bool StrassenAlgorithmMPI::pre_processing() {
             if (i % num_procs == rank) {
                 std::vector<double> taskA;
                 std::vector<double> taskB;
+                std::cout << "Rank " << rank << " receiving taskA and taskB for M[" << i << "]" << std::endl;
                 world.recv(0, 0, taskA);
                 world.recv(0, 0, taskB);
+                std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
+                          << ", taskB size = " << taskB.size() << std::endl;
                 M[i] = strassen_base(taskA, taskB, half_size);
                 world.send(0, 0, M[i]);
             }
