@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-
 #include "mpi/kapustin_dijk_alg_mpi/include/mpi_alg.hpp"
 namespace generateGraph {
 std::vector<int> generateGraph(int V, int E) {
