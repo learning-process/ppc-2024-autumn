@@ -413,7 +413,7 @@ TEST(volochaev_s_shell_sort_with_simple_merge_16_mpi, Test_reverse_mas) {
   if (world.rank() == 0) {
     global_A.resize(1000);
     volochaev_s_shell_sort_with_simple_merge_16_mpi::get_random_matrix(global_A, -100, 100);
-    std::sort(global_A.begin(),global_A.end());
+    std::sort(global_A.begin(), global_A.end());
     std::reverse(global_A.begin(), global_A.end());
 
     global_res.resize(1000, 0);
