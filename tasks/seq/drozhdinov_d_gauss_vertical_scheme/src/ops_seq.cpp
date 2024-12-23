@@ -6,9 +6,11 @@
 
 using namespace std::chrono_literals;
 
-int mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
+int drozhdinov_d_gauss_vertical_scheme_seq::mkLinCoordddm(int x, int y, int xSize) { return y * xSize + x; }
 
-double myrnd(double value) { return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value); }
+double drozhdinov_d_gauss_vertical_scheme_seq::myrnd(double value) {
+  return (fabs(value - std::round(value)) < GAMMA ? std::round(value) : value);
+}
 
 int drozhdinov_d_gauss_vertical_scheme_seq::Myrank(std::vector<double> matrix, int m, int n) {
   int row = 0;

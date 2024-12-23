@@ -13,12 +13,9 @@
 
 #include "core/task/include/task.hpp"
 
-int mkLinCoordddm(int x, int y, int xSize);
-
-double myrnd(double value);
-
 namespace drozhdinov_d_gauss_vertical_scheme_mpi {
-
+int mkLinCoordddm(int x, int y, int xSize);
+double myrnd(double value);
 int Myrank(std::vector<double> matrix, int m, int n);
 std::vector<double> extendedMatrix(std::vector<double> A, int n, std::vector<double> b);
 double Determinant(const std::vector<double>& matrix, int n);

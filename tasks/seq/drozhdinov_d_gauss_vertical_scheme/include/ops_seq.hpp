@@ -9,10 +9,9 @@
 
 #define GAMMA 1e-9
 
+namespace drozhdinov_d_gauss_vertical_scheme_seq {
 int mkLinCoordddm(int x, int y, int xSize);
 double myrnd(double value);
-
-namespace drozhdinov_d_gauss_vertical_scheme_seq {
 int Myrank(std::vector<double> matrix, int m, int n);
 std::vector<double> extendedMatrix(const std::vector<double>& A, int n, const std::vector<double>& b);
 double Determinant(const std::vector<double>& matrix, int n);
