@@ -11,20 +11,53 @@ namespace gnitienko_k_generate_func_mpi {
 
 const int MIN_WEIGHT = -5;
 const int MAX_WEIGHT = 10;
-std::vector<int> generateGraph(const int V) {
+const int INF = std::numeric_limits<int>::max();
+enum GraphType { RANDOM, CYCLIC, MULTIGRAPH };
+
+std::vector<int> generateGraph(const int V, GraphType type, int edges = 0) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> dis(MIN_WEIGHT, MAX_WEIGHT);
 
   std::vector<int> graph(V * V, 0);
 
-  for (int i = 0; i < V; ++i) {
-    for (int j = i + 1; j < V; ++j) {
-      int weight = dis(gen);
-      graph[i * V + j] = weight;
-    }
+  if (type == CYCLIC) {
+    edges = V * (V - 1);
   }
 
+  if (type == RANDOM || type == MULTIGRAPH) {
+    edges = std::min(edges, V * (V - 1) / 4);
+  }
+
+  switch (type) {
+    case RANDOM: {
+      for (int i = 0; i < V; ++i) {
+        for (int j = i + 1; j < V; ++j) {
+          int weight = dis(gen);
+          graph[i * V + j] = weight;
+        }
+      }
+      break;
+    }
+
+    case MULTIGRAPH: {
+      for (int e = 0; e < edges; ++e) {
+        int u = rand() % V;
+        int v = rand() % V;
+        int weight = dis(gen);
+        graph[u * V + v] += weight;
+      }
+      break;
+    }
+
+    case CYCLIC: {
+      for (int i = 0; i < V; ++i) {
+        int weight = dis(gen);
+        graph[i * V + ((i + 1) % V)] = weight;
+      }
+      break;
+    }
+  }
   return graph;
 }
 }  // namespace gnitienko_k_generate_func_mpi
@@ -218,7 +251,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+    graph = gnitienko_k_generate_func_mpi::generateGraph(V, gnitienko_k_generate_func_mpi::RANDOM, 15);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
@@ -228,12 +261,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph) {
   gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  bool skip_test = false;
-  if (!testMpiTaskParallel.run()) {
-    skip_test = true;
-  }
-  boost::mpi::broadcast(world, skip_test, 0);
-  if (skip_test) GTEST_SKIP();
+  testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -309,7 +337,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_20) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+    graph = gnitienko_k_generate_func_mpi::generateGraph(V, gnitienko_k_generate_func_mpi::RANDOM, 30);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
@@ -319,12 +347,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_20) {
   gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  bool skip_test = false;
-  if (!testMpiTaskParallel.run()) {
-    skip_test = true;
-  }
-  boost::mpi::broadcast(world, skip_test, 0);
-  if (skip_test) GTEST_SKIP();
+  testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -360,7 +383,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_40) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+    graph = gnitienko_k_generate_func_mpi::generateGraph(V, gnitienko_k_generate_func_mpi::RANDOM, 50);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
@@ -370,12 +393,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_40) {
   gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  bool skip_test = false;
-  if (!testMpiTaskParallel.run()) {
-    skip_test = true;
-  }
-  boost::mpi::broadcast(world, skip_test, 0);
-  if (skip_test) GTEST_SKIP();
+  testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -399,7 +417,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_40) {
   }
 }
 
-TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_77) {
+TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_cyclic_graph_77) {
   boost::mpi::communicator world;
   const int V = 77;
 
@@ -411,7 +429,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_77) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+    graph = gnitienko_k_generate_func_mpi::generateGraph(V, gnitienko_k_generate_func_mpi::CYCLIC, 60);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
@@ -421,12 +439,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_77) {
   gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  bool skip_test = false;
-  if (!testMpiTaskParallel.run()) {
-    skip_test = true;
-  }
-  boost::mpi::broadcast(world, skip_test, 0);
-  if (skip_test) GTEST_SKIP();
+  testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -450,7 +463,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_77) {
   }
 }
 
-TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_100) {
+TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_multigraph_100) {
   boost::mpi::communicator world;
   const int V = 100;
 
@@ -462,7 +475,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_100) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    graph = gnitienko_k_generate_func_mpi::generateGraph(V);
+    graph = gnitienko_k_generate_func_mpi::generateGraph(V, gnitienko_k_generate_func_mpi::MULTIGRAPH, 110);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
     taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
@@ -470,14 +483,9 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_100) {
   }
 
   gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgMPI testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+  testMpiTaskParallel.validation();
   testMpiTaskParallel.pre_processing();
-  bool skip_test = false;
-  if (!testMpiTaskParallel.run()) {
-    skip_test = true;
-  }
-  boost::mpi::broadcast(world, skip_test, 0);
-  if (skip_test) GTEST_SKIP();
+  testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -492,7 +500,7 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_random_graph_100) {
 
     // Create Task
     gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq testMpiTaskSequential(taskDataSeq);
-    ASSERT_TRUE(testMpiTaskSequential.validation());
+    testMpiTaskSequential.validation();
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();

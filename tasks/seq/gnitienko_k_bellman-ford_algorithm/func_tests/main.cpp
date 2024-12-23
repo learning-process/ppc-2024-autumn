@@ -7,6 +7,7 @@
 #include "seq/gnitienko_k_bellman-ford_algorithm/include/ops_seq.hpp"
 
 namespace gnitienko_k_generate_func {
+int INF = std::numeric_limits<int>::max();
 std::vector<int> generateGraph(int V, int E) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -161,7 +162,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_random_graph) {
   std::vector<int> graph = gnitienko_k_generate_func::generateGraph(V, E);
 
   std::vector<int> res(V, 0);
-  std::vector<int> expected_res(V, INT_MAX - 1000);
+  std::vector<int> expected_res(V, gnitienko_k_generate_func::INF);
   expected_res[0] = 0;
 
   bool changed = true;
@@ -170,7 +171,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_random_graph) {
     for (int i = 0; i < V; ++i) {
       for (int j = 0; j < V; ++j) {
         if (i != j) {
-          if (graph[i * V + j] != 0 && expected_res[i] != INT_MAX - 1000 &&
+          if (graph[i * V + j] != 0 && expected_res[i] != gnitienko_k_generate_func::INF &&
               graph[i * V + j] + expected_res[i] < expected_res[j]) {
             expected_res[j] = graph[i * V + j] + expected_res[i];
             changed = true;
@@ -181,7 +182,7 @@ TEST(gnitienko_k_bellman_ford_algorithm, test_random_graph) {
   }
 
   for (int i = 0; i < V; i++)
-    if (expected_res[i] == INT_MAX - 1000) expected_res[i] = 0;
+    if (expected_res[i] == gnitienko_k_generate_func::INF) expected_res[i] = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));

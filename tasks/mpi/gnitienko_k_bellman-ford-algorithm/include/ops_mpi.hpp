@@ -28,7 +28,7 @@ class BellmanFordAlgSeq : public ppc::core::Task {
   std::vector<int> columns;
   std::vector<int> row_ptr;
   std::vector<int> shortest_paths;
-  const int INF = 1000000000;
+  const int INF = std::numeric_limits<int>::max();
 
   bool Iteration(std::vector<int>& paths);
   bool check_negative_cycle();
@@ -53,7 +53,7 @@ class BellmanFordAlgMPI : public ppc::core::Task {
   std::vector<int> row_ptr;
   std::vector<int> shortest_paths;
   boost::mpi::communicator world;
-  const int INF = 1000000000;
+  const int INF = std::numeric_limits<int>::max();
 
   bool Iteration(std::vector<int>& paths);
   bool check_negative_cycle();

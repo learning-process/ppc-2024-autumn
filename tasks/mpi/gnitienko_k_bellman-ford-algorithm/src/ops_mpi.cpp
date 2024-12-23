@@ -66,7 +66,6 @@ bool gnitienko_k_bellman_ford_algorithm_mpi::BellmanFordAlgSeq::check_negative_c
       int v = columns[j];
       int weight = values[j];
       if (shortest_paths[i] != INF && shortest_paths[i] + weight < shortest_paths[v]) {
-        Iteration(shortest_paths);
         std::cerr << "Negative cycle detected in seq!" << std::endl;
         return true;
       }

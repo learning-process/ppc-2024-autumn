@@ -9,7 +9,7 @@
 
 namespace gnitienko_k_func {
 
-const int INF = 1000000000;
+const int INF = std::numeric_limits<int>::max();
 const int MIN_WEIGHT = -10;
 const int MAX_WEIGHT = 10;
 std::vector<int> generateGraph(const int V) {
@@ -17,7 +17,7 @@ std::vector<int> generateGraph(const int V) {
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> dis(MIN_WEIGHT, MAX_WEIGHT);
 
-  std::vector<int> graph(V * V, INF);
+  std::vector<int> graph(V * V, 0);
 
   for (int i = 0; i < V; ++i) {
     for (int j = i + 1; j < V; ++j) {

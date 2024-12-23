@@ -11,6 +11,7 @@ namespace gnitienko_k_func_mpi {
 
 const int MIN_WEIGHT = -5;
 const int MAX_WEIGHT = 10;
+const int INF = std::numeric_limits<int>::max();
 std::vector<int> generateGraph(const int V) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -66,6 +67,17 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_pipeline_run) {
     testTaskSequential->pre_processing();
     testTaskSequential->run();
     testTaskSequential->post_processing();
+
+    for (int i = 0; i < V; ++i) {
+      for (int j = 0; j < V; ++j) {
+        int weight = graph[i * V + j];
+        if (weight != 0) {
+          if (resSEQ[i] != gnitienko_k_func_mpi::INF && resSEQ[i] + weight < resSEQ[j]) {
+            resSEQ[j] = resSEQ[i] + weight;
+          }
+        }
+      }
+    }
   }
 
   // Create Perf attributes
@@ -123,6 +135,17 @@ TEST(gnitienko_k_bellman_ford_algorithm_mpi, test_task_run) {
     testTaskSequential->pre_processing();
     testTaskSequential->run();
     testTaskSequential->post_processing();
+
+    for (int i = 0; i < V; ++i) {
+      for (int j = 0; j < V; ++j) {
+        int weight = graph[i * V + j];
+        if (weight != 0) {
+          if (resSEQ[i] != gnitienko_k_func_mpi::INF && resSEQ[i] + weight < resSEQ[j]) {
+            resSEQ[j] = resSEQ[i] + weight;
+          }
+        }
+      }
+    }
   }
 
   // Create Perf attributes
