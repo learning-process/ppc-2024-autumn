@@ -445,10 +445,10 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_10n_size) {
 
   TaskSequential testTaskSequential(taskData);
 
-  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.run()) << "Run failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed";
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed";
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed";
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed";
 
   std::vector<int> expected = in;
   std::sort(expected.begin(), expected.end());
@@ -483,10 +483,10 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_2n_size) {
 
   TaskSequential testTaskSequential(taskData);
 
-  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.run()) << "Run failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed";
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed";
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed";
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed";
 
   std::vector<int> expected = in;
   std::sort(expected.begin(), expected.end());
@@ -519,10 +519,10 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_3n_size) {
 
   TaskSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed on rank ";
-  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.run()) << "Run failed on rank " << world.rank();
-  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed on rank " << world.rank();
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed";
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed";
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed";
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed";
 
   std::vector<int> expected = in;
   std::sort(expected.begin(), expected.end());
@@ -555,13 +555,12 @@ TEST(petrov_o_radix_sort_with_simple_merge_mpi_seq, RandomValuesTest_prime_value
 
   TaskSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed" ASSERT_TRUE(testTaskSequential.pre_processing())
-                                               << "Pre-processing failed" ASSERT_TRUE(testTaskSequential.run())
-                                               << "Run failed" ASSERT_TRUE(testTaskSequential.post_processing())
-                                               << "Post-processing failed"
+  ASSERT_TRUE(testTaskSequential.validation()) << "Validation failed";
+  ASSERT_TRUE(testTaskSequential.pre_processing()) << "Pre-processing failed";
+  ASSERT_TRUE(testTaskSequential.run()) << "Run failed";
+  ASSERT_TRUE(testTaskSequential.post_processing()) << "Post-processing failed";
 
-      std::vector<int>
-          expected = in;
+  std::vector<int> expected = in;
   std::sort(expected.begin(), expected.end());
 
   ASSERT_EQ(expected, out) << "Sorted array does not match the expected result.";
