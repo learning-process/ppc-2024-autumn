@@ -1,9 +1,25 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
+#include <algorithm>
+#include <functional>
+#include <random>
 #include <vector>
 
 #include "seq/kolokolova_d_radix_integer_merge_sort/include/ops_seq.hpp"
+
+namespace kolokolova_d_radix_integer_merge_sort_seq {
+std::vector<int> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<int> vec(sz);
+  std::uniform_int_distribution<int> dist(-10000, 10000);
+  for (int i = 0; i < sz; i++) {
+    vec[i] = dist(gen);
+  }
+  return vec;
+}
+}  // namespace kolokolova_d_radix_integer_merge_sort_seq
 
 TEST(kolokolova_d_radix_integer_merge_sort_seq, Test_Sort1) {
   std::vector<int> unsorted_vector = {2000, 6, 100, 53, 234, 2};

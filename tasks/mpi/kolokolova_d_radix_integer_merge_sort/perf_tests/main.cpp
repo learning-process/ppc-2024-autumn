@@ -10,22 +10,22 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/kolokolova_d_radix_integer_merge_sort/include/ops_mpi.hpp"
 
-using namespace kolokolova_d_radix_integer_merge_sort_mpi;
-
-std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(int sz) {
+namespace kolokolova_d_radix_integer_merge_sort_mpi {
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> dist(-100, 100);
+  std::uniform_int_distribution<int> dist(-10000, 10000);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = dist(gen);
   }
   return vec;
 }
+}  // namespace kolokolova_d_radix_integer_merge_sort_mpi
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size_vector = 240000;
+  int size_vector = 120000;
   std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
   std::vector<int32_t> result(size_vector);
@@ -68,7 +68,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_pipeline_run) {
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int size_vector = 240000;
+  int size_vector = 120000;
   std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
   std::vector<int32_t> result(size_vector);

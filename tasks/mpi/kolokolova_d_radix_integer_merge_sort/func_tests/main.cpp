@@ -9,9 +9,8 @@
 
 #include "mpi/kolokolova_d_radix_integer_merge_sort/include/ops_mpi.hpp"
 
-using namespace kolokolova_d_radix_integer_merge_sort_mpi;
-
-std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(int sz) {
+namespace kolokolova_d_radix_integer_merge_sort_mpi {
+std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -21,6 +20,7 @@ std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(int 
   }
   return vec;
 }
+}  // namespace kolokolova_d_radix_integer_merge_sort_mpi
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
   boost::mpi::communicator world;
