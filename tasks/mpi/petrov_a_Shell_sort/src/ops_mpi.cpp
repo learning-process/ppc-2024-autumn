@@ -22,7 +22,7 @@ bool TestTaskMPI::validation() {
     return false;
   }
 
-  if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
+  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
     return false;
   }
 
@@ -31,13 +31,18 @@ bool TestTaskMPI::validation() {
 
 bool TestTaskMPI::run() {
   boost::mpi::communicator world;
-  int local_size = data_.size() / world.size();
-  std::vector<int> local_data(local_size);
 
-  world.scatter(data_, local_data, 0);
+  // Calculate local size and distribute data across processes
+  int total_size = static_cast<int>(data_.size());
+  int local_size = total_size / world.size();
+  int remainder = total_size % world.size();
 
-  for (int gap = local_size / 2; gap > 0; gap /= 2) {
-    for (int i = gap; i < local_size; ++i) {
+  std::vector<int> local_data(local_size + (world.rank() < remainder ? 1 : 0));
+  boost::mpi::scatter(world, data_, local_data.data(), 0);
+
+  // Local Shell sort
+  for (int gap = local_data.size() / 2; gap > 0; gap /= 2) {
+    for (int i = gap; i < local_data.size(); ++i) {
       int temp = local_data[i];
       int j;
       for (j = i; j >= gap && local_data[j - gap] > temp; j -= gap) {
@@ -47,7 +52,10 @@ bool TestTaskMPI::run() {
     }
   }
 
-  world.gather(0, local_data, data_);
+  // Gather the sorted chunks at root
+  boost::mpi::gather(world, local_data, data_, 0);
+
+  // Root process merges the received sorted chunks
   if (world.rank() == 0) {
     std::inplace_merge(data_.begin(), data_.begin() + local_size, data_.end());
   }
