@@ -32,19 +32,34 @@ bool TestTaskMPI::validation() {
 bool TestTaskMPI::run() {
   boost::mpi::communicator world;
 
-  // Calculate local size and distribute data across processes
+  // Calculate the total size and divide work across processes
   int total_size = static_cast<int>(data_.size());
-  int local_size = total_size / world.size();
-  int remainder = total_size % world.size();
+  int local_size = total_size / world.size() + (world.rank() < (total_size % world.size()) ? 1 : 0);
 
-  std::vector<int> local_data(local_size + (world.rank() < remainder ? 1 : 0));
-  boost::mpi::scatter(world, data_, local_data.data(), 0);
+  std::vector<int> local_data(local_size);
+
+  if (world.rank() == 0) {
+    // Flatten the data for scatter
+    std::vector<int> send_counts(world.size(), total_size / world.size());
+    for (int i = 0; i < total_size % world.size(); ++i) {
+      send_counts[i]++;
+    }
+
+    std::vector<int> displacements(world.size(), 0);
+    for (size_t i = 1; i < displacements.size(); ++i) {
+      displacements[i] = displacements[i - 1] + send_counts[i - 1];
+    }
+
+    boost::mpi::scatterv(world, data_.data(), send_counts, displacements, local_data.data(), 0);
+  } else {
+    boost::mpi::scatterv(world, local_data.data(), 0);
+  }
 
   // Local Shell sort
   for (int gap = local_data.size() / 2; gap > 0; gap /= 2) {
-    for (int i = gap; i < local_data.size(); ++i) {
+    for (size_t i = gap; i < local_data.size(); ++i) {
       int temp = local_data[i];
-      int j;
+      size_t j;
       for (j = i; j >= gap && local_data[j - gap] > temp; j -= gap) {
         local_data[j] = local_data[j - gap];
       }
@@ -52,27 +67,7 @@ bool TestTaskMPI::run() {
     }
   }
 
-  // Gather the sorted chunks at root
-  boost::mpi::gather(world, local_data, data_, 0);
-
-  // Root process merges the received sorted chunks
+  // Gather sorted chunks
   if (world.rank() == 0) {
-    std::inplace_merge(data_.begin(), data_.begin() + local_size, data_.end());
-  }
-
-  return true;
-}
-
-bool TestTaskMPI::post_processing() {
-  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
-    return false;
-  }
-
-  size_t output_size = taskData->outputs_count[0];
-  auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
-  std::memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
-
-  return true;
-}
-
-}  // namespace petrov_a_Shell_sort_mpi
+    std::vector<int> recv_counts(world.size(), total_size / world.size());
+    for (int i = 0; i < total_size % world.s
