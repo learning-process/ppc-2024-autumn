@@ -14,7 +14,6 @@ std::vector<int> generateGraph(int V, int E) {
     int src = vertex_dist(rng);
     int dest = vertex_dist(rng);
 
-    // ”никальность и отсутствие самосоединений
     if (src != dest && !graph[src * V + dest]) {
       int weight = weight_dist(rng);
       graph[src * V + dest] = weight;
