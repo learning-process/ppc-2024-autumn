@@ -32,9 +32,7 @@ std::vector<double> sobel_filter(const std::vector<double>& image_vector, int h,
   }
   double max_val = *std::max_element(result.begin(), result.end());
   if (max_val > 0.0) {
-    for (double& val : result) {
-      val /= max_val;
-    }
+    std::transform(result.begin(), result.end(), result.begin(), [max_val](double val) { return val / max_val; });
   }
 
   return result;

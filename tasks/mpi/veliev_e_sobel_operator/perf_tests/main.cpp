@@ -15,10 +15,10 @@ std::vector<double> create_random_vector(int size) {
   std::uniform_real_distribution<double> unif(static_cast<double>(0), static_cast<double>(255));
   std::random_device rand_dev;
   std::mt19937 rand_engine(rand_dev());
-  std::vector<double> tmp(size);
-  for (int i = 0; i < size; i++) {
-    tmp[i] = unif(rand_engine);
-  }
+  std::vector<double> tmp;
+  tmp.reserve(size);
+  std::generate_n(std::back_inserter(tmp), size, [&]() { return unif(rand_engine); });
+
   return tmp;
 }
 }  // namespace veliev_e_sobel_operator_mpi_p
