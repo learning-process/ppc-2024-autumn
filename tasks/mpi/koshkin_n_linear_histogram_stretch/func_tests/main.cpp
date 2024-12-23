@@ -111,7 +111,6 @@ TEST(koshkin_n_linear_histogram_stretch_mpi, test_correct_image) {
   }
 }
 
-
 TEST(koshkin_n_linear_histogram_stretch_mpi, test_large_image) {
   boost::mpi::communicator world;
 
