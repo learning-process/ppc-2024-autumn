@@ -112,15 +112,15 @@ void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::reques
 template <typename DataType>
 void beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::release_forks() {
   state = THINKING;
-  world.send(left_neighbor, 0, THINKING);
-  world.send(right_neighbor, 0, THINKING);
-  while (world.iprobe(left_neighbor, 0)) {
+  world.send(left_neighbor, 1, THINKING);
+  world.send(right_neighbor, 1, THINKING);
+  while (world.iprobe(left_neighbor, 1)) {
     State ack;
-    world.recv(left_neighbor, 0, ack);
+    world.recv(left_neighbor, 1, ack);
   }
-  while (world.iprobe(right_neighbor, 0)) {
+  while (world.iprobe(right_neighbor, 1)) {
     State ack;
-    world.recv(right_neighbor, 0, ack);
+    world.recv(right_neighbor, 1, ack);
   }
 }
 
