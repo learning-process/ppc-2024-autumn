@@ -35,19 +35,16 @@ void template_test(const std::vector<int>& input_data) {
   auto taskMPI = std::make_shared<TestTaskMPI>(taskData);
 
   if (taskMPI->validation()) {
-    if (taskMPI->pre_processing()) {
-      taskMPI->run();
-      taskMPI->post_processing();
+    ASSERT_TRUE(taskMPI->pre_processing());
+    ASSERT_TRUE(taskMPI->run());
+    ASSERT_TRUE(taskMPI->post_processing());
 
-      std::sort(data.begin(), data.end());
-      EXPECT_EQ(data, result_data);
-    } else {
-      FAIL() << "Pre-processing failed.";
-    }
+    std::sort(data.begin(), data.end());
+    EXPECT_EQ(data, result_data);
   } else {
-    FAIL() << "Validation failed.";
+    ASSERT_TRUE(false);
   }
-}
+
 
 }  // namespace petrov_a_Shell_sort_mpi
 
