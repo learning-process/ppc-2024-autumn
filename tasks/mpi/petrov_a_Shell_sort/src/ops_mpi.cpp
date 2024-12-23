@@ -11,9 +11,7 @@ namespace petrov_a_Shell_sort_mpi {
 
 bool TestTaskMPI::validation() {
   if (data_.empty()) {
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    if (rank == 0) {
+    if (MPI_Comm_rank(MPI_COMM_WORLD, nullptr) == 0) {
       std::cerr << "Input data is empty." << std::endl;
     }
     return false;
@@ -60,7 +58,7 @@ bool TestTaskMPI::run() {
     for (size_t i = gap; i < local_data_.size(); ++i) {
       int temp = local_data_[i];
       size_t j = i;
-      while (j >= static_cast<size_t>(gap) && local_data_[j - gap] > temp) {
+      while (j >= gap && local_data_[j - gap] > temp) {
         local_data_[j] = local_data_[j - gap];
         j -= gap;
       }
