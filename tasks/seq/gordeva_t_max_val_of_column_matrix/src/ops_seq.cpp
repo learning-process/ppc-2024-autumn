@@ -1,3 +1,4 @@
+
 #include "seq/gordeva_t_max_val_of_column_matrix/include/ops_seq.hpp"
 
 #include <random>
@@ -25,11 +26,10 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::pre_processing(
 bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::validation() {
   internal_order_test();
 
-  if (taskData->inputs.empty() || taskData->outputs.empty()) return false;
-  if (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) return false;
-  if (taskData->outputs_count.size() != 1) return false;
-  if (taskData->inputs_count.size() < 2) return false;
-  if (taskData->outputs_count[0] != taskData->inputs_count[1]) return false;
+  if ((taskData->inputs.empty() || taskData->outputs.empty()) ||
+      (taskData->inputs_count[0] <= 0 || taskData->inputs_count[1] <= 0) || (taskData->outputs_count.size() != 1) ||
+      (taskData->inputs_count.size() < 2) || (taskData->outputs_count[0] != taskData->inputs_count[1]))
+    return false;
 
   return true;
 }
@@ -68,7 +68,7 @@ std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_seq::TestTaskSe
   std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
 
   for (int i = 0; i < rows; ++i) {
-    matr[i] = rand_vec(cols, -500, 500);
+    matr[i] = rand_vec(cols, 0, 200);
   }
   for (int j = 0; j < cols; ++j) {
     int row_rand = std::rand() % rows;
