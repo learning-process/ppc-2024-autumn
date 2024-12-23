@@ -56,17 +56,33 @@ bool TestTaskMPI::pre_processing() {
   return true;
 }
 
-void odd_even_merge(std::vector<int>& data, int size) {
-  for (int step = 1; step < size; step *= 2) {
-    for (int i = step % 2; i < size - 1; i += 2) {
-      if (data[i] > data[i + 1]) {
-        std::swap(data[i], data[i + 1]);
+void odd_even_merge(std::vector<int>& data, int partner, bool low) {
+  std::vector<int> received_data(data.size());
+  MPI_Sendrecv(data.data(), data.size(), MPI_INT, partner, 0, received_data.data(), received_data.size(), MPI_INT,
+               partner, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+
+  for (size_t i = 0; i < data.size(); ++i) {
+    if ((data[i] > received_data[i]) == low) {
+      std::swap(data[i], received_data[i]);
+    }
+  }
+}
+
+void bitonic_sort(std::vector<int>& data, int world_size, int world_rank) {
+  for (int size = 2; size <= world_size; size *= 2) {
+    for (int step = size / 2; step > 0; step /= 2) {
+      int partner = world_rank ^ step;
+      if (partner < world_size) {
+        bool low = (world_rank & size) == 0;
+        odd_even_merge(data, partner, low);
       }
+      MPI_Barrier(MPI_COMM_WORLD);
     }
   }
 }
 
 bool TestTaskMPI::run() {
+  // Perform local Shell sort
   for (size_t gap = local_data_.size() / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < local_data_.size(); ++i) {
       int temp = local_data_[i];
@@ -79,38 +95,13 @@ bool TestTaskMPI::run() {
     }
   }
 
+  // Perform global bitonic sort
   int world_size;
   int world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-  std::vector<int> merged_data;
-  for (int step = 1; step < world_size; step *= 2) {
-    if (world_rank % (2 * step) == 0) {
-      if (world_rank + step < world_size) {
-        int received_size;
-        MPI_Status status;
-
-        MPI_Recv(&received_size, 1, MPI_INT, world_rank + step, 0, MPI_COMM_WORLD, &status);
-        std::vector<int> received_data(received_size);
-        MPI_Recv(received_data.data(), received_size, MPI_INT, world_rank + step, 0, MPI_COMM_WORLD, &status);
-
-        merged_data = local_data_;
-        merged_data.insert(merged_data.end(), received_data.begin(), received_data.end());
-        std::inplace_merge(merged_data.begin(), merged_data.begin() + local_data_.size(), merged_data.end());
-
-        local_data_ = merged_data;
-      }
-    } else if (world_rank % step == 0) {
-      int parent = world_rank - step;
-      int local_size = static_cast<int>(local_data_.size());
-
-      MPI_Send(&local_size, 1, MPI_INT, parent, 0, MPI_COMM_WORLD);
-      MPI_Send(local_data_.data(), local_size, MPI_INT, parent, 0, MPI_COMM_WORLD);
-      break;
-    }
-  }
-
+  bitonic_sort(local_data_, world_size, world_rank);
   return true;
 }
 
@@ -119,8 +110,10 @@ bool TestTaskMPI::post_processing() {
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
   if (world_rank == 0) {
-    data_ = local_data_;
+    data_.resize(std::accumulate(send_counts_.begin(), send_counts_.end(), 0));
   }
+  MPI_Gatherv(local_data_.data(), static_cast<int>(local_data_.size()), MPI_INT, data_.data(), send_counts_.data(),
+              displs_.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   return true;
 }
