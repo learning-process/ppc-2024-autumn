@@ -11,9 +11,9 @@ namespace petrov_a_Shell_sort_mpi {
 
 bool TestTaskMPI::validation() {
   if (data_.empty()) {
-    int world_rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-    if (world_rank == 0) {
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    if (rank == 0) {
       std::cerr << "Input data is empty." << std::endl;
     }
     return false;
@@ -55,7 +55,7 @@ bool TestTaskMPI::pre_processing() {
 }
 
 bool TestTaskMPI::run() {
-  for (size_t gap = local_data_.size() / 2; gap > 0; gap /= 2) {
+  for (int gap = static_cast<int>(local_data_.size()) / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < local_data_.size(); ++i) {
       int temp = local_data_[i];
       size_t j = i;
@@ -76,8 +76,8 @@ bool TestTaskMPI::post_processing() {
   if (world_rank == 0) {
     data_.resize(std::accumulate(send_counts_.begin(), send_counts_.end(), 0));
   }
-  MPI_Gatherv(local_data_.data(), local_data_.size(), MPI_INT, data_.data(), send_counts_.data(), displs_.data(),
-              MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(local_data_.data(), static_cast<int>(local_data_.size()), MPI_INT, data_.data(), send_counts_.data(),
+              displs_.data(), MPI_INT, 0, MPI_COMM_WORLD);
 
   if (world_rank == 0) {
     for (size_t i = 1; i < send_counts_.size(); ++i) {
