@@ -10,7 +10,8 @@ namespace deryabin_m_cannons_algorithm_seq {
 
 class CannonsAlgorithmTaskSequential : public ppc::core::Task {
  public:
-  explicit CannonsAlgorithmTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit CannonsAlgorithmTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
