@@ -8,14 +8,17 @@
 
 namespace mironov_a_quick_sort_seq {
 
-std::vector<int> get_random_vector(int sz) {
+std::vector<int> get_random_vector(int sz, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
 
-  const int mod = 1000000;
+  int mod = max - min + 1;
+  if (mod < 0) {
+    mod *= -1;
+  }
   for (int i = 0; i < sz; i++) {
-    vec[i] = 5000000 - gen() % mod;
+    vec[i] = gen() % mod + min;
   }
 
   return vec;
@@ -55,7 +58,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_2) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, 0, 1000000);
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::vector<int> out(count);
@@ -81,7 +84,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_3) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, 0, 1);
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::vector<int> out(count);
@@ -107,7 +110,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_4) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -10000, -100);
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::vector<int> out(count);
@@ -133,7 +136,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_5) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, 100, std::numeric_limits<int>::max());
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::vector<int> out(count);
@@ -159,9 +162,36 @@ TEST(mironov_a_quick_sort_seq, Test_sort_6) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -100, 100);
   gold = in;
   std::sort(gold.begin(), gold.end());
+  std::vector<int> out(count);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> seqTask = std::make_shared<ppc::core::TaskData>();
+  seqTask->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  seqTask->inputs_count.emplace_back(in.size());
+  seqTask->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  seqTask->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  mironov_a_quick_sort_seq::QuickSortSequential QuickSortSequential(seqTask);
+  ASSERT_EQ(QuickSortSequential.validation(), true);
+  QuickSortSequential.pre_processing();
+  QuickSortSequential.run();
+  QuickSortSequential.post_processing();
+  ASSERT_EQ(gold, out);
+}
+
+TEST(mironov_a_quick_sort_seq, Test_sort_reversed_array) {
+  const int count = 1;
+  std::vector<int> gold(count);
+
+  // Create data
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -1000, 1000);
+  gold = in;
+  std::sort(gold.begin(), gold.end());
+  std::sort(in.rbegin(), in.rend());
   std::vector<int> out(count);
 
   // Create TaskData
