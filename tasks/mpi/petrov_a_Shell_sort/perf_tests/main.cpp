@@ -1,11 +1,11 @@
-#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <random>
 #include <vector>
+
+#include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
 namespace petrov_a_Shell_sort_mpi {
 

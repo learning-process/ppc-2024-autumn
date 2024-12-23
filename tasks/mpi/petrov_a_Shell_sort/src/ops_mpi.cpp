@@ -3,7 +3,6 @@
 #include <mpi.h>
 
 #include <algorithm>
-#include <boost/mpi.hpp>
 #include <iostream>
 #include <vector>
 
@@ -93,9 +92,10 @@ bool post_processing(std::vector<int>& data, const std::vector<int>& local_data,
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-  int vector_size = static_cast<int>(data.size());
+  int vector_size = std::accumulate(send_counts.begin(), send_counts.end(), 0);
+
   if (world_rank == 0) {
-    data.resize(std::accumulate(send_counts.begin(), send_counts.end(), 0));
+    data.resize(vector_size);
   }
 
   MPI_Gatherv(local_data.data(), static_cast<int>(local_data.size()), MPI_INT, data.data(), send_counts.data(),
