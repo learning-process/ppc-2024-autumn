@@ -22,7 +22,7 @@ class Lab3_16_seq : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  int* mas;
+  std::vector<int> mas;
   int size_{};
 };
 

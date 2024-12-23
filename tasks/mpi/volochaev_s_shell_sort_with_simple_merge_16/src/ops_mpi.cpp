@@ -16,11 +16,10 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_seq::pre_processin
   internal_order_test();
 
   int* x = reinterpret_cast<int*>(taskData->inputs[0]);
-  size_ = taskData->inputs_count[0];
+  size_ = static_cast<int>(taskData->inputs_count[0]);
+  mas.resize(size_);
 
-  mas = new int[size_];
-
-  std::copy(x, x + size_, mas);
+  std::copy(x, x + size_, mas.begin());
 
   return true;
 }
@@ -57,8 +56,7 @@ bool volochaev_s_shell_sort_with_simple_merge_16_mpi::Lab3_16_seq::post_processi
   internal_order_test();
 
   int* ans = reinterpret_cast<int*>(taskData->outputs[0]);
-  std::copy(mas, mas + size_, ans);
-  delete[] mas;
+  std::copy(mas.begin(), mas.end(), ans);
   return true;
 }
 
