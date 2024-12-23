@@ -54,7 +54,7 @@ bool TestTaskMPI::pre_processing() {
 }
 
 bool TestTaskMPI::run() {
-  for (int gap = static_cast<int>(local_data_.size()) / 2; gap > 0; gap /= 2) {
+  for (size_t gap = local_data_.size() / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < local_data_.size(); ++i) {
       int temp = local_data_[i];
       size_t j = i;
