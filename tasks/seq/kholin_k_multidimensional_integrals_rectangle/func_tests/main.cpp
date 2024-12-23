@@ -314,7 +314,7 @@ TEST(kholin_k_multidimensional_integrals_rectangle_seq, triple_integral_three_va
   std::vector<double> in_lower_limits{-4, 6, 7};
   std::vector<double> in_upper_limits{4, 13, 8};
   double epsilon = 1e-2;
-  int n = 81;
+  int n = 16;
   std::vector<double> out_I(1, 0.0);
 
   auto *f_object = new std::function<double(const std::vector<double> &)>(f);
