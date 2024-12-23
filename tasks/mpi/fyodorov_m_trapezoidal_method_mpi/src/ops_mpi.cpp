@@ -8,23 +8,9 @@
 // #include <boost/serialization/access.hpp>
 // #include <boost/serialization/vector.hpp>
 #include <functional>
-#include <iostream>
-#include <random>
 #include <string>
 #include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
-
-std::vector<int> fyodorov_m_trapezoidal_method_mpi::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
 
 bool fyodorov_m_trapezoidal_method_mpi::TestTaskSequential::pre_processing() {
   internal_order_test();

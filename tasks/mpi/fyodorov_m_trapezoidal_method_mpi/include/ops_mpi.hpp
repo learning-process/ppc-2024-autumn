@@ -16,8 +16,6 @@
 
 namespace fyodorov_m_trapezoidal_method_mpi {
 
-std::vector<int> getRandomVector(int sz);
-
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
