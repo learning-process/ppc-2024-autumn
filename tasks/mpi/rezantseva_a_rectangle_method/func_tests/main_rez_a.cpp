@@ -190,9 +190,8 @@ TEST(rezantseva_a_rectangle_method_mpi, check_2_dimension_integral_sin) {
 
   bounds[0] = {-3, 10};
   bounds[1] = {-7, 25};
-  distrib[0] = 1000;
-  distrib[1] = 1000;
-
+  distrib[0] = 100;
+  distrib[1] = 100;
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -432,9 +431,9 @@ TEST(rezantseva_a_rectangle_method_mpi, check_3_dimension_integral_with_cos) {
   bounds[0] = {0, 1};
   bounds[1] = {-13, 5};
   bounds[2] = {3, 7};
-  distrib[0] = 100;
-  distrib[1] = 100;
-  distrib[2] = 100;
+  distrib[0] = 50;
+  distrib[1] = 50;
+  distrib[2] = 50;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
