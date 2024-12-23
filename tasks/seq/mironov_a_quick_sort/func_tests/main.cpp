@@ -84,7 +84,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_3) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, 0, 1);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, 0, 10);
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::vector<int> out(count);
@@ -110,7 +110,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_4) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -10000, -100);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -10000, -1000);
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::vector<int> out(count);
@@ -188,7 +188,7 @@ TEST(mironov_a_quick_sort_seq, Test_sort_reversed_array) {
   std::vector<int> gold(count);
 
   // Create data
-  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -1000, 1000);
+  std::vector<int> in = mironov_a_quick_sort_seq::get_random_vector(count, -10000, 10000);
   gold = in;
   std::sort(gold.begin(), gold.end());
   std::sort(in.rbegin(), in.rend());
