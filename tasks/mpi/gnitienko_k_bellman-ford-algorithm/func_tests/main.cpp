@@ -11,7 +11,6 @@ namespace gnitienko_k_generate_func_mpi {
 
 const int MIN_WEIGHT = -5;
 const int MAX_WEIGHT = 10;
-const int INF = std::numeric_limits<int>::max();
 enum GraphType { RANDOM, CYCLIC, MULTIGRAPH };
 
 std::vector<int> generateGraph(const int V, GraphType type, int edges = 0) {
