@@ -54,7 +54,6 @@ TEST(filateva_e_radix_sort_seq, test_pipeline_run) {
   };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(radixSort);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
