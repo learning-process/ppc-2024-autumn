@@ -28,6 +28,26 @@ void test(std::function<double(const std::vector<double>&)> function, double exp
 
 }  // namespace tyshkevich_a_monte_carlo_seq
 
+TEST(tyshkevich_a_monte_carlo_seq, function_sin_sum_dims_1_little_bounds) {
+  tyshkevich_a_monte_carlo_seq::test(tyshkevich_a_monte_carlo_seq::function_sin_sum, 4.498536054991164e-36, 1,
+                                     0.000000001, 0.000000002);
+}
+
+TEST(tyshkevich_a_monte_carlo_seq, function_sin_sum_dims_2_little_bounds) {
+  tyshkevich_a_monte_carlo_seq::test(tyshkevich_a_monte_carlo_seq::function_sin_sum, 3.000190137524261e-27, 2,
+                                     0.000000001, 0.000000002);
+}
+
+TEST(tyshkevich_a_monte_carlo_seq, function_sin_sum_dims_3_little_bounds) {
+  tyshkevich_a_monte_carlo_seq::test(tyshkevich_a_monte_carlo_seq::function_sin_sum, 4.500812680725791e-36, 3,
+                                     0.000000001, 0.000000002);
+}
+
+TEST(tyshkevich_a_monte_carlo_seq, function_sin_sum_dims_4_little_bounds) {
+  tyshkevich_a_monte_carlo_seq::test(tyshkevich_a_monte_carlo_seq::function_sin_sum, 6.001340058062818e-45, 4,
+                                     0.000000001, 0.000000002);
+}
+
 TEST(tyshkevich_a_monte_carlo_seq, function_sin_sum_dims_1) {
   tyshkevich_a_monte_carlo_seq::test(tyshkevich_a_monte_carlo_seq::function_sin_sum, 0.459698, 1);
 }
