@@ -40,21 +40,17 @@ TEST(kapustin_dijkstras_algorithm, test_random_graph) {
   while (processed.size() < static_cast<size_t>(V)) {
     int u = -1;
 
-    // Ищем вершину с минимальным значением расстояния, которая ещё не обработана
     for (int i = 0; i < V; i++) {
       if (processed.find(i) == processed.end() && (u == -1 || expected_res[i] < expected_res[u])) {
         u = i;
       }
     }
 
-    // Если не удалось найти вершину для обработки, значит все вершины обработаны или достижимы
     if (u == -1 || expected_res[u] == INF) {
       break;
     }
 
     processed.insert(u);
-
-    // Обновляем расстояния для всех соседей вершины u
     for (int v = 0; v < V; v++) {
       if (graph[u * V + v] != 0 && processed.find(v) == processed.end()) {
         expected_res[v] = std::min(expected_res[v], expected_res[u] + graph[u * V + v]);
