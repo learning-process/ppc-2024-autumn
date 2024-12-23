@@ -71,8 +71,6 @@ bool rezantseva_a_rectangle_method_mpi::RectangleMethodSequential::post_processi
   return true;
 }
 
-//======================================================================================================\\
-
 bool rezantseva_a_rectangle_method_mpi::RectangleMethodMPI::check_integration_bounds(
     std::vector<std::pair<double, double>>* ib) {
   if (ib == nullptr) {
