@@ -13,17 +13,6 @@
 
 #define func double(const std::vector<double> &)
 
-// namespace boost {
-// namespace serialization {
-//
-// template <class Archive>
-// void serialize(Archive &ar, std::pair<double, double> &p, const unsigned int version) {
-//   ar & p.first;
-//   ar & p.second;
-// }
-// }  // namespace serialization
-// }  // namespace boost
-
 namespace rezantseva_a_rectangle_method_mpi {
 
 template <class Archive, typename T1, typename T2>
@@ -44,9 +33,9 @@ class RectangleMethodSequential : public ppc::core::Task {
 
  private:
   double result_{};
-  std::vector<std::pair<double, double>> integration_bounds_;  // Границы интегрирования
-  std::vector<int> distribution_;  // Разбиение (количество прямоугольников)
-  std::function<func> func_;       // Интегрируемая функция
+  std::vector<std::pair<double, double>> integration_bounds_;
+  std::vector<int> distribution_;
+  std::function<func> func_;
 
   bool check_integration_bounds(std::vector<std::pair<double, double>> *ib);
 };
@@ -65,12 +54,12 @@ class RectangleMethodMPI : public ppc::core::Task {
   boost::mpi::communicator world;
   double result_{};
   int num_processes_ = 0;
-  std::vector<std::pair<double, double>> integration_bounds_;  // Границы интегрирования
-  std::vector<int> distribution_;  // Разбиение (количество прямоугольников)
-  std::function<func> func_;       // Интегрируемая функция
+  std::vector<std::pair<double, double>> integration_bounds_;
+  std::vector<int> distribution_;
+  std::function<func> func_;
   int n_;
-  std::vector<double> widths_;  // Длины отрезков
-  int total_points_{};  // Количество точек в многомерном пространстве, для которых будет вычисляться значение функци
+  std::vector<double> widths_;
+  int total_points_{};
 
   bool check_integration_bounds(std::vector<std::pair<double, double>> *ib);
 };

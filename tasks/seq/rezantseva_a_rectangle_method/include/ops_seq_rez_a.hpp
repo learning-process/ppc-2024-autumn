@@ -21,9 +21,9 @@ class RectangleMethodSequential : public ppc::core::Task {
 
  private:
   double result_{};
-  std::vector<std::pair<double, double>> integration_bounds_;  // Границы интегрирования
-  std::vector<int> distribution_;  // Разбиение (количество прямоугольников)
-  std::function<func> func_;       // Интегрируемая функция
+  std::vector<std::pair<double, double>> integration_bounds_;
+  std::vector<int> distribution_;
+  std::function<func> func_;
 
   bool check_integration_bounds(std::vector<std::pair<double, double>> *ib);
 };

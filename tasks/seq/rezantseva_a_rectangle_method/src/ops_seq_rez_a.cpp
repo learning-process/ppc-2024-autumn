@@ -18,9 +18,6 @@ bool rezantseva_a_rectangle_method_seq::RectangleMethodSequential::check_integra
 
 bool rezantseva_a_rectangle_method_seq::RectangleMethodSequential::validation() {
   internal_order_test();
-  // на вход два параметра (границы интегрирования, разбиение), на выход 1 результат
-  // количество разбиений равно количесвту границ
-  // нижняя граница интегрирования меньше верхней
 
   auto* bounds = reinterpret_cast<std::vector<std::pair<double, double>>*>(taskData->inputs[0]);
   return (taskData->inputs.size() == 2 && taskData->outputs_count[0] == 1 &&
