@@ -8,7 +8,8 @@ namespace sorochkin_d_matrix_col_min_seq {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
+      : Task(std::move(taskData_)), rows_(0), cols_(0) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
