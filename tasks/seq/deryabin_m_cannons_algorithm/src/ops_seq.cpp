@@ -29,7 +29,7 @@ bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::run() {
         output_matrix_C[i * dimension + j] +=
             input_matrix_A[i * dimension + count] * input_matrix_B[count * dimension + j];
         count++;
-       }
+      }
       j++;
     }
     i++;
