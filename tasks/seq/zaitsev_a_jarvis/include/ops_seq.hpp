@@ -5,8 +5,6 @@
 #include "core/task/include/task.hpp"
 #include "seq/zaitsev_a_jarvis/include/point.hpp"
 
-#define EPS 1e-3
-
 namespace zaitsev_a_jarvis_seq {
 
 template <typename T>
@@ -44,7 +42,7 @@ class Jarvis : public ppc::core::Task {
 
     unsigned int start = 0;
     for (unsigned int i = 1; i < length; i++)
-      if (set[i].y < set[start].y || (std::abs(set[i].y - set[start].y) < EPS && set[i].x < set[start].x)) start = i;
+      if (set[i].y < set[start].y || (set[i].y == set[start].y && set[i].x < set[start].x)) start = i;
 
     unsigned int prev = start;
     unsigned int next;

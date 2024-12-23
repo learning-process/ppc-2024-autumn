@@ -13,8 +13,6 @@
 #include "core/task/include/task.hpp"
 #include "seq/zaitsev_a_jarvis/include/point.hpp"
 
-#define EPS 1e-3
-
 namespace mine_seq = zaitsev_a_jarvis_seq;
 
 namespace zaitsev_a_jarvis_mpi {
@@ -70,7 +68,7 @@ class Jarvis : public ppc::core::Task {
     if (world.rank() == root) {
       start = 0;
       for (unsigned int i = 1; i < length; i++)
-        if (set[i].y < set[start].y || (std::abs(set[i].y - set[start].y) < EPS && set[i].x < set[start].x)) start = i;
+        if (set[i].y < set[start].y || (set[i].y == set[start].y && set[i].x < set[start].x)) start = i;
     }
     boost::mpi::broadcast(world, start, root);
     prev = start;
