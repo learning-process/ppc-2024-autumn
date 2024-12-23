@@ -243,12 +243,10 @@ bool StrassenAlgorithmMPI::pre_processing() {
       boost::mpi::environment env;
       boost::mpi::communicator world;
 
-      std::cout << "Strassen_multiply: Received matrix size = " << size << ", rank = " << rank << std::endl;
-
       int rank = world.rank();
       int num_procs = world.size();
 
-      std::cout << "Strassen_multiply: Rank " << rank << " started with size " << size << std::endl;
+      std::cout << "Strassen_multiply: Received matrix size = " << size << ", rank = " << rank << std::endl;
 
       if (size == 1) {
         std::cout << "Strassen_multiply: Base case reached." << std::endl;
