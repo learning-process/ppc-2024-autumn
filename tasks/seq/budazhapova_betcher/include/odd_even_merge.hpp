@@ -12,15 +12,15 @@
 
 namespace budazhapova_betcher_odd_even_merge_seq {
 
-	class MergeSequential : public ppc::core::Task {
-	public:
-		explicit MergeSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-		bool pre_processing() override;
-		bool validation() override;
-		bool run() override;
-		bool post_processing() override;
+class MergeSequential : public ppc::core::Task {
+ public:
+  explicit MergeSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	private:
-		std::vector<int> res;
-	};
-}
+ private:
+  std::vector<int> res;
+};
+}  // namespace budazhapova_betcher_odd_even_merge_seq
