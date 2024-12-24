@@ -304,11 +304,13 @@ bool StrassenAlgorithmMPI::pre_processing() {
           };
           std::cout << "Tasks created successfully" << std::endl;
 
+          std::cout << "Rank " << world.rank() << ": Reached barrier before task distribution." << std::endl;
           world.barrier();
+          std::cout << "Passed barrier" << std::endl;
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
-              M[i] = strassen_recursive(paddedA, paddedB, new_size);
+              M[i] = strassen_recursive(taskA, taskB, half_size);
             } else {
               std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size()
                         << ") and taskB[" << i << "] (size = " << tasksB[i].size()
