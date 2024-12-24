@@ -29,7 +29,7 @@ std::vector<int> generateRandomGraph(size_t V, size_t E) {
   return graph;
 }
 
-}  // namespace zinoviev_a_bellman_ford
+}  // namespace zinoviev_a_bellman_ford_mpi
 
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph_mpi) {
   boost::mpi::communicator world;
