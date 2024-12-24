@@ -20,6 +20,10 @@ std::vector<double> getRandomMatrix(double r) {
 
 TEST(vershinina_a_cannons_algorithm, Test_1) {
   boost::mpi::communicator world;
+  if (world.size() < 4) {
+    GTEST_SKIP();
+  }
+
   int n = 3;
   auto lhs = getRandomMatrix(3);
   auto rhs = getRandomMatrix(3);
