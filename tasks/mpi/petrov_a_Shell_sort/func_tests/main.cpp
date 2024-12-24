@@ -24,7 +24,7 @@ void template_test(const std::vector<int>& input_data) {
   std::vector<int> data;
   std::vector<int> result_data;
 
-  int vector_size = static_cast<int>(data.size());
+  int vector_size = static_cast<int>(input_data.size());
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
