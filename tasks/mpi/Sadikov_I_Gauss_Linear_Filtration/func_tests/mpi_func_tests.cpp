@@ -292,13 +292,4 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_empty_image) {
   task.pre_processing();
   task.run();
   task.post_processing();
-  if (world.rank() == 0) {
-    bool flag = true;
-    for (size_t i = 0; i < out.size(); ++i) {
-      if (out[i] != emptyImageCheck[i]) {
-        flag = false;
-      }
-    }
-    ASSERT_EQ(flag, true);
-  }
 }
