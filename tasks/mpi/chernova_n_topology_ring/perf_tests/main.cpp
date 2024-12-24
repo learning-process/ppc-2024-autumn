@@ -41,7 +41,7 @@ TEST(chernova_n_topology_ring_mpi, test_pipeline_run) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
 
   auto testMpiTaskParallel = std::make_shared<chernova_n_topology_ring_mpi::TestMPITaskParallel>(taskDataParallel);
@@ -82,7 +82,7 @@ TEST(chernova_n_topology_ring_mpi, test_task_run) {
     taskDataParallel->inputs_count.emplace_back(in.size());
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_vec.data()));
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t *>(out_process.data()));
-    taskDataParallel->outputs_count.emplace_back(2);
+    taskDataParallel->outputs_count.reserve(2);
   }
 
   auto testMpiTaskParallel = std::make_shared<chernova_n_topology_ring_mpi::TestMPITaskParallel>(taskDataParallel);

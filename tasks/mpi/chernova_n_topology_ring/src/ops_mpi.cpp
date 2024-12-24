@@ -25,6 +25,9 @@ bool chernova_n_topology_ring_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     if (taskData->outputs_count.capacity() != 2 || taskData->inputs_count.size() != 1 ||
         taskData->inputs_count[0] <= 0) {
+      std::cout << "taskData->outputs_count.capacity()" << taskData->outputs_count.capacity() << std::endl;
+      std::cout << "taskData->inputs_count.size()" << taskData->inputs_count.size() << std::endl;
+      std::cout << "taskData->inputs_count[0]" << taskData->inputs_count[0] << std::endl;
       return false;
     }
   }
