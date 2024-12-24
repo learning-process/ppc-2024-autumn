@@ -11,7 +11,7 @@ TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
 
   auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
 
-  auto res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
+  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
 
   auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {14, 32, 50, 32, 77, 122, 50, 122, 194});
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -39,7 +39,7 @@ TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, ref_res);
+  ASSERT_EQ(act_res, ref_res);
 }
 
 TEST(vershinina_a_cannons_algorithm, test_task_run) {
@@ -48,7 +48,7 @@ TEST(vershinina_a_cannons_algorithm, test_task_run) {
 
   auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
 
-  auto res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
+  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
 
   auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {14, 32, 50, 32, 77, 122, 50, 122, 194});
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -76,5 +76,5 @@ TEST(vershinina_a_cannons_algorithm, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(res, ref_res);
+  ASSERT_EQ(act_res, ref_res);
 }
