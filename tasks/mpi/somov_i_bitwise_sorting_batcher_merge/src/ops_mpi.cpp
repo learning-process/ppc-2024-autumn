@@ -146,7 +146,7 @@ bool somov_i_bitwise_sorting_batcher_merge_mpi::TestMPITaskParallel::run() {
 
   radix_sort_double(local_input_);
 
-  for (int c = 0; c < world.size(); c++) {
+  for (int c = 0; c < world.size() * 2; c++) {
     if (c % 2 == 0) {
       if (world.rank() % 2 == 0 && world.rank() + 1 != world.size()) {
         world.send(world.rank() + 1, c, local_input_);

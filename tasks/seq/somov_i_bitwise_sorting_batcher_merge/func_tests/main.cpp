@@ -8,6 +8,8 @@
 
 #include "seq/somov_i_bitwise_sorting_batcher_merge/include/ops_seq.hpp"
 
+namespace somov_i_bitwise_sorting_batcher_merge_mpi_seq {
+
 std::vector<double> create_random_vector(int size, double mean = 3.0, double stddev = 300.0) {
   std::normal_distribution<double> norm_dist(mean, stddev);
 
@@ -20,6 +22,8 @@ std::vector<double> create_random_vector(int size, double mean = 3.0, double std
   }
   return tmp;
 }
+
+}  // namespace somov_i_bitwise_sorting_batcher_merge_mpi_seq
 
 TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_basic_sorting) {
   std::vector<double> in = {3.14, -2.71, 1.41, 0.0, -3.14, 2.71};
@@ -40,7 +44,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_basic_sorting) {
 }
 
 TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_10_elements) {
-  std::vector<double> in = create_random_vector(10);
+  std::vector<double> in = somov_i_bitwise_sorting_batcher_merge_mpi_seq::create_random_vector(10);
   std::vector<double> out(in.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -58,7 +62,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_10_elements) {
 }
 
 TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_101_elements) {
-  std::vector<double> in = create_random_vector(101);
+  std::vector<double> in = somov_i_bitwise_sorting_batcher_merge_mpi_seq::create_random_vector(101);
   std::vector<double> out(in.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -76,7 +80,7 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_101_elements) {
 }
 
 TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_sorting_1007_elements) {
-  std::vector<double> in = create_random_vector(1007);
+  std::vector<double> in = somov_i_bitwise_sorting_batcher_merge_mpi_seq::create_random_vector(1007);
   std::vector<double> out(in.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

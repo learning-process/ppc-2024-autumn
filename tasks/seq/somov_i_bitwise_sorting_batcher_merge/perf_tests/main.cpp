@@ -8,6 +8,8 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/somov_i_bitwise_sorting_batcher_merge/include/ops_seq.hpp"
 
+namespace somov_i_bitwise_sorting_batcher_merge_mpi_seq {
+
 std::vector<double> create_random_vector(int size, double mean = 3.0, double stddev = 300.0) {
   std::normal_distribution<double> norm_dist(mean, stddev);
 
@@ -21,8 +23,10 @@ std::vector<double> create_random_vector(int size, double mean = 3.0, double std
   return tmp;
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_pipeline_3000000_el) {
-  std::vector<double> in = create_random_vector(3000000);
+}  // namespace somov_i_bitwise_sorting_batcher_merge_mpi_seq
+
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_pipeline_3000001_el) {
+  std::vector<double> in = somov_i_bitwise_sorting_batcher_merge_mpi_seq::create_random_vector(3000001);
   std::vector<double> out(in.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -50,8 +54,8 @@ TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_pipeline_3000000_el) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
-TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_task_3000000_el) {
-  std::vector<double> in = create_random_vector(3000000);
+TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_task_3000001_el) {
+  std::vector<double> in = somov_i_bitwise_sorting_batcher_merge_mpi_seq::create_random_vector(3000001);
   std::vector<double> out(in.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
