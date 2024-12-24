@@ -301,7 +301,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
               matrix_add(B11, B12, half_size),
               matrix_add(B21, B22, half_size)
           };
-
+          std::cout << "Tasks created successfully" << std::endl;
 
           world.barrier();
           for (int i = 0; i < 7; ++i) {
