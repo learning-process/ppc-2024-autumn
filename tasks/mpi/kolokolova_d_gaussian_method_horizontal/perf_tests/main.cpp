@@ -18,7 +18,7 @@ std::vector<int> kolokolova_d_gaussian_method_horizontal_mpi::getRandomVector(in
   std::vector<int> vec(sz);
   std::uniform_int_distribution<int> dist(1, 100);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = dist(gen);
   }
   return vec;
 }
