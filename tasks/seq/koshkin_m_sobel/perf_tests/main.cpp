@@ -49,9 +49,8 @@ TEST(koshkin_m_sobel_seq_perf_test, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-  }
+
+  ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
 TEST(koshkin_m_sobel_seq_perf_test, test_task_run) {
@@ -86,7 +85,6 @@ TEST(koshkin_m_sobel_seq_perf_test, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  if (world.rank() == 0) {
-    ppc::core::Perf::print_perf_statistic(perfResults);
-  }
+
+  ppc::core::Perf::print_perf_statistic(perfResults);
 }
