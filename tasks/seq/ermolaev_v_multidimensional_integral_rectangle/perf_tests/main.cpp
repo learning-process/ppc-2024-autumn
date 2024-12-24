@@ -54,11 +54,11 @@ double testFunc(std::vector<double> &args) { return args.at(0); }
 namespace erm_integral_seq = ermolaev_v_multidimensional_integral_rectangle_seq;
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_seq, test_pipeline_run) {
-  std::vector<std::pair<double, double>> limits(9, {-1000000, 1000000});
+  std::vector<std::pair<double, double>> limits(10, {-7, 7});
   erm_integral_seq::testBody(limits, erm_integral_seq::testFunc, ppc::core::PerfResults::PIPELINE);
 }
 
 TEST(ermolaev_v_multidimensional_integral_rectangle_seq, test_task_run) {
-  std::vector<std::pair<double, double>> limits(9, {-1000000, 1000000});
+  std::vector<std::pair<double, double>> limits(10, {-7, 7});
   erm_integral_seq::testBody(limits, erm_integral_seq::testFunc, ppc::core::PerfResults::TASK_RUN);
 }
