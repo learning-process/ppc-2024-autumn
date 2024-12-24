@@ -1,8 +1,8 @@
 #include <memory>
 
+#include "../include/matrix_operations.hpp"
 #include "../include/tests.hpp"
 #include "core/perf/include/perf.hpp"
-#include "../include/matrix_operations.hpp"
 
 using namespace khasanyanov_k_fox_algorithm;
 
