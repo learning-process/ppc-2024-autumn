@@ -263,7 +263,7 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_rect_image3) {
   task.post_processing();
   if (world.rank() == 0) {
     bool flag = true;
-    for (auto i = 0; i < out.size(); ++i) {
+    for (size_t i = 0; i < out.size(); ++i) {
       if (out[i] != rectImage3Check[i]) {
         flag = false;
       }
