@@ -120,8 +120,8 @@ bool StronginParallel::run() {
     while (true) {
       sort(x.begin(), x.end());
 
-      int part = x.size() / size;
-      int remain = x.size() % size;
+      int part = static_cast<int>(x.size() / size);
+      int remain = static_cast<int>(x.size() % size);
 
       for (int i = 1; i < size; ++i) {
         MPI_Send(x.data() + remain + (i - 1) * part, part, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
@@ -173,9 +173,10 @@ bool StronginParallel::run() {
 
       if (status.MPI_TAG == 1) return true;
 
-      double lipshM = 0;
-      double lipshm = 1.0;
-      double lipsh;
+      // double lipshM = 0;
+      // double lipshm = 1.0;
+      // double lipsh;
+
       if (part != 0) {
         for (int i = 0; i < static_cast<int>(x.size()) - 1; ++i) {
           lipsh = (std::abs(f(x[i + 1]) - f(x[i]))) / (x[i + 1] - x[i]);
