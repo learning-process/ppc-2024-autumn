@@ -41,7 +41,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
     return true;
   }
 
-  int work_proc = size - 1;  // flag for terminate program
+  int work_proc = size - 1;  // flag for   terminate program
   int db_w = 1;              // semaphore for locking database for writers
   int readers_count = 0;     // count of readers
 
