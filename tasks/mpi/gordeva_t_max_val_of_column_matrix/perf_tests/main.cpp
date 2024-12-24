@@ -54,7 +54,7 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(res_vec_par.data()));
     taskDataPar->outputs_count.emplace_back(res_vec_par.size());
   }
-  
+
   auto testMpiTaskParallel = std::make_shared<gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel>(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
