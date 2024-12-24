@@ -3,7 +3,6 @@
 #include <boost/mpi/timer.hpp>
 #include <climits>
 #include <random>
-
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -56,14 +55,13 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
     taskDataPar->outputs_count.emplace_back(res_vec_par.size());
   }
   
-  auto testMpiTaskParallel =
-        std::make_shared<gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel>(taskDataPar);
 
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
-  
+
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -72,20 +70,19 @@ TEST(gordeva_t_max_val_of_column_matrix_mpi, test_pipeline_run) {
     auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
     return static_cast<double>(duration) * 1e-9;
   };
-  
+
   matrix_1 = matrix;
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
- 
+
   if (world.rank() == 0) {
     for (size_t i = 0; i < cols; i++) {
       ASSERT_EQ(100, res_vec_par[i]);
     }
     ppc::core::Perf::print_perf_statistic(perfResults);
-
   }
 }
 

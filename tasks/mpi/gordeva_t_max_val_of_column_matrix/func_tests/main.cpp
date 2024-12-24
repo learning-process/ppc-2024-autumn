@@ -3,7 +3,6 @@
 #include <boost/mpi/communicator.hpp>
 #include <climits>
 #include <random>
-
 #include <vector>
 
 #include "mpi/gordeva_t_max_val_of_column_matrix/include/ops_mpi.hpp"
