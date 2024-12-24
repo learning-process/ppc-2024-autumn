@@ -218,6 +218,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
       int rank = world.rank();
       int num_procs = world.size();
+      std::cout << "Num procs = " << num_procs << std::endl;
 
       if (matrixA.empty() || matrixB.empty() || size == 0) {
         std::cout << "Rank " << rank << ": Error! matrixA, matrixB are empty, or size is zero before Strassen_multiply" << std::endl;
@@ -331,7 +332,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
             std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
                       << ", taskB size = " << taskB.size() << std::endl;
 
-            M[i] = strassen_recursive(paddedA, paddedB, new_size);
+            M[i] = strassen_recursive(taskdA, taskB, half_size);
 
             world.send(0, 0, M[i]);
             std::cout << "Rank " << rank << " sent result for M[" << i << "] to rank 0." << std::endl;
