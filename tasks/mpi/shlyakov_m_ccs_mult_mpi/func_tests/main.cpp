@@ -111,7 +111,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
     auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    size_t C_rows = static_cast<size_t>(dense_A.size());
+    auto C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
     C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
@@ -195,7 +195,7 @@ TEST(TestTaskMPI, matrix_multiplication_singleelement) {
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
     auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    size_t C_rows = static_cast<size_t>(dense_A.size());
+    auto C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
     C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
@@ -257,7 +257,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
     auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    size_t C_rows = static_cast<size_t>(dense_A.size());
+    auto C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
     C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
@@ -322,7 +322,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
     auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    size_t C_rows = static_cast<size_t>(dense_A.size());
+    auto C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
     C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
@@ -386,7 +386,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
     auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    size_t C_rows = static_cast<size_t>(dense_A.size());
+    auto C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
     C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
@@ -448,7 +448,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
     auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    size_t C_rows = static_cast<size_t>(dense_A.size());
+    auto C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
     C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
