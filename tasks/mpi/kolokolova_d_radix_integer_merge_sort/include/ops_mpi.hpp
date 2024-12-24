@@ -15,7 +15,7 @@
 namespace kolokolova_d_radix_integer_merge_sort_mpi {
 
 std::vector<int> radix_sort(std::vector<int>& array);
-void counting_sort_radix(std::vector<int>& array, int exp);
+void counting_sort_radix(std::vector<int>& array, int degree);
 std::vector<int> merge_and_sort(const std::vector<int>& vec1, const std::vector<int>& vec2);
 
 class TestMPITaskSequential : public ppc::core::Task {

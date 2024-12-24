@@ -10,11 +10,11 @@
 #include "mpi/kolokolova_d_radix_integer_merge_sort/include/ops_mpi.hpp"
 
 namespace kolokolova_d_radix_integer_merge_sort_mpi {
-std::vector<int> getRandomVector(int sz) {
+std::vector<int> getRandomVector(int sz, int num1, int num2) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
-  std::uniform_int_distribution<int> dist(-10000, 10000);
+  std::uniform_int_distribution<int> dist(num1, num2);
   for (int i = 0; i < sz; i++) {
     vec[i] = dist(gen);
   }
@@ -23,8 +23,9 @@ std::vector<int> getRandomVector(int sz) {
 }  // namespace kolokolova_d_radix_integer_merge_sort_mpi
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
+  // Only positive nums
   boost::mpi::communicator world;
-  int size_vector = world.size() * 4;
+  int size_vector = 120;
   std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
   std::vector<int32_t> result(size_vector);
@@ -33,7 +34,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
+    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector, 0, 1000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
     taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));
@@ -71,8 +72,9 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort1) {
 }
 
 TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort2) {
+  // Only negative nums
   boost::mpi::communicator world;
-  int size_vector = world.size() * 10;
+  int size_vector = 120;
   std::vector<int> unsorted_vector(size_vector);
   std::vector<int32_t> sorted_vector(int(unsorted_vector.size()), 0);
   std::vector<int32_t> result(size_vector);
@@ -81,7 +83,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
+    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector, -1000, 0);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
     taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));
@@ -129,7 +131,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
+    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector, -1000, 1000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
     taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));
@@ -177,7 +179,7 @@ TEST(kolokolova_d_radix_integer_merge_sort_mpi, Test_Parallel_Sort4) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector);
+    unsorted_vector = kolokolova_d_radix_integer_merge_sort_mpi::getRandomVector(size_vector, -1000, 1000);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(unsorted_vector.data()));
     taskDataPar->inputs_count.emplace_back(unsorted_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(sorted_vector.data()));

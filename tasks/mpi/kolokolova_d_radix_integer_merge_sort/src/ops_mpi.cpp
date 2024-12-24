@@ -4,18 +4,15 @@
 #include <functional>
 #include <random>
 #include <string>
-#include <thread>
 #include <vector>
 
-using namespace std::chrono_literals;
-
-void kolokolova_d_radix_integer_merge_sort_mpi::counting_sort_radix(std::vector<int>& array, int exp) {
+void kolokolova_d_radix_integer_merge_sort_mpi::counting_sort_radix(std::vector<int>& array, int degree) {
   int size_vector = int(array.size());
   std::vector<int> func_res(size_vector);
   std::vector<int> nums_of_digits(20, 0);
 
   for (int i = 0; i < size_vector; i++) {
-    int index = (array[i] / exp) % 10;
+    int index = (array[i] / degree) % 10;
     if (array[i] < 0) {
       index += 10;
     }
@@ -27,7 +24,7 @@ void kolokolova_d_radix_integer_merge_sort_mpi::counting_sort_radix(std::vector<
   }
 
   for (int i = size_vector - 1; i >= 0; i--) {
-    int index = (array[i] / exp) % 10;
+    int index = (array[i] / degree) % 10;
     if (array[i] < 0) {
       index += 10;
     }
@@ -54,14 +51,17 @@ std::vector<int> kolokolova_d_radix_integer_merge_sort_mpi::radix_sort(std::vect
   int max_num = *max_element(array.begin(), array.end());
   int min_num = *min_element(array.begin(), array.end());
 
-  for (int exp = 1; max_num / exp > 0 || min_num / exp < 0; exp *= 10) {
-    counting_sort_radix(array, exp);
+  // Process digits starting from the unit place and increasing the exponent
+  for (int degree = 1; max_num / degree > 0 || min_num / degree < 0; degree *= 10) {
+    // Call counting_sort_radix for the current exponent
+    counting_sort_radix(array, degree);
   }
 
   std::vector<int> sorted_array;
   std::vector<int> negatives;
   std::vector<int> positives;
 
+  // Separate numbers into negative and positive
   for (int num : array) {
     if (num < 0) {
       negatives.push_back(num);
@@ -157,7 +157,6 @@ bool kolokolova_d_radix_integer_merge_sort_mpi::TestMPITaskParallel::run() {
       std::copy(input_vector.begin() + proc_size * local_size, input_vector.end(), std::back_inserter(remaind_vector));
     }
   }
-
   if (proc_rank == 0) {
     local_vector = std::vector<int>(input_vector.begin(), input_vector.begin() + local_size);
   } else {
