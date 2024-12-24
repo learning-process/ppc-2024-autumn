@@ -338,7 +338,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
     ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
