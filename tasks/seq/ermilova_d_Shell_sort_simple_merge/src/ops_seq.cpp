@@ -6,13 +6,14 @@
 #include <thread>
 #include <vector>
 
-std::vector<int> ermilova_d_Shell_sort_simple_merge_seq::ShellSort(std::vector<int>& vec) {
+std::vector<int> ermilova_d_Shell_sort_simple_merge_seq::ShellSort(std::vector<int>& vec,
+                                                                   const std::function<bool(int, int)>& comp) {
   size_t n = vec.size();
   for (size_t gap = n / 2; gap > 0; gap /= 2) {
     for (size_t i = gap; i < n; i++) {
       int temp = vec[i];
       size_t j;
-      for (j = i; j >= gap && vec[j - gap] > temp; j -= gap) {
+      for (j = i; j >= gap && comp(vec[j - gap], temp); j -= gap) {
         vec[j] = vec[j - gap];
       }
       vec[j] = temp;
@@ -23,6 +24,7 @@ std::vector<int> ermilova_d_Shell_sort_simple_merge_seq::ShellSort(std::vector<i
 
 bool ermilova_d_Shell_sort_simple_merge_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
+  is_descending = *reinterpret_cast<bool*>(taskData->inputs[1]);
   input_ = std::vector<int>(taskData->inputs_count[0]);
   auto* data = reinterpret_cast<int*>(taskData->inputs[0]);
   std::copy(data, data + taskData->inputs_count[0], input_.begin());
@@ -36,7 +38,11 @@ bool ermilova_d_Shell_sort_simple_merge_seq::TestTaskSequential::validation() {
 
 bool ermilova_d_Shell_sort_simple_merge_seq::TestTaskSequential::run() {
   internal_order_test();
-  res = ShellSort(input_);
+  if (is_descending) {
+    res = ShellSort(input_, std::less<int>());
+  } else {
+    res = ShellSort(input_, std::greater<int>());
+  }
 
   return true;
 }

@@ -14,8 +14,8 @@
 
 namespace ermilova_d_Shell_sort_simple_merge_mpi {
 
-std::vector<int> ShellSort(std::vector<int> &vec);
-std::vector<int> merge(std::vector<int> &vec1, std::vector<int> &vec2);
+std::vector<int> ShellSort(std::vector<int> &vec, const std::function<bool(int, int)> &comp);
+std::vector<int> merge(std::vector<int> &vec1, std::vector<int> &vec2, const std::function<bool(int, int)> &comp);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -28,6 +28,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<int> input_;
   std::vector<int> res;
+  bool is_descending{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -41,7 +42,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> input_, local_input_;
   std::vector<int> res;
-
+  bool is_descending{};
   boost::mpi::communicator world;
 };
 

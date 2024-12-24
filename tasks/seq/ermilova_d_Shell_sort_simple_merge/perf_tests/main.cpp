@@ -23,6 +23,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_pipeline_run) {
   const int lower_border_test = -1000;
 
   const int size = 1000;
+  bool is_resersed = false;
 
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
@@ -34,6 +35,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataSeq->inputs_count.emplace_back(size);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&is_resersed));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   taskDataSeq->outputs_count.emplace_back(output.size());
 
@@ -65,6 +67,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_task_run) {
   const int lower_border_test = -1000;
 
   const int size = 1000;
+  bool is_resersed = false;
 
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
@@ -76,6 +79,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_seq, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
   taskDataSeq->inputs_count.emplace_back(size);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&is_resersed));
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
   taskDataSeq->outputs_count.emplace_back(output.size());
 

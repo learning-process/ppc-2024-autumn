@@ -25,6 +25,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, test_pipeline_run) {
   const int lower_border_test = -1000;
 
   const int size = 1000;
+  bool is_resersed = false;
 
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
@@ -35,9 +36,10 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&is_resersed));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
     taskDataPar->outputs_count.emplace_back(size);
   }
 
@@ -71,6 +73,7 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, test_task_run) {
   const int lower_border_test = -1000;
 
   const int size = 1000;
+  bool is_resersed = false;
 
   std::vector<int> input = getRandomVector(size, upper_border_test, lower_border_test);
   std::vector<int> output(input.size(), 0);
@@ -81,9 +84,10 @@ TEST(ermilova_d_Shell_sort_simple_merge_mpi, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
     taskDataPar->inputs_count.emplace_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(&is_resersed));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(output.data()));
     taskDataPar->outputs_count.emplace_back(size);
   }
 
