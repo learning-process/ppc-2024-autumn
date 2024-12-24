@@ -116,65 +116,56 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::pre_processing() {
         m_pixelsMatrix.emplace_back(tmpPtr[m_columnsCount * row + column]);
       }
     }
-    const auto proceses = m_columnsCount / m_minColumnsCount;
-    m_scatterSizes.resize(world.size());
-    m_displacements.resize(world.size());
+    const int proceses = m_columnsCount / m_minColumnsCount;
     if (proceses > world.size()) {
-      int averegeCount = proceses / world.size();
-      for (auto i = 0; i < world.size(); ++i) {
-        m_scatterSizes.emplace_back(averegeCount * m_rowsCount);
-      }
-      m_scatterSizes.back() += (proceses % world.size()) * m_rowsCount;
+      int averegeCount = m_columnsCount / world.size();
+      m_sizes = std::vector<int>(world.size(), averegeCount * m_rowsCount);
+      m_sizes.back() += (m_columnsCount % world.size()) * m_rowsCount;
     } else {
       int m_columns = m_columnsCount;
+      if (!m_pixelsMatrix.empty()) {
+        m_sizes.resize(world.size());
+      }
       for (auto i = 0; i < world.size(); ++i) {
         if (m_columns >= m_minColumnsCount) {
-          m_scatterSizes[i] = m_minColumnsCount * m_rowsCount;
+          m_sizes[i] = m_minColumnsCount * m_rowsCount;
           m_columns -= m_minColumnsCount;
           if (m_columns < m_minColumnsCount) {
-            m_scatterSizes[i] += m_columns * m_rowsCount;
+            m_sizes.back() += m_columns * m_rowsCount;
+            break;
           }
         }
       }
     }
-    m_displacements.resize(world.size());
-    for (auto i = 0; i < world.size(); ++i) {
-      if (i == 0) {
-        m_displacements[0] = 0;
-      } else {
-        m_displacements[i] = m_displacements[i - 1] + m_scatterSizes[i - 1];
-      }
-    }
     m_gaussMatrix.reserve(9);
-    CalculateGaussMatrix();
     m_outMatrix = std::vector<Point<double>>(m_columnsCount * m_rowsCount);
   }
+  CalculateGaussMatrix();
   return true;
 }
 
 bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::run() {
   internal_order_test();
-  broadcast(world, m_scatterSizes, 0);
-  broadcast(world, m_displacements, 0);
+  broadcast(world, m_sizes, 0);
   broadcast(world, m_columnsCount, 0);
   broadcast(world, m_rowsCount, 0);
-  m_localInput.resize(m_scatterSizes[world.rank()]);
-  m_intermediateRes.resize(m_localInput.size());
-  boost::mpi::scatterv(world, m_pixelsMatrix.data(), m_scatterSizes, m_displacements, m_localInput.data(),
-                       m_scatterSizes[world.rank()], 0);
-  for (auto row = 0; row < static_cast<int>(m_localInput.size() / m_rowsCount); ++row) {
-    for (auto column = 0; column < m_rowsCount; ++column) {
-      CalculateNewPixelValue(row, column);
+  broadcast(world, m_pixelsMatrix, 0);
+  if (world.rank() < static_cast<int>(m_sizes.size())) {
+    m_intermediateRes.resize(m_sizes[world.rank()]);
+    int position = 0;
+    for (auto row = std::accumulate(m_sizes.begin(), m_sizes.begin() + world.rank(), 0) / m_rowsCount;
+         row < std::accumulate(m_sizes.begin(), m_sizes.begin() + world.rank() + 1, 0) / m_rowsCount; ++row) {
+      for (auto column = 0; column < m_rowsCount; ++column) {
+        CalculateNewPixelValue(row, column, position);
+        position++;
+      }
     }
   }
-  // for (auto &&it : m_intermediateRes) {
-  //   std::cout << it;
-  // }
-  if (world.rank() == 0) {
+  if (world.rank() == 0 && !m_pixelsMatrix.empty()) {
     std::vector<Point<double>> localRes(m_rowsCount * m_columnsCount);
-    boost::mpi::gatherv(world, m_intermediateRes, localRes.data(), m_scatterSizes, 0);
+    boost::mpi::gatherv(world, m_intermediateRes, localRes.data(), m_sizes, 0);
     m_outMatrix = std::move(localRes);
-  } else {
+  } else if (world.rank() != 0 && !m_pixelsMatrix.empty()) {
     boost::mpi::gatherv(world, m_intermediateRes, 0);
   }
   return true;
@@ -187,7 +178,6 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::post_processing() {
       for (auto j = 0; j < m_columnsCount; ++j) {
         reinterpret_cast<Point<double> *>(taskData->outputs[0])[j + i * m_columnsCount] =
             m_outMatrix[m_rowsCount * j + i];
-        /*std::cout<<m_outMatrix[m_rowsCount * j + i];*/
       }
     }
   }
@@ -208,30 +198,30 @@ void Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::CalculateGaussMatri
   }
 }
 
-void Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::CalculateNewPixelValue(int iIndex, int jIndex) {
+void Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::CalculateNewPixelValue(int iIndex, int jIndex,
+                                                                                    int position) {
   auto index = 0;
+
   for (auto g = 0; g < 9; ++g) {
     if (g < 3) {
-      if (CheckRowIndex(iIndex - 1, m_localInput.size() / m_rowsCount) and
-          CheckColumnIndex(jIndex - 1 + g, m_rowsCount)) {
+      if (CheckRowIndex(jIndex - 1 + g) and CheckColumnIndex(iIndex - 1)) {
         index = (iIndex - 1) * m_rowsCount + jIndex - 1 + g;
         if (CheckIndex(index)) {
-          m_intermediateRes[iIndex * m_rowsCount + jIndex] += m_localInput[index] * m_gaussMatrix[g];
+          m_intermediateRes[position] += m_pixelsMatrix[index] * m_gaussMatrix[g];
         }
       }
     } else if (g > 2 && g < 6) {
       index = iIndex * m_rowsCount + jIndex - 4 + g;
-      if (CheckColumnIndex(jIndex - 4 + g, m_rowsCount)) {
+      if (CheckRowIndex(jIndex - 4 + g)) {
         if (CheckIndex(index)) {
-          m_intermediateRes[iIndex * m_rowsCount + jIndex] += m_localInput[index] * m_gaussMatrix[g];
+          m_intermediateRes[position] += m_pixelsMatrix[index] * m_gaussMatrix[g];
         }
       }
     } else {
-      if (CheckRowIndex(iIndex + 1, m_localInput.size() / m_rowsCount) and
-          CheckColumnIndex(jIndex - 7 + g, m_rowsCount)) {
+      if (CheckRowIndex(jIndex - 7 + g) and CheckColumnIndex(iIndex + 1)) {
         index = (iIndex + 1) * m_rowsCount + jIndex - 7 + g;
         if (CheckIndex(index)) {
-          m_intermediateRes[iIndex * m_rowsCount + jIndex] += m_localInput[index] * m_gaussMatrix[g];
+          m_intermediateRes[position] += m_pixelsMatrix[index] * m_gaussMatrix[g];
         }
       }
     }

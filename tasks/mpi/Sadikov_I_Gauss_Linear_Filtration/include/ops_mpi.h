@@ -44,11 +44,9 @@ class LinearFiltrationMPI : public ppc::core::Task {
   int m_rowsCount = 0;
   static constexpr double sigma = 1.0;
   static constexpr int m_minColumnsCount = 3;
-  std::vector<int> m_scatterSizes;
+  std::vector<int> m_sizes;
   boost::mpi::communicator world;
-  std::vector<int> m_displacements;
   std::vector<Point<double>> m_intermediateRes;
-  std::vector<Point<double>> m_localInput;
 
  public:
   explicit LinearFiltrationMPI(std::shared_ptr<ppc::core::TaskData> taskData);
@@ -57,9 +55,9 @@ class LinearFiltrationMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
   void CalculateGaussMatrix();
-  void CalculateNewPixelValue(int iIndex, int jIndex);
-  bool CheckIndex(int index) const noexcept { return index >= 0 and index < static_cast<int>(m_localInput.size()); }
-  bool static CheckRowIndex(int index, int rowsCount) noexcept { return index >= 0 and index < rowsCount; }
-  bool static CheckColumnIndex(int index, int columnsCount) noexcept { return index >= 0 and index < columnsCount; }
+  void CalculateNewPixelValue(int iIndex, int jIndex, int position);
+  bool CheckIndex(int index) const noexcept { return index >= 0 and index < m_rowsCount * m_columnsCount; }
+  bool CheckRowIndex(int index) const noexcept { return index >= 0 and index < m_rowsCount; }
+  bool CheckColumnIndex(int index) const noexcept { return index >= 0 and index < m_columnsCount; }
 };
 }  // namespace Sadikov_I_Gauss_Linear_Filtration

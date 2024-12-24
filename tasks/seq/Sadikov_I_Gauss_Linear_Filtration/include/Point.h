@@ -21,8 +21,6 @@ class Point {
     m_blue += value.GetBlue();
   }
   Point operator*(T value) { return Point(m_red * value, m_green * value, m_blue * value); }
-  bool operator>(T color) { return static_cast<bool>(m_red > color or m_red > color or m_blue > color); }
-  bool operator<(T color) { return static_cast<bool>(m_red < color or m_red < color or m_blue < color); }
   bool operator!=(Point value) {
     return (static_cast<int>(std::abs(value.GetRed() - m_red)) != 0 or
             static_cast<int>(std::abs(value.GetGreen() - m_green)) != 0 or
