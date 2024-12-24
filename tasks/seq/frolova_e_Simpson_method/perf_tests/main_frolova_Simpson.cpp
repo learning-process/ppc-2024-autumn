@@ -6,6 +6,45 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/frolova_e_Simpson_method/include/ops_seq_frolova_Simpson.hpp"
 
+namespace frolova_e_matrix_multiplication_seq_test {
+
+double squaresOfX(const std::vector<double> &point) {
+  double x = point[0];
+  return x * x;
+}
+
+double cubeOfX(const std::vector<double> &point) {
+  double x = point[0];
+  return x * x * x;
+}
+
+double sumOfSquaresOfXandY(const std::vector<double> &point) {
+  double x = point[0];
+  double y = point[1];
+  return x * x + y * y;
+}
+
+double ProductOfXAndY(const std::vector<double> &point) {
+  double x = point[0];
+  double y = point[1];
+  return x * y;
+}
+
+double sumOfSquaresOfXandYandZ(const std::vector<double> &point) {
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
+  return x * x + y * y + z * z;
+}
+
+double ProductOfSquaresOfXandYandZ(const std::vector<double> &point) {
+  double x = point[0];
+  double y = point[1];
+  double z = point[2];
+  return x * y * z;
+}
+}  // namespace frolova_e_matrix_multiplication_seq_test
+
 TEST(frolova_e_Simpson_method_seq, test_pipeline_run) {
   std::vector<int> values_1 = {1000, 2};
   std::vector<double> values_2 = {0.0, 1000.0, 0.0, 1000.0};
@@ -26,7 +65,7 @@ TEST(frolova_e_Simpson_method_seq, test_pipeline_run) {
 
   // Create Task
   auto testTaskSequential = std::make_shared<frolova_e_Simpson_method_seq::Simpsonmethod>(
-      taskDataSeq, frolova_e_Simpson_method_seq::ProductOfXAndY);
+      taskDataSeq, frolova_e_matrix_multiplication_seq_test::ProductOfXAndY);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -70,7 +109,7 @@ TEST(frolova_e_Simpson_method_seq, test_task_run) {
 
   // Create Task
   auto testTaskSequential = std::make_shared<frolova_e_Simpson_method_seq ::Simpsonmethod>(
-      taskDataSeq, frolova_e_Simpson_method_seq::ProductOfXAndY);
+      taskDataSeq, frolova_e_matrix_multiplication_seq_test::ProductOfXAndY);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

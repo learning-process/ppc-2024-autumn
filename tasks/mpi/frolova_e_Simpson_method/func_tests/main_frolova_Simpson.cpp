@@ -11,7 +11,7 @@
 
 TEST(frolova_e_Simpson_method_mpi, one_dimensional_integral_squaresOfX_test) {
   boost::mpi::communicator world;
-  std::vector<int> values_1 = {4, 1, 1};
+  std::vector<int> values_1 = {8, 1, 1};
   std::vector<int> values_11 = {4, 1};
   std::vector<double> values_2 = {0.0, 2.0};
 

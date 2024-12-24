@@ -7,42 +7,6 @@ using namespace std::chrono_literals;
 
 double frolova_e_Simpson_method_seq::roundToTwoDecimalPlaces(double value) { return std::round(value * 100.0) / 100.0; }
 
-double frolova_e_Simpson_method_seq::squaresOfX(const std::vector<double>& point) {
-  double x = point[0];
-  return x * x;
-}
-
-double frolova_e_Simpson_method_seq::cubeOfX(const std::vector<double>& point) {
-  double x = point[0];
-  return x * x * x;
-}
-
-double frolova_e_Simpson_method_seq::sumOfSquaresOfXandY(const std::vector<double>& point) {
-  double x = point[0];
-  double y = point[1];
-  return x * x + y * y;
-}
-
-double frolova_e_Simpson_method_seq::ProductOfXAndY(const std::vector<double>& point) {
-  double x = point[0];
-  double y = point[1];
-  return x * y;
-}
-
-double frolova_e_Simpson_method_seq::sumOfSquaresOfXandYandZ(const std::vector<double>& point) {
-  double x = point[0];
-  double y = point[1];
-  double z = point[2];
-  return x * x + y * y + z * z;
-}
-
-double frolova_e_Simpson_method_seq::ProductOfSquaresOfXandYandZ(const std::vector<double>& point) {
-  double x = point[0];
-  double y = point[1];
-  double z = point[2];
-  return x * y * z;
-}
-
 double frolova_e_Simpson_method_seq::Simpson_Method(double (*func)(const std::vector<double>&), size_t divisions,
                                                     size_t dimension, std::vector<double>& limits) {
   std::vector<double> h(dimension);
