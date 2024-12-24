@@ -308,71 +308,61 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
         std::vector<std::vector<double>> M(7);
         if (rank == 0) {
-            std::vector<std::vector<double>> tasks = {
-                    matrix_add(A11, A22, half_size),
-                    matrix_add(A21, A22, half_size),
-                    A11,
-                    A22,
-                    matrix_add(A11, A12, half_size),
-                    matrix_subtract(A21, A11, half_size),
-                    matrix_subtract(A12, A22, half_size)
-            };
-
-            std::vector<std::vector<double>> tasksB = {
-                    matrix_add(B11, B22, half_size),
-                    B11,
-                    matrix_subtract(B12, B22, half_size),
-                    matrix_subtract(B21, B11, half_size),
-                    B22,
-                    matrix_add(B11, B12, half_size),
-                    matrix_add(B21, B22, half_size)
-            };
-
-            for (int i = 0; i < 7; ++i) {
-                world.send(i % num_procs, 0, tasks[i]);
-                world.send(i % num_procs, 0, tasksB[i]);
-                std::cout << "Rank 0 sent taskA[" << i << "] (size = " << tasks[i].size()
-                          << ") and taskB[" << i << "] (size = " << tasksB[i].size()
-                          << ") to rank " << (i % num_procs) << std::endl;
-
+          for (int i = 0; i < 7; ++i) {
+            if (i % num_procs == 0) {
+              std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
+              M[i] = strassen_base(tasks[i], tasksB[i], half_size);
+            } else {
+              world.send(i % num_procs, 0, tasks[i]);
+              world.send(i % num_procs, 0, tasksB[i]);
+              std::cout << "Rank 0 sent taskA[" << i << "] and taskB[" << i << "] to rank " << (i % num_procs) << std::endl;
             }
+          }
         }
 
         for (int i = 0; i < 7; ++i) {
-            if (i % num_procs == rank) {
-                std::vector<double> taskA;
-                std::vector<double> taskB;
-                std::cout << "Rank " << rank << " receiving taskA and taskB for M[" << i << "]" << std::endl;
-                world.recv(0, 0, taskA);
-                world.recv(0, 0, taskB);
-                std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
-                          << ", taskB size = " << taskB.size() << std::endl;
-                M[i] = strassen_base(taskA, taskB, half_size);
-                world.send(0, 0, M[i]);
-            }
+          if (i % num_procs == rank) {
+            std::vector<double> taskA;
+            std::vector<double> taskB;
+
+            std::cout << "Rank " << rank << " waiting for taskA and taskB for M[" << i << "]..." << std::endl;
+            world.recv(0, 0, taskA);
+            world.recv(0, 0, taskB);
+            std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
+                      << ", taskB size = " << taskB.size() << std::endl;
+
+            M[i] = strassen_base(taskA, taskB, half_size);
+
+            world.send(0, 0, M[i]);
+            std::cout << "Rank " << rank << " sent result for M[" << i << "] to rank 0." << std::endl;
+          }
         }
 
         if (rank == 0) {
-            for (int i = 0; i < 7; ++i) {
-                world.recv(i % num_procs, 0, M[i]);
+          for (int i = 0; i < 7; ++i) {
+            if (i % num_procs == 0) {
+              std::cout << "Rank 0 already processed result for M[" << i << "] locally." << std::endl;
+            } else {
+              world.recv(i % num_procs, 0, M[i]);
+              std::cout << "Rank 0 received result for M[" << i << "] from rank " << (i % num_procs) << std::endl;
             }
+          }
 
-            std::vector<double> C11 = matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
-            std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
-            std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
-            std::vector<double> C22 = matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
+          std::vector<double> C11 = matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
+          std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
+          std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
+          std::vector<double> C22 = matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
 
-            std::vector<double> result(size * size);
-            for (size_t i = 0; i < half_size; ++i) {
-                for (size_t j = 0; j < half_size; ++j) {
-                    result[i * size + j] = C11[i * half_size + j];
-                    result[i * size + j + half_size] = C12[i * half_size + j];
-                    result[(i + half_size) * size + j] = C21[i * half_size + j];
-                    result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
-                }
+          std::vector<double> result(size * size);
+          for (size_t i = 0; i < half_size; ++i) {
+            for (size_t j = 0; j < half_size; ++j) {
+              result[i * size + j] = C11[i * half_size + j];
+              result[i * size + j + half_size] = C12[i * half_size + j];
+              result[(i + half_size) * size + j] = C21[i * half_size + j];
+              result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
             }
-
-            return result;
+          }
+          return result;
         }
 
         return {};
