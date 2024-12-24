@@ -84,19 +84,21 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
 
@@ -140,20 +142,21 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
-
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
   EXPECT_FALSE(task.validation());
@@ -170,19 +173,21 @@ TEST(TestTaskMPI, matrix_multiplication_singleelement) {
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
   EXPECT_TRUE(task.validation());
@@ -231,19 +236,21 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
   EXPECT_TRUE(task.validation()) << "Validation failed";
@@ -296,19 +303,21 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
   EXPECT_TRUE(task.validation());
@@ -360,19 +369,21 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
   EXPECT_TRUE(task.validation());
@@ -421,19 +432,21 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  taskData->inputs_count.push_back(A_ccs.values.size());
-  taskData->inputs_count.push_back(A_ccs.row_indices.size());
-  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(B_ccs.values.size());
-  taskData->inputs_count.push_back(B_ccs.row_indices.size());
-  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(A_ccs.values.size());
+    taskData->inputs_count.push_back(A_ccs.row_indices.size());
+    taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+    taskData->inputs_count.push_back(B_ccs.values.size());
+    taskData->inputs_count.push_back(B_ccs.row_indices.size());
+    taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+  }
 
   TestTaskMPI task(taskData);
 
