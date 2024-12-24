@@ -9,8 +9,8 @@
 
 TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int rows = 500;
-  const int columns = 500;
+  const int rows = 1250;
+  const int columns = 1250;
   std::vector<int> in(rows * columns);
   std::vector<int> out(rows * columns, -1);
   std::vector<int> expected_out(rows * columns);
@@ -74,8 +74,8 @@ TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_pipeline_run) {
 
 TEST(guseynov_e_marking_comps_of_bin_image_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int rows = 500;
-  const int columns = 500;
+  const int rows = 1250;
+  const int columns = 1250;
   std::vector<int> in(rows * columns);
   std::vector<int> out(rows * columns, -1);
   std::vector<int> expected_out(rows * columns);

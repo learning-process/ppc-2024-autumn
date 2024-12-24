@@ -10,8 +10,6 @@
 
 namespace guseynov_e_marking_comps_of_bin_image_mpi {
 
-std::vector<int> getRandomBinImage(int rows, int cols);
-
 class TestMPITaskSequential : public ppc::core::Task {
  public:
   explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
