@@ -3,8 +3,8 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <vector>
 #include <random>
+#include <vector>
 
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
