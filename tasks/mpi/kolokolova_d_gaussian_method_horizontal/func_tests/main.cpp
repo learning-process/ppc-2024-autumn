@@ -83,7 +83,7 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss1) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_equations; i++) {
-      ASSERT_EQ(func_res[i], reference_res[i]);
+      EXPECT_DOUBLE_EQ(func_res[i], reference_res[i]);
     }
   }
 }
@@ -138,7 +138,7 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss2) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_equations; i++) {
-      ASSERT_EQ(func_res[i], reference_res[i]);
+      EXPECT_DOUBLE_EQ(func_res[i], reference_res[i]);
     }
   }
 }
@@ -193,7 +193,7 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss3) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_equations; i++) {
-      ASSERT_EQ(func_res[i], reference_res[i]);
+      EXPECT_DOUBLE_EQ(func_res[i], reference_res[i]);
     }
   }
 }
@@ -248,7 +248,7 @@ TEST(kolokolova_d_gaussian_method_horizontal_mpi, Test_Parallel_Gauss4) {
     testMpiTaskSequential.post_processing();
 
     for (int i = 0; i < count_equations; i++) {
-      ASSERT_EQ(func_res[i], reference_res[i]);
+      EXPECT_DOUBLE_EQ(func_res[i], reference_res[i]);
     }
   }
 }
