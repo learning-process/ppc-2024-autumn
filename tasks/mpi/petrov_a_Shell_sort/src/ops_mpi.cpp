@@ -20,15 +20,28 @@ bool TestTaskMPI::pre_processing() {
 }
 
 bool TestTaskMPI::validation() {
-  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+  if (taskData->inputs.empty()) {
+    std::cerr << "Validation failed: inputs are empty!" << std::endl;
+    return false;
+  }
+
+  if (taskData->inputs_count.empty()) {
+    std::cerr << "Validation failed: inputs_count is empty!" << std::endl;
+    return false;
+  }
+
+  if (taskData->outputs.empty()) {
+    std::cerr << "Validation failed: outputs are empty!" << std::endl;
+    return false;
+  }
+
+  if (taskData->outputs_count.empty()) {
+    std::cerr << "Validation failed: outputs_count is empty!" << std::endl;
     return false;
   }
 
   if (taskData->inputs_count.size() != taskData->outputs_count.size()) {
-    return false;
-  }
-
-  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
+    std::cerr << "Validation failed: inputs_count size does not match outputs_count size!" << std::endl;
     return false;
   }
 
