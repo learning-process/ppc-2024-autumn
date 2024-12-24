@@ -10,7 +10,7 @@ namespace mpi = boost::mpi;
 static std::vector<int> generate_linear_graph(int num_vertices) {
   std::vector<int> matrix(num_vertices * num_vertices, 0);
   std::random_device rd;
-  std::mt19937 gen(rd()); 
+  std::mt19937 gen(rd());
   std::uniform_int_distribution<> dist(-20, 20);
   for (int i = 0; i < num_vertices - 1; ++i) {
     matrix[i * num_vertices + i + 1] = dist(gen);
