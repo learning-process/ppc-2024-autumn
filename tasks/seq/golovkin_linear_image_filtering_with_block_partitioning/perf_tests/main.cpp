@@ -11,7 +11,7 @@
 
 using namespace std;
 
-vector<int> generate_random_image(int rows, int cols) {
+vector<int> generate_random_images(int rows, int cols) {
   random_device rd;
   mt19937 gen(rd());
   uniform_int_distribution<> distrib(0, 255);
@@ -25,7 +25,7 @@ vector<int> generate_random_image(int rows, int cols) {
     int rows = rows_const;                                                                                    \
     int cols = cols_const;                                                                                    \
     auto taskData = make_shared<ppc::core::TaskData>();                                                       \
-    vector<int> input = generate_random_image(rows, cols);                                                    \
+    vector<int> input = generate_random_images(rows, cols);                                                   \
     vector<int> output(rows* cols);                                                                           \
     taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));                                     \
     taskData->inputs_count.push_back(input.size());                                                           \

@@ -34,13 +34,13 @@ static void gaussian_filter_seq_block(const vector<int>& input, int rows, int co
   }
 }
 
-static vector<int> generate_test_image(int rows, int cols) {
+static vector<int> generate_test_images(int rows, int cols) {
   vector<int> image(rows * cols);
   iota(image.begin(), image.end(), 0);
   return image;
 }
 
-static vector<int> generate_random_image(int rows, int cols, int seed = 123) {
+static vector<int> generate_random_images(int rows, int cols, int seed = 123) {
   mt19937 gen(seed);
   uniform_int_distribution<int> dist(0, 255);
   vector<int> image(rows * cols);
@@ -51,7 +51,7 @@ static vector<int> generate_random_image(int rows, int cols, int seed = 123) {
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterSmall) {
   int rows = 5;
   int cols = 5;
-  vector<int> input = generate_test_image(rows, cols);
+  vector<int> input = generate_test_images(rows, cols);
   vector<int> expected_output;
   vector<int> actual_output(rows * cols, 0);
 
@@ -79,7 +79,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterRandom) {
   int rows = 10;
   int cols = 10;
-  vector<int> input = generate_random_image(rows, cols);
+  vector<int> input = generate_random_images(rows, cols);
   vector<int> expected_output;
   vector<int> actual_output(rows * cols, 0);
 
@@ -107,7 +107,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterSmallImage) {
   int rows = 3;
   int cols = 3;
-  vector<int> input = generate_test_image(rows, cols);
+  vector<int> input = generate_test_images(rows, cols);
   vector<int> expected_output = {1, 2, 3, 2, 4, 6, 3, 6, 9};
   vector<int> actual_output(rows * cols, 0);
 
@@ -220,7 +220,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterRandomImage) {
   int rows = 10;
   int cols = 10;
-  vector<int> input = generate_random_image(rows, cols);
+  vector<int> input = generate_random_images(rows, cols);
   vector<int> expected_output(rows * cols, 0);
   vector<int> actual_output(rows * cols, 0);
 

@@ -7,7 +7,7 @@
 
 using namespace std;
 
-static vector<int> generate_random_image(int width, int height, int seed = 123) {
+static vector<int> generate_random_images(int width, int height, int seed = 123) {
   mt19937 gen(seed);
   uniform_int_distribution<int> dist(0, 255);
   vector<int> img(width * height);
@@ -26,7 +26,7 @@ static vector<int> generate_random_image(int width, int height, int seed = 123) 
     vector<int> input_data;                                                                                     \
     vector<int> output_data;                                                                                    \
     if (world.size() < 5 || world.rank() >= 4) {                                                                \
-      input_data = generate_random_image(width, height);                                                        \
+      input_data = generate_random_images(width, height);                                                       \
       output_data.resize(width *height, 0);                                                                     \
       taskData->inputs.push_back(reinterpret_cast<uint8_t *>(input_data.data()));                               \
       taskData->inputs_count.push_back(input_data.size() * sizeof(int));                                        \
