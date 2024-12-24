@@ -380,12 +380,13 @@ bool StrassenAlgorithmMPI::pre_processing() {
           for (int i = 0; i < 7; ++i) {
             std::cout << "M[" << i << "] size = " << M[i].size() << std::endl;
           }
-        }
 
-          std::vector<double> C11 = matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
+          std::vector<double> C11 =
+              matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
           std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
           std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
-          std::vector<double> C22 = matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
+          std::vector<double> C22 =
+              matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
 
           std::vector<double> result(size * size);
           for (size_t i = 0; i < half_size; ++i) {
@@ -398,7 +399,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
           }
           return result;
         }
-
         return {};
     }
 
