@@ -21,16 +21,16 @@ std::vector<int> generate_random_vector(int n, int min_val = -100, int max_val =
 
 void template_test(const std::vector<int>& input_data) {
   boost::mpi::communicator world;
-  std::vector<int> data = input_data;
+  std::vector<int> data;
   std::vector<int> result_data;
 
   int vector_size = static_cast<int>(data.size());
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
 
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-  taskData->inputs_count.emplace_back(data.size());
-
   if (world.rank() == 0) {
+    data = input_data;
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+    taskData->inputs_count.emplace_back(data.size());
     result_data.resize(vector_size);
     taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
     taskData->outputs_count.emplace_back(result_data.size());

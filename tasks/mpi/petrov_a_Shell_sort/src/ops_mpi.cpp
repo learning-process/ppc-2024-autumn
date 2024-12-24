@@ -10,28 +10,35 @@
 namespace petrov_a_Shell_sort_mpi {
 
 bool TestTaskMPI::pre_processing() {
-  size_t input_size = taskData->inputs_count[0];
-  const auto* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
+  int world_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+  if (world_rank() == 0) {
+    size_t input_size = taskData->inputs_count[0];
+    const auto* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
 
-  data_.resize(input_size);
-  memcpy(data_.data(), raw_data, input_size * sizeof(int));
+    data_.resize(input_size);
+    memcpy(data_.data(), raw_data, input_size * sizeof(int));
+  }
 
   return true;
 }
 
 bool TestTaskMPI::validation() {
-  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
-    return false;
-  }
+  int world_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+  if (world_rank() == 0) {
+    if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
+      return false;
+    }
 
-  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
-    return false;
-  }
+    if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
+      return false;
+    }
 
-  if (!taskData->outputs.empty() && taskData->outputs_count[0] != 0) {
-    return false;
+    if (!taskData->outputs.empty() && taskData->outputs_count[0] != 0) {
+      return false;
+    }
   }
-
   return true;
 }
 
@@ -41,7 +48,11 @@ bool TestTaskMPI::run() {
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-  int n = data_.size();
+  if (world_rank() == 0) {
+    int n = data_.size();
+  }
+
+  MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
   int local_size = n / world_size;
   std::vector<int> local_data(local_size);
