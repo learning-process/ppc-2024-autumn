@@ -48,9 +48,9 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential::validation()
 bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskSequential::run() {
   internal_order_test();
   if (is_descending) {
-    res = ShellSort(input_, std::less<int>());
+    res = ShellSort(input_, std::less());
   } else {
-    res = ShellSort(input_, std::greater<int>());
+    res = ShellSort(input_, std::greater());
   }
 
   return true;
@@ -111,9 +111,9 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
     scatterv(world, local_input_.data(), local_input_.size(), 0);
   }
   if (is_descending) {
-    local_input_ = ShellSort(local_input_, std::less<int>());
+    local_input_ = ShellSort(local_input_, std::less());
   } else {
-    local_input_ = ShellSort(local_input_, std::greater<int>());
+    local_input_ = ShellSort(local_input_, std::greater());
   }
 
   std::vector<std::vector<int>> sorted_inputs;
@@ -124,11 +124,11 @@ bool ermilova_d_Shell_sort_simple_merge_mpi::TestMPITaskParallel::run() {
     std::vector<int> merge_vec;
     if (is_descending) {
       for (int i = 0; i < world.size(); i++) {
-        merge_vec = ermilova_d_Shell_sort_simple_merge_mpi::merge(merge_vec, sorted_inputs[i], std::greater<int>());
+        merge_vec = ermilova_d_Shell_sort_simple_merge_mpi::merge(merge_vec, sorted_inputs[i], std::greater());
       }
     } else {
       for (int i = 0; i < world.size(); i++) {
-        merge_vec = ermilova_d_Shell_sort_simple_merge_mpi::merge(merge_vec, sorted_inputs[i], std::less<int>());
+        merge_vec = ermilova_d_Shell_sort_simple_merge_mpi::merge(merge_vec, sorted_inputs[i], std::less());
       }
     }
 

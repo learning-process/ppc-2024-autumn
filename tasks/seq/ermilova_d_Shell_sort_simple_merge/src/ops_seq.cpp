@@ -39,9 +39,9 @@ bool ermilova_d_Shell_sort_simple_merge_seq::TestTaskSequential::validation() {
 bool ermilova_d_Shell_sort_simple_merge_seq::TestTaskSequential::run() {
   internal_order_test();
   if (is_descending) {
-    res = ShellSort(input_, std::less<int>());
+    res = ShellSort(input_, std::less());
   } else {
-    res = ShellSort(input_, std::greater<int>());
+    res = ShellSort(input_, std::greater());
   }
 
   return true;
