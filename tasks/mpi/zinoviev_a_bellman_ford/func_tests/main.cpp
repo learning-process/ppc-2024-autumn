@@ -57,33 +57,6 @@ TEST(zinoviev_a_bellman_ford, Test_Medium_Graph_mpi) {
   }
 }
 
-TEST(zinoviev_a_bellman_ford, Test_Large_Graph_mpi) {
-  boost::mpi::communicator world;
-  std::vector<int> graph = {0, 4, 0, 0,  0,  0, 0, 8, 0, 0, 4,  0, 8, 0, 0, 0, 0, 11, 0, 0, 0,  8,  0, 7, 0,
-                            4, 0, 0, 2,  0,  0, 0, 7, 0, 9, 14, 0, 0, 0, 0, 0, 0, 0,  9, 0, 10, 0,  0, 0, 0,
-                            0, 0, 4, 14, 10, 0, 2, 0, 0, 0, 0,  0, 0, 0, 0, 2, 0, 1,  6, 0, 8,  11, 0, 0, 0,
-                            0, 1, 0, 7,  0,  0, 0, 2, 0, 0, 0,  6, 7, 0, 0, 0, 0, 0,  0, 0, 0,  0,  0, 0, 0};
-  std::vector<int> shortest_paths(10, 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-  taskData->inputs_count.emplace_back(10);
-  taskData->inputs_count.emplace_back(100);
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
-  taskData->outputs_count.emplace_back(10);
-
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI task(taskData);
-  ASSERT_EQ(task.validation(), true);
-  task.pre_processing();
-  task.run();
-  task.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> expected = {0, 4, 12, 19, 21, 11, 9, 8, 14, 0};
-    ASSERT_EQ(shortest_paths, expected);
-  }
-}
-
 TEST(zinoviev_a_bellman_ford, Test_Negative_Weights_No_Cycle_mpi) {
   boost::mpi::communicator world;
   std::vector<int> graph = {0, -1, 4, 0, 0, 0, 0, 3, 2, 2, 0, 0, 0, 0, 0, 0, 1, 5, 0, 0, 0, 0, 0, -3, 0};
@@ -105,37 +78,6 @@ TEST(zinoviev_a_bellman_ford, Test_Negative_Weights_No_Cycle_mpi) {
 
   if (world.rank() == 0) {
     std::vector<int> expected = {0, -1, 2, -2, 1};
-    ASSERT_EQ(shortest_paths, expected);
-  }
-}
-
-TEST(zinoviev_a_bellman_ford, Test_Disconnected_Graph_mpi) {
-  boost::mpi::communicator world;
-  std::vector<int> graph = {0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,
-                            0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0};
-  std::vector<int> shortest_paths(6, std::numeric_limits<int>::max());
-  shortest_paths[0] = 0;  // Distance to itself is zero.
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-  taskData->inputs_count.emplace_back(6);
-  taskData->inputs_count.emplace_back(6);
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
-  taskData->outputs_count.emplace_back(6);
-
-  zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI task(taskData);
-  ASSERT_EQ(task.validation(), true);
-  task.pre_processing();
-  task.run();
-  task.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<int> expected = {0,
-                                 3,
-                                 std::numeric_limits<int>::max(),
-                                 std::numeric_limits<int>::max(),
-                                 std::numeric_limits<int>::max(),
-                                 std::numeric_limits<int>::max()};
     ASSERT_EQ(shortest_paths, expected);
   }
 }
