@@ -332,7 +332,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
             std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
                       << ", taskB size = " << taskB.size() << std::endl;
 
-            M[i] = strassen_recursive(taskdA, taskB, half_size);
+            M[i] = strassen_recursive(taskA, taskB, half_size);
 
             world.send(0, 0, M[i]);
             std::cout << "Rank " << rank << " sent result for M[" << i << "] to rank 0." << std::endl;
