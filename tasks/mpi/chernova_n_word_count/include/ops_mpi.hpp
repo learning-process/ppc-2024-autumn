@@ -14,7 +14,7 @@
 
 namespace chernova_n_word_count_mpi {
 
-//std::vector<char> clean_string(const std::vector<char>& input);
+std::vector<char> clean_string(const std::vector<char>& input);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -27,9 +27,7 @@ class TestMPITaskSequential : public ppc::core::Task {
  private:
   std::vector<char> input_;
   std::string ops;
-  //int spaceCount{};
-  int letter;
-  int wordCount;
+  int spaceCount{};
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -42,12 +40,9 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::vector<char> input_, local_input_;
-  //int spaceCount{};
-  int letter;
-  int wordCount;
-  int localWordCount{};
+  int spaceCount{};
+  int localSpaceCount{};
   int partSize{};
-  
   std::string ops;
   boost::mpi::communicator world;
 };
