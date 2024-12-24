@@ -18,10 +18,10 @@ TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->inputs_count.emplace_back(3);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
-  taskDataSeq->outputs_count.emplace_back(res.n);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
+  taskDataSeq->outputs_count.emplace_back(act_res.n);
 
   auto testTaskSequential = std::make_shared<vershinina_a_cannons_algorithm::TestTaskSequential>(taskDataSeq);
 
@@ -55,10 +55,10 @@ TEST(vershinina_a_cannons_algorithm, test_task_run) {
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->inputs_count.emplace_back(3);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
-  taskDataSeq->outputs_count.emplace_back(res.n);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
+  taskDataSeq->outputs_count.emplace_back(act_res.n);
 
   auto testTaskSequential = std::make_shared<vershinina_a_cannons_algorithm::TestTaskSequential>(taskDataSeq);
 
