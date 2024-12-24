@@ -333,6 +333,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
               M[i] = strassen_base(tasks[i], tasksB[i], half_size);
             } else {
+              std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size()
+                        << ") and taskB[" << i << "] (size = " << tasksB[i].size()
+                        << ") to rank " << (i % num_procs) << std::endl;
               world.send(i % num_procs, 0, tasks[i]);
               world.send(i % num_procs, 0, tasksB[i]);
               std::cout << "Rank 0 sent taskA[" << i << "] and taskB[" << i << "] to rank " << (i % num_procs) << std::endl;
@@ -363,10 +366,21 @@ bool StrassenAlgorithmMPI::pre_processing() {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 already processed result for M[" << i << "] locally." << std::endl;
             } else {
-              world.recv(i % num_procs, 0, M[i]);
+              std::cout << "Rank 0 waiting to receive result for M[" << i << "] from rank " << (i % num_procs) << "..." << std::endl;
+              std::vector<double> result;
+              world.recv(i % num_procs, 0, result);
+              M[i] = result;
               std::cout << "Rank 0 received result for M[" << i << "] from rank " << (i % num_procs) << std::endl;
             }
           }
+        }
+
+        if (rank == 0) {
+          std::cout << "Rank 0: Final results collected. Verifying matrix sizes:" << std::endl;
+          for (int i = 0; i < 7; ++i) {
+            std::cout << "M[" << i << "] size = " << M[i].size() << std::endl;
+          }
+        }
 
           std::vector<double> C11 = matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
           std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
