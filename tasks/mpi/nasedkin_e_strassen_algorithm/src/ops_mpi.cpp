@@ -14,27 +14,6 @@ namespace nasedkin_e_strassen_algorithm {
 bool StrassenAlgorithmMPI::pre_processing() {
   internal_order_test();
   int rank = world.rank();
-
-  if (rank != 0) {
-    inputMatrixA.clear();
-    inputMatrixB.clear();
-    outputMatrix.clear();
-    inputMatrixA.resize(matrixSize * matrixSize, 0.0);
-    inputMatrixB.resize(matrixSize * matrixSize, 0.0);
-    outputMatrix.resize(matrixSize * matrixSize, 0.0);
-  }
-
-  if (rank == 0) {
-    auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
-    auto* inputsB = reinterpret_cast<double*>(taskData->inputs[1]);
-    inputMatrixA.assign(inputsA, inputsA + matrixSize * matrixSize);
-    inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
-    outputMatrix.resize(matrixSize * matrixSize, 0.0);
-  }
-
-  boost::mpi::broadcast(world, inputMatrixA, 0);
-  boost::mpi::broadcast(world, inputMatrixB, 0);
-
   if (rank == 0) {
     std::cout << "Pre-processing: Loading inputs..." << std::endl;
     auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
