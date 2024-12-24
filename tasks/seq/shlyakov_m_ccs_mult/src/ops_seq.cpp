@@ -1,4 +1,3 @@
-// ops_seq.cpp
 // Copyright 2024 Nesterov Alexander
 // shlyakov_m_min_value_of_row
 
@@ -13,13 +12,13 @@ using namespace shlyakov_m_ccs_mult;
 bool shlyakov_m_ccs_mult::TestTaskSequential::pre_processing() {
   internal_order_test();
 
-  auto a_values = reinterpret_cast<const double*>(taskData->inputs[0]);
-  auto a_row_indices = reinterpret_cast<const int*>(taskData->inputs[1]);
-  auto a_col_pointers = reinterpret_cast<const int*>(taskData->inputs[2]);
+  const auto* a_values = reinterpret_cast<const double*>(taskData->inputs[0]);
+  const auto* a_row_indices = reinterpret_cast<const int*>(taskData->inputs[1]);
+  const auto* a_col_pointers = reinterpret_cast<const int*>(taskData->inputs[2]);
 
-  auto b_values = reinterpret_cast<const double*>(taskData->inputs[3]);
-  auto b_row_indices = reinterpret_cast<const int*>(taskData->inputs[4]);
-  auto b_col_pointers = reinterpret_cast<const int*>(taskData->inputs[5]);
+  const auto* b_values = reinterpret_cast<const double*>(taskData->inputs[3]);
+  const auto* b_row_indices = reinterpret_cast<const int*>(taskData->inputs[4]);
+  const auto* b_col_pointers = reinterpret_cast<const int*>(taskData->inputs[5]);
 
   A_.values.assign(a_values, a_values + taskData->inputs_count[0]);
   A_.row_indices.assign(a_row_indices, a_row_indices + taskData->inputs_count[1]);

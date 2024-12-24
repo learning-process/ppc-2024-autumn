@@ -163,7 +163,7 @@ TEST(shlyakov_m_ccs_mult_seq, square_matrices_test1) {
   SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
 
   SparseMatrix actual_result;
-  const double* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
+  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
   unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
 
   const int* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
@@ -215,7 +215,7 @@ TEST(shlyakov_m_ccs_mult_seq, square_matrices_test2) {
   SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
 
   SparseMatrix actual_result;
-  const double* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
+  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
   unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
 
   const int* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
@@ -269,7 +269,7 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test1) {
   SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
 
   SparseMatrix actual_result;
-  const double* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
+  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
   unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
 
   const int* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
@@ -327,7 +327,7 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test2) {
   SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
 
   SparseMatrix actual_result;
-  const double* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
+  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
   unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
 
   const int* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
@@ -379,7 +379,7 @@ TEST(shlyakov_m_ccs_mult_seq, single_element_matrix_test) {
   SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
 
   SparseMatrix actual_result;
-  const double* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
+  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
   unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
 
   const int* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
@@ -431,7 +431,7 @@ TEST(shlyakov_m_ccs_mult_seq, sparse_matrices_test) {
   SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
 
   SparseMatrix actual_result;
-  const double* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
+  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
   unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
 
   const int* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);

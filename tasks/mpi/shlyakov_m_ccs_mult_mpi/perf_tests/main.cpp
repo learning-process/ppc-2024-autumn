@@ -66,8 +66,7 @@ TEST(shlyakov_m_ccs_mult_mpi, test_pipeline_run) {
   double density = 0.01;
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
-  std::vector<std::vector<double>> dense_B =
-      generate_random_sparse_matrix(cols, rows, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(rows, cols, density);
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
@@ -111,8 +110,7 @@ TEST(shlyakov_m_ccs_mult_mpi, test_task_run) {
   double density = 0.01;
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
-  std::vector<std::vector<double>> dense_B =
-      generate_random_sparse_matrix(cols, rows, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(rows, cols, density);
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);

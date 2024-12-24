@@ -110,7 +110,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
-    size_t C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
+    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
     size_t C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
@@ -194,7 +194,7 @@ TEST(TestTaskMPI, matrix_multiplication_singleelement) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
-    size_t C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
+    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
     size_t C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
@@ -256,7 +256,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
-    size_t C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
+    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
     size_t C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
@@ -321,7 +321,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
-    size_t C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
+    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
     size_t C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
@@ -385,7 +385,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
-    size_t C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
+    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
     size_t C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
@@ -416,7 +416,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
   double density = 0.1;
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
-  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(rows, cols, density);
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
@@ -447,7 +447,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
     const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
     const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
 
-    size_t C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
+    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
     size_t C_rows = static_cast<size_t>(dense_A.size());
 
     SparseMatrix C_ccs;
