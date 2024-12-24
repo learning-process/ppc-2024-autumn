@@ -7,6 +7,8 @@
 
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
+namespace zinoviev_a_bellman_ford_mpi {
+
 std::vector<int> generateRandomGraph(size_t V, size_t E) {
   std::vector<int> graph(V * V, 0);
   std::random_device rd;
@@ -26,6 +28,8 @@ std::vector<int> generateRandomGraph(size_t V, size_t E) {
 
   return graph;
 }
+
+}  // namespace zinoviev_a_bellman_ford
 
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph_mpi) {
   boost::mpi::communicator world;
@@ -106,7 +110,7 @@ TEST(zinoviev_a_bellman_ford, Test_Random_Graph_mpi) {
   boost::mpi::communicator world;
   size_t V = 100;
   size_t E = 500;
-  std::vector<int> graph = generateRandomGraph(V, E);
+  std::vector<int> graph = zinoviev_a_bellman_ford_mpi::generateRandomGraph(V, E);
   std::vector<int> shortest_paths(V, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
