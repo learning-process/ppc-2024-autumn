@@ -16,25 +16,25 @@ using namespace shlyakov_m_ccs_mult_mpi;
 
 static SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
   SparseMatrix ccs_matrix;
-  int rows = matrix.size();
+  size_t rows = matrix.size();
 
   if (rows == 0) {
     ccs_matrix.col_pointers.push_back(0);
     return ccs_matrix;
   }
 
-  int cols = matrix[0].size();
+  size_t cols = matrix[0].size();
 
   ccs_matrix.col_pointers.push_back(0);
 
-  for (int col = 0; col < cols; ++col) {
-    for (int row = 0; row < rows; ++row) {
+  for (size_t col = 0; col < cols; ++col) {
+    for (size_t row = 0; row < rows; ++row) {
       if (matrix[row][col] != 0) {
         ccs_matrix.values.push_back(matrix[row][col]);
-        ccs_matrix.row_indices.push_back(row);
+        ccs_matrix.row_indices.push_back(static_cast<int>(row));
       }
     }
-    ccs_matrix.col_pointers.push_back(ccs_matrix.values.size());
+    ccs_matrix.col_pointers.push_back(static_cast<int>(ccs_matrix.values.size()));
   }
 
   return ccs_matrix;
@@ -66,7 +66,8 @@ TEST(shlyakov_m_ccs_mult_mpi, test_pipeline_run) {
   double density = 0.01;
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
-  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
+  std::vector<std::vector<double>> dense_B =
+      generate_random_sparse_matrix(cols, rows, density);  // Проверено: порядок (cols, rows) верен
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
@@ -110,7 +111,8 @@ TEST(shlyakov_m_ccs_mult_mpi, test_task_run) {
   double density = 0.01;
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
-  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
+  std::vector<std::vector<double>> dense_B =
+      generate_random_sparse_matrix(cols, rows, density);  // Проверено: порядок (cols, rows) верен
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
