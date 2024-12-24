@@ -23,8 +23,6 @@ namespace nasedkin_e_strassen_algorithm {
         static bool power_of_two(size_t number);
         static bool matrix_is_square(size_t matrixSize);
         static std::vector<double> strassen_multiply(const std::vector<double>& matrixA, const std::vector<double>& matrixB, size_t size);
-        static std::vector<double> strassen_base(const std::vector<double>& matrixA,
-                                          const std::vector<double>& matrixB, size_t size);
         static std::vector<double> strassen_recursive(const std::vector<double>& matrixA,
                                                       const std::vector<double>& matrixB, size_t size);
         static std::vector<double> matrix_add(const std::vector<double>& matrixA, const std::vector<double>& matrixB, size_t size);

@@ -139,6 +139,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
           padded_matrix[i * new_size + j] = matrix[i * original_size + j];
         }
       }
+
       std::cout << "Pad_matrix: Padding completed." << std::endl;
       return padded_matrix;
     }
@@ -210,38 +211,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
         return local_result;
     }
 
-    std::vector<double> StrassenAlgorithmMPI::strassen_base(const std::vector<double>& matrixA,
-                                      const std::vector<double>& matrixB, size_t size) {
-        if (size == 1) {
-            return {matrixA[0] * matrixB[0]};
-        }
-
-        size_t new_size = 1;
-        while (new_size < size) {
-            new_size *= 2;
-        }
-
-        std::vector<double> paddedA(new_size * new_size, 0.0);
-        std::vector<double> paddedB(new_size * new_size, 0.0);
-        for (size_t i = 0; i < size; ++i) {
-            for (size_t j = 0; j < size; ++j) {
-                paddedA[i * new_size + j] = matrixA[i * size + j];
-                paddedB[i * new_size + j] = matrixB[i * size + j];
-            }
-        }
-
-        std::vector<double> result = strassen_recursive(paddedA, paddedB, new_size);
-
-        std::vector<double> final_result(size * size);
-        for (size_t i = 0; i < size; ++i) {
-            for (size_t j = 0; j < size; ++j) {
-                final_result[i * size + j] = result[i * new_size + j];
-            }
-        }
-
-        return final_result;
-    }
-
     std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<double>& matrixA,
                                                                 const std::vector<double>& matrixB, size_t size) {
       boost::mpi::environment env;
@@ -306,6 +275,11 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
       std::cout << "Strassen_multiply: Rank " << rank << " divided matrices into submatrices." << std::endl;
 
+      std::cout << "A11 size = " << A11.size() << ", A12 size = " << A12.size()
+                << ", A21 size = " << A21.size() << ", A22 size = " << A22.size() << std::endl;
+      std::cout << "B11 size = " << B11.size() << ", B12 size = " << B12.size()
+                << ", B21 size = " << B21.size() << ", B22 size = " << B22.size() << std::endl;
+
         std::vector<std::vector<double>> M(7);
         if (rank == 0) {
           std::vector<std::vector<double>> tasks = {
@@ -328,11 +302,12 @@ bool StrassenAlgorithmMPI::pre_processing() {
               matrix_add(B21, B22, half_size)
           };
 
+
           world.barrier();
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
-              M[i] = strassen_base(tasks[i], tasksB[i], half_size);
+              M[i] = strassen_recursive(paddedA, paddedB, new_size);
             } else {
               std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size()
                         << ") and taskB[" << i << "] (size = " << tasksB[i].size()
@@ -356,7 +331,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
             std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
                       << ", taskB size = " << taskB.size() << std::endl;
 
-            M[i] = strassen_base(taskA, taskB, half_size);
+            M[i] = strassen_recursive(paddedA, paddedB, new_size);
 
             world.send(0, 0, M[i]);
             std::cout << "Rank " << rank << " sent result for M[" << i << "] to rank 0." << std::endl;
