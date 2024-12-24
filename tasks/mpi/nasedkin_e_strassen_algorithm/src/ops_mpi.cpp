@@ -328,6 +328,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
               matrix_add(B21, B22, half_size)
           };
 
+          world.barrier();
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
@@ -343,6 +344,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
           }
         }
 
+        world.barrier();
         for (int i = 0; i < 7; ++i) {
           if (i % num_procs == rank) {
             std::vector<double> taskA;
