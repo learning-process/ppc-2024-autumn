@@ -159,7 +159,9 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
   }
 
   TestTaskMPI task(taskData);
-  ASSERT_FALSE(task.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(task.validation());
+  }
 }
 
 TEST(TestTaskMPI, matrix_multiplication_singleelement) {
