@@ -30,8 +30,8 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_seq::validation() {
   internal_order_test();
 
-  return static_cast<int>(taskData->inputs_count[0]) > 1 && static_cast<int>(taskData->outputs_count[0]) > 0 &&
-         !taskData->inputs_count.empty();
+  return !taskData->inputs_count.empty() && static_cast<int>(taskData->inputs_count[0]) > 1 &&
+         static_cast<int>(taskData->outputs_count[0]) > 0;
 }
 
 bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
@@ -83,8 +83,8 @@ bool alputov_i_dense_matrix_multiplication_block_scheme_fox_algorithm::
     dense_matrix_multiplication_block_scheme_fox_algorithm_mpi::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return static_cast<int>(taskData->inputs_count[0]) > 1 && static_cast<int>(taskData->outputs_count[0]) > 0 &&
-           !taskData->inputs_count.empty();
+    return !taskData->inputs_count.empty() && static_cast<int>(taskData->inputs_count[0]) > 1 &&
+           static_cast<int>(taskData->outputs_count[0]) > 0;
   }
 
   return true;
