@@ -54,7 +54,9 @@ TEST(sorochkin_d_radix_sort_batcher_merge_double_mpi_perf_test, test_pipeline_ru
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+  }
 }
 
 TEST(sorochkin_d_radix_sort_batcher_merge_double_mpi_perf_test, test_task_run) {
@@ -93,5 +95,7 @@ TEST(sorochkin_d_radix_sort_batcher_merge_double_mpi_perf_test, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+  }
 }
