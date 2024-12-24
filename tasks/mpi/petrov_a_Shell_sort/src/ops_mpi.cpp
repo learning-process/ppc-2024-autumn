@@ -12,7 +12,7 @@ namespace petrov_a_Shell_sort_mpi {
 bool TestTaskMPI::pre_processing() {
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-  if (world_rank() == 0) {
+  if (world_rank == 0) {
     size_t input_size = taskData->inputs_count[0];
     const auto* raw_data = reinterpret_cast<const unsigned char*>(taskData->inputs[0]);
 
@@ -26,7 +26,7 @@ bool TestTaskMPI::pre_processing() {
 bool TestTaskMPI::validation() {
   int world_rank;
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
-  if (world_rank() == 0) {
+  if (world_rank == 0) {
     if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
       return false;
     }
@@ -47,9 +47,10 @@ bool TestTaskMPI::run() {
   int world_rank;
   MPI_Comm_size(MPI_COMM_WORLD, &world_size);
   MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+  int n;
 
-  if (world_rank() == 0) {
-    int n = data_.size();
+  if (world_rank == 0) {
+    n = data_.size();
   }
 
   MPI_Bcast(&n, 1, MPI_INT, 0, MPI_COMM_WORLD);
