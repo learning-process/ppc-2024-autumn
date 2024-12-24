@@ -1,75 +1,96 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <memory>
-#include <random>
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
+#include <boost/mpi/timer.hpp>
 #include <vector>
 
+#include "core/perf/include/perf.hpp"
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
-namespace petrov_a_Shell_sort_mpi {
+TEST(petrov_a_Shell_sort_mpi, test_pipeline_run) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
 
-std::vector<int> generate_random_vector(int n, int min_val = -100, int max_val = 100,
-                                        unsigned seed = std::random_device{}()) {
-  std::mt19937 gen(seed);
-  std::uniform_int_distribution<int> dist(min_val, max_val);
-
-  std::vector<int> vec(n);
-  std::generate(vec.begin(), vec.end(), [&]() { return dist(gen); });
-  return vec;
-}
-
-void template_test(const std::vector<int>& input_data) {
-  std::vector<int> data = input_data;
+  int vector_size = 10000;
+  std::vector<int> data(vector_size);
   std::vector<int> result_data;
 
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-  taskData->inputs_count.emplace_back(data.size());
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
+  taskDataPar->inputs_count.emplace_back(1);
 
-  result_data.resize(data.size());
-  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
-  taskData->outputs_count.emplace_back(result_data.size());
+  if (world.rank() == 0) {
+    int current = vector_size;
+    std::generate(data.begin(), data.end(), [&current]() { return current--; });
 
-  auto taskMPI = std::make_shared<TestTaskMPI>(taskData);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+    taskDataPar->inputs_count.emplace_back(data.size());
 
-  if (taskMPI->validation()) {
-    if (taskMPI->pre_processing()) {
-      taskMPI->run();
-      taskMPI->post_processing();
-    } else {
-      return;
-    }
+    result_data.resize(vector_size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+    taskDataPar->outputs_count.emplace_back(result_data.size());
+  }
 
+  auto taskParallel = std::make_shared<petrov_a_Shell_sort_mpi::TestTaskMPI>(taskDataPar);
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
+
+  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
     std::sort(data.begin(), data.end());
     EXPECT_EQ(data, result_data);
   }
 }
 
-TEST(petrov_a_Shell_sort_mpi, test_sorted_ascending_mpi) {
-  petrov_a_Shell_sort_mpi::template_test({1, 2, 3, 4, 5, 6, 7, 8});
-}
+TEST(petrov_a_Shell_sort_mpi, test_task_run) {
+  boost::mpi::environment env;
+  boost::mpi::communicator world;
 
-TEST(petrov_a_Shell_sort_mpi, test_almost_sorted_random_mpi) {
-  petrov_a_Shell_sort_mpi::template_test({9, 7, 5, 3, 1, 2, 4, 6});
-}
+  int vector_size = 10000;
+  std::vector<int> data(vector_size);
+  std::vector<int> result_data;
 
-TEST(petrov_a_Shell_sort_mpi, test_sorted_descending_mpi) {
-  petrov_a_Shell_sort_mpi::template_test({8, 7, 6, 5, 4, 3, 2, 1});
-}
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-TEST(petrov_a_Shell_sort_mpi, test_reverse_sorted_mpi) {
-  petrov_a_Shell_sort_mpi::template_test({100, 99, 98, 97, 96, 95, 94, 93});
-}
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
+  taskDataPar->inputs_count.emplace_back(1);
 
-TEST(petrov_a_Shell_sort_mpi, test_all_equal_elements_mpi) {
-  petrov_a_Shell_sort_mpi::template_test({5, 5, 5, 5, 5, 5, 5, 5});
-}
+  if (world.rank() == 0) {
+    int current = vector_size;
+    std::generate(data.begin(), data.end(), [&current]() { return current--; });
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
+    taskDataPar->inputs_count.emplace_back(data.size());
 
-TEST(petrov_a_Shell_sort_mpi, test_random_vector_mpi) {
-  auto random_vec = petrov_a_Shell_sort_mpi::generate_random_vector(1000, -1000, 1000);
-  petrov_a_Shell_sort_mpi::template_test(random_vec);
-}
+    result_data.resize(vector_size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
+    taskDataPar->outputs_count.emplace_back(result_data.size());
+  }
 
-}  // namespace petrov_a_Shell_sort_mpi
+  auto taskParallel = std::make_shared<petrov_a_Shell_sort_mpi::TestTaskMPI>(taskDataPar);
+
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  perfAttr->num_running = 10;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
+
+  auto perfResults = std::make_shared<ppc::core::PerfResults>();
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
+  perfAnalyzer->task_run(perfAttr, perfResults);
+
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+    std::sort(data.begin(), data.end());
+    EXPECT_EQ(data, result_data);
+  }
+}
