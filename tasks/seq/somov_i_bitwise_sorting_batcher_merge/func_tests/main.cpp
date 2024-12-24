@@ -26,7 +26,7 @@ std::vector<double> create_random_vector(int size, double mean = 3.0, double std
 }  // namespace somov_i_bitwise_sorting_batcher_merge_mpi_seq
 
 TEST(somov_i_bitwise_sorting_batcher_merge_seq, test_basic_sorting) {
-  std::vector<double> in = {3.14, -2.71, 1.41, 0.0, -3.14, 2.71};
+  std::vector<double> in = {3.14, -2.73, 1.41, 0.0, -3.14, 2.73};
   std::vector<double> out(in.size(), 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
