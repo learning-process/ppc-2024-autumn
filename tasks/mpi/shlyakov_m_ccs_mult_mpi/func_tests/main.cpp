@@ -102,10 +102,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
 
   TestTaskMPI task(taskData);
 
-  EXPECT_TRUE(task.validation());
-  EXPECT_TRUE(task.pre_processing());
-  EXPECT_TRUE(task.run());
-  EXPECT_TRUE(task.post_processing());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -127,7 +127,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect at (" << i << ", " << j << ")";
+        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect at (" << i << ", " << j << ")";
       }
     }
   }
@@ -159,7 +159,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
   }
 
   TestTaskMPI task(taskData);
-  EXPECT_FALSE(task.validation());
+  ASSERT_FALSE(task.validation());
 }
 
 TEST(TestTaskMPI, matrix_multiplication_singleelement) {
@@ -190,10 +190,10 @@ TEST(TestTaskMPI, matrix_multiplication_singleelement) {
   }
 
   TestTaskMPI task(taskData);
-  EXPECT_TRUE(task.validation());
-  EXPECT_TRUE(task.pre_processing());
-  EXPECT_TRUE(task.run());
-  EXPECT_TRUE(task.post_processing());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -214,7 +214,7 @@ TEST(TestTaskMPI, matrix_multiplication_singleelement) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
       }
     }
   }
@@ -253,10 +253,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
   }
 
   TestTaskMPI task(taskData);
-  EXPECT_TRUE(task.validation()) << "Validation failed";
-  EXPECT_TRUE(task.pre_processing()) << "Pre-processing failed";
-  EXPECT_TRUE(task.run()) << "Run failed";
-  EXPECT_TRUE(task.post_processing()) << "Post-processing failed";
+  ASSERT_TRUE(task.validation()) << "Validation failed";
+  ASSERT_TRUE(task.pre_processing()) << "Pre-processing failed";
+  ASSERT_TRUE(task.run()) << "Run failed";
+  ASSERT_TRUE(task.post_processing()) << "Post-processing failed";
 
   if (rank == 0) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -279,7 +279,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
     ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
       }
     }
   }
@@ -320,10 +320,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
   }
 
   TestTaskMPI task(taskData);
-  EXPECT_TRUE(task.validation());
-  EXPECT_TRUE(task.pre_processing());
-  EXPECT_TRUE(task.run());
-  EXPECT_TRUE(task.post_processing());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -345,7 +345,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
     ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
+        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
@@ -386,10 +386,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
   }
 
   TestTaskMPI task(taskData);
-  EXPECT_TRUE(task.validation());
-  EXPECT_TRUE(task.pre_processing());
-  EXPECT_TRUE(task.run());
-  EXPECT_TRUE(task.post_processing());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -411,7 +411,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
     ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect (" << i << ", " << j << ")";
+        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect (" << i << ", " << j << ")";
       }
     }
   }
@@ -450,10 +450,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 
   TestTaskMPI task(taskData);
 
-  EXPECT_TRUE(task.validation());
-  EXPECT_TRUE(task.pre_processing());
-  EXPECT_TRUE(task.run());
-  EXPECT_TRUE(task.post_processing());
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
 
   if (rank == 0) {
     const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -483,7 +483,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect (" << i << ", " << j << ")";
+        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect (" << i << ", " << j << ")";
       }
     }
   }
