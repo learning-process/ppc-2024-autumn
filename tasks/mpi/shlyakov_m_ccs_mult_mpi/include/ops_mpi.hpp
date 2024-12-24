@@ -1,9 +1,16 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <vector>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/serialization/nvp.hpp>
+#include <boost/serialization/serialization.hpp>
+#include <boost/serialization/vector.hpp>
+#include <cmath>
+#include <map>
+#include <numeric>
+#include <unordered_set>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 
@@ -13,6 +20,13 @@ struct SparseMatrix {
   std::vector<double> values;
   std::vector<int> row_indices;
   std::vector<int> col_pointers;
+
+  template <class Archive>
+  void serialize(Archive& ar, const unsigned int version) {
+    ar& values;
+    ar& row_indices;
+    ar& col_pointers;
+  }
 };
 
 class TestTaskMPI : public ppc::core::Task {
@@ -25,8 +39,6 @@ class TestTaskMPI : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  SparseMatrix check_result() { return result_; };
-
  private:
   SparseMatrix A_;
   int rows_a;
@@ -37,7 +49,6 @@ class TestTaskMPI : public ppc::core::Task {
   SparseMatrix result_;
 
   boost::mpi::communicator world;
-  boost::mpi::environment env;
 };
 
 }  // namespace shlyakov_m_ccs_mult_mpi

@@ -2,8 +2,8 @@
 
 #include <gtest/gtest.h>
 
-#include <boost/mpi.hpp>
 #include <algorithm>
+#include <boost/mpi.hpp>
 #include <chrono>
 #include <memory>
 #include <random>
@@ -131,7 +131,7 @@ TEST(shlyakov_m_ccs_mult_mpi, test_task_run) {
 
   auto mpiTask = std::make_shared<shlyakov_m_ccs_mult_mpi::TestTaskMPI>(taskData);
 
-   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };

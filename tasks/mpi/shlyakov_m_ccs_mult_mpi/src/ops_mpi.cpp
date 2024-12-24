@@ -53,7 +53,7 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::validation() {
 }
 
 bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
-  internal_order_test(); 
+  internal_order_test();
 
   int size = world.size();
   int rank = world.rank();
@@ -62,8 +62,8 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
   bool single_element_B = (B_.values.size() == 1 && B_.col_pointers.size() == 2);
 
   SparseMatrix C_subset;
-  C_subset.col_pointers.reserve(cols_b + 1);  
-  C_subset.col_pointers.push_back(0); 
+  C_subset.col_pointers.reserve(cols_b + 1);
+  C_subset.col_pointers.push_back(0);
 
   if (single_element_A || single_element_B) {
     if (rank == 0) {
@@ -107,7 +107,6 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
     }
     return true;
   } else {
-
     boost::mpi::broadcast(world, A_.values, 0);
     boost::mpi::broadcast(world, A_.row_indices, 0);
     boost::mpi::broadcast(world, A_.col_pointers, 0);
@@ -186,10 +185,10 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
     boost::mpi::gather(world, C_subset, all_C_subsets, 0);
 
     if (rank == 0) {
-      result_.values.reserve(cols_b * rows_a); 
+      result_.values.reserve(cols_b * rows_a);
       result_.row_indices.reserve(cols_b * rows_a);
       result_.col_pointers.reserve(cols_b + 1);
-      result_.col_pointers.push_back(0);  
+      result_.col_pointers.push_back(0);
 
       for (int proc = 0; proc < size; ++proc) {
         SparseMatrix& C_proc = all_C_subsets[proc];

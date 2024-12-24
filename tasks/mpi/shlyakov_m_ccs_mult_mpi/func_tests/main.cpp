@@ -67,7 +67,7 @@ static std::vector<std::vector<double>> ccs_to_matrix(const SparseMatrix& ccs_ma
   return matrix;
 }
 
- TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
   int rank = world.rank();
@@ -133,7 +133,7 @@ static std::vector<std::vector<double>> ccs_to_matrix(const SparseMatrix& ccs_ma
   }
 }
 
- TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
 
@@ -161,7 +161,7 @@ static std::vector<std::vector<double>> ccs_to_matrix(const SparseMatrix& ccs_ma
   EXPECT_FALSE(task.validation());
 }
 
-  TEST(TestTaskMPI, matrix_multiplication_singleelement) {
+TEST(TestTaskMPI, matrix_multiplication_singleelement) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
   int rank = world.rank();
@@ -217,7 +217,7 @@ static std::vector<std::vector<double>> ccs_to_matrix(const SparseMatrix& ccs_ma
   }
 }
 
- TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
   int rank = world.rank();

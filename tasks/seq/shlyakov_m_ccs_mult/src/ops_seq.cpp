@@ -33,21 +33,17 @@ bool shlyakov_m_ccs_mult::TestTaskSequential::pre_processing() {
 }
 
 bool shlyakov_m_ccs_mult::TestTaskSequential::validation() {
-    internal_order_test();
+  internal_order_test();
 
-    if (taskData == nullptr || 
-        taskData->inputs.size() != 6 ||
-        taskData->inputs_count.size() < 6 ||
-        static_cast<int>(taskData->inputs_count[2]) < 0 ||
-        static_cast<int>(taskData->inputs_count[5]) < 0 ||
-        static_cast<int>(taskData->inputs_count[0]) != static_cast<int>(taskData->inputs_count[1]) ||
-        static_cast<int>(taskData->inputs_count[3]) != static_cast<int>(taskData->inputs_count[4]) ||
-        (taskData->inputs_count[0] <= 0 && taskData->inputs_count[3] <= 0))
-    {
-        return false;
-    }
+  if (taskData == nullptr || taskData->inputs.size() != 6 || taskData->inputs_count.size() < 6 ||
+      static_cast<int>(taskData->inputs_count[2]) < 0 || static_cast<int>(taskData->inputs_count[5]) < 0 ||
+      static_cast<int>(taskData->inputs_count[0]) != static_cast<int>(taskData->inputs_count[1]) ||
+      static_cast<int>(taskData->inputs_count[3]) != static_cast<int>(taskData->inputs_count[4]) ||
+      (taskData->inputs_count[0] <= 0 && taskData->inputs_count[3] <= 0)) {
+    return false;
+  }
 
-    return true;
+  return true;
 }
 
 bool shlyakov_m_ccs_mult::TestTaskSequential::run() {

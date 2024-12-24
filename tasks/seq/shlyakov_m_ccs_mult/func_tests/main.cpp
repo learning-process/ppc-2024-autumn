@@ -52,7 +52,7 @@ static std::vector<std::vector<double>> generate_random_sparse_matrix(int rows, 
 }
 
 static std::vector<std::vector<double>> matrix_multiply(const std::vector<std::vector<double>>& matrix_a,
-                                                 const std::vector<std::vector<double>>& matrix_b) {
+                                                        const std::vector<std::vector<double>>& matrix_b) {
   int rows_a = matrix_a.size();
   int cols_a = matrix_a[0].size();
   int cols_b = matrix_b[0].size();
