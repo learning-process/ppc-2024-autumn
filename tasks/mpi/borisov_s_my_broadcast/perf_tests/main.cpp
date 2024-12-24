@@ -20,12 +20,12 @@ static std::vector<double> getRandomMatrix2(size_t rows, size_t cols) {
   return matrix;
 }
 
-TEST(parallel_clustering_perf_test2, test_pipeline_run) {
+TEST(borisov_my_broadcast_clustering, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  const size_t rows = 1000;
-  const size_t cols = 1000;
+  const size_t rows = 5000;
+  const size_t cols = 5000;
   double epsilon = 1.0;
 
   std::vector<double> global_matrix;
@@ -67,12 +67,12 @@ TEST(parallel_clustering_perf_test2, test_pipeline_run) {
   }
 }
 
-TEST(parallel_clustering_perf_test2, test_task_run) {
+TEST(borisov_my_broadcast_clustering, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  const size_t rows = 1000;
-  const size_t cols = 1000;
+  const size_t rows = 5000;
+  const size_t cols = 5000;
   double epsilon = 1.0;
 
   std::vector<double> global_matrix;
