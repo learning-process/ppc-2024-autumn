@@ -1,7 +1,7 @@
 ﻿#include <gtest/gtest.h>
-#include <numbers>
 
 #include <boost/mpi/environment.hpp>
+#include <numbers>
 
 #include "mpi/kudryashova_i_graham's_scan/include/Graham'sScanMPI.hpp"
 
