@@ -7,7 +7,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/shulpin_i_strip_hA_vB/include/strip_hA_vB.hpp"
 
-TEST(shulpin_strip_scheme_A_B, pipeline_run) {
+TEST(shulpin_strip_scheme_A_B_seq, pipeline_run) {
   const int rows_a = 401;
   const int cols_a = 512;
   const int rows_b = 512;
@@ -62,7 +62,7 @@ TEST(shulpin_strip_scheme_A_B, pipeline_run) {
   ASSERT_EQ(ref_res, C.size());
 }
 
-TEST(shulpin_strip_scheme_A_B, task_run) {
+TEST(shulpin_strip_scheme_A_B_seq, task_run) {
   const int rows_a = 401;
   const int cols_a = 512;
   const int rows_b = 512;
