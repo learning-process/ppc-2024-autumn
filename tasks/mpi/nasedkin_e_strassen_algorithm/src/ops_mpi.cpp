@@ -308,6 +308,26 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
         std::vector<std::vector<double>> M(7);
         if (rank == 0) {
+          std::vector<std::vector<double>> tasks = {
+              matrix_add(A11, A22, half_size),
+              matrix_add(A21, A22, half_size),
+              A11,
+              A22,
+              matrix_add(A11, A12, half_size),
+              matrix_subtract(A21, A11, half_size),
+              matrix_subtract(A12, A22, half_size)
+          };
+
+          std::vector<std::vector<double>> tasksB = {
+              matrix_add(B11, B22, half_size),
+              B11,
+              matrix_subtract(B12, B22, half_size),
+              matrix_subtract(B21, B11, half_size),
+              B22,
+              matrix_add(B11, B12, half_size),
+              matrix_add(B21, B22, half_size)
+          };
+
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
