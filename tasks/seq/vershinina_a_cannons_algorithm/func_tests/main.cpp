@@ -10,7 +10,7 @@ vershinina_a_cannons_algorithm::TMatrix<double> getRandomMatrix(double r) {
   std::mt19937 gen(dev());
   std::uniform_int_distribution<> distr(0, 100);
   auto matrix = vershinina_a_cannons_algorithm::TMatrix<double>::create(r);
-  for (int i = 0; i < matrix.n * matrix.n; i++) {
+  for (size_t i = 0; i < matrix.n * matrix.n; i++) {
     matrix.data[i] = distr(gen);
   }
   return matrix;
