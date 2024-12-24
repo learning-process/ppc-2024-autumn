@@ -515,3 +515,45 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, NegativePixelsTest
     }
   }
 }
+
+TEST(golovkin_linear_image_filtering_with_block_partitioning, VeryLargeImageTest_499x501) {
+  boost::mpi::communicator world;
+
+  int width = 499;
+  int height = 501;
+
+  std::vector<int> input(width * height);
+  std::iota(input.begin(), input.end(), 0);
+  std::vector<int> output(width * height, 0);
+
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+    taskData->inputs_count.push_back(input.size() * sizeof(int));
+
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&width));
+    taskData->inputs_count.push_back(sizeof(int));
+
+    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&height));
+    taskData->inputs_count.push_back(sizeof(int));
+
+    taskData->outputs.push_back(reinterpret_cast<uint8_t*>(output.data()));
+    taskData->outputs_count.push_back(output.size() * sizeof(int));
+  }
+
+  auto task = std::make_shared<golovkin_linear_image_filtering_with_block_partitioning::SimpleBlockMPI>(taskData);
+  ASSERT_TRUE(task->validation());
+  ASSERT_TRUE(task->pre_processing());
+  ASSERT_TRUE(task->run());
+  ASSERT_TRUE(task->post_processing());
+
+  if (world.rank() == 0) {
+    // Проверяем корректность результата
+    std::vector<int> expected;
+    gauss_3x3(input, width, height, &expected);
+    ASSERT_EQ(output.size(), expected.size());
+    for (size_t i = 0; i < output.size(); i++) {
+      ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+    }
+  }
+}
