@@ -4,12 +4,13 @@
 #include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace laganina_e_readers_writers_mpi {
+
+std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
@@ -22,7 +23,6 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<int> shared_data;
   std::vector<int> res_;
-  int count_of_writers;  // in process 0 the number of write processes is stored here
   boost::mpi::communicator world;
 };
 
