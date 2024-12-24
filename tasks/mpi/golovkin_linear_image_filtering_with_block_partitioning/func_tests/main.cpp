@@ -1,4 +1,4 @@
-// Golovkin Maksims Task#3
+// Golovkin Maksim Task#3
 #include <gtest/gtest.h>
 
 #include "mpi/golovkin_linear_image_filtering_with_block_partitioning/include/ops_mpi.hpp"
