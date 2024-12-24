@@ -20,10 +20,10 @@ struct TMatrix {
   void set_horizontal_shift(size_t shift) { hshift = shift; }
   void set_vertical_shift(size_t shift) { vshift = shift; }
 
-  inline const T& at(size_t row, size_t col) const noexcept { return data[row * n + col]; }
-  inline T& at(size_t row, size_t col) noexcept { return const_cast<T&>(std::as_const(*this).at(row, col)); }
+  const T& at(size_t row, size_t col) const noexcept { return data[row * n + col]; }
+  T& at(size_t row, size_t col) noexcept { return const_cast<T&>(std::as_const(*this).at(row, col)); }
 
-  inline const T& at_h(size_t row, size_t col) const noexcept {
+  const T& at_h(size_t row, size_t col) const noexcept {
     size_t actual_hshift = (hshift + row) % n;
     if (col < n - actual_hshift) {
       col += actual_hshift;
@@ -32,9 +32,9 @@ struct TMatrix {
     }
     return data[row * n + col];
   }
-  inline T& at_h(size_t row, size_t col) noexcept { return const_cast<T&>(std::as_const(*this).at_h(row, col)); }
+  T& at_h(size_t row, size_t col) noexcept { return const_cast<T&>(std::as_const(*this).at_h(row, col)); }
 
-  inline const T& at_v(size_t row, size_t col) const noexcept {
+  const T& at_v(size_t row, size_t col) const noexcept {
     size_t actual_vshift = (vshift + col) % n;
     if (row < n - actual_vshift) {
       row += actual_vshift;
@@ -43,7 +43,7 @@ struct TMatrix {
     }
     return data[row * n + col];
   }
-  inline T& at_v(size_t row, size_t col) noexcept { return const_cast<T&>(std::as_const(*this).at_v(row, col)); }
+  T& at_v(size_t row, size_t col) noexcept { return const_cast<T&>(std::as_const(*this).at_v(row, col)); }
 
   bool operator==(const TMatrix& other) const noexcept { return n == other.n && data == other.data; }
 
