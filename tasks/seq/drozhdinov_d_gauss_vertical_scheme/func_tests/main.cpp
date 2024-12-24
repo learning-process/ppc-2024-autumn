@@ -63,7 +63,7 @@ template std::vector<int> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVecto
 template std::vector<double> drozhdinov_d_gauss_vertical_scheme_seq::getRandomVector(int sz);
 }  // namespace drozhdinov_d_gauss_vertical_scheme_seq
 
-TEST(Sequential, EquationTest) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, EquationTest) {
   // Create data
   int rows = 2;
   int columns = 2;
@@ -92,7 +92,7 @@ TEST(Sequential, EquationTest) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, Equation2Test) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, Equation2Test) {
   // Create data
   int rows = 3;
   int columns = 3;
@@ -121,7 +121,7 @@ TEST(Sequential, Equation2Test) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, Equation3Test) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, Equation3Test) {
   // Create data
   int rows = 3;
   int columns = 3;
@@ -150,7 +150,7 @@ TEST(Sequential, Equation3Test) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, EmptyTest) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, EmptyTest) {
   // Create data
   int rows = 0;
   int columns = 0;
@@ -179,7 +179,7 @@ TEST(Sequential, EmptyTest) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, Size100TestIdentity) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, Size100TestIdentity) {
   // Create data
   int rows = 10;
   int columns = 10;
@@ -208,7 +208,7 @@ TEST(Sequential, Size100TestIdentity) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, Size10000TestIdentity) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, Size10000TestIdentity) {
   // Create data
   int rows = 100;
   int columns = 100;
@@ -237,7 +237,7 @@ TEST(Sequential, Size10000TestIdentity) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, Size100TestDense) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, Size100TestDense) {
   // Create data
   int rows = 10;
   int columns = 10;
@@ -269,7 +269,7 @@ TEST(Sequential, Size100TestDense) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, Size10000TestDense) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, Size10000TestDense) {
   // Create data
   int rows = 100;
   int columns = 100;
@@ -301,7 +301,7 @@ TEST(Sequential, Size10000TestDense) {
   ASSERT_EQ(expres, res);
 }
 
-TEST(Sequential, WrongValidationTest1) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, WrongValidationTest1) {
   // Create data
   int rows = 20;
   int columns = 10;
@@ -326,7 +326,7 @@ TEST(Sequential, WrongValidationTest1) {
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
-TEST(Sequential, WrongValidationTest2) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, WrongValidationTest2) {
   // Create data
   int rows = 20;
   int columns = 20;
@@ -351,7 +351,7 @@ TEST(Sequential, WrongValidationTest2) {
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
 
-TEST(Sequential, WrongPPTest) {
+TEST(drozhdinov_d_gauss_vertical_scheme_seq, WrongPPTest) {
   // Create data
   int rows = 3;
   int columns = 3;
