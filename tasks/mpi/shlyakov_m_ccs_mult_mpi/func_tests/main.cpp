@@ -4,9 +4,9 @@
 #include <random>
 #include <vector>
 
-#include "seq/shlyakov_m_ccs_mult/include/ops_seq.hpp"
+#include "mpi/shlyakov_m_ccs_mult_mpi/include/ops_mpi.hpp"
 
-using namespace shlyakov_m_ccs_mult;
+using namespace shlyakov_m_ccs_mult_mpi;
 
 static SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
   SparseMatrix ccs_matrix;
@@ -51,428 +51,432 @@ static std::vector<std::vector<double>> generate_random_sparse_matrix(int rows, 
   return matrix;
 }
 
-static std::vector<std::vector<double>> matrix_multiply(const std::vector<std::vector<double>>& matrix_a,
-                                                        const std::vector<std::vector<double>>& matrix_b) {
-  int rows_a = matrix_a.size();
-  int cols_a = matrix_a[0].size();
-  int cols_b = matrix_b[0].size();
+static std::vector<std::vector<double>> ccs_to_matrix(const SparseMatrix& ccs_matrix, int rows, int cols) {
+  std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols, 0.0));
 
-  std::vector<std::vector<double>> result(rows_a, std::vector<double>(cols_b, 0.0));
+  int num_cols = ccs_matrix.col_pointers.size() - 1;
 
-  for (int i = 0; i < rows_a; ++i) {
-    for (int j = 0; j < cols_b; ++j) {
-      for (int k = 0; k < cols_a; ++k) {
-        result[i][j] += matrix_a[i][k] * matrix_b[k][j];
+  for (int col = 0; col < num_cols; ++col) {
+    int start = ccs_matrix.col_pointers[col];
+    int end = ccs_matrix.col_pointers[col + 1];
+    for (int k = start; k < end; ++k) {
+      int row = ccs_matrix.row_indices[k];
+      matrix[row][col] = ccs_matrix.values[k];
+    }
+  }
+  return matrix;
+}
+
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  boost::mpi::communicator world;
+  int rank = world.rank();
+
+  // A = [1 0 2
+  // 0 3 0
+  // 4 0 5]
+  std::vector<std::vector<double>> dense_A = {{1.0, 0.0, 2.0}, {0.0, 3.0, 0.0}, {4.0, 0.0, 5.0}};
+
+  // B = [7 0
+  // 0 8
+  // 9 0]
+  std::vector<std::vector<double>> dense_B = {{7.0, 0.0}, {0.0, 8.0}, {9.0, 0.0}};
+
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+
+  TestTaskMPI task(taskData);
+
+  EXPECT_TRUE(task.validation());
+  EXPECT_TRUE(task.pre_processing());
+  EXPECT_TRUE(task.run());
+  EXPECT_TRUE(task.post_processing());
+
+  if (rank == 0) {
+    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
+    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
+    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
+
+    const auto C_cols = taskData->outputs_count[2] / sizeof(int) - 1;
+
+    int C_rows = dense_A.size();
+
+    SparseMatrix C_ccs;
+    C_ccs.values.assign(C_values, C_values + taskData->outputs_count[0] / sizeof(double));
+    C_ccs.row_indices.assign(C_row_indices, C_row_indices + taskData->outputs_count[1] / sizeof(int));
+    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + (C_cols + 1));
+
+    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, C_rows, C_cols);
+    std::vector<std::vector<double>> expected_C = {{25.0, 0.0}, {0.0, 24.0}, {73.0, 0.0}};
+
+    ASSERT_EQ(dense_C.size(), expected_C.size());
+
+    for (int i = 0; i < dense_C.size(); ++i) {
+      for (int j = 0; j < dense_C[0].size(); ++j) {
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Uncorrect at (" << i << ", " << j << ")";
       }
     }
   }
-
-  return result;
 }
 
-static bool are_ccs_matrices_equal(const SparseMatrix& a, const SparseMatrix& b, double tolerance = 1e-9) {
-  if (a.values.size() != b.values.size() || a.row_indices.size() != b.row_indices.size() ||
-      a.col_pointers.size() != b.col_pointers.size()) {
-    return false;
-  }
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  boost::mpi::communicator world;
 
-  for (size_t i = 0; i < a.values.size(); ++i) {
-    if (std::abs(a.values[i] - b.values[i]) > tolerance) {
-      return false;
+  std::vector<std::vector<double>> dense_A = {};
+  std::vector<std::vector<double>> dense_B = {};
+
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+
+  TestTaskMPI task(taskData);
+  EXPECT_FALSE(task.validation());
+}
+
+TEST(TestTaskMPI, matrix_multiplication_singleelement) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  boost::mpi::communicator world;
+  int rank = world.rank();
+
+  std::vector<std::vector<double>> dense_A = {{5.0}};
+  std::vector<std::vector<double>> dense_B = {{2.0}};
+
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+
+  TestTaskMPI task(taskData);
+  EXPECT_TRUE(task.validation());
+  EXPECT_TRUE(task.pre_processing());
+  EXPECT_TRUE(task.run());
+  EXPECT_TRUE(task.post_processing());
+
+  if (rank == 0) {
+    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
+    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
+    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
+
+    const auto C_cols = taskData->outputs_count[2] / sizeof(int) - 1;
+    int C_rows = dense_A.size();
+
+    SparseMatrix C_ccs;
+    C_ccs.values.assign(C_values, C_values + taskData->outputs_count[0] / sizeof(double));
+    C_ccs.row_indices.assign(C_row_indices, C_row_indices + taskData->outputs_count[1] / sizeof(int));
+    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + (C_cols + 1));
+
+    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, C_rows, C_cols);
+    std::vector<std::vector<double>> expected_C = {{10.0}};
+
+    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+
+    for (int i = 0; i < dense_C.size(); ++i) {
+      for (int j = 0; j < dense_C[0].size(); ++j) {
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+      }
     }
   }
+}
 
-  for (size_t i = 0; i < a.row_indices.size(); ++i) {
-    if (a.row_indices[i] != b.row_indices[i]) {
-      return false;
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  boost::mpi::communicator world;
+  int rank = world.rank();
+
+  // A = [1 2 3]
+  std::vector<std::vector<double>> dense_A = {{1.0, 2.0, 3.0}};
+
+  // B = [4
+  // 5
+  // 6]
+  std::vector<std::vector<double>> dense_B = {{4.0}, {5.0}, {6.0}};
+
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+
+  TestTaskMPI task(taskData);
+  EXPECT_TRUE(task.validation()) << "Validation failed";
+  EXPECT_TRUE(task.pre_processing()) << "Pre-processing failed";
+  EXPECT_TRUE(task.run()) << "Run failed";
+  EXPECT_TRUE(task.post_processing()) << "Post-processing failed";
+
+  if (rank == 0) {
+    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
+    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
+    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
+
+    const auto C_cols = taskData->outputs_count[2] / sizeof(int) - 1;
+    int C_rows = dense_A.size();
+
+    SparseMatrix C_ccs;
+    C_ccs.values.assign(C_values, C_values + taskData->outputs_count[0] / sizeof(double));
+    C_ccs.row_indices.assign(C_row_indices, C_row_indices + taskData->outputs_count[1] / sizeof(int));
+    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + (C_cols + 1));
+
+    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, C_rows, C_cols);
+
+    // [1*4 + 2*5 + 3*6] = [4+10+18] = [32]
+    std::vector<std::vector<double>> expected_C = {{32.0}};
+
+    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    for (int i = 0; i < dense_C.size(); ++i) {
+      for (int j = 0; j < dense_C[0].size(); ++j) {
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+      }
     }
   }
+}
 
-  for (size_t i = 0; i < a.col_pointers.size(); ++i) {
-    if (a.col_pointers[i] != b.col_pointers[i]) {
-      return false;
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  boost::mpi::communicator world;
+  int rank = world.rank();
+
+  // A = [0 0 0
+  // 0 0 0
+  // 0 0 0]
+  std::vector<std::vector<double>> dense_A = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+
+  // B = [1 2 3
+  // 4 5 6
+  // 7 8 9]
+  std::vector<std::vector<double>> dense_B = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}};
+
+  // Convert dense matrices to CCS
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+
+  // Prepare TaskData
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+
+  TestTaskMPI task(taskData);
+  EXPECT_TRUE(task.validation());
+  EXPECT_TRUE(task.pre_processing());
+  EXPECT_TRUE(task.run());
+  EXPECT_TRUE(task.post_processing());
+
+  if (rank == 0) {
+    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
+    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
+    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
+
+    const auto C_cols = taskData->outputs_count[2] / sizeof(int) - 1;
+    int C_rows = dense_A.size();
+
+    SparseMatrix C_ccs;
+    C_ccs.values.assign(C_values, C_values + taskData->outputs_count[0] / sizeof(double));
+    C_ccs.row_indices.assign(C_row_indices, C_row_indices + taskData->outputs_count[1] / sizeof(int));
+    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + (C_cols + 1));
+
+    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, C_rows, C_cols);
+    std::vector<std::vector<double>> expected_C = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
+
+    // Compare dense_C with expected_C
+    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    for (int i = 0; i < dense_C.size(); ++i) {
+      for (int j = 0; j < dense_C[0].size(); ++j) {
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+      }
     }
   }
-  return true;
 }
 
-TEST(shlyakov_m_ccs_mult_seq, empty_matrices_test) {
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows = 0;
-  int cols = 0;
-  double sparsity = 0.0;
+  boost::mpi::communicator world;
+  int rank = world.rank();
 
-  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
+  // A = [1 0 0
+  // 0 1 0
+  // 0 0 1]
+  std::vector<std::vector<double>> dense_A = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
 
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
+  // B = [7 0 9
+  // 0 8 0
+  // 9 0 1]
+  std::vector<std::vector<double>> dense_B = {{7.0, 0.0, 9.0}, {0.0, 8.0, 0.0}, {9.0, 0.0, 1.0}};
 
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-  TestTaskSequential task(taskData);
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
 
-  ASSERT_FALSE(task.validation());
+  TestTaskMPI task(taskData);
+  EXPECT_TRUE(task.validation());
+  EXPECT_TRUE(task.pre_processing());
+  EXPECT_TRUE(task.run());
+  EXPECT_TRUE(task.post_processing());
+
+  if (rank == 0) {
+    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
+    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
+    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
+
+    const auto C_cols = taskData->outputs_count[2] / sizeof(int) - 1;
+    int C_rows = dense_A.size();
+
+    SparseMatrix C_ccs;
+    C_ccs.values.assign(C_values, C_values + taskData->outputs_count[0] / sizeof(double));
+    C_ccs.row_indices.assign(C_row_indices, C_row_indices + taskData->outputs_count[1] / sizeof(int));
+    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + (C_cols + 1));
+
+    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, C_rows, C_cols);
+
+    std::vector<std::vector<double>> expected_C = dense_B;
+
+    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    for (int i = 0; i < dense_C.size(); ++i) {
+      for (int j = 0; j < dense_C[0].size(); ++j) {
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Uncorrect (" << i << ", " << j << ")";
+      }
+    }
+  }
 }
 
-TEST(shlyakov_m_ccs_mult_seq, square_matrices_test1) {
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows = 10;
-  int cols = 10;
-  double sparsity = 0.5;
-
-  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(cols);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(rows);
-
-  TestTaskSequential task(taskData);
-  ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
-  ASSERT_TRUE(task.post_processing());
-
-  std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
-  SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
-
-  SparseMatrix actual_result;
-  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
-  unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
-
-  const auto* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
-  unsigned int row_indices_size = taskData->outputs_count[1] / sizeof(int);
-
-  const auto* col_pointers_ptr = reinterpret_cast<const int*>(taskData->outputs[2]);
-  unsigned int col_pointers_size = taskData->outputs_count[2] / sizeof(int);
-
-  actual_result.values.assign(values_ptr, values_ptr + values_size);
-  actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
-  actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
-}
-
-TEST(shlyakov_m_ccs_mult_seq, square_matrices_test2) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows = 3;
-  int cols = 3;
-  double sparsity = 0.5;
-
-  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
-
-  TestTaskSequential task(taskData);
-  ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
-  ASSERT_TRUE(task.post_processing());
-
-  std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
-  SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
-
-  SparseMatrix actual_result;
-  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
-  unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
-
-  const auto* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
-  unsigned int row_indices_size = taskData->outputs_count[1] / sizeof(int);
-
-  const auto* col_pointers_ptr = reinterpret_cast<const int*>(taskData->outputs[2]);
-  unsigned int col_pointers_size = taskData->outputs_count[2] / sizeof(int);
-
-  actual_result.values.assign(values_ptr, values_ptr + values_size);
-  actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
-  actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
-}
-
-TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test1) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows_a = 2;
-  int cols_a = 3;
-  int rows_b = 3;
-  int cols_b = 4;
-  double sparsity = 0.4;
-
-  auto matrix_a = generate_random_sparse_matrix(rows_a, cols_a, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows_b, cols_b, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
-
-  TestTaskSequential task(taskData);
-  ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
-  ASSERT_TRUE(task.post_processing());
-
-  std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
-  SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
-
-  SparseMatrix actual_result;
-  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
-  unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
-
-  const auto* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
-  unsigned int row_indices_size = taskData->outputs_count[1] / sizeof(int);
-
-  const auto* col_pointers_ptr = reinterpret_cast<const int*>(taskData->outputs[2]);
-  unsigned int col_pointers_size = taskData->outputs_count[2] / sizeof(int);
-
-  actual_result.values.assign(values_ptr, values_ptr + values_size);
-  actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
-  actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  // std::cerr << actual_result.values << std::endl
-  //         << actual_result.row_indices << std::endl
-  //        << actual_result.col_pointers;
-
-  ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
-}
-
-TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test2) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows_a = 5;
-  int cols_a = 10;
-  int rows_b = 10;
-  int cols_b = 5;
-  double sparsity = 0.7;
-
-  auto matrix_a = generate_random_sparse_matrix(rows_a, cols_a, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows_b, cols_b, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
-
-  TestTaskSequential task(taskData);
-  ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
-  ASSERT_TRUE(task.post_processing());
-
-  std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
-  SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
-
-  SparseMatrix actual_result;
-  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
-  unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
-
-  const auto* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
-  unsigned int row_indices_size = taskData->outputs_count[1] / sizeof(int);
-
-  const auto* col_pointers_ptr = reinterpret_cast<const int*>(taskData->outputs[2]);
-  unsigned int col_pointers_size = taskData->outputs_count[2] / sizeof(int);
-
-  actual_result.values.assign(values_ptr, values_ptr + values_size);
-  actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
-  actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
-}
-
-TEST(shlyakov_m_ccs_mult_seq, single_element_matrix_test) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows = 1;
-  int cols = 1;
-  double sparsity = 1.0;
-
-  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
-
-  TestTaskSequential task(taskData);
-  ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
-  ASSERT_TRUE(task.post_processing());
-
-  std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
-  SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
-
-  SparseMatrix actual_result;
-  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
-  unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
-
-  const auto* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
-  unsigned int row_indices_size = taskData->outputs_count[1] / sizeof(int);
-
-  const auto* col_pointers_ptr = reinterpret_cast<const int*>(taskData->outputs[2]);
-  unsigned int col_pointers_size = taskData->outputs_count[2] / sizeof(int);
-
-  actual_result.values.assign(values_ptr, values_ptr + values_size);
-  actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
-  actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
-}
-
-TEST(shlyakov_m_ccs_mult_seq, sparse_matrices_test) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows = 10;
-  int cols = 10;
-  double sparsity = 0.9;
-
-  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
-
-  TestTaskSequential task(taskData);
-  ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
-  ASSERT_TRUE(task.post_processing());
-
-  std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
-  SparseMatrix expected_result = matrix_to_ccs(expected_result_matrix);
-
-  SparseMatrix actual_result;
-  const auto* values_ptr = reinterpret_cast<const double*>(taskData->outputs[0]);
-  unsigned int values_size = taskData->outputs_count[0] / sizeof(double);
-
-  const auto* row_indices_ptr = reinterpret_cast<const int*>(taskData->outputs[1]);
-  unsigned int row_indices_size = taskData->outputs_count[1] / sizeof(int);
-
-  const auto* col_pointers_ptr = reinterpret_cast<const int*>(taskData->outputs[2]);
-  unsigned int col_pointers_size = taskData->outputs_count[2] / sizeof(int);
-
-  actual_result.values.assign(values_ptr, values_ptr + values_size);
-  actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
-  actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
-}
-
-TEST(shlyakov_m_ccs_mult_seq, all_zeros_matrices_test) {
-  auto taskData = std::make_shared<ppc::core::TaskData>();
-  int rows = 5;
-  int cols = 5;
-  double sparsity = 0.0;
-
-  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
-  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
-
-  SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-  SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
-
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-  taskData->inputs_count.push_back(ccs_matrix_a.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_a.col_pointers.size() - 1);
-  taskData->inputs_count.push_back(ccs_matrix_b.values.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.row_indices.size());
-  taskData->inputs_count.push_back(ccs_matrix_b.col_pointers.size() - 1);
-
-  TestTaskSequential task(taskData);
-  ASSERT_FALSE(task.validation());
+  boost::mpi::communicator world;
+  int rank = world.rank();
+
+  int rows = 500;
+  int cols = 500;
+  double density = 0.1;
+
+  std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
+
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
+
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
+
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
+
+  TestTaskMPI task(taskData);
+
+  EXPECT_TRUE(task.validation());
+  EXPECT_TRUE(task.pre_processing());
+  EXPECT_TRUE(task.run());
+  EXPECT_TRUE(task.post_processing());
+
+  if (rank == 0) {
+    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
+    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
+    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
+
+    const auto C_cols = taskData->outputs_count[2] / sizeof(int) - 1;
+    int C_rows = dense_A.size();
+
+    SparseMatrix C_ccs;
+    C_ccs.values.assign(C_values, C_values + taskData->outputs_count[0] / sizeof(double));
+    C_ccs.row_indices.assign(C_row_indices, C_row_indices + taskData->outputs_count[1] / sizeof(int));
+    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + (C_cols + 1));
+
+    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, C_rows, C_cols);
+
+    std::vector<std::vector<double>> expected_C(rows, std::vector<double>(rows, 0.0));
+    for (int i = 0; i < rows; ++i) {
+      for (int j = 0; j < rows; ++j) {
+        for (int k = 0; k < cols; ++k) {
+          expected_C[i][j] += dense_A[i][k] * dense_B[k][j];
+        }
+      }
+    }
+
+    ASSERT_EQ(dense_C.size(), expected_C.size());
+
+    for (int i = 0; i < dense_C.size(); ++i) {
+      for (int j = 0; j < dense_C[0].size(); ++j) {
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Uncorrect (" << i << ", " << j << ")";
+      }
+    }
+  }
 }
