@@ -92,4 +92,4 @@ TEST(dormidontov_e_highcontrast_seq, test_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ(res_out == exp_res, true);
-}
+}//JUSR FOR PR
