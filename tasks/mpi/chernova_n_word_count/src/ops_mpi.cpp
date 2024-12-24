@@ -43,7 +43,7 @@ bool chernova_n_word_count_mpi::TestMPITaskSequential::pre_processing() {
   for (unsigned i = 0; i < taskData->inputs_count[0]; i++) {
     input_[i] = tmp_ptr[i];
   }
-  if (input_.size() != 0) input_ = clean_string(input_);
+  if (!input_.empty()) input_ = clean_string(input_);
   return true;
 }
 
@@ -81,7 +81,7 @@ bool chernova_n_word_count_mpi::TestMPITaskParallel::pre_processing() {
     for (std::size_t i = 0; i < taskData->inputs_count[0]; i++) {
       input_[i] = tmp_ptr[i];
     }
-    if (input_.size() != 0) input_ = clean_string(input_);
+    if (!input_.empty()) input_ = clean_string(input_);
     taskData->inputs_count[0] = input_.size();
   }
   return true;
