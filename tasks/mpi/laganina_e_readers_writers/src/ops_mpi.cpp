@@ -102,7 +102,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
     }
 
     world.recv(0, 2, shared_data);
-    for (int &t : shared_data) {
+    for (int& t : shared_data) {
       t++;  // adding 1 to each element
     }
 
