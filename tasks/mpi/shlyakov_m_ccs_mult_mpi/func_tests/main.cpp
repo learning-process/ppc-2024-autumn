@@ -154,7 +154,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_empty) {
   EXPECT_FALSE(task.validation());
 }
 
-TEST(TestTaskMPI, matrix_multiplication_singleelement) {
+TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_singleelement) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
   int rank = world.rank();
