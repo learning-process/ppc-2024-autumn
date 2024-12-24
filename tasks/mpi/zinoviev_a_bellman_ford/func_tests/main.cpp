@@ -108,3 +108,34 @@ TEST(zinoviev_a_bellman_ford, Test_Negative_Weights_No_Cycle_mpi) {
     ASSERT_EQ(shortest_paths, expected);
   }
 }
+
+TEST(zinoviev_a_bellman_ford, Test_Disconnected_Graph_mpi) {
+  boost::mpi::communicator world;
+  std::vector<int> graph = {0, 3, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0};
+  std::vector<int> shortest_paths(6, std::numeric_limits<int>::max());
+  shortest_paths[0] = 0;  // Distance to itself is zero.
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(6);
+  taskData->inputs_count.emplace_back(6);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(6);
+
+  zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> expected = {0,
+                                 3,
+                                 std::numeric_limits<int>::max(),
+                                 std::numeric_limits<int>::max(),
+                                 std::numeric_limits<int>::max(),
+                                 std::numeric_limits<int>::max()};
+    ASSERT_EQ(shortest_paths, expected);
+  }
+}
