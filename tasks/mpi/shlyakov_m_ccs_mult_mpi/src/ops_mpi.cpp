@@ -108,8 +108,6 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
     return true;
   }
 
-  // Убрали 'else' после 'return'
-
   boost::mpi::broadcast(world, A_.values, 0);
   boost::mpi::broadcast(world, A_.row_indices, 0);
   boost::mpi::broadcast(world, A_.col_pointers, 0);
