@@ -22,8 +22,6 @@ TEST(vershinina_a_cannons_algorithm, Test_1) {
   auto rhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(
       4, {1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15, 4, 8, 12, 16});
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(4);
-
   auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(4);
 
   auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(
@@ -31,8 +29,6 @@ TEST(vershinina_a_cannons_algorithm, Test_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->inputs_count.emplace_back(4);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
@@ -51,8 +47,6 @@ TEST(vershinina_a_cannons_algorithm, Test_2) {
   auto rhs =
       vershinina_a_cannons_algorithm::TMatrix<double>::create(4, {3, 5, 7, 6, 2, 7, 6, 3, 7, 5, 3, 2, 4, 3, 2, 5});
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(4);
-
   auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(4);
 
   auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(
@@ -60,8 +54,6 @@ TEST(vershinina_a_cannons_algorithm, Test_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->inputs_count.emplace_back(4);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
@@ -78,16 +70,12 @@ TEST(vershinina_a_cannons_algorithm, Test_3) {
   auto lhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {1, 2, 3, 4, 5, 6, 7, 8, 9});
   auto rhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {1, 4, 7, 2, 5, 8, 3, 6, 9});
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
-
   auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
 
   auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {14, 32, 50, 32, 77, 122, 50, 122, 194});
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->inputs_count.emplace_back(3);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
@@ -104,15 +92,11 @@ TEST(vershinina_a_cannons_algorithm, Test_4) {
   auto lhs = getRandomMatrix(3);
   auto rhs = getRandomMatrix(3);
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
-
   auto res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
   taskDataSeq->inputs_count.emplace_back(3);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
   taskDataSeq->outputs_count.emplace_back(res.n);
@@ -129,15 +113,11 @@ TEST(vershinina_a_cannons_algorithm, Test_5) {
   auto lhs = getRandomMatrix(10);
   auto rhs = getRandomMatrix(10);
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(10);
-
   auto res = vershinina_a_cannons_algorithm::TMatrix<double>::create(10);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
   taskDataSeq->inputs_count.emplace_back(10);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data.data()));
   taskDataSeq->outputs_count.emplace_back(res.n);
