@@ -8,7 +8,7 @@
 
 using namespace shlyakov_m_ccs_mult;
 
-SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
+static SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
   SparseMatrix ccs_matrix;
   int rows = matrix.size();
 
@@ -34,48 +34,24 @@ SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
   return ccs_matrix;
 }
 
-std::vector<std::vector<double>> create_sparse_matrix(int rows, int cols, double sparsity_level,
-                                                      unsigned int seed = 0) {
-  std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols, 1.0));
-
-  int num_zeros = static_cast<int>(rows * cols * sparsity_level);
-
-  std::vector<int> indices(rows * cols);
-  for (int i = 0; i < indices.size(); ++i) {
-    indices[i] = i;
-  }
-
-  std::mt19937 g(seed);
-
-  std::shuffle(indices.begin(), indices.end(), g);
-
-  for (int i = 0; i < num_zeros; ++i) {
-    int index = indices[i];
-    int row = index / cols;
-    int col = index % cols;
-    matrix[row][col] = 0.0;
-  }
-
-  return matrix;
-}
-
-std::vector<std::vector<double>> ccs_to_matrix(const SparseMatrix& ccs_matrix, int rows, int cols) {
+static std::vector<std::vector<double>> generate_random_sparse_matrix(int rows, int cols, double density) {
   std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols, 0.0));
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dis(0.0, 1.0);
+  std::normal_distribution<double> normal(0.0, 1.0);
 
-  int num_cols = ccs_matrix.col_pointers.size() - 1;
-
-  for (int col = 0; col < num_cols; ++col) {
-    int start = ccs_matrix.col_pointers[col];
-    int end = ccs_matrix.col_pointers[col + 1];
-    for (int k = start; k < end; ++k) {
-      int row = ccs_matrix.row_indices[k];
-      matrix[row][col] = ccs_matrix.values[k];
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      if (dis(gen) < density) {
+        matrix[i][j] = normal(gen);
+      }
     }
   }
   return matrix;
 }
 
-std::vector<std::vector<double>> matrix_multiply(const std::vector<std::vector<double>>& matrix_a,
+static std::vector<std::vector<double>> matrix_multiply(const std::vector<std::vector<double>>& matrix_a,
                                                  const std::vector<std::vector<double>>& matrix_b) {
   int rows_a = matrix_a.size();
   int cols_a = matrix_a[0].size();
@@ -94,7 +70,7 @@ std::vector<std::vector<double>> matrix_multiply(const std::vector<std::vector<d
   return result;
 }
 
-bool are_ccs_matrices_equal(const SparseMatrix& a, const SparseMatrix& b, double tolerance = 1e-9) {
+static bool are_ccs_matrices_equal(const SparseMatrix& a, const SparseMatrix& b, double tolerance = 1e-9) {
   if (a.values.size() != b.values.size() || a.row_indices.size() != b.row_indices.size() ||
       a.col_pointers.size() != b.col_pointers.size()) {
     return false;
@@ -120,17 +96,14 @@ bool are_ccs_matrices_equal(const SparseMatrix& a, const SparseMatrix& b, double
   return true;
 }
 
-
 TEST(shlyakov_m_ccs_mult_seq, empty_matrices_test) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   int rows = 0;
   int cols = 0;
   double sparsity = 0.0;
-  unsigned int seed1 = 123;
-  unsigned int seed2 = 456;
 
-  auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -159,11 +132,9 @@ TEST(shlyakov_m_ccs_mult_seq, square_matrices_test1) {
   int rows = 10;
   int cols = 10;
   double sparsity = 0.5;
-  unsigned int seed1 = 123;
-  unsigned int seed2 = 456;
 
-  auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -213,11 +184,9 @@ TEST(shlyakov_m_ccs_mult_seq, square_matrices_test2) {
   int rows = 3;
   int cols = 3;
   double sparsity = 0.5;
-  unsigned int seed1 = 789;
-  unsigned int seed2 = 987;
 
-  auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -269,11 +238,9 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test1) {
   int rows_b = 3;
   int cols_b = 4;
   double sparsity = 0.4;
-  unsigned int seed1 = 321;
-  unsigned int seed2 = 123;
 
-  auto matrix_a = create_sparse_matrix(rows_a, cols_a, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows_b, cols_b, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows_a, cols_a, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows_b, cols_b, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -315,9 +282,9 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test1) {
   actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
   actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
 
-  //std::cerr << actual_result.values << std::endl
-   //         << actual_result.row_indices << std::endl
-    //        << actual_result.col_pointers;
+  // std::cerr << actual_result.values << std::endl
+  //         << actual_result.row_indices << std::endl
+  //        << actual_result.col_pointers;
 
   ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
 }
@@ -329,11 +296,9 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test2) {
   int rows_b = 10;
   int cols_b = 5;
   double sparsity = 0.7;
-  unsigned int seed1 = 543;
-  unsigned int seed2 = 876;
 
-  auto matrix_a = create_sparse_matrix(rows_a, cols_a, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows_b, cols_b, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows_a, cols_a, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows_b, cols_b, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -382,12 +347,10 @@ TEST(shlyakov_m_ccs_mult_seq, single_element_matrix_test) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   int rows = 1;
   int cols = 1;
-  double sparsity = 0.0;
-  unsigned int seed1 = 123;
-  unsigned int seed2 = 456;
+  double sparsity = 1.0;
 
-  auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -437,11 +400,9 @@ TEST(shlyakov_m_ccs_mult_seq, sparse_matrices_test) {
   int rows = 10;
   int cols = 10;
   double sparsity = 0.9;
-  unsigned int seed1 = 789;
-  unsigned int seed2 = 321;
 
-  auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
@@ -490,12 +451,10 @@ TEST(shlyakov_m_ccs_mult_seq, all_zeros_matrices_test) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   int rows = 5;
   int cols = 5;
-  double sparsity = 1.0;
-  unsigned int seed1 = 123;
-  unsigned int seed2 = 456;
+  double sparsity = 0.0;
 
-  auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-  auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
+  auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
 
   SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
   SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);

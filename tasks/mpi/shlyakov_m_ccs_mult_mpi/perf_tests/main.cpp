@@ -14,7 +14,7 @@
 
 using namespace shlyakov_m_ccs_mult_mpi;
 
-SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
+static SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
   SparseMatrix ccs_matrix;
   int rows = matrix.size();
 
@@ -40,28 +40,20 @@ SparseMatrix matrix_to_ccs(const std::vector<std::vector<double>>& matrix) {
   return ccs_matrix;
 }
 
-std::vector<std::vector<double>> create_sparse_matrix(int rows, int cols, double sparsity_level,
-                                                      unsigned int seed = 0) {
-  std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols, 1.0));
+std::vector<std::vector<double>> generate_random_sparse_matrix(int rows, int cols, double density) {
+  std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols, 0.0));
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<double> dis(0.0, 1.0);
+  std::normal_distribution<double> normal(0.0, 1.0);
 
-  int num_zeros = static_cast<int>(rows * cols * sparsity_level);
-
-  std::vector<int> indices(rows * cols);
-  for (int i = 0; i < indices.size(); ++i) {
-    indices[i] = i;
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      if (dis(gen) < density) {
+        matrix[i][j] = normal(gen);
+      }
+    }
   }
-
-  std::mt19937 g(seed);
-
-  std::shuffle(indices.begin(), indices.end(), g);
-
-  for (int i = 0; i < num_zeros; ++i) {
-    int index = indices[i];
-    int row = index / cols;
-    int col = index % cols;
-    matrix[row][col] = 0.0;
-  }
-
   return matrix;
 }
 
@@ -69,42 +61,31 @@ TEST(shlyakov_m_ccs_mult_mpi, test_pipeline_run) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
 
-  int rows = 3000;
-  int cols = 3000;
-  double sparsity = 0.9;
-  unsigned int seed1 = 123;
-  unsigned int seed2 = 456;
+  int rows = 6000;
+  int cols = 6000;
+  double density = 0.01;
 
-  if (world.rank() == 0) {
-    auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-    auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
 
-    SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-    SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_a.values.size()));
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_a.row_indices.size()));
-    taskData->inputs_count.push_back(cols);
-
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_b.values.size()));
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_b.row_indices.size()));
-    taskData->inputs_count.push_back(rows);
-  }
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
 
   auto mpiTask = std::make_shared<shlyakov_m_ccs_mult_mpi::TestTaskMPI>(taskData);
-
-  ASSERT_TRUE(mpiTask->validation());
-  ASSERT_TRUE(mpiTask->pre_processing());
-  mpiTask->run();
-  ASSERT_TRUE(mpiTask->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -124,44 +105,33 @@ TEST(shlyakov_m_ccs_mult_mpi, test_task_run) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
 
-  int rows = 3000;
-  int cols = 3000;
-  double sparsity = 0.9;
-  unsigned int seed1 = 123;
-  unsigned int seed2 = 456;
+  int rows = 6000;
+  int cols = 6000;
+  double density = 0.01;
 
-  if (world.rank() == 0) {
-    auto matrix_a = create_sparse_matrix(rows, cols, sparsity, seed1);
-    auto matrix_b = create_sparse_matrix(rows, cols, sparsity, seed2);
+  std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
 
-    SparseMatrix ccs_matrix_a = matrix_to_ccs(matrix_a);
-    SparseMatrix ccs_matrix_b = matrix_to_ccs(matrix_b);
+  SparseMatrix A_ccs = matrix_to_ccs(dense_A);
+  SparseMatrix B_ccs = matrix_to_ccs(dense_B);
 
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.values.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.row_indices.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_a.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(A_ccs.col_pointers.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.values.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.row_indices.data()));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(B_ccs.col_pointers.data()));
 
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.values.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.row_indices.data()));
-    taskData->inputs.push_back(reinterpret_cast<uint8_t*>(ccs_matrix_b.col_pointers.data()));
-
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_a.values.size()));
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_a.row_indices.size()));
-    taskData->inputs_count.push_back(cols);
-
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_b.values.size()));
-    taskData->inputs_count.push_back(static_cast<unsigned int>(ccs_matrix_b.row_indices.size()));
-    taskData->inputs_count.push_back(rows);
-  }
+  taskData->inputs_count.push_back(A_ccs.values.size());
+  taskData->inputs_count.push_back(A_ccs.row_indices.size());
+  taskData->inputs_count.push_back(A_ccs.col_pointers.size() - 1);
+  taskData->inputs_count.push_back(B_ccs.values.size());
+  taskData->inputs_count.push_back(B_ccs.row_indices.size());
+  taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
 
   auto mpiTask = std::make_shared<shlyakov_m_ccs_mult_mpi::TestTaskMPI>(taskData);
 
-  ASSERT_TRUE(mpiTask->validation());
-  mpiTask->pre_processing();
-  ASSERT_TRUE(mpiTask->run());
-  ASSERT_TRUE(mpiTask->post_processing());
-
-  auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
+   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
