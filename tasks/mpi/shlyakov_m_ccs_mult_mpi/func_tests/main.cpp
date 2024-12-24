@@ -120,7 +120,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect at (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
@@ -200,11 +200,11 @@ TEST(TestTaskMPI, matrix_multiplication_singleelement) {
     std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, static_cast<int>(C_rows), static_cast<int>(C_cols));
     std::vector<std::vector<double>> expected_C = {{10.0}};
 
-    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    ASSERT_EQ(dense_C.size(), expected_C.size());
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
@@ -369,7 +369,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
 
     std::vector<std::vector<double>> expected_C = dense_B;
 
-    ASSERT_EQ(dense_C.size(), expected_C.size()) << ;
+    ASSERT_EQ(dense_C.size(), expected_C.size());
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
         EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
@@ -442,7 +442,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << ;
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
