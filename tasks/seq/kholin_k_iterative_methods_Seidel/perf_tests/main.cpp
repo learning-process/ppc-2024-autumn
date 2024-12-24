@@ -4,9 +4,9 @@
 #include "seq/kholin_k_iterative_methods_Seidel/include/ops_seq.hpp"
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
-  const size_t count_rows = 100;
-  const size_t count_colls = 100;
-  float epsilon = 0.001f;
+  const size_t count_rows = 750;
+  const size_t count_colls = 750;
+  float epsilon = 1e-12f;
   //
   std::vector<float> in = kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
   std::vector<float> out(count_rows);
@@ -44,9 +44,9 @@ TEST(kholin_k_iterative_methods_Seidel_seq, test_pipeline_run) {
 }
 
 TEST(kholin_k_iterative_methods_Seidel_seq, test_task_run) {
-  const size_t count_rows = 100;
-  const size_t count_colls = 100;
-  float epsilon = 0.001f;
+  const size_t count_rows = 750;
+  const size_t count_colls = 750;
+  float epsilon = 1e-12f;
 
   std::vector<float> in = kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(count_rows, count_colls);
   std::vector<float> out(count_rows);
