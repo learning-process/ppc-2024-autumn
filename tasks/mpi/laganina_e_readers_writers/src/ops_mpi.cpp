@@ -11,7 +11,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::pre_processing() {
   if (world.rank() == 0) {
     int size_data = taskData->inputs_count[0];
     shared_data = std::vector<int>(size_data);
-    auto* in_data = reinterpret_cast<int*>(taskData->inputs[0]);
+    int* in_data = reinterpret_cast<int*>(taskData->inputs[0]);
     std::copy(in_data, in_data + size_data, shared_data.begin());
   }
   return true;
@@ -102,7 +102,7 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
     }
 
     world.recv(0, 2, shared_data);
-    for (int& t : shared_data) {
+    for (int &t : shared_data) {
       t++;  // adding 1 to each element
     }
 
