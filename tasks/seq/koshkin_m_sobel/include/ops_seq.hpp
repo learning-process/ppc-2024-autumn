@@ -27,12 +27,12 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<uint8_t> resimg;
 
   // clang-format off
-  static constexpr std::array<std::array<int8_t, 3>, 3> SOBEL_KERNEL_X = {{
+  static const std::array<std::array<int8_t, 3>, 3> SOBEL_KERNEL_X = {{
     {{-1, 0, 1}},
     {{-2, 0, 2}},
     {{-1, 0, 1}}
   }};
-  static constexpr std::array<std::array<int8_t, 3>, 3> SOBEL_KERNEL_Y = {{
+  static const std::array<std::array<int8_t, 3>, 3> SOBEL_KERNEL_Y = {{
     {{-1, -2, -1}},
     {{ 0,  0,  0}},
     {{ 1,  2,  1}}
