@@ -14,6 +14,27 @@ namespace nasedkin_e_strassen_algorithm {
 bool StrassenAlgorithmMPI::pre_processing() {
   internal_order_test();
   int rank = world.rank();
+
+  if (rank != 0) {
+    inputMatrixA.clear();
+    inputMatrixB.clear();
+    outputMatrix.clear();
+    inputMatrixA.resize(matrixSize * matrixSize, 0.0);
+    inputMatrixB.resize(matrixSize * matrixSize, 0.0);
+    outputMatrix.resize(matrixSize * matrixSize, 0.0);
+  }
+
+  if (rank == 0) {
+    auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* inputsB = reinterpret_cast<double*>(taskData->inputs[1]);
+    inputMatrixA.assign(inputsA, inputsA + matrixSize * matrixSize);
+    inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
+    outputMatrix.resize(matrixSize * matrixSize, 0.0);
+  }
+
+  boost::mpi::broadcast(world, inputMatrixA, 0);
+  boost::mpi::broadcast(world, inputMatrixB, 0);
+
   if (rank == 0) {
     std::cout << "Pre-processing: Loading inputs..." << std::endl;
     auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -79,10 +100,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
     bool StrassenAlgorithmMPI::run() {
       internal_order_test();
-      world.barrier();
       std::cout << "Rank " << world.rank() << ": Starting Strassen_multiply with matrixSize = " << matrixSize << std::endl;
+      world.barrier();
       outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
-      std::cout << "Run: Strassen multiplication completed." << std::endl;
       return true;
     }
 
@@ -218,9 +238,10 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
       int rank = world.rank();
       int num_procs = world.size();
+
       std::cout << "Num procs = " << num_procs << std::endl;
 
-      if (matrixA.empty() || matrixB.empty() || size == 0) {
+      if (rank == 0 && (matrixA.empty() || matrixB.empty() || size == 0)) {
         std::cout << "Rank " << rank << ": Error! matrixA, matrixB are empty, or size is zero before Strassen_multiply" << std::endl;
         return {};
       }
@@ -304,9 +325,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
           };
           std::cout << "Tasks created successfully" << std::endl;
 
-          std::cout << "Rank " << world.rank() << ": Reached barrier before task distribution." << std::endl;
+          std::cout << "Rank " << rank << ": Reached barrier before task distribution." << std::endl;
           world.barrier();
-          std::cout << "Passed barrier" << std::endl;
+          std::cout <<"Rank " << rank ": passed barrier before task distribution." << std::endl;
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
@@ -322,7 +343,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
           }
         }
 
+        std::cout << "Rank " << rank << ": Reached barrier after task distribution." << std::endl;
         world.barrier();
+        std::cout <<"Rank " << rank ": passed barrier after task distribution" << std::endl;
         for (int i = 0; i < 7; ++i) {
           if (i % num_procs == rank) {
             std::vector<double> taskA;

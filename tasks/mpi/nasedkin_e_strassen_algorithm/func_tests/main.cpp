@@ -54,10 +54,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_2x2) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
@@ -93,10 +93,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_3x3) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
@@ -132,10 +132,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_4x4) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
@@ -171,10 +171,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_5x5) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
@@ -210,10 +210,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_8x8) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
@@ -249,10 +249,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_16x16) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
@@ -288,10 +288,10 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_32x32) {
   }
 
   nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI testMpiTaskParallel(taskDataParallel);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  ASSERT_TRUE(testMpiTaskParallel.pre_processing());
+  ASSERT_TRUE(testMpiTaskParallel.run());
+  ASSERT_TRUE(testMpiTaskParallel.post_processing());
 
   if (world.rank() == 0) {
     for (const auto& val : resultParallel) {
