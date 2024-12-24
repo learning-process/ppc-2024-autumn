@@ -73,14 +73,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication) {
   boost::mpi::communicator world;
   int rank = world.rank();
 
-  // A = [1 0 2
-  //      0 3 0
-  //      4 0 5]
   std::vector<std::vector<double>> dense_A = {{1.0, 0.0, 2.0}, {0.0, 3.0, 0.0}, {4.0, 0.0, 5.0}};
-
-  // B = [7 0
-  //      0 8
-  //      9 0]
   std::vector<std::vector<double>> dense_B = {{7.0, 0.0}, {0.0, 8.0}, {9.0, 0.0}};
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
@@ -221,13 +214,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
   int rank = world.rank();
-
-  // A = [1 2 3]
   std::vector<std::vector<double>> dense_A = {{1.0, 2.0, 3.0}};
-
-  // B = [4
-  //      5
-  //      6]
   std::vector<std::vector<double>> dense_B = {{4.0}, {5.0}, {6.0}};
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
@@ -248,10 +235,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
   taskData->inputs_count.push_back(B_ccs.col_pointers.size() - 1);
 
   TestTaskMPI task(taskData);
-  EXPECT_TRUE(task.validation()) << "Validation failed";
-  EXPECT_TRUE(task.pre_processing()) << "Pre-processing failed";
-  EXPECT_TRUE(task.run()) << "Run failed";
-  EXPECT_TRUE(task.post_processing()) << "Post-processing failed";
+  EXPECT_TRUE(task.validation());
+  EXPECT_TRUE(task.pre_processing());
+  EXPECT_TRUE(task.run());
+  EXPECT_TRUE(task.post_processing()) ;
 
   if (rank == 0) {
     auto C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -271,10 +258,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
     // [1*4 + 2*5 + 3*6] = [4+10+18] = [32]
     std::vector<std::vector<double>> expected_C = {{32.0}};
 
-    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    ASSERT_EQ(dense_C.size(), expected_C.size());
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
@@ -334,11 +321,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
     std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, static_cast<int>(C_rows), static_cast<int>(C_cols));
     std::vector<std::vector<double>> expected_C = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
 
-    // Compare dense_C with expected_C
-    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    ASSERT_EQ(dense_C.size(), expected_C.size());
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Mismatch at (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
@@ -349,14 +335,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
   boost::mpi::communicator world;
   int rank = world.rank();
 
-  // A = [1 0 0
-  //      0 1 0
-  //      0 0 1]
   std::vector<std::vector<double>> dense_A = {{1.0, 0.0, 0.0}, {0.0, 1.0, 0.0}, {0.0, 0.0, 1.0}};
-
-  // B = [7 0 9
-  //      0 8 0
-  //      9 0 1]
   std::vector<std::vector<double>> dense_B = {{7.0, 0.0, 9.0}, {0.0, 8.0, 0.0}, {9.0, 0.0, 1.0}};
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
@@ -399,10 +378,10 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
 
     std::vector<std::vector<double>> expected_C = dense_B;
 
-    ASSERT_EQ(dense_C.size(), expected_C.size()) << "Row size mismatch";
+    ASSERT_EQ(dense_C.size(), expected_C.size()) <<;
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
       }
     }
   }
@@ -419,7 +398,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
   std::vector<std::vector<double>> dense_B =
-      generate_random_sparse_matrix(cols, rows, density);  // Проверено: порядок (cols, rows) верен
+      generate_random_sparse_matrix(cols, rows, density);
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
@@ -473,7 +452,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << "Incorrect (" << i << ", " << j << ")";
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) <<;
       }
     }
   }
