@@ -7,6 +7,26 @@
 
 #include "mpi/zinoviev_a_bellman_ford/include/ops_mpi.hpp"
 
+std::vector<int> generateRandomGraph(size_t V, size_t E) {
+  std::vector<int> graph(V * V, 0);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> weightDist(1, 100);
+  std::uniform_int_distribution<> vertexDist(0, V - 1);
+
+  size_t edges = 0;
+  while (edges < E) {
+    int u = vertexDist(gen);
+    int v = vertexDist(gen);
+    if (u != v && graph[u * V + v] == 0) {
+      graph[u * V + v] = weightDist(gen);
+      edges++;
+    }
+  }
+
+  return graph;
+}
+
 TEST(zinoviev_a_bellman_ford, Test_Small_Graph_mpi) {
   boost::mpi::communicator world;
   std::vector<int> graph = {0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0};
@@ -79,5 +99,30 @@ TEST(zinoviev_a_bellman_ford, Test_Negative_Weights_No_Cycle_mpi) {
   if (world.rank() == 0) {
     std::vector<int> expected = {0, -1, 2, -2, 1};
     ASSERT_EQ(shortest_paths, expected);
+  }
+}
+
+TEST(zinoviev_a_bellman_ford, Test_Random_Graph_mpi) {
+  boost::mpi::communicator world;
+  size_t V = 100;
+  size_t E = 500;
+  std::vector<int> graph = generateRandomGraph(V, E);
+  std::vector<int> shortest_paths(V, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(V);
+  taskData->inputs_count.emplace_back(E);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(V);
+
+  zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(shortest_paths[0], 0);
   }
 }
