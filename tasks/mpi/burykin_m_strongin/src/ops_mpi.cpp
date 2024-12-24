@@ -42,11 +42,11 @@ bool StronginSequential::run() {
   }
 
   while (true) {
-    for (size_t i = 0ull; i < x.size(); i++) {
+    for (size_t i = 0; i < x.size(); i++) {
       y.push_back(f(x[i]));
     }
-    for (size_t i = 0ull; i < x.size() - 1ull; i++) {
-      double lipsh = std::abs((y[i + 1ull] - y[i]) / (x[i + 1ull] - x[i]));
+    for (size_t i = 0; i < x.size() - 1; i++) {
+      double lipsh = std::abs((y[i + 1] - y[i]) / (x[i + 1] - x[i]));
       if (lipsh > lipshM) {
         lipshM = lipsh;
         lipshm = lipsh + lipsh;
@@ -104,6 +104,14 @@ bool StronginParallel::run() {
   MPI_Status status;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  double lipshM = 0;
+  double lipshm = 0.0;
+  double lipsh;
+
+  int interval = 0;
+  double R = 0.0;
+
   if (rank == 0) {
     std::vector<double> x;
     x.push_back(x0);
@@ -112,17 +120,13 @@ bool StronginParallel::run() {
     while (true) {
       sort(x.begin(), x.end());
 
-      int part = static_cast<int>(x.size() - 1) / size;
-      int remain = static_cast<int>(x.size() - 1) % size;
+      int part = x.size() / size;
+      int remain = x.size() % size;
 
       for (int i = 1; i < size; ++i) {
-        std::cout << "Process 0 sending data to process " << i << std::endl;
-        MPI_Send(x.data() + remain + i * part, 1, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
+        MPI_Send(x.data() + remain + (i - 1) * part, part, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
       }
 
-      double lipshM = 0;
-      double lipshm = 0.0;
-      double lipsh;
       for (int i = 0; i < part + remain; ++i) {
         lipsh = std::abs((f(x[i + 1]) - f(x[i])) / (x[i + 1] - x[i]));
         if (lipsh > lipshM) {
@@ -140,9 +144,7 @@ bool StronginParallel::run() {
         }
       }
 
-      int interval = 0;
       double tempR;
-      double R = 0.0;
       for (int i = 0; i < static_cast<int>(x.size()) - 1; i++) {
         tempR = lipshm * (x[i + 1] - x[i]) + pow((f(x[i + 1]) - f(x[i])), 2) / (lipshm * (x[i + 1] - x[i])) -
                 2 * (f(x[i + 1]) + f(x[i]));
@@ -151,7 +153,6 @@ bool StronginParallel::run() {
           interval = i;
         }
       }
-
       if (x[interval + 1] - x[interval] <= eps) {
         for (int i = 1; i < size; ++i) MPI_Send(x.data(), 1, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
         res = x[interval + 1];
@@ -165,11 +166,10 @@ bool StronginParallel::run() {
     int part = 0;
     while (true) {
       MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-      std::cout << "Process " << rank << " receiving data" << std::endl;
       MPI_Get_count(&status, MPI_DOUBLE, &part);
 
       std::vector<double> x(part + 1);
-      MPI_Recv(x.data(), 1, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+      MPI_Recv(x.data(), part, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 
       if (status.MPI_TAG == 1) return true;
 

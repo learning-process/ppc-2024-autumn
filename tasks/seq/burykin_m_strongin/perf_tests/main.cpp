@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-/*
+
 #include <chrono>
 #include <vector>
 
@@ -8,8 +8,8 @@
 
 TEST(Burykin_M_Strongin_Perf, Strongin_Method_Pipeline_Run) {
   // Создаем данные
-  double x0 = -5.0;
-  double x1 = 5.0;
+  double x0 = -400.0;
+  double x1 = 410.0;
   double epsilon = 0.001;
   std::vector<double> out(1, 0.0);
 
@@ -25,7 +25,12 @@ TEST(Burykin_M_Strongin_Perf, Strongin_Method_Pipeline_Run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Создаем задачу
-  auto testTask = std::make_shared<burykin_m_strongin::StronginOptimization>(taskDataSeq);
+  auto fn = [](double x) { return std::sqrt(std::abs(x)) * std::sqrt(std::abs(x)); };
+  auto testTask = std::make_shared<burykin_m_strongin::StronginSequential>(taskDataSeq, fn);
+  ASSERT_EQ(testTask->validation(), true);
+  testTask->pre_processing();
+  testTask->run();
+  testTask->post_processing();
 
   // Создаем атрибуты производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -53,8 +58,8 @@ TEST(Burykin_M_Strongin_Perf, Strongin_Method_Pipeline_Run) {
 
 TEST(Burykin_M_Strongin_Perf, Strongin_Method_Task_Run) {
   // Создаем данные
-  double x0 = -5.0;
-  double x1 = 5.0;
+  double x0 = -400.0;
+  double x1 = 410.0;
   double epsilon = 0.001;
   std::vector<double> out(1, 0.0);
 
@@ -70,7 +75,12 @@ TEST(Burykin_M_Strongin_Perf, Strongin_Method_Task_Run) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   // Создаем задачу
-  auto testTask = std::make_shared<burykin_m_strongin::StronginOptimization>(taskDataSeq);
+  auto fn = [](double x) { return std::sqrt(std::abs(x)) * std::sqrt(std::abs(x)); };
+  auto testTask = std::make_shared<burykin_m_strongin::StronginSequential>(taskDataSeq, fn);
+  ASSERT_EQ(testTask->validation(), true);
+  testTask->pre_processing();
+  testTask->run();
+  testTask->post_processing();
 
   // Создаем атрибуты производительности
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -94,4 +104,4 @@ TEST(Burykin_M_Strongin_Perf, Strongin_Method_Task_Run) {
   // Проверка результата
   double expected_minimum = 0;
   EXPECT_NEAR(expected_minimum, out[0], epsilon);
-}*/
+}
