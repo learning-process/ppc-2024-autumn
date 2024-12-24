@@ -548,7 +548,7 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, VeryLargeImageTest
   ASSERT_TRUE(task->post_processing());
 
   if (world.rank() == 0) {
-    // Проверяем корректность результата
+    // РџСЂРѕРІРµСЂСЏРµРј РєРѕСЂСЂРµРєС‚РЅРѕСЃС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚Р°
     std::vector<int> expected;
     gauss_3x3(input, width, height, &expected);
     ASSERT_EQ(output.size(), expected.size());
