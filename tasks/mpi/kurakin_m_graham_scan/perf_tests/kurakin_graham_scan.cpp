@@ -10,7 +10,7 @@
 TEST(kurakin_m_graham_scan_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  int count_point = 10000;
+  int count_point = 100000;
   std::vector<double> points;
 
   int scan_size_par;
@@ -83,7 +83,7 @@ TEST(kurakin_m_graham_scan_mpi_perf_test, test_pipeline_run) {
 TEST(kurakin_m_graham_scan_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
 
-  int count_point = 10000;
+  int count_point = 100000;
   std::vector<double> points;
 
   int scan_size_par;
