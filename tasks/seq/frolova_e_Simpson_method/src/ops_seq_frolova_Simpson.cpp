@@ -118,7 +118,7 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::pre_processing() {
   divisions = static_cast<size_t>(value[0]);
   dimension = static_cast<size_t>(value[1]);
 
-  double* value_2 = reinterpret_cast<double*>(taskData->inputs[1]);
+  auto* value_2 = reinterpret_cast<double*>(taskData->inputs[1]);
   for (int i = 0; i < static_cast<int>(taskData->inputs_count[1]); i++) {
     limits.push_back(value_2[i]);
   }
@@ -140,10 +140,7 @@ bool frolova_e_Simpson_method_seq::Simpsonmethod::validation() {
   }
 
   auto dim = static_cast<size_t>(value[1]);
-  if (taskData->inputs_count[1] / dim != 2) {
-    return false;
-  }
-  return true;
+  return taskData->inputs_count[1] / dim == 2;
 }
 
 bool frolova_e_Simpson_method_seq::Simpsonmethod::run() {
