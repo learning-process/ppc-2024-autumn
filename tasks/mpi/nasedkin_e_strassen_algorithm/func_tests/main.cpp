@@ -31,7 +31,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_2x2) {
   int matrixSize = 2;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -70,7 +72,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_3x3) {
   int matrixSize = 3;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -107,7 +111,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_4x4) {
   int matrixSize = 4;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -144,7 +150,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_5x5) {
   int matrixSize = 5;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -181,7 +189,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_8x8) {
   int matrixSize = 8;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -218,7 +228,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_16x16) {
   int matrixSize = 16;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();
@@ -255,7 +267,9 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_32x32) {
   int matrixSize = 32;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
   std::vector<double> matrixB = generateRandomMatrix(matrixSize);
-  std::cout << "Test: MatrixA size = " << matrixA.size() << ", MatrixB size = " << matrixB.size() << std::endl;
+  if (world.rank() == 0) {
+    std::cout << "Test: MatrixA size = " << matrixSize << ", MatrixB size = " << matrixSize << std::endl;
+  }
   std::vector<double> resultParallel(matrixSize * matrixSize, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataParallel = std::make_shared<ppc::core::TaskData>();

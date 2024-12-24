@@ -30,6 +30,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
     }
 
     matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
+    if (rank == 0) {
+      world.broadcast(matrixSize, 0);
+    }
     std::cout << "Pre-processing: Matrix size = " << matrixSize << std::endl;
 
 
