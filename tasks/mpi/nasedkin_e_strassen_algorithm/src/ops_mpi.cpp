@@ -325,9 +325,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
           };
           std::cout << "Tasks created successfully" << std::endl;
 
-          std::cout << "Rank " << world.rank() << ": Reached barrier before task distribution." << std::endl;
+          std::cout << "Rank " << rank << ": Reached barrier before task distribution." << std::endl;
           world.barrier();
-          std::cout <<"Rank " << world.rank() ": passed barrier before task distribution." << std::endl;
+          std::cout <<"Rank " << rank << ": passed barrier before task distribution." << std::endl;
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
@@ -343,9 +343,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
           }
         }
 
-        std::cout << "Rank " << world.rank() << ": Reached barrier after task distribution." << std::endl;
+        std::cout << "Rank " << rank << ": Reached barrier after task distribution." << std::endl;
         world.barrier();
-        std::cout <<"Rank " << world.rank() ": passed barrier after task distribution" << std::endl;
+        std::cout <<"Rank " << rank << ": passed barrier after task distribution" << std::endl;
         for (int i = 0; i < 7; ++i) {
           if (i % num_procs == rank) {
             std::vector<double> taskA;
