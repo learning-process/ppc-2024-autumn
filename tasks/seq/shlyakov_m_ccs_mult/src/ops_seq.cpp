@@ -8,12 +8,11 @@
 #include <thread>
 #include <vector>
 
-namespace shlyakov_m_ccs_mult {
+using namespace shlyakov_m_ccs_mult;
 
-bool TestTaskSequential::pre_processing() {
+bool shlyakov_m_ccs_mult::TestTaskSequential::pre_processing() {
   internal_order_test();
 
-  // Используем auto вместо явных типов
   auto a_values = reinterpret_cast<const double*>(taskData->inputs[0]);
   auto a_row_indices = reinterpret_cast<const int*>(taskData->inputs[1]);
   auto a_col_pointers = reinterpret_cast<const int*>(taskData->inputs[2]);
@@ -41,7 +40,6 @@ bool TestTaskSequential::pre_processing() {
 bool TestTaskSequential::validation() {
   internal_order_test();
 
-  // Упрощаем условный оператор
   bool is_invalid = taskData == nullptr || taskData->inputs.size() != 6 || taskData->inputs_count.size() < 6 ||
                     static_cast<int>(taskData->inputs_count[2]) < 0 ||
                     static_cast<int>(taskData->inputs_count[5]) < 0 ||
@@ -63,7 +61,6 @@ bool TestTaskSequential::run() {
   std::vector<double> temp;
   temp.resize(rows_a, 0.0);
 
-  // Разделяем объявления переменных на отдельные строки
   int k;
   int pos_a;
   int row_a;
@@ -115,4 +112,4 @@ bool TestTaskSequential::post_processing() {
   return true;
 }
 
-}  // namespace shlyakov_m_ccs_mult
+// namespace shlyakov_m_ccs_mult
