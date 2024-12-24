@@ -26,7 +26,7 @@ void get_random_matrix(std::vector<int> &mat, int a, int b) {
 
 }  // namespace volochaev_s_shell_sort_with_simple_merge_16_mpi
 
-TEST(volochaev_s_shell_sort_with_simple_merge_16_mpi, Test_WA_val) {
+TEST(volochaev_s_shell_sort_with_simple_merge_16_mpi, Test_WA__val) {
   boost::mpi::communicator world;
   std::vector<int> global_A(100);
 
