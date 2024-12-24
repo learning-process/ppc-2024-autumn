@@ -20,28 +20,11 @@ bool TestTaskMPI::pre_processing() {
 }
 
 bool TestTaskMPI::validation() {
-  if (taskData->inputs.empty()) {
-    std::cerr << "Validation failed: inputs are empty!" << std::endl;
+  if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
     return false;
   }
 
-  if (taskData->inputs_count.empty()) {
-    std::cerr << "Validation failed: inputs_count is empty!" << std::endl;
-    return false;
-  }
-
-  if (taskData->outputs.empty()) {
-    std::cerr << "Validation failed: outputs are empty!" << std::endl;
-    return false;
-  }
-
-  if (taskData->outputs_count.empty()) {
-    std::cerr << "Validation failed: outputs_count is empty!" << std::endl;
-    return false;
-  }
-
-  if (taskData->inputs_count.size() != taskData->outputs_count.size()) {
-    std::cerr << "Validation failed: inputs_count size does not match outputs_count size!" << std::endl;
+  if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
     return false;
   }
 
@@ -49,26 +32,47 @@ bool TestTaskMPI::validation() {
 }
 
 bool TestTaskMPI::run() {
+  int world_size, world_rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
   int n = data_.size();
 
-  for (int gap = n / 2; gap > 0; gap /= 2) {
-    for (int i = gap; i < n; ++i) {
-      int temp = data_[i];
+  int local_size = n / world_size;
+  std::vector<int> local_data(local_size);
+
+  MPI_Scatter(data_.data(), local_size, MPI_INT, local_data.data(), local_size, MPI_INT, 0, MPI_COMM_WORLD);
+
+  for (int gap = local_size / 2; gap > 0; gap /= 2) {
+    for (int i = gap; i < local_size; ++i) {
+      int temp = local_data[i];
       int j;
-      for (j = i; j >= gap && data_[j - gap] > temp; j -= gap) {
-        data_[j] = data_[j - gap];
+      for (j = i; j >= gap && local_data[j - gap] > temp; j -= gap) {
+        local_data[j] = local_data[j - gap];
       }
-      data_[j] = temp;
+      local_data[j] = temp;
     }
+  }
+
+  MPI_Gather(local_data.data(), local_size, MPI_INT, data_.data(), local_size, MPI_INT, 0, MPI_COMM_WORLD);
+
+  if (world_rank == 0) {
+    std::sort(data_.begin(), data_.end());
   }
 
   return true;
 }
 
 bool TestTaskMPI::post_processing() {
-  size_t output_size = taskData->outputs_count[0];
-  auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
-  memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
+  int world_rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+  if (world_rank == 0) {
+    size_t output_size = taskData->outputs_count[0];
+    auto* raw_output_data = reinterpret_cast<unsigned char*>(taskData->outputs[0]);
+    memcpy(raw_output_data, data_.data(), output_size * sizeof(int));
+  }
+
   return true;
 }
 
