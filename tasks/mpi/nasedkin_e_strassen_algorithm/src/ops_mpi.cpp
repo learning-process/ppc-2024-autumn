@@ -336,8 +336,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
               std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size()
                         << ") and taskB[" << i << "] (size = " << tasksB[i].size()
                         << ") to rank " << (i % num_procs) << std::endl;
-              world.send(i % num_procs, 0, tasks[i]);
-              world.send(i % num_procs, 0, tasksB[i]);
+              world.send(i % num_procs, i, tasks[i]);
+              world.send(i % num_procs, i, tasksB[i]);
               std::cout << "Rank 0 sent taskA[" << i << "] and taskB[" << i << "] to rank " << (i % num_procs) << std::endl;
             }
           }
@@ -352,14 +352,14 @@ bool StrassenAlgorithmMPI::pre_processing() {
             std::vector<double> taskB;
 
             std::cout << "Rank " << rank << " waiting for taskA and taskB for M[" << i << "]..." << std::endl;
-            world.recv(0, 0, taskA);
-            world.recv(0, 0, taskB);
+            world.recv(0, i, taskA);
+            world.recv(0, i, taskB);
             std::cout << "Rank " << rank << " received taskA size = " << taskA.size()
                       << ", taskB size = " << taskB.size() << std::endl;
 
             M[i] = strassen_recursive(taskA, taskB, half_size);
 
-            world.send(0, 0, M[i]);
+            world.send(0, i, M[i]);
             std::cout << "Rank " << rank << " sent result for M[" << i << "] to rank 0." << std::endl;
           }
         }
@@ -371,7 +371,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
             } else {
               std::cout << "Rank 0 waiting to receive result for M[" << i << "] from rank " << (i % num_procs) << "..." << std::endl;
               std::vector<double> result;
-              world.recv(i % num_procs, 0, result);
+              world.recv(i % num_procs, i, result);
               M[i] = result;
               std::cout << "Rank 0 received result for M[" << i << "] from rank " << (i % num_procs) << std::endl;
             }
