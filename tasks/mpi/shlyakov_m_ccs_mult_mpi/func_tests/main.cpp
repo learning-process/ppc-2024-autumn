@@ -238,7 +238,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
   EXPECT_TRUE(task.validation());
   EXPECT_TRUE(task.pre_processing());
   EXPECT_TRUE(task.run());
-  EXPECT_TRUE(task.post_processing()) ;
+  EXPECT_TRUE(task.post_processing());
 
   if (rank == 0) {
     auto C_values = reinterpret_cast<double*>(taskData->outputs[0]);
@@ -254,8 +254,6 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_rectangular) {
     C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + static_cast<size_t>(C_cols + 1));
 
     std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, static_cast<int>(C_rows), static_cast<int>(C_cols));
-
-    // [1*4 + 2*5 + 3*6] = [4+10+18] = [32]
     std::vector<std::vector<double>> expected_C = {{32.0}};
 
     ASSERT_EQ(dense_C.size(), expected_C.size());
@@ -272,14 +270,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_zeromatrix) {
   boost::mpi::communicator world;
   int rank = world.rank();
 
-  // A = [0 0 0
-  //      0 0 0
-  //      0 0 0]
   std::vector<std::vector<double>> dense_A = {{0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}, {0.0, 0.0, 0.0}};
-
-  // B = [1 2 3
-  //      4 5 6
-  //      7 8 9]
   std::vector<std::vector<double>> dense_B = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}};
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
@@ -378,7 +369,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
 
     std::vector<std::vector<double>> expected_C = dense_B;
 
-    ASSERT_EQ(dense_C.size(), expected_C.size()) <<;
+    ASSERT_EQ(dense_C.size(), expected_C.size()) << ;
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
         EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
@@ -397,8 +388,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
   double density = 0.1;
 
   std::vector<std::vector<double>> dense_A = generate_random_sparse_matrix(rows, cols, density);
-  std::vector<std::vector<double>> dense_B =
-      generate_random_sparse_matrix(cols, rows, density);
+  std::vector<std::vector<double>> dense_B = generate_random_sparse_matrix(cols, rows, density);
 
   SparseMatrix A_ccs = matrix_to_ccs(dense_A);
   SparseMatrix B_ccs = matrix_to_ccs(dense_B);
@@ -452,7 +442,7 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 
     for (size_t i = 0; i < dense_C.size(); ++i) {
       for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) <<;
+        EXPECT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6) << ;
       }
     }
   }
