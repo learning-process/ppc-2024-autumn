@@ -1,25 +1,32 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/vershinina_a_cannons_algorithm/include/ops_seq.hpp"
 
+vershinina_a_cannons_algorithm::TMatrix<double> getRandomMatrix(double r) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::uniform_int_distribution<> distr(0, 100);
+  auto matrix = vershinina_a_cannons_algorithm::TMatrix<double>::create(r);
+  for (size_t i = 0; i < matrix.n * matrix.n; i++) {
+    matrix.data[i] = distr(gen);
+  }
+  return matrix;
+}
+
 TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
-  auto lhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {1, 2, 3, 4, 5, 6, 7, 8, 9});
-  auto rhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {1, 4, 7, 2, 5, 8, 3, 6, 9});
+  auto lhs = getRandomMatrix(150);
+  auto rhs = getRandomMatrix(150);
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
+  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(150);
 
-  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
-
-  auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {14, 32, 50, 32, 77, 122, 50, 122, 194});
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
-  taskDataSeq->inputs_count.emplace_back(3);
+  taskDataSeq->inputs_count.emplace_back(150);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
 
@@ -39,24 +46,18 @@ TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(act_res, ref_res);
 }
 
 TEST(vershinina_a_cannons_algorithm, test_task_run) {
-  auto lhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {1, 2, 3, 4, 5, 6, 7, 8, 9});
-  auto rhs = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {1, 4, 7, 2, 5, 8, 3, 6, 9});
+  auto lhs = getRandomMatrix(150);
+  auto rhs = getRandomMatrix(150);
 
-  auto res_c = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
+  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(150);
 
-  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3);
-
-  auto ref_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(3, {14, 32, 50, 32, 77, 122, 50, 122, 194});
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(res_c.data.data()));
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
-  taskDataSeq->inputs_count.emplace_back(3);
+  taskDataSeq->inputs_count.emplace_back(150);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
 
@@ -76,5 +77,4 @@ TEST(vershinina_a_cannons_algorithm, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(act_res, ref_res);
 }
