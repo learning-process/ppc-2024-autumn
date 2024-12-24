@@ -55,6 +55,9 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
       world.send(i, 0, &input, 1);
     }
 
+    boost::mpi::request r_buffer[2];
+    boost::mpi::request r_message;
+
     int buffer_size = taskData->inputs_count[2];
     // int producer_count = taskData->inputs_count[1];
     int consumer_count = world.size() - producer_count;
@@ -76,7 +79,8 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
         data_count--;
       }
       std::vector<int> message_bw(2);
-      world.recv(boost::mpi::any_source, 0, message_bw.data(), 2);
+      r_message = world.irecv(boost::mpi::any_source, 0, message_bw.data(), 2);
+      r_message.wait();
       if (message_bw[1] == 0) {  // exit producer
         producer_count--;
         producer_exit.push(message_bw[0]);
@@ -90,8 +94,9 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
         producer.pop();
         int data = 0;
         if (producer_rank != 0) {
-          world.send(producer_rank, 0, &data, 1);
-          world.recv(producer_rank, 0, &data, 1);
+          r_buffer[0] = world.isend(producer_rank, producer_rank, &data, 1);
+          r_buffer[1] = world.irecv(producer_rank, producer_rank, &data, 1);
+          boost::mpi::wait_all(r_buffer, r_buffer + 2);
         } else {
           data = data_0;
         }
@@ -103,20 +108,23 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
         int data = buffer.front();
         buffer.pop();
         std::vector<int> message_fw = {data, 2};
-        world.send(consumer_rank, 0, message_fw.data(), 2);
+        r_message = world.isend(consumer_rank, 0, message_fw.data(), 2);
+        r_message.wait();
       }
       if (producer_count == 0 && buffer.empty() && consumer.size() == (size_t)consumer_count) {
         while (!consumer.empty()) {
           int consumer_rank = consumer.front();
           consumer.pop();
           std::vector<int> message_fw = {0, 0};
-          world.send(consumer_rank, 0, message_fw.data(), 2);
+          r_message = world.isend(consumer_rank, 0, message_fw.data(), 2);
+          r_message.wait();
         }
         while (!producer_exit.empty()) {
           int producer_rank = producer_exit.front();
           producer_exit.pop();
           int message_fw = 0;
-          world.send(producer_rank, 0, &message_fw, 1);
+          r_message = world.isend(producer_rank, 0, &message_fw, 1);
+          r_message.wait();
         }
         break;
       }
@@ -127,34 +135,45 @@ bool kurakin_m_producer_consumer_mpi::TestMPITaskParallel::run() {
     int data_count;
     world.recv(0, 0, &data_count, 1);
 
+    boost::mpi::request r_buffer[2];
+    boost::mpi::request r_message;
+
     for (int i = 0; i < data_count; i++) {
       int data = getRandomInt();
       std::vector<int> message_fw = {world.rank(), 1};
-      world.send(0, 0, message_fw.data(), 2);
+      r_message = world.isend(0, 0, message_fw.data(), 2);
+      r_message.wait();
 
       int get_put;
-      world.recv(0, 0, &get_put, 1);
-      world.send(0, 0, &data, 1);
+      r_buffer[0] = world.irecv(0, world.rank(), &get_put, 1);
+      r_buffer[1] = world.isend(0, world.rank(), &data, 1);
+      boost::mpi::wait_all(r_buffer, r_buffer + 2);
 
       int x = getRandomInt(1, 5);
       std::this_thread::sleep_for(std::chrono::milliseconds(x));
     }
 
     std::vector<int> message = {world.rank(), 0};
-    world.send(0, 0, message.data(), 2);
+    r_message = world.isend(0, 0, message.data(), 2);
+    r_message.wait();
 
     int exit;
-    world.recv(0, 0, &exit, 1);
+    r_message = world.irecv(0, 0, &exit, 1);
+    r_message.wait();
     reduce(world, 0, res, std::plus(), 0);
   } else {  // consumer
     int cnt_data = 0;
 
+    boost::mpi::request r_buffer[2];
+
     while (true) {
       std::vector<int> message_fw = {world.rank(), 2};
-      world.send(0, 0, message_fw.data(), 2);
+      r_buffer[0] = world.isend(0, 0, message_fw.data(), 2);
 
       std::vector<int> message_bw(2);
-      world.recv(0, 0, message_bw.data(), 2);
+      r_buffer[1] = world.irecv(0, 0, message_bw.data(), 2);
+
+      boost::mpi::wait_all(r_buffer, r_buffer + 2);
 
       if (message_bw[1] == 0) {
         break;
