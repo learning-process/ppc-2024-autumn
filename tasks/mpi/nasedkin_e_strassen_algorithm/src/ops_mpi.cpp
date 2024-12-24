@@ -31,7 +31,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
     matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
     if (rank == 0) {
-      world.broadcast(matrixSize, 0);
+      boost::mpi::broadcast(world, matrixSize, 0);
     }
     std::cout << "Pre-processing: Matrix size = " << matrixSize << std::endl;
 
@@ -197,17 +197,17 @@ bool StrassenAlgorithmMPI::pre_processing() {
         std::vector<double> C21 = matrix_add(M2, M4, half_size);
         std::vector<double> C22 = matrix_add(matrix_subtract(matrix_add(M1, M3, half_size), M2, half_size), M6, half_size);
 
-        std::vector<double> result(size * size);
+        std::vector<double> local_result(size * size);
         for (size_t i = 0; i < half_size; ++i) {
             for (size_t j = 0; j < half_size; ++j) {
-                result[i * size + j] = C11[i * half_size + j];
-                result[i * size + j + half_size] = C12[i * half_size + j];
-                result[(i + half_size) * size + j] = C21[i * half_size + j];
-                result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
+              local_result[i * size + j] = C11[i * half_size + j];
+              local_result[i * size + j + half_size] = C12[i * half_size + j];
+              local_result[(i + half_size) * size + j] = C21[i * half_size + j];
+              local_result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
             }
         }
 
-        return result;
+        return local_result;
     }
 
     std::vector<double> StrassenAlgorithmMPI::strassen_base(const std::vector<double>& matrixA,
