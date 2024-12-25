@@ -10,7 +10,7 @@
 
 namespace sedova_o_multiplication_matrices_ccs_mpi {
 
-std::vector<std::vector<double>> gen_rand_matrix(int rows, int cols, int non_zero_count) {
+std::vector<std::vector<double>> gen_rand_matrix(int rows, int cols, size_t non_zero_count) {
   // Initialize a matrix filled with zeros
   std::vector<std::vector<double>> matrix(rows, std::vector<double>(cols, 0.0));
 
