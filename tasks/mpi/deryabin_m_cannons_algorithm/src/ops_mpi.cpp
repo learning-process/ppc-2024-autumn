@@ -63,9 +63,9 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::pre_proc
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[0] == taskData->inputs_count[1] ==
-              pow((unsigned short)sqrt(taskData->inputs_count[0]), 2) &&
-          taskData->outputs_count[0] == 1;
+     return taskData->inputs_count[0] == taskData->inputs_count[1] ==
+                pow((unsigned short)sqrt(taskData->inputs_count[0]), 2) &&
+            taskData->outputs_count[0] == 1;
   }
   return true;
 }
@@ -209,8 +209,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     while (i != dimension) {
       while (j != dimension) {
         while (k != dimension) {
-          output_matrix_C[i * dimension + j] +=
-              input_matrix_A[i * dimension + k] * input_matrix_B[k * dimension + j];
+          output_matrix_C[i * dimension + j] += input_matrix_A[i * dimension + k] * input_matrix_B[k * dimension + j];
           k++;
         }
         j++;
