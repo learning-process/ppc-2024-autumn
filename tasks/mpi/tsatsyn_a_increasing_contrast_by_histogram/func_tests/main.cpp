@@ -26,8 +26,8 @@ static std::vector<int> getRandomSizeImage() {
   std::mt19937 gen(dev());
   std::vector<int> vec;
   vec.resize(2);
-  vec[0] = gen() % (1000)+10;
-  vec[1] = gen() % (1000)+10;
+  vec[0] = gen() % (1000) + 10;
+  vec[1] = gen() % (1000) + 10;
   return vec;
 }
 TEST(tsatsyn_a_increasing_contrast_by_histogram_mpi, Test_10x1) {
