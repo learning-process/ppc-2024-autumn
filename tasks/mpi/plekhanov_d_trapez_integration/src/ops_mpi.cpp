@@ -1,93 +1,97 @@
 #include "mpi/plekhanov_d_trapez_integration/include/ops_mpi.hpp"
 
 #include <algorithm>
+#include <boost/mpi.hpp>
 #include <functional>
-#include <random>
+#include <string>
 #include <vector>
 
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskSequential::validation() {
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::pre_processing() {
   internal_order_test();
-  return (taskData->inputs.size() == 3 && taskData->outputs.size() == 1);
+  a_ = *reinterpret_cast<double*>(taskData->inputs[0]);
+  b_ = *reinterpret_cast<double*>(taskData->inputs[1]);
+  n_ = *reinterpret_cast<int*>(taskData->inputs[2]);
+  return true;
 }
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskSequential::pre_processing() {
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::validation() {
   internal_order_test();
-  a = *reinterpret_cast<double*>(taskData->inputs[0]);
-  b = *reinterpret_cast<double*>(taskData->inputs[1]);
-  epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-  cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
-  h = (b - a) / cnt_of_splits;
-  input_.resize(cnt_of_splits + 1);
-  for (int i = 0; i <= cnt_of_splits; ++i) {
-    double x = a + i * h;
-    input_[i] = function_square(x);
+  return taskData->outputs_count[0] == 1;
+}
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::run() {
+  internal_order_test();
+  res_ = integrate_function(a_, b_, n_, function_);
+  return true;
+}
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::post_processing() {
+  internal_order_test();
+  *reinterpret_cast<double*>(taskData->outputs[0]) = res_;
+  return true;
+}
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::pre_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    a_ = *reinterpret_cast<double*>(taskData->inputs[0]);
+    b_ = *reinterpret_cast<double*>(taskData->inputs[1]);
+    n_ = *reinterpret_cast<int*>(taskData->inputs[2]);
   }
   return true;
 }
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskSequential::run() {
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::validation() {
   internal_order_test();
+  if (world.rank() == 0) {
+    return taskData->outputs_count[0] == 1;
+  }
+  return true;
+}
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::run() {
+  internal_order_test();
+  double params[3] = {0.0};
+  if (world.rank() == 0) {
+    params[0] = a_;
+    params[1] = b_;
+    params[2] = static_cast<double>(n_);
+  }
+  boost::mpi::broadcast(world, params, std::size(params), 0);
+  double local_res = integrate_function(params[0], params[1], static_cast<int>(params[2]), function_);
+  boost::mpi::reduce(world, local_res, res_, std::plus(), 0);
+  return true;
+}
+bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::post_processing() {
+  internal_order_test();
+  if (world.rank() == 0) {
+    *reinterpret_cast<double*>(taskData->outputs[0]) = res_;
+  }
+  return true;
+}
+void plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::set_function(
+    const std::function<double(double)>& f) {
+  function_ = f;
+}
+void plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::set_function(
+    const std::function<double(double)>& f) {
+  function_ = f;
+}
+double plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::integrate_function(
+    double a, double b, int n, const std::function<double(double)>& f) {
+  const double width = (b - a) / n;
   double result = 0.0;
-  result += 0.5 * (function_square(a) + function_square(b));
-  for (int i = 1; i < cnt_of_splits; ++i) {
-    double x = a + i * h;
-    result += function_square(x);
+  for (int step = 0; step < n; step++) {
+    const double x1 = a + step * width;
+    const double x2 = a + (step + 1) * width;
+    result += 0.5 * (x2 - x1) * (f(x1) + f(x2));
   }
-  result *= h;
-  res = result;
-  return true;
+  return result;
 }
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskSequential::post_processing() {
-  internal_order_test();
-  reinterpret_cast<double*>(taskData->outputs[0])[0] = res;
-  return true;
-}
-
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskParallel::validation() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
-      return false;
-    }
+double plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::integrate_function(
+    double a, double b, int n, const std::function<double(double)>& f) {
+  int rank = world.rank();
+  int size = world.size();
+  const double width = (b - a) / n;
+  double result = 0.0;
+  for (int step = rank; step < n; step += size) {
+    const double x1 = a + step * width;
+    const double x2 = a + (step + 1) * width;
+    result += 0.5 * (x2 - x1) * (f(x1) + f(x2));
   }
-  return true;
-}
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskParallel::pre_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    a = *reinterpret_cast<double*>(taskData->inputs[0]);
-    b = *reinterpret_cast<double*>(taskData->inputs[1]);
-    double epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    cnt_of_splits = static_cast<int>(std::abs((b - a)) / epsilon);
-  }
-
-  boost::mpi::broadcast(world, a, 0);
-  boost::mpi::broadcast(world, b, 0);
-  boost::mpi::broadcast(world, cnt_of_splits, 0);
-
-  h = (b - a) / cnt_of_splits;
-  local_cnt_of_splits = cnt_of_splits / world.size();
-  if (world.rank() < cnt_of_splits % world.size()) {
-    local_cnt_of_splits++;
-  }
-  local_a = a + world.rank() * local_cnt_of_splits * h;
-  local_input_.resize(local_cnt_of_splits + 1);
-  return true;
-}
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskParallel::run() {
-  internal_order_test();
-  double local_res = 0.0;
-  local_res += 0.5 * (function_square(local_a) + function_square(local_a + local_cnt_of_splits * h));
-  for (int i = 0; i < local_cnt_of_splits; i++) {
-    double x = local_a + i * h;
-    local_res += function_square(x);
-  }
-  local_res *= h;
-  boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
-  return true;
-}
-bool plekhanov_d_trapez_integration_mpi::TestMPITaskParallel::post_processing() {
-  internal_order_test();
-  if (world.rank() == 0) {
-    *reinterpret_cast<double*>(taskData->outputs[0]) = res;
-  }
-  return true;
+  return result;
 }

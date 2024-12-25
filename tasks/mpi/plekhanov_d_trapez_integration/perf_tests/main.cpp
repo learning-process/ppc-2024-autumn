@@ -1,25 +1,28 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <cmath>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/plekhanov_d_trapez_integration/include/ops_mpi.hpp"
-
-TEST(plekhanov_d_trapez_integration_mpi, test_integration_pipeline_run) {
+TEST(plekhanov_d_trapez_integration_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
-  double a = -1.45;
-  double b = 1.45;
-  double epsilon = 0.0000001;
+  double a = -2.0;
+  double b = 10.0;
+  int n = 100000;
+  double result = 0.0;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
+    taskDataPar->outputs_count.emplace_back(1);
   }
-  auto testMpiTaskParallel = std::make_shared<plekhanov_d_trapez_integration_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI>(taskDataPar);
+  auto f = [](double x) { return std::pow(x, 3) - std::pow(3, x) + std::exp(x); };
+  testMpiTaskParallel->set_function(f);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -33,23 +36,27 @@ TEST(plekhanov_d_trapez_integration_mpi, test_integration_pipeline_run) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+    double accurate_result = -29226.28;
+    ASSERT_NEAR(accurate_result, result, 0.01);
   }
 }
-
-TEST(plekhanov_d_trapez_integration_mpi, test_integration_task_run) {
+TEST(plekhanov_d_trapez_integration_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
-  double a = -1.45;
-  double b = 1.45;
-  double epsilon = 0.0000001;
+  double a = -2.0;
+  double b = 10.0;
+  int n = 100000;
+  double result = 0.0;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
+    taskDataPar->outputs_count.emplace_back(1);
   }
-  auto testMpiTaskParallel = std::make_shared<plekhanov_d_trapez_integration_mpi::TestMPITaskParallel>(taskDataPar);
+  auto testMpiTaskParallel = std::make_shared<plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI>(taskDataPar);
+  auto f = [](double x) { return std::pow(x, 3) - std::pow(3, x) + std::exp(x); };
+  testMpiTaskParallel->set_function(f);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
@@ -63,5 +70,7 @@ TEST(plekhanov_d_trapez_integration_mpi, test_integration_task_run) {
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
+    double accurate_result = -29226.28;
+    ASSERT_NEAR(accurate_result, result, 0.01);
   }
 }

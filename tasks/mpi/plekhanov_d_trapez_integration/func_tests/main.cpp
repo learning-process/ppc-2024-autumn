@@ -1,260 +1,102 @@
+#define _USE_MATH_DEFINES
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
-#include <memory>
-#include <random>
+#include <cmath>
+#include <vector>
 
 #include "mpi/plekhanov_d_trapez_integration/include/ops_mpi.hpp"
 
-TEST(plekhanov_d_trapez_integration_mpi, Test_Integration_mpi_1) {
+auto func1 = [](double x) { return x * x + 2 * x + 1; };
+auto func2 = [](double x) { return std::pow(x, 3) + 2 * x * x + 8; };
+auto func3 = [](double x) { return std::cos(x); };
+auto func4 = [](double x) { return std::sin(x); };
+auto func5 = [](double x) { return std::pow(3, x); };
+auto func6 = [](double x) { return std::exp(x * 2); };
+auto func7 = [](double x) { return std::pow(x, 4) - std::exp(x) + std::pow(4, x); };
+
+namespace plekhanov_d_trapez_integration_mpi {
+
+void run_test(double a_, double b_, std::function<double(double)> f_) {
   boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
+  std::vector<double> global_result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double a = -1.45;
-  double b = 0.0;
-  double epsilon = 0.00001;
+
+  double a = a_;
+  double b = b_;
+  int n = 100000;
+
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataPar->inputs_count.emplace_back(1);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskDataPar->inputs_count.emplace_back(1);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
   }
-  plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+
+  plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI testMpiTaskParallel(taskDataPar);
+
+  testMpiTaskParallel.set_function(f_);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
   testMpiTaskParallel.run();
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0.0);
+    std::vector<double> reference_result(1, 0);
+
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
+    taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    taskDataSeq->inputs_count.emplace_back(1);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&n));
+    taskDataSeq->inputs_count.emplace_back(1);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
+    taskDataSeq->outputs_count.emplace_back(reference_result.size());
+
+    plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ testMpiTaskSequential(taskDataSeq);
+    testMpiTaskSequential.set_function(f_);
     ASSERT_EQ(testMpiTaskSequential.validation(), true);
     testMpiTaskSequential.pre_processing();
     testMpiTaskSequential.run();
     testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
+
+    ASSERT_NEAR(global_result[0], reference_result[0], 0.01);
   }
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, Test_Integration_mpi_2) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  double a = 0.0;
-  double b = 1.45;
-  double epsilon = 0.00001;
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-  }
-  plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
+}  // namespace plekhanov_d_trapez_integration_mpi
 
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0.0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_squared_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(-1, 4, func1);
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, Test_Integration_mpi_3) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  double a = -10.0;
-  double b = 35.0;
-  double epsilon = 0.00001;
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-  }
-
-  plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0.0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_trippled_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(0, 10, func2);
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, Test_Integration_mpi_4) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-
-  double a = -5.0;
-  double b = 5.0;
-  double epsilon = 0.00001;
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-  }
-
-  plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_TRUE(testMpiTaskParallel.validation());
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0.0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_cosine_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(M_PI, M_PI * 2, func3);
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, Test_Integration_mpi_random) {
-  boost::mpi::communicator world;
-  std::vector<double> global_result(1, 0.0);
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  double a = (gen() % 100) / 100.0;
-  double b = (gen() % 100) / 100.0;
-  if (a == b) b += 0.1;
-  double epsilon = 0.0001;
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
-  }
-  plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), true);
-  testMpiTaskParallel.pre_processing();
-  testMpiTaskParallel.run();
-  testMpiTaskParallel.post_processing();
-
-  if (world.rank() == 0) {
-    std::vector<double> reference_result(1, 0.0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_result.data()));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-    ASSERT_EQ(testMpiTaskSequential.validation(), true);
-    testMpiTaskSequential.pre_processing();
-    testMpiTaskSequential.run();
-    testMpiTaskSequential.post_processing();
-    ASSERT_NEAR(reference_result[0], global_result[0], 1e-1);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_sine_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(M_PI, M_PI * 4, func4);
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, TaskMpi_InputSizeLessThan3) {
-  std::shared_ptr<ppc::core::TaskData> taskDataMPIParallel = std::make_shared<ppc::core::TaskData>();
-  boost::mpi::communicator world;
-  if (world.rank() == 0) {
-    double a = -1.0;
-    double b = 1.0;
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    double result = 0.0;
-    taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
-    ASSERT_EQ(testTaskMPIParallel.validation(), false);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_pow_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(-1, 6, func5);
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, TaskMpi_InputSizeMoreThan3) {
-  std::shared_ptr<ppc::core::TaskData> taskDataMPIParallel = std::make_shared<ppc::core::TaskData>();
-  boost::mpi::communicator world;
-  if (world.rank() == 0) {
-    double a = -1.0;
-    double b = 1.0;
-    double epsilon = 0.01;
-    double extra_input = 5.0;
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&extra_input));
-    double result = 0.0;
-    taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
-    ASSERT_EQ(testTaskMPIParallel.validation(), false);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_exp_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(-2.0, 8.0, func6);
 }
 
-TEST(plekhanov_d_trapez_integration_mpi, TaskMpi_OutputSizeMoreThan1) {
-  std::shared_ptr<ppc::core::TaskData> taskDataMPIParallel = std::make_shared<ppc::core::TaskData>();
-  boost::mpi::communicator world;
-  if (world.rank() == 0) {
-    double a = -1.0;
-    double b = 1.0;
-    double epsilon = 0.01;
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    double result1 = 0.0;
-    double result2 = 0.0;
-    taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result1));
-    taskDataMPIParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(&result2));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
-    ASSERT_EQ(testTaskMPIParallel.validation(), false);
-  }
-}
-
-TEST(plekhanov_d_trapez_integration_mpi, TaskMpi_OutputSizeLessThan1) {
-  std::shared_ptr<ppc::core::TaskData> taskDataMPIParallel = std::make_shared<ppc::core::TaskData>();
-  boost::mpi::communicator world;
-  if (world.rank() == 0) {
-    double a = -1.0;
-    double b = 1.0;
-    double epsilon = 0.01;
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
-    taskDataMPIParallel->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    plekhanov_d_trapez_integration_mpi::TestMPITaskParallel testTaskMPIParallel(taskDataMPIParallel);
-    ASSERT_EQ(testTaskMPIParallel.validation(), false);
-  }
+TEST(plekhanov_d_trapez_integration_mpi, test_int_mixed_func) {
+  plekhanov_d_trapez_integration_mpi::run_test(-2.0, 10.0, func7);
 }

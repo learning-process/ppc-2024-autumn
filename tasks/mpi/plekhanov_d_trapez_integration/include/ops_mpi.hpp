@@ -1,58 +1,45 @@
 #pragma once
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <numeric>
-#include <string>
-#include <utility>
+#include <cmath>
+#include <functional>
+#include <memory>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace plekhanov_d_trapez_integration_mpi {
 
-class TestMPITaskSequential : public ppc::core::Task {
+class trapezIntegrationSEQ : public ppc::core::Task {
  public:
-  explicit TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit trapezIntegrationSEQ(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  double a = 0.0;
-  double b = 0.0;
-  double h = 0.0;
-  int cnt_of_splits = 0;
-  double epsilon;
-  double static function_square(double x) { return x * x; }
+  void set_function(const std::function<double(double)>& f);
 
  private:
-  std::vector<int> input_;
-  double res{};
-  std::string ops;
+  double a_{}, b_{}, n_{}, res_{};
+  std::function<double(double)> function_;
+  static double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
-
-class TestMPITaskParallel : public ppc::core::Task {
+class trapezIntegrationMPI : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  explicit trapezIntegrationMPI(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  double a = 0.0;
-  double b = 0.0;
-  double h = 0.0;
-  int cnt_of_splits = 0;
-  double local_a;
-  int local_cnt_of_splits;
-  static double function_square(double x) { return x * x; }
+  void set_function(const std::function<double(double)>& f);
 
  private:
-  std::vector<int> input_, local_input_;
-  double res;
-  std::string ops;
+  double a_{}, b_{}, n_{}, res_{};
+  std::function<double(double)> function_;
   boost::mpi::communicator world;
+  double integrate_function(double a, double b, int n, const std::function<double(double)>& f);
 };
 
 }  // namespace plekhanov_d_trapez_integration_mpi
