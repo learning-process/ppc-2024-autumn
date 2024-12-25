@@ -219,6 +219,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
       int rank = world.rank();
       int num_procs = world.size();
+      std::vector<std::vector<double>> M(7);
 
       if (rank == 0) {
       std::cout << "Num procs = " << num_procs << std::endl;
@@ -285,7 +286,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
       std::cout << "B11 size = " << B11.size() << ", B12 size = " << B12.size()
                 << ", B21 size = " << B21.size() << ", B22 size = " << B22.size() << std::endl;
 
-        std::vector<std::vector<double>> M(7);
           std::vector<std::vector<double>> tasks = {
               matrix_add(A11, A22, half_size),
               matrix_add(A21, A22, half_size),
@@ -318,8 +318,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
               std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size()
                         << ") and taskB[" << i << "] (size = " << tasksB[i].size()
                         << ") to rank " << (i % num_procs) << std::endl;
-              world.send(i % num_procs, i, tasks[i]);
-              world.send(i % num_procs, i, tasksB[i]);
+                world.send(i % num_procs, i, tasks[i]);
+                world.send(i % num_procs, i, tasksB[i]);
               std::cout << "Rank 0 sent taskA[" << i << "] and taskB[" << i << "] to rank " << (i % num_procs) << std::endl;
             }
           }
@@ -329,7 +329,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
         world.barrier();
         std::cout <<"Rank " << rank << ": passed barrier after task distribution" << std::endl;
         for (int i = 0; i < 7; ++i) {
-          if (i % num_procs == rank) {
+          if (i % num_procs == rank && i % num_procs != 0) {
             std::vector<double> taskA;
             std::vector<double> taskB;
 
