@@ -3,8 +3,6 @@
 
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool korovin_n_min_val_row_matrix_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
 
