@@ -123,10 +123,11 @@ bool StronginParallel::run() {
       int part = static_cast<int>(x.size() / size);
       int remain = static_cast<int>(x.size() % size);
 
-      for (int i = 1; i < size; ++i) {
-        MPI_Send(x.data() + remain + (i - 1) * part, part, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
+      if (part > 0) {
+        for (int i = 1; i < size; ++i) {
+          MPI_Send(x.data() + remain + (i - 1) * part, part, MPI_DOUBLE, i, 0, MPI_COMM_WORLD);
+        }
       }
-
       for (int i = 0; i < part + remain; ++i) {
         lipsh = std::abs((f(x[i + 1]) - f(x[i])) / (x[i + 1] - x[i]));
         if (lipsh > lipshM) {
