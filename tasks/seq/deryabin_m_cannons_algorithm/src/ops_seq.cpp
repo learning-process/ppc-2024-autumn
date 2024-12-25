@@ -12,9 +12,9 @@ bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::pre_proce
 
 bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::validation() {
   internal_order_test();
-  return (taskData->inputs[0])[0].size() == (taskData->inputs[1])[0].size() ==
-             pow((unsigned short)sqrt((taskData->inputs[0])[0].size()), 2) &&
-         taskData->outputs_count[0] == 1;
+  return (taskData->inputs[0])[0].size() == (taskData->inputs[1])[0].size() &&
+         (taskData->inputs[1])[0].size() == pow((unsigned short)sqrt((taskData->inputs[0])[0].size()), 2) &&
+          taskData->outputs_count[0] == 1;
 }
 
 bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::run() {
