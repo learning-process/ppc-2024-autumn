@@ -94,7 +94,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::validation() {
 }
 
 bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
-  internal_order_test();
+  /* internal_order_test();
 
   std::vector<int> recv_counts(world.size(), 0);
   std::vector<int> displacements(world.size(), 0);
@@ -166,6 +166,49 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
         world.recv(world.rank() - 1, 0, received_data);
         local_res.insert(local_res.end(), received_data.begin(), received_data.end());
         budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
+      }
+    }
+  }
+
+  boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
+
+  return true;
+  */
+  internal_order_test();
+
+  std::vector<int> recv_counts(world.size(), 0);
+  std::vector<int> displacements(world.size(), 0);
+
+  boost::mpi::broadcast(world, res, 0);
+
+  int n_of_send_elements = res.size() / world.size();
+  int n_of_proc_with_extra_elements = res.size() % world.size();
+
+  int start = world.rank() * n_of_send_elements + std::min(world.rank(), n_of_proc_with_extra_elements);
+  int end = start + n_of_send_elements + (world.rank() < n_of_proc_with_extra_elements ? 1 : 0);
+
+  std::vector<int> local_res(res.begin() + start, res.begin() + end);
+
+  std::sort(local_res.begin(), local_res.end());
+
+  for (int phase = 0; phase < world.size(); ++phase) {
+    if (phase % 2 == 0) {
+      if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
+        world.send(world.rank() + 1, 0, local_res);
+      } else if (world.rank() % 2 == 1) {
+        std::vector<int> received_data;
+        world.recv(world.rank() - 1, 0, received_data);
+        local_res.insert(local_res.end(), received_data.begin(), received_data.end());
+        std::sort(local_res.begin(), local_res.end());
+      }
+    } else {
+      if (world.rank() % 2 == 1 && world.rank() + 1 < world.size()) {
+        world.send(world.rank() + 1, 0, local_res);
+      } else if (world.rank() % 2 == 0) {
+        std::vector<int> received_data;
+        world.recv(world.rank() - 1, 0, received_data);
+        local_res.insert(local_res.end(), received_data.begin(), received_data.end());
+        std::sort(local_res.begin(), local_res.end());
       }
     }
   }
