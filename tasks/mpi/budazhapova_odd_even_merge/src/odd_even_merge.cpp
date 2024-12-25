@@ -12,7 +12,7 @@
 
 namespace budazhapova_betcher_odd_even_merge_mpi {
 
-void MergeSequential::counting_sort(std::vector<int>& arr, int exp) {
+void counting_sort(std::vector<int>& arr, int exp) {
   int n = arr.size();
   std::vector<int> output(n);
   std::vector<int> count(10, 0);
@@ -34,7 +34,7 @@ void MergeSequential::counting_sort(std::vector<int>& arr, int exp) {
   }
 }
 
-void MergeSequential::radix_sort(std::vector<int>& arr) {
+void radix_sort(std::vector<int>& arr) {
   int max_num = *std::max_element(arr.begin(), arr.end());
   for (int exp = 1; max_num / exp > 0; exp *= 10) {
     counting_sort(arr, exp);
@@ -45,7 +45,7 @@ void batcher_merge(std::vector<int>& arr, int low, int mid, int high) {
   std::vector<int> left(arr.begin() + low, arr.begin() + mid + 1);
   std::vector<int> right(arr.begin() + mid + 1, arr.begin() + high + 1);
 
-  int i = 0, j = 0, k = low;
+  size_t i = 0, j = 0, k = low;
 
   while (i < left.size() && j < right.size()) {
     if (left[i] <= right[j]) {
@@ -135,10 +135,11 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   int end;
   int world_size = world.size();
   int world_rank = world.rank();
+  int res_size = static_cast<int>(res.size());
 
   for (int i = 0; i < world_size; i++) {
-    n_of_send_elements = res.size() / world_size;
-    n_of_proc_with_extra_elements = res.size() % world_size;
+    n_of_send_elements = res_size / world_size;
+    n_of_proc_with_extra_elements = res_size % world_size;
 
     start = i * n_of_send_elements + std::min(i, n_of_proc_with_extra_elements);
     end = start + n_of_send_elements + (i < n_of_proc_with_extra_elements ? 1 : 0);
@@ -146,14 +147,14 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
   }
 
-  n_of_send_elements = res.size() / world_size;
-  n_of_proc_with_extra_elements = res.size() % world_size;
+  n_of_send_elements = res_size / world_size;
+  n_of_proc_with_extra_elements = res_size % world_size;
 
   start = world_rank * n_of_send_elements + std::min(world_rank, n_of_proc_with_extra_elements);
   end = start + n_of_send_elements + (world_rank < n_of_proc_with_extra_elements ? 1 : 0);
 
-  if (world.size() > res.size()) {
-    if (world.rank() < res.size()) {
+  if (world.size() > res_size) {
+    if (world.rank() < res_size) {
       local_res.resize(1);
       for (int i = start; i < end; i++) {
         local_res[(i - start)] = res[i];
