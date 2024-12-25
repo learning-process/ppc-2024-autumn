@@ -25,6 +25,7 @@ class MergeSequential : public ppc::core::Task {
  private:
   std::vector<int> res;
   std::vector<int> local_res;
+  int n_el = 0;
 };
 class MergeParallel : public ppc::core::Task {
  public:
@@ -37,6 +38,7 @@ class MergeParallel : public ppc::core::Task {
  private:
   std::vector<int> res;
   std::vector<int> local_res;
+  int n_el = 0;
 
   boost::mpi::communicator world;
 };

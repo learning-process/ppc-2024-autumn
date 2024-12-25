@@ -78,6 +78,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeSequential::pre_processing() {
   internal_order_test();
   res = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
                          reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
+  n_el = taskData->inputs_count[0];
   return true;
 }
 
@@ -110,6 +111,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::pre_processing() {
   if (world.rank() == 0) {
     res = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
                            reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
+    n_el = taskData->inputs_count[0];
   }
   return true;
 }
