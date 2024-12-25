@@ -52,7 +52,4 @@ class StrassenMatrixMultiplicationParallel : public ppc::core::Task {
 std::vector<double> add(const std::vector<double>& A, const std::vector<double>& B, size_t n);
 std::vector<double> subtract(const std::vector<double>& A, const std::vector<double>& B, size_t n);
 std::vector<double> strassen_seq(const std::vector<double>& A, const std::vector<double>& B, size_t n);
-
-bool is_square_matrix_size(size_t n);
-bool is_power_of_two(size_t n);
 }  // namespace nikolaev_r_strassen_matrix_multiplication_method_mpi

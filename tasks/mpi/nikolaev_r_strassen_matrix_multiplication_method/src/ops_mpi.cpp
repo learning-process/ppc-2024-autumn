@@ -15,7 +15,9 @@ bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultipl
 bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationSequential::validation() {
   internal_order_test();
   return !taskData->inputs.empty() && taskData->inputs_count[0] == taskData->inputs_count[1] &&
-         is_square_matrix_size(taskData->inputs_count[0]) && taskData->inputs_count[0] == taskData->outputs_count[0];
+         taskData->inputs_count[0] == static_cast<size_t>(std::sqrt(taskData->inputs_count[0])) *
+                                          static_cast<size_t>(std::sqrt(taskData->inputs_count[0])) &&
+         taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicationSequential::run() {
@@ -48,7 +50,9 @@ bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultipl
   internal_order_test();
   if (world.rank() == 0) {
     return !taskData->inputs.empty() && taskData->inputs_count[0] == taskData->inputs_count[1] &&
-           is_square_matrix_size(taskData->inputs_count[0]) && taskData->inputs_count[0] == taskData->outputs_count[0];
+           taskData->inputs_count[0] == static_cast<size_t>(std::sqrt(taskData->inputs_count[0])) *
+                                            static_cast<size_t>(std::sqrt(taskData->inputs_count[0])) &&
+           taskData->inputs_count[0] == taskData->outputs_count[0];
   }
   return true;
 }
@@ -66,15 +70,6 @@ bool nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultipl
     std::copy(result_.begin(), result_.end(), outputs);
   }
   return true;
-}
-
-bool nikolaev_r_strassen_matrix_multiplication_method_mpi::is_square_matrix_size(size_t n) {
-  auto sqrt_n = static_cast<size_t>(std::sqrt(n));
-  return sqrt_n * sqrt_n == n;
-}
-
-bool nikolaev_r_strassen_matrix_multiplication_method_mpi::is_power_of_two(size_t n) {
-  return (n != 0) && ((n & (n - 1)) == 0);
 }
 
 std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_mpi::add(const std::vector<double>& A,
@@ -104,7 +99,7 @@ std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_mpi::strass
   }
 
   size_t newSize = n;
-  if (!is_power_of_two(n)) {
+  if ((n == 0) || ((n & (n - 1)) != 0)) {
     newSize = 1;
     while (newSize < n) newSize *= 2;
   }
@@ -191,7 +186,7 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
   boost::mpi::broadcast(active_comm, n, 0);
 
   size_t newSize = n;
-  if (!is_power_of_two(n)) {
+  if ((n == 0) || ((n & (n - 1)) != 0)) {
     newSize = 1;
     while (newSize < n) newSize *= 2;
   }
@@ -270,8 +265,6 @@ nikolaev_r_strassen_matrix_multiplication_method_mpi::StrassenMatrixMultiplicati
       case 6:
         M7 = strassen_seq(subtract(A12, A22, half), add(B21, B22, half), half);
         break;
-      default:
-        std::cerr << "Process " << rank << ": Skipping unexpected task " << task << std::endl;
     }
   }
 

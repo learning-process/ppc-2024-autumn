@@ -17,7 +17,9 @@ bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultipl
 bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultiplicationSequential::validation() {
   internal_order_test();
   return !taskData->inputs.empty() && taskData->inputs_count[0] == taskData->inputs_count[1] &&
-         is_square_matrix_size(taskData->inputs_count[0]) && taskData->inputs_count[0] == taskData->outputs_count[0];
+         taskData->inputs_count[0] == static_cast<size_t>(std::sqrt(taskData->inputs_count[0])) *
+                                          static_cast<size_t>(std::sqrt(taskData->inputs_count[0])) &&
+         taskData->inputs_count[0] == taskData->outputs_count[0];
 }
 
 bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultiplicationSequential::run() {
@@ -34,15 +36,6 @@ bool nikolaev_r_strassen_matrix_multiplication_method_seq::StrassenMatrixMultipl
   std::copy(result_.begin(), result_.end(), outputs);
 
   return true;
-}
-
-bool nikolaev_r_strassen_matrix_multiplication_method_seq::is_square_matrix_size(size_t n) {
-  auto sqrt_n = static_cast<size_t>(std::sqrt(n));
-  return sqrt_n * sqrt_n == n;
-}
-
-bool nikolaev_r_strassen_matrix_multiplication_method_seq::is_power_of_two(size_t n) {
-  return (n != 0) && ((n & (n - 1)) == 0);
 }
 
 std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_seq::add(const std::vector<double>& A,
@@ -72,7 +65,7 @@ std::vector<double> nikolaev_r_strassen_matrix_multiplication_method_seq::strass
   }
 
   size_t newSize = n;
-  if (!is_power_of_two(n)) {
+  if ((n == 0) || ((n & (n - 1)) != 0)) {
     newSize = 1;
     while (newSize < n) newSize *= 2;
   }
