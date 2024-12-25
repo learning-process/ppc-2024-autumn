@@ -104,7 +104,8 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
       }
 
       result_ = C_subset;
-    }
+    } else
+      return true;
     return true;
   }
 
