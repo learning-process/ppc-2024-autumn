@@ -27,8 +27,7 @@ std::vector<int> generate_random_vector(int size, int minValue, int maxValue) {
 
 TEST(budazhapova_betcher_odd_even_merge_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> input_vector =
-      budazhapova_betcher_odd_even_merge_mpi::generate_random_vector_or_matrix(10000000, 5, 100);
+  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generate_random_vector(10000000, 5, 100);
   std::vector<int> out(10000000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -62,8 +61,7 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, test_pipeline_run) {
 
 TEST(budazhapova_betcher_odd_even_merge_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> input_vector =
-      budazhapova_betcher_odd_even_merge_mpi::generate_random_vector_or_matrix(10000000, 5, 100);
+  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generate_random_vector(10000000, 5, 100);
   std::vector<int> out(10000000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
