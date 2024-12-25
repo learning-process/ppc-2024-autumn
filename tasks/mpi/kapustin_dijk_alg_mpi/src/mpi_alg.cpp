@@ -134,13 +134,9 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
   boost::mpi::broadcast(world, row_ptr.data(), row_ptr.size(), 0);
   boost::mpi::broadcast(world, columns.data(), columns.size(), 0);
 
-  int delta = V / world.size();
-  int extra = V % world.size();
-  if (extra != 0) {
-    delta += 1;
-  }
-  int start_index = world.rank() * delta;
-  int end_index = std::min<int>(V, delta * (world.rank() + 1));
+  int vertices_per_process = V / world.size();
+  int start_vertex_index = world.rank() * vertices_per_process;
+  int end_vertex_index = (world.rank() == world.size() - 1) ? V : start_vertex_index + vertices_per_process;
 
   res_.resize(V, INF);
   std::vector<bool> visited(V, false);
@@ -150,44 +146,54 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
   }
 
   boost::mpi::broadcast(world, res_.data(), V, 0);
-  for (size_t k = 0; k < V; k++) {
-    int local_min = INF;
-    int local_index = -1;
-    int i = start_index;
-    while (i < end_index) {
-      if (!visited[i] && res_[i] < local_min) {
-        local_min = res_[i];
-        local_index = i;
+
+  for (size_t iteration = 0; iteration < V; iteration++) {
+    int local_min_distance = INF;
+    int local_min_vertex = -1;
+    int current_vertex = start_vertex_index;
+
+    while (current_vertex < end_vertex_index) {
+      if (!visited[current_vertex] && res_[current_vertex] < local_min_distance) {
+        local_min_distance = res_[current_vertex];
+        local_min_vertex = current_vertex;
       }
-      i++;
+      current_vertex++;
     }
 
-    std::pair<int, int> local_pair = {local_min, local_index};
-    std::pair<int, int> global_pair = {INF, -1};
-    boost::mpi::all_reduce(world, local_pair, global_pair,
-                           [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
-                             if (a.first < b.first) return a;
-                             if (a.first > b.first) return b;
-                             return (a.second < b.second) ? a : b;
-                           });
-    if (global_pair.first == INF) {
+    std::pair<int, int> local_min_pair = {local_min_distance, local_min_vertex};
+    std::pair<int, int> global_min_pair = {INF, -1};
+
+    boost::mpi::reduce(
+        world, local_min_pair, global_min_pair,
+        [](const std::pair<int, int>& a, const std::pair<int, int>& b) {
+          if (a.first < b.first) return a;
+          if (a.first > b.first) return b;
+          return (a.second < b.second) ? a : b;
+        },
+        0);
+
+    boost::mpi::broadcast(world, global_min_pair, 0);
+
+    if (global_min_pair.first == INF) {
       break;
     }
 
-    visited[global_pair.second] = true;
-    for (int j = row_ptr[global_pair.second]; j < row_ptr[global_pair.second + 1]; j++) {
-      int v = columns[j];
-      int w = values[j];
+    visited[global_min_pair.second] = true;
 
-      if (!visited[v] && res_[global_pair.second] != INF && (res_[global_pair.second] + w < res_[v])) {
-        res_[v] = res_[global_pair.second] + w;
+    for (int edge_index = row_ptr[global_min_pair.second]; edge_index < row_ptr[global_min_pair.second + 1];
+         edge_index++) {
+      int neighbor_vertex = columns[edge_index];
+      int edge_weight = values[edge_index];
+
+      if (!visited[neighbor_vertex] && res_[global_min_pair.second] != INF &&
+          (res_[global_min_pair.second] + edge_weight < res_[neighbor_vertex])) {
+        res_[neighbor_vertex] = res_[global_min_pair.second] + edge_weight;
       }
     }
-
-    std::vector<int> global_res_(V, INF);
-    boost::mpi::all_reduce(world, res_.data(), V, global_res_.data(), boost::mpi::minimum<int>());
-    res_ = global_res_;
   }
+  std::vector<int> global_result(V, INF);
+  boost::mpi::all_reduce(world, res_.data(), V, global_result.data(), boost::mpi::minimum<int>());
+  res_ = global_result;
 
   return true;
 }
@@ -195,9 +201,8 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
 bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    for (size_t i = 0; i < V; ++i) {
-      reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
-    }
+    int* output_data = reinterpret_cast<int*>(taskData->outputs[0]);
+    std::copy(res_.begin(), res_.end(), output_data);
   }
 
   return true;

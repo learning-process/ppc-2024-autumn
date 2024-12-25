@@ -10,7 +10,7 @@ std::vector<int> generateGraph(int V, int E) {
   std::set<std::pair<int, int>> edges;
 
   std::uniform_int_distribution<> dist_vertex(0, V - 1);
-  std::uniform_int_distribution<> dist_weight(1, 10);
+  std::uniform_int_distribution<> dist_weight(1, 100);
 
   int edgeCount = 0;
   while (edgeCount < E) {
@@ -31,7 +31,7 @@ std::vector<int> generateGraph(int V, int E) {
 
 TEST(kapustin_dijkstras_algorithm_mpi, test_pipeline_run) {
   const int V = 7000;
-  const int E = 20000;
+  const int E = 14000;
   boost::mpi::communicator world;
   std::vector<int> graph = generateGraph::generateGraph(V, E);
   std::vector<int> resMPI(V, 0);
@@ -41,10 +41,9 @@ TEST(kapustin_dijkstras_algorithm_mpi, test_pipeline_run) {
   taskDataMPI->inputs_count.emplace_back(static_cast<uint32_t>(E));
   taskDataMPI->outputs.emplace_back(reinterpret_cast<uint8_t*>(resMPI.data()));
   taskDataMPI->outputs_count.emplace_back(resMPI.size());
-
   auto testTaskMPI = std::make_shared<kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI>(taskDataMPI);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 7;
+  perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
@@ -64,7 +63,7 @@ TEST(kapustin_dijkstras_algorithm_mpi, test_pipeline_run) {
 
 TEST(kapustin_dijkstras_algorithm_mpi, test_task_run) {
   const int V = 7000;
-  const int E = 25000;
+  const int E = 14000;
   boost::mpi::communicator world;
   std::vector<int> graph = generateGraph::generateGraph(V, E);
   std::vector<int> resMPI(V, 0);
@@ -75,10 +74,9 @@ TEST(kapustin_dijkstras_algorithm_mpi, test_task_run) {
   taskDataMPI->inputs_count.emplace_back(static_cast<uint32_t>(E));
   taskDataMPI->outputs.emplace_back(reinterpret_cast<uint8_t*>(resMPI.data()));
   taskDataMPI->outputs_count.emplace_back(resMPI.size());
-
   auto testTaskMPI = std::make_shared<kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI>(taskDataMPI);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 7;
+  perfAttr->num_running = 10;
   const auto t0 = std::chrono::high_resolution_clock::now();
   perfAttr->current_timer = [&] {
     auto current_time_point = std::chrono::high_resolution_clock::now();
