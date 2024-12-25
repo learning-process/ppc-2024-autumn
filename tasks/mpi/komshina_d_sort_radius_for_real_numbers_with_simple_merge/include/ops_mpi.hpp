@@ -44,4 +44,6 @@ class TestMPITaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
   void execute_merge(std::vector<double>& local_data, int rank, int total_processes);
 };
+void SortDoubleByBits(std::vector<double>& data);
+
 }  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_mpi
