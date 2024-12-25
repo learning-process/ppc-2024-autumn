@@ -146,8 +146,6 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
 
   budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
 
-  boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
-
   for (int phase = 0; phase < world.size(); ++phase) {
     if (phase % 2 == 0) {
       if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
