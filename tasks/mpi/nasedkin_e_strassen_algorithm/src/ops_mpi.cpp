@@ -97,6 +97,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
         std::cout << "Post-processing: Output saved successfully." << std::endl;
       }
       return true;
+      std::cout << "Post-processing: returned true" << std::endl;
     }
 
     std::vector<double> StrassenAlgorithmMPI::matrix_add(const std::vector<double>& matrixA,
