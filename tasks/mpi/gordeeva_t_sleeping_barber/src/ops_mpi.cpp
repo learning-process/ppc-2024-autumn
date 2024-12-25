@@ -129,7 +129,7 @@ void gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel::dispatcher_logic() {
       barber_busy = false;
     }
 
-    if (waiting_clients.empty() && remaining_clients == 0 && !barber_busy) {
+    if (waiting_clients.empty() && remaining_clients == 0) {
       {
         boost::mpi::request req = world.isend(0, 0, -1);
         req.wait();
