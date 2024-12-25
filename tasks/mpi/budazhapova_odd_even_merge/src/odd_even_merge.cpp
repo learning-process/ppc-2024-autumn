@@ -119,6 +119,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::validation() {
   if (world.rank() == 0) {
     return res.size() > 0;
   }
+  return true;
 }
 
 bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
