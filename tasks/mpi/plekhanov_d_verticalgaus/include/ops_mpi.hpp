@@ -13,6 +13,13 @@
 
 namespace plekhanov_d_verticalgaus_mpi {
 
+
+void copy_input_data(double* source, std::vector<double>& destination, size_t size);
+
+bool validate_image(const std::vector<double>& image, size_t width, size_t height);
+
+void apply_gaussian_filter(const std::vector<double>& input, std::vector<double>& output, size_t width, size_t height);
+
 class VerticalGausSeqTest : public ppc::core::Task {
  public:
   explicit VerticalGausSeqTest(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}

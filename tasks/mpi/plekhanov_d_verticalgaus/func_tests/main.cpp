@@ -9,7 +9,7 @@
 
 namespace plekhanov_d_verticalgaus_mpi {
 
-std::vector<double> getRandomImage(int sz) {
+static std::vector<double> getRandomImage(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_real_distribution<double> dis(0, 255);
@@ -81,7 +81,48 @@ void run_test(int heightI, int widthI) {
     ASSERT_EQ(global_ans, reference_ans);
   }
 }
+
+void validation_test(int heightI, int widthI) {
+  boost::mpi::communicator world;
+
+  const int width = widthI;
+  const int height = heightI;
+
+  std::vector<double> global_img(width * height, 1);
+  std::vector<double> global_ans(width * height, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    global_img = plekhanov_d_verticalgaus_mpi::getRandomImage(width * height);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_img.data()));
+    taskDataPar->inputs_count.emplace_back(global_img.size());
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs_count.emplace_back(height);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_ans.data()));
+    taskDataPar->outputs_count.emplace_back(global_ans.size());
+  }
+
+  auto taskParallel = std::make_shared <plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
+  if (world.rank() == 0) {
+    EXPECT_FALSE(taskParallel->validation());
+  } else {
+    EXPECT_TRUE(taskParallel->validation());
+  }
+}
+
 }  // namespace plekhanov_d_verticalgaus_mpi
+
+TEST(plekhanov_d_verticalgaus_mpi, validation_zero_zero) { plekhanov_d_verticalgaus_mpi::validation_test(0, 0); }
+
+TEST(plekhanov_d_verticalgaus_mpi, validation_two_two) { plekhanov_d_verticalgaus_mpi::validation_test(2, 2); }
+
+TEST(plekhanov_d_verticalgaus_mpi, validation_three_two) { plekhanov_d_verticalgaus_mpi::validation_test(3, 2); }
+
+TEST(plekhanov_d_verticalgaus_mpi, validation_two_three) { plekhanov_d_verticalgaus_mpi::validation_test(2, 3); }
+
+TEST(plekhanov_d_verticalgaus_mpi, validation_hundred_two) { plekhanov_d_verticalgaus_mpi::validation_test(100, 2); }
 
 TEST(plekhanov_d_verticalgaus_mpi, three_four) { plekhanov_d_verticalgaus_mpi::run_test(3, 4); }
 
