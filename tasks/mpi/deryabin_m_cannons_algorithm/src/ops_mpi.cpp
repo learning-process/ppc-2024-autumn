@@ -43,19 +43,19 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskSequential::run() 
 
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskSequential::post_processing() {
   internal_order_test();
-  reinterpret_cast<std::vector<double> *>(taskData->outputs[0])[0] = output_matrix_C;
+  reinterpret_cast<std::vector<double>*>(taskData->outputs[0])[0] = output_matrix_C;
   return true;
 }
 
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-      input_matrix_A = std::vector<double>(taskData->inputs_count[0]);
-      input_matrix_B = std::vector<double>(taskData->inputs_count[1]);
-      auto* tmp_ptr_A = reinterpret_cast<double*>(taskData->inputs[0]);
-      auto* tmp_ptr_B = reinterpret_cast<double*>(taskData->inputs[1]);
-      std::copy(tmp_ptr_A, tmp_ptr_A + taskData->inputs_count[0], input_matrix_A.begin());
-      std::copy(tmp_ptr_B, tmp_ptr_B + taskData->inputs_count[1], input_matrix_B.begin());
+    input_matrix_A = std::vector<double>(taskData->inputs_count[0]);
+    input_matrix_B = std::vector<double>(taskData->inputs_count[1]);
+    auto* tmp_ptr_A = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* tmp_ptr_B = reinterpret_cast<double*>(taskData->inputs[1]);
+    std::copy(tmp_ptr_A, tmp_ptr_A + taskData->inputs_count[0], input_matrix_A.begin());
+    std::copy(tmp_ptr_B, tmp_ptr_B + taskData->inputs_count[1], input_matrix_B.begin());
   }
   return true;
 }
@@ -63,9 +63,9 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::pre_proc
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-      return taskData->inputs_count[0] == taskData->inputs_count[1] ==
-                pow((unsigned short)sqrt(taskData->inputs_count[0]), 2) &&
-            taskData->outputs_count[0] == 1;
+    return taskData->inputs_count[0] == taskData->inputs_count[1] ==
+              pow((unsigned short)sqrt(taskData->inputs_count[0]), 2) &&
+          taskData->outputs_count[0] == 1;
   }
   return true;
 }
@@ -83,8 +83,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     block_rows_columns = (unsigned short)sqrt(world.size());
     block_dimension = dimension / block_rows_columns;
   }
-  if (world.size() != 1 && world.size() ==
-             pow(block_rows_columns, 2) && dimension % block_rows_columns == 0) {
+  if (world.size() != 1 && world.size() == pow(block_rows_columns, 2) && dimension % block_rows_columns == 0) {
     boost::mpi::broadcast(world, dimension, 0);
     boost::mpi::broadcast(world, block_rows_columns, 0);
     boost::mpi::broadcast(world, block_dimension, 0);
@@ -94,8 +93,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     local_output_matrix_C = std::vector<double>(block_dimension * block_dimension);
     if (world.rank() == 0) {
       while (k != block_dimension) {
-        std::copy(input_matrix_A.data() + k * dimension, input_matrix_A.data() + k * dimension + block_dimension, local_input_matrix_A.begin() + k * block_dimension);
-        std::copy(input_matrix_B.data() + k * dimension, input_matrix_B.data() + k * dimension + block_dimension, local_input_matrix_B.begin() + k * block_dimension);
+        std::copy(input_matrix_A.data() + k * dimension, input_matrix_A.data() + k * dimension + block_dimension,
+                  local_input_matrix_A.begin() + k * block_dimension);
+        std::copy(input_matrix_B.data() + k * dimension, input_matrix_B.data() + k * dimension + block_dimension,
+                  local_input_matrix_B.begin() + k * block_dimension);
         k++;
       }
       k = 0;
@@ -104,21 +105,33 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
           if (i != 0 || j != 0) {
             while (k != block_dimension) {
               if (i == 0) {
-                world.send(i * block_rows_columns + j, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                world.send(i * block_rows_columns + j, k,
+                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
+                           block_dimension);
               } else {
                 if (i * block_rows_columns + j - i < i * block_rows_columns) {
-                  world.send(i * block_rows_columns + j + block_rows_columns - i, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                  world.send(i * block_rows_columns + j + block_rows_columns - i, k,
+                             input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
+                             block_dimension);
                 } else {
-                  world.send(i * block_rows_columns + j - i, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                  world.send(i * block_rows_columns + j - i, k,
+                             input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
+                             block_dimension);
                 }
               }
               if (j == 0) {
-                world.send(i * block_rows_columns + j, k, input_matrix_B.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                world.send(i * block_rows_columns + j, k,
+                           input_matrix_B.data() + (i * block_dimension + k) * dimension + j * block_dimension,
+                           block_dimension);
               } else {
                 if ((i - j) * block_rows_columns + j < 0) {
-                  world.send((i + block_rows_columns - j) * block_rows_columns + j, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                  world.send((i + block_rows_columns - j) * block_rows_columns + j, k,
+                             input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
+                             block_dimension);
                 } else {
-                  world.send((i - j) * block_rows_columns + j, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                  world.send((i - j) * block_rows_columns + j, k,
+                             input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
+                             block_dimension);
                 }
               }
               k++;
@@ -158,7 +171,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.send(world.rank() - 1, 0, local_input_matrix_A.data(), block_dimension);
       }
       if (world.rank() < block_rows_columns) {
-        world.send(world.rank() + block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(), block_dimension);
+        world.send(world.rank() + block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(),
+                   block_dimension);
       } else {
         world.send(world.rank() - block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
       }
@@ -168,7 +182,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.recv(world.rank() + 1, 0, local_input_matrix_A.data(), block_dimension);
       }
       if (world.rank() >= block_rows_columns * (block_rows_columns - 1)) {
-        world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(), block_dimension);
+        world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(),
+                   block_dimension);
       } else {
         world.recv(world.rank() + block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
       }
@@ -191,17 +206,17 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     boost::mpi::gather(world, local_output_matrix_C.data(), block_dimension * block_dimension, output_matrix_C, 0);
   } else {
     output_matrix_C = std::vector<double>(input_matrix_A.size());
-      while (i != dimension) {
-        while (j != dimension) {
-          while (k != dimension) {
-            output_matrix_C[i * dimension + j] +=
-                input_matrix_A[i * dimension + k] * input_matrix_B[k * dimension + j];
-            k++;
-          }
-          j++;
+    while (i != dimension) {
+      while (j != dimension) {
+        while (k != dimension) {
+          output_matrix_C[i * dimension + j] +=
+              input_matrix_A[i * dimension + k] * input_matrix_B[k * dimension + j];
+          k++;
         }
-        i++;
+        j++;
       }
+      i++;
+    }
   }
   return true;
 }
@@ -209,7 +224,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    reinterpret_cast<std::vector<double> *>(taskData->outputs[0])[0] = output_matrix_C;
+    reinterpret_cast<std::vector<double>*>(taskData->outputs[0])[0] = output_matrix_C;
   }
   return true;
 }
