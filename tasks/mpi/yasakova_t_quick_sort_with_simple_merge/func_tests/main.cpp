@@ -115,33 +115,83 @@ void execute_parallel_sort_test(const std::vector<int>& input_vector, bool ascen
 
 // Тест для сортировки по возрастанию
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_sorted_array_ascending) {
-    std::vector<int> input_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  std::vector<int> input_vector = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
 }
 
 // Тест для сортировки по убыванию
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_sorted_array_descending) {
-    std::vector<int> input_vector = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+  std::vector<int> input_vector = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
 }
 
 // Тест для случайного массива
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_random_array) {
-    int vector_length = 100; // Длина случайного массива
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vector_length, true); // Сортировка по возрастанию
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vector_length, false); // Сортировка по убыванию
+  int vector_length = 100; // Длина случайного массива
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vector_length, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vector_length, false); // Сортировка по убыванию
 }
 
 // Тест для пустого массива
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_empty_array) {
-    std::vector<int> input_vector = {};
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+  std::vector<int> input_vector = {};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
 }
 
 // Тест для массива с одинаковыми элементами
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_same_elements) {
-    std::vector<int> input_vector = {5, 5, 5, 5, 5};
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
-    yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+  std::vector<int> input_vector = {5, 5, 5, 5, 5};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+}
+// Тест для сортировки массива с отрицательными числами
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_negative_numbers) {
+  std::vector<int> input_vector = {-5, -1, -3, -4, -2};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+}
+
+// Тест для сортировки массива с положительными числами
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_positive_numbers) {
+  std::vector<int> input_vector = {5, 1, 3, 4, 2};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+}
+
+// Тест для сортировки массива с смешанными числами
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_mixed_numbers) {
+  std::vector<int> input_vector = {3, -1, 4, 1, -5, 9, 2, -6};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+}
+
+// Тест для сортировки массива с большим количеством элементов
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_large_array) {
+  int vector_length = 1000; // Длина случайного массива
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vector_length, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vector_length, false); // Сортировка по убыванию
+}
+
+// Тест для сортировки массива с повторяющимися элементами
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_repeated_elements) {
+  std::vector<int> input_vector = {1, 2, 2, 3, 1, 4, 4, 4, 5};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+}
+
+// Тест для сортировки массива с одним элементом
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_single_element) {
+  std::vector<int> input_vector = {42};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, true); // Сортировка по возрастанию
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector, false); // Сортировка по убыванию
+}
+
+// Тест для сортировки массива с двумя элементами
+TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_two_elements) {
+  std::vector<int> input_vector_asc = {2, 1};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector_asc, true); // Сортировка по возрастанию
+
+  std::vector<int> input_vector_desc = {1, 2};
+  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(input_vector_desc, false); // Сортировка по убыванию
 }

@@ -9,7 +9,7 @@
 
 namespace yasakova_t_quick_sort_with_simple_merge_mpi {
 
-void quicksort_iterative(std::vector<int>& data);
+void quicksort_iterative(std::vector<int>& data, bool ascending);
 void mpi_worker_function(boost::mpi::communicator& world, const std::vector<int>& local_data);
 std::vector<int> master_function(boost::mpi::communicator& world, const std::vector<int>& local_data,
                                  const std::vector<int>& element_sizes);
