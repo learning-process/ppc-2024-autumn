@@ -4,27 +4,30 @@
 #include <cstdlib>
 #include <ctime>
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/budazhapova_odd_even_merge/include/odd_even_merge.hpp"
 
 namespace budazhapova_betcher_odd_even_merge_mpi {
-std::vector<int> generateRandomVector(int size, int minValue, int maxValue) {
-  std::vector<int> randomVector;
-  randomVector.reserve(size);
-  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+std::vector<int> generate_random_vector(int size, int minValue, int maxValue) {
+  std::vector<int> randomVector(size);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(minValue, maxValue);
   for (int i = 0; i < size; ++i) {
-    int randomNum = std::rand() % (maxValue - minValue + 1) + minValue;
-    randomVector.push_back(randomNum);
+    randomVector[i] = dis(gen);
   }
+
   return randomVector;
 }
 }  // namespace budazhapova_betcher_odd_even_merge_mpi
 
 TEST(budazhapova_betcher_odd_even_merge_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generateRandomVector(10000000, 5, 100);
+  std::vector<int> input_vector =
+      budazhapova_betcher_odd_even_merge_mpi::generate_random_vector_or_matrix(10000000, 5, 100);
   std::vector<int> out(10000000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -58,7 +61,8 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, test_pipeline_run) {
 
 TEST(budazhapova_betcher_odd_even_merge_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generateRandomVector(10000000, 5, 100);
+  std::vector<int> input_vector =
+      budazhapova_betcher_odd_even_merge_mpi::generate_random_vector_or_matrix(10000000, 5, 100);
   std::vector<int> out(10000000, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
