@@ -47,13 +47,4 @@ class ContrastP : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-inline std::vector<int> generate_halftone_pic(int height, int width) {
-  std::vector<int> temp(height * width);
-  for (int i = 0; i < height; i++) {
-    for (int j = 0; j < width; j++) {
-      temp[i * width + j] = rand() % 256;
-    }
-  }
-  return temp;
-}
 }  // namespace dormidontov_e_highcontrast_mpi

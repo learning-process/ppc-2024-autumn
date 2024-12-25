@@ -6,20 +6,32 @@
 
 #include "mpi/dormidontov_e_highcontrast/include/egor_include.hpp"
 
+namespace dormidontov_e_highcontrast_mpi {
+inline std::vector<int> generate_halftone_pic(int height, int width) {
+  std::vector<int> temp(height * width);
+  for (int i = 0; i < height; i++) {
+    for (int j = 0; j < width; j++) {
+      temp[i * width + j] = rand() % 256;
+    }
+  }
+  return temp;
+}
+}  // namespace dormidontov_e_highcontrast_mpi
+
 TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works) {
   boost::mpi::communicator world;
-  int rs = 7;
-  int cs = 7;
+  int height = 7;
+  int width = 7;
 
-  std::vector<int> matrix(cs * rs);
-  matrix = dormidontov_e_highcontrast_mpi::generate_halftone_pic(cs, rs);
-  std::vector<int> res_out_paral(cs * rs, 0);
+  std::vector<int> picture(width * height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  std::vector<int> res_out_paral(width * height, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -33,10 +45,10 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works) {
 
   ContrastP.post_processing();
   if (world.rank() == 0) {
-    std::vector<int> res_out_seq(cs * rs, 0);
+    std::vector<int> res_out_seq(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rs * cs);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataSeq->inputs_count.emplace_back(height * width);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
     dormidontov_e_highcontrast_mpi::ContrastS ContrastS(taskDataSeq);
@@ -51,19 +63,19 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works) {
 
 TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works2) {
   boost::mpi::communicator world;
-  int rs = 2;
-  int cs = 2;
+  int height = 2;
+  int width = 2;
 
-  std::vector<int> matrix(cs * rs);
-  matrix = dormidontov_e_highcontrast_mpi::generate_halftone_pic(cs, rs);
+  std::vector<int> picture(width * height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
 
-  std::vector<int> res_out_paral(cs * rs, 0);
+  std::vector<int> res_out_paral(width * height, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -77,10 +89,10 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works2) {
 
   ContrastP.post_processing();
   if (world.rank() == 0) {
-    std::vector<int> res_out_seq(cs * rs, 0);
+    std::vector<int> res_out_seq(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rs * cs);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataSeq->inputs_count.emplace_back(height * width);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
     dormidontov_e_highcontrast_mpi::ContrastS ContrastS(taskDataSeq);
@@ -95,17 +107,17 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works2) {
 
 TEST(dormidontov_e_highcontrast_mpi, Test_Empty) {
   boost::mpi::communicator world;
-  const int rs = 0;
-  const int cs = 0;
+  const int height = 0;
+  const int width = 0;
 
-  std::vector<int> matrix = {};
-  std::vector<int> res_out_paral(cs * rs, 0);
+  std::vector<int> picture = {};
+  std::vector<int> res_out_paral(width * height, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   dormidontov_e_highcontrast_mpi::ContrastP ContrastP(taskDataPar);
 
   if (world.rank() == 0) {
-    // taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    // taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
     ASSERT_EQ(ContrastP.validation(), false);
@@ -114,18 +126,18 @@ TEST(dormidontov_e_highcontrast_mpi, Test_Empty) {
 
 TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works5) {
   boost::mpi::communicator world;
-  int rs = 2000;
-  int cs = 2000;
+  int height = 2000;
+  int width = 2000;
 
-  std::vector<int> matrix(cs * rs);
-  matrix = dormidontov_e_highcontrast_mpi::generate_halftone_pic(cs, rs);
-  std::vector<int> res_out_paral(cs * rs, 0);
+  std::vector<int> picture(width * height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  std::vector<int> res_out_paral(width * height, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -139,10 +151,10 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works5) {
 
   ContrastP.post_processing();
   if (world.rank() == 0) {
-    std::vector<int> res_out_seq(cs * rs, 0);
+    std::vector<int> res_out_seq(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rs * cs);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataSeq->inputs_count.emplace_back(height * width);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
     dormidontov_e_highcontrast_mpi::ContrastS ContrastS(taskDataSeq);
@@ -157,18 +169,18 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works5) {
 
 TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works6) {
   boost::mpi::communicator world;
-  int rs = 20;
-  int cs = 30;
+  int height = 20;
+  int width = 30;
 
-  std::vector<int> matrix(cs * rs);
-  matrix = dormidontov_e_highcontrast_mpi::generate_halftone_pic(cs, rs);
-  std::vector<int> res_out_paral(cs * rs);
+  std::vector<int> picture(width * height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  std::vector<int> res_out_paral(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -178,10 +190,10 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works6) {
   ContrastP.run();
   ContrastP.post_processing();
   if (world.rank() == 0) {
-    std::vector<int> res_out_seq(cs * rs, 0);
+    std::vector<int> res_out_seq(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rs * cs);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataSeq->inputs_count.emplace_back(height * width);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
     dormidontov_e_highcontrast_mpi::ContrastS ContrastS(taskDataSeq);
@@ -196,18 +208,18 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works6) {
 
 TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works7) {
   boost::mpi::communicator world;
-  int rs = 14;
-  int cs = 88;
+  int height = 14;
+  int width = 88;
 
-  std::vector<int> matrix(cs * rs);
-  matrix = dormidontov_e_highcontrast_mpi::generate_halftone_pic(cs, rs);
-  std::vector<int> res_out_paral(cs * rs);
+  std::vector<int> picture(width * height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  std::vector<int> res_out_paral(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -219,10 +231,10 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works7) {
 
   ContrastP.post_processing();
   if (world.rank() == 0) {
-    std::vector<int> res_out_seq(cs * rs, 0);
+    std::vector<int> res_out_seq(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rs * cs);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataSeq->inputs_count.emplace_back(height * width);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
     dormidontov_e_highcontrast_mpi::ContrastS ContrastS(taskDataSeq);
@@ -237,18 +249,18 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works7) {
 
 TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works8) {
   boost::mpi::communicator world;
-  int rs = 23;
-  int cs = 43;
+  int height = 23;
+  int width = 43;
 
-  std::vector<int> matrix(cs * rs);
-  matrix = dormidontov_e_highcontrast_mpi::generate_halftone_pic(cs, rs);
-  std::vector<int> res_out_paral(cs * rs);
+  std::vector<int> picture(width * height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  std::vector<int> res_out_paral(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -260,10 +272,10 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works8) {
 
   ContrastP.post_processing();
   if (world.rank() == 0) {
-    std::vector<int> res_out_seq(cs * rs, 0);
+    std::vector<int> res_out_seq(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataSeq->inputs_count.emplace_back(rs * cs);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataSeq->inputs_count.emplace_back(height * width);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_seq.data()));
     taskDataSeq->outputs_count.emplace_back(res_out_seq.size());
     dormidontov_e_highcontrast_mpi::ContrastS ContrastS(taskDataSeq);

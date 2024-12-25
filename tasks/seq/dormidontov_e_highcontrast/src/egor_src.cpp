@@ -51,8 +51,7 @@ bool dormidontov_e_highcontrast_seq::ContrastS::run() {
 
 bool dormidontov_e_highcontrast_seq::ContrastS::post_processing() {
   internal_order_test();
-  for (int i = 0; i < size; i++) {
-    reinterpret_cast<int*>(taskData->outputs[0])[i] = res_[i];
-  }
+  auto* tmp = reinterpret_cast<int*>(taskData->outputs[0]);
+  std::copy(res_.data(), res_.data() + size, tmp);
   return true;
 }

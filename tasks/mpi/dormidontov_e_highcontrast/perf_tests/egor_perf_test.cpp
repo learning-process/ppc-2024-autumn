@@ -29,18 +29,18 @@ std::vector<int> generate_answer(int heigh, int width) {
 
 TEST(dormidontov_e_highcontrast_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int rs = 1984;
-  int cs = 1984;
+  int height = 1984;
+  int width = 1984;
 
-  std::vector<int> matrix = dormidontov_e_highcontrast_mpi::generate_pic(rs, cs);
-  std::vector<int> res_out_paral(cs * rs, 0);
-  std::vector<int> exp_res_paral = dormidontov_e_highcontrast_mpi::generate_answer(rs, cs);
+  std::vector<int> picture = dormidontov_e_highcontrast_mpi::generate_pic(height, width);
+  std::vector<int> res_out_paral(width * height, 0);
+  std::vector<int> exp_res_paral = dormidontov_e_highcontrast_mpi::generate_answer(height, width);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }
@@ -64,17 +64,17 @@ TEST(dormidontov_e_highcontrast_mpi, test_pipeline_run) {
 
 TEST(dormidontov_e_highcontrast_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int rs = 1984;
-  int cs = 1984;
+  int height = 1984;
+  int width = 1984;
 
-  std::vector<int> matrix = dormidontov_e_highcontrast_mpi::generate_pic(rs, cs);
-  std::vector<int> res_out_paral(cs * rs, 0);
-  std::vector<int> exp_res_paral = dormidontov_e_highcontrast_mpi::generate_answer(rs, cs);
+  std::vector<int> picture = dormidontov_e_highcontrast_mpi::generate_pic(height, width);
+  std::vector<int> res_out_paral(width * height, 0);
+  std::vector<int> exp_res_paral = dormidontov_e_highcontrast_mpi::generate_answer(height, width);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    taskDataPar->inputs_count.emplace_back(rs * cs);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+    taskDataPar->inputs_count.emplace_back(height * width);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out_paral.data()));
     taskDataPar->outputs_count.emplace_back(res_out_paral.size());
   }

@@ -27,18 +27,18 @@ std::vector<int> generate_answer(int heigh, int width) {
 }  // namespace dormidontov_e_highcontrast_seq
 
 TEST(dormidontov_e_highcontrast_seq, test_pipeline_run) {
-  int rs = 3000;
-  int cs = 3000;
-  std::vector<int> matrix = dormidontov_e_highcontrast_seq::generate_pic(rs, cs);
-  std::vector<int> exp_res = dormidontov_e_highcontrast_seq::generate_answer(rs, cs);
-  std::vector<int> res_out(rs * cs);
+  int height = 3000;
+  int width = 3000;
+  std::vector<int> picture = dormidontov_e_highcontrast_seq::generate_pic(height, width);
+  std::vector<int> exp_res = dormidontov_e_highcontrast_seq::generate_answer(height, width);
+  std::vector<int> res_out(height * width);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   // Create Task
   auto ContrastS = std::make_shared<dormidontov_e_highcontrast_seq::ContrastS>(taskDataSeq);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(rs * cs);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+  taskDataSeq->inputs_count.emplace_back(height * width);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out.data()));
   taskDataSeq->outputs_count.emplace_back(res_out.size());
 
@@ -63,17 +63,17 @@ TEST(dormidontov_e_highcontrast_seq, test_pipeline_run) {
 }
 
 TEST(dormidontov_e_highcontrast_seq, test_task_run) {
-  int rs = 3000;
-  int cs = 3000;
-  std::vector<int> matrix = dormidontov_e_highcontrast_seq::generate_pic(rs, cs);
-  std::vector<int> exp_res = dormidontov_e_highcontrast_seq::generate_answer(rs, cs);
-  std::vector<int> res_out(rs * cs);
+  int height = 3000;
+  int width = 3000;
+  std::vector<int> picture = dormidontov_e_highcontrast_seq::generate_pic(height, width);
+  std::vector<int> exp_res = dormidontov_e_highcontrast_seq::generate_answer(height, width);
+  std::vector<int> res_out(height * width);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   auto ContrastS = std::make_shared<dormidontov_e_highcontrast_seq::ContrastS>(taskDataSeq);
 
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  taskDataSeq->inputs_count.emplace_back(rs * cs);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(picture.data()));
+  taskDataSeq->inputs_count.emplace_back(height * width);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res_out.data()));
   taskDataSeq->outputs_count.emplace_back(res_out.size());
 
