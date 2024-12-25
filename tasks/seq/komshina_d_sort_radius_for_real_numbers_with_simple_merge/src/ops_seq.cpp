@@ -1,9 +1,5 @@
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
 
-#include <numeric>
-
-#include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
-
 #include <bitset>
 #include <numeric>
 
@@ -17,10 +13,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] <= 0) {
-    return false;
-  }
-  return true;
+  return taskData->inputs_count[0] > 0;
 }
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::run() {
@@ -61,8 +54,8 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
   }
 }
 
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::BitwiseCountingSort(
-    std::vector<uint64_t>& keys, int shift) {
+static void BitwiseCountingSort(std::vector<uint64_t>& keys, int shift)
+{
   std::vector<uint64_t> temp(keys.size());
   size_t count[256 + 1] = {0};
 

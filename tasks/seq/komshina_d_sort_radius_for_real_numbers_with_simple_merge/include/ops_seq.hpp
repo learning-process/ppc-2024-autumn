@@ -21,7 +21,7 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   void SortDoubleByBits(std::vector<double>& data_);
-  void BitwiseCountingSort(std::vector<uint64_t>& keys, int shift);
+  static void BitwiseCountingSort(std::vector<uint64_t>& keys, int shift);
 
   std::vector<double> input;
 };
