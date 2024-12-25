@@ -3,10 +3,6 @@
 
 #include "seq/shlyakov_m_ccs_mult/include/ops_seq.hpp"
 
-#include <algorithm>
-#include <thread>
-#include <vector>
-
 using namespace shlyakov_m_ccs_mult;
 
 bool shlyakov_m_ccs_mult::TestTaskSequential::pre_processing() {
