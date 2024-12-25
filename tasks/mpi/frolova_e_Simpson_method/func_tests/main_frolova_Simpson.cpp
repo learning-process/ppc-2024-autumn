@@ -334,3 +334,57 @@ TEST(frolova_e_Simpson_method_mpi, two_dimensional_integral_ProductOfSquaresOfXa
     ASSERT_NEAR(res_2[0], res[0], 0.1);
   }
 }
+
+//____________ASSERT_FALSE_______________________
+
+TEST(frolova_e_Simpson_method_mpi, incorrectNumberOfIntervals_test) {
+  boost::mpi::communicator world;
+  std::vector<int> values_1 = {10, 3, 6};
+  std::vector<int> values_11 = {10, 3};
+  std::vector<double> values_2 = {0.0};
+
+  std::vector<double> res(1, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values_1.data()));
+    taskDataPar->inputs_count.emplace_back(values_1.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values_2.data()));
+    taskDataPar->inputs_count.emplace_back(values_2.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size() * sizeof(double));
+
+    frolova_e_Simpson_method_mpi::SimpsonmethodParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
+
+TEST(frolova_e_Simpson_method_mpi, NumberOfIntervalsIsNotMultipleOfTheDimension_test) {
+  boost::mpi::communicator world;
+  std::vector<int> values_1 = {10, 3, 6};
+  std::vector<int> values_11 = {10, 3};
+  std::vector<double> values_2 = {0.0, 1.0};
+
+  std::vector<double> res(1, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values_1.data()));
+    taskDataPar->inputs_count.emplace_back(values_1.size());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values_2.data()));
+    taskDataPar->inputs_count.emplace_back(values_2.size());
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+    taskDataPar->outputs_count.emplace_back(res.size() * sizeof(double));
+
+    frolova_e_Simpson_method_mpi::SimpsonmethodParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
+  }
+}
