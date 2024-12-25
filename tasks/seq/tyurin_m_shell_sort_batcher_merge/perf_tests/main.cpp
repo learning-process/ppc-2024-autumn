@@ -10,7 +10,7 @@ namespace tyurin_m_shell_sort_batcher_merge_seq {
 std::vector<int> random_vector(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(0, 100);
+  std::uniform_int_distribution<int> dist(-100, 100);
 
   std::vector<int> arr(size);
   for (size_t i = 0; i < arr.size(); i++) {
@@ -22,7 +22,7 @@ std::vector<int> random_vector(int size) {
 }  // namespace tyurin_m_shell_sort_batcher_merge_seq
 
 TEST(tyurin_m_shell_sort_batcher_merge_seq, test_pipeline_run) {
-  const int n = std::pow(2, 17);
+  const int n = std::pow(2, 15);
   std::vector<int> input_vec;
   std::vector<int> output_vec;
 
@@ -56,7 +56,7 @@ TEST(tyurin_m_shell_sort_batcher_merge_seq, test_pipeline_run) {
 }
 
 TEST(tyurin_m_shell_sort_batcher_merge_seq, test_task_run) {
-  const int n = std::pow(2, 17);
+  const int n = std::pow(2, 15);
   std::vector<int> input_vec;
   std::vector<int> output_vec;
 

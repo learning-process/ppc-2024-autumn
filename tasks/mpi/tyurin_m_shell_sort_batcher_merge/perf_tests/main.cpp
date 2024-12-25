@@ -12,7 +12,7 @@ namespace tyurin_m_shell_sort_batcher_merge_mpi {
 std::vector<int> random_vector(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<int> dist(0, 100);
+  std::uniform_int_distribution<int> dist(-100, 100);
 
   std::vector<int> arr(size);
   for (size_t i = 0; i < arr.size(); i++) {
