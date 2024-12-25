@@ -1,6 +1,8 @@
 #include "mpi/budazhapova_odd_even_merge/include/odd_even_merge.hpp"
 
 #include <algorithm>
+#include <boost/mpi/communicator.hpp>
+#include <boost/mpi/environment.hpp>
 #include <boost/serialization/array.hpp>
 #include <boost/serialization/map.hpp>
 #include <boost/serialization/vector.hpp>
