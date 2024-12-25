@@ -80,9 +80,9 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   auto dimension = 0;
   unsigned short block_dimension = 0;
   unsigned short block_rows_columns = 0;
-  output_matrix_C = std::vector<double>(input_matrix_A.size());
   if (world.rank() == 0) {
     dimension = (unsigned short)sqrt(input_matrix_A.size());
+    output_matrix_C = std::vector<double>(dimension * dimension);
     block_rows_columns = (unsigned short)sqrt(world.size());
     block_dimension = dimension / block_rows_columns;
     if (world.size() == 1 || world.size() != pow(block_rows_columns, 2) || dimension % block_rows_columns != 0) {
@@ -103,6 +103,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   boost::mpi::broadcast(world, dimension, 0);
   boost::mpi::broadcast(world, block_rows_columns, 0);
   boost::mpi::broadcast(world, block_dimension, 0);
+  output_matrix_C = std::vector<double>(dimension * dimension);
   local_input_matrix_A = std::vector<double>(block_dimension * block_dimension);
   local_input_matrix_B = std::vector<double>(block_dimension * block_dimension);
   local_output_matrix_C = std::vector<double>(block_dimension * block_dimension);
@@ -180,47 +181,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     }
     i++;
   }
-  unsigned short p = 0;
-  while (p != block_rows_columns) {
-    if (world.rank() % block_rows_columns == 0) {
-      world.send(world.rank() + block_rows_columns - 1, 0, local_input_matrix_A.data(), block_dimension);
-    } else {
-      world.send(world.rank() - 1, 0, local_input_matrix_A.data(), block_dimension);
-    }
-    if (world.rank() < block_rows_columns) {
-      world.send(world.rank() + block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(),
-                 block_dimension);
-    } else {
-      world.send(world.rank() - block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
-    }
-    if ((world.rank() + 1) % block_rows_columns == 0) {
-      world.recv(world.rank() - block_rows_columns + 1, 0, local_input_matrix_A.data(), block_dimension);
-    } else {
-      world.recv(world.rank() + 1, 0, local_input_matrix_A.data(), block_dimension);
-    }
-    if (world.rank() >= block_rows_columns * (block_rows_columns - 1)) {
-      world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(),
-                 block_dimension);
-    } else {
-      world.recv(world.rank() + block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
-    }
-    i = 0;
-    while (i != block_dimension) {
-      j = 0;
-      while (j != block_dimension) {
-        k = 0;
-        while (k != block_dimension) {
-          local_output_matrix_C[i * block_dimension + j] +=
-              local_input_matrix_A[i * block_dimension + k] * local_input_matrix_B[k * block_dimension + j];
-          k++;
-        }
-        j++;
-      }
-      i++;
-    }
-    p++;
-  }
-  boost::mpi::gather(world, local_output_matrix_C.data(), block_dimension * block_dimension, output_matrix_C, 0);
+
   return true;
 }
 
