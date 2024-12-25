@@ -47,6 +47,7 @@ TEST(nasedkin_e_strassen_algorithm_mpi, Test_2x2) {
     taskDataParallel->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultParallel.data()));
     taskDataParallel->outputs_count.emplace_back(resultParallel.size());
   }
+  world.barrier();
 
   if (world.rank() == 0) {
     std::cout << "Test: TaskData inputs_count[0] = " << taskDataParallel->inputs_count[0]
