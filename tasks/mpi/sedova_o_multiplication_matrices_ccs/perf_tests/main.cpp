@@ -32,7 +32,7 @@ std::vector<std::vector<double>> gen_rand_matrix(int rows, int cols, int non_zer
 
   // Assign random values to the first 'non_zero_count' positions
   std::uniform_real_distribution<> value_dist(-10.0, 10.0);
-  for (int i = 0; i < non_zero_count; ++i) {
+  for (size_t i = 0; i < non_zero_count && i < positions.size(); ++i) {
     int r = positions[i].first;
     int c = positions[i].second;
     matrix[r][c] = value_dist(gen);

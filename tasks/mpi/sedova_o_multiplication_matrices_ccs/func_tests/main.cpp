@@ -29,7 +29,7 @@ std::vector<std::vector<double>> gen_rand_matrix(int rows, int cols, int non_zer
 
   // Assign random values to the first 'non_zero_count' positions
   std::uniform_real_distribution<> value_dist(-10.0, 10.0);
-  for (int i = 0; i < non_zero_count; ++i) {
+  for (size_t i = 0; i < non_zero_count && i < positions.size(); ++i) {
     int r = positions[i].first;
     int c = positions[i].second;
     matrix[r][c] = value_dist(gen);
@@ -76,19 +76,11 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
   int cols_A = (rows_A > 0) ? A_[0].size() : 0;  // Safe access
   int rows_B = B_.size();
   int cols_B = (rows_B > 0) ? B_[0].size() : 0;  // Safe access
-  // Check for valid matrix dimensions for multiplication
-  if (cols_A != rows_B) {
-    throw std::invalid_argument("Matrix dimensions do not match for multiplication.");
-  }
 
   // Convert matrices A and B to CCS format
   std::vector<double> A_val, B_val;
   std::vector<int> A_row_ind, B_row_ind;
   std::vector<int> A_col_ptr, B_col_ptr;
-
-  convertMatrixToCCS(A_, rows_A, cols_A, A_val, A_row_ind, A_col_ptr);
-  convertMatrixToCCS(B_, rows_B, cols_B, B_val, B_row_ind, B_col_ptr);
-
   // Prepare expected result C on rank 0
   std::vector<double> exp_C_val;
   std::vector<int> exp_C_row_ind;
@@ -99,11 +91,15 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
     convertMatrixToCCS(exp_C, exp_C.size(), exp_C.empty() ? 0 : exp_C[0].size(), exp_C_val, exp_C_row_ind,
                        exp_C_col_ptr);
   }
+  convertMatrixToCCS(A_, rows_A, cols_A, A_val, A_row_ind, A_col_ptr);
+  convertMatrixToCCS(B_, rows_B, cols_B, B_val, B_row_ind, B_col_ptr);
+  // Define C_val, C_row_ind, and C_col_ptr to hold results from the multiplication.
+  std::vector<double> C_val;
+  std::vector<int> C_row_ind;
+  std::vector<int> C_col_ptr;
 
-   // Prepare task data for matrix multiplication
+  // Prepare task data for matrix multiplication
   auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.reserve(8);        // Reserve space for inputs
-  task_data->inputs_count.reserve(8);  // Reserve space for counts
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&rows_A));
   task_data->inputs_count.emplace_back(1);
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&cols_A));
@@ -129,14 +125,14 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
     task_data->inputs_count.emplace_back(B_col_ptr.size());
 
     // Resize expected output C
-    exp_C_val.resize(exp_C_val.size());
-    exp_C_row_ind.resize(exp_C_row_ind.size());
-    exp_C_col_ptr.resize(exp_C_col_ptr.size());
+    C_val.resize(exp_C_val.size());
+    C_row_ind.resize(exp_C_row_ind.size());
+    C_col_ptr.resize(exp_C_col_ptr.size());
 
     task_data->outputs.reserve(3);  // Reserve space for outputs
-    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(exp_C_val.data()));
-    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(exp_C_row_ind.data()));
-    task_data->outputs.push_back(reinterpret_cast<uint8_t*>(exp_C_col_ptr.data()));
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_val.data()));
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_row_ind.data()));
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(C_col_ptr.data()));
   }
 
  // Create and run the matrix multiplication task
@@ -155,12 +151,6 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
 
     // Validate results on rank 0
     if (world.rank() == 0) {
-      // Define C_val, C_row_ind, and C_col_ptr to hold results from the multiplication.
-      std::vector<double> C_val;
-      std::vector<int> C_row_ind;
-      std::vector<int> C_col_ptr;
-
-      // Assuming you have a way to fill these with results from the TaskData or similar.
       ASSERT_EQ(exp_C_val, C_val);
       ASSERT_EQ(exp_C_row_ind, C_row_ind);
       ASSERT_EQ(exp_C_col_ptr, C_col_ptr);
