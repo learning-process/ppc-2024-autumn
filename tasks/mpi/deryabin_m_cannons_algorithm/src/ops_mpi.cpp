@@ -98,6 +98,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         }
         i++;
       }
+      return true;
     }
   }
   boost::mpi::broadcast(world, dimension, 0);
