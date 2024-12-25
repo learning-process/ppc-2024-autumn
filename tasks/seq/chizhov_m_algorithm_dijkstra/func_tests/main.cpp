@@ -64,9 +64,7 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_5x5) {
   int st = 0;
 
   // Create data
-  std::vector<int> matrix = {
-      0, 5, 0, 3, 0, 0, 0, 4, 2, 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 2, 9, 0, 1, 0, 0
-  };
+  std::vector<int> matrix = {0, 5, 0, 3, 0, 0, 0, 4, 2, 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 2, 9, 0, 1, 0, 0};
   std::vector<int> res(size, 0);
   std::vector<int> ans = {0, 5, 6, 3, 5};
 
@@ -120,7 +118,7 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Source_Vertex_False) {
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
   taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(st);
