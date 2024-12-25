@@ -201,8 +201,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         }
         i++;
       }
-      
-      p++; 
+      p++;
     }
     boost::mpi::gather(world, local_output_matrix_C.data(), block_dimension * block_dimension, output_matrix_C, 0);
   } else {
