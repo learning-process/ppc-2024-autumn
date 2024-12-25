@@ -190,7 +190,7 @@ bool StronginParallel::run() {
           }
         }
       }
-      MPI_Send(&lipshm, 1, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD);
+      MPI_Send(&lipshm, 1, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD);
     }
   }
 }
