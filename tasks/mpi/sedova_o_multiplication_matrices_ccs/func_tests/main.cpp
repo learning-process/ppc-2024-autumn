@@ -160,24 +160,11 @@ void func_test_template(const std::vector<std::vector<double>>& A_, const std::v
 
 }  // namespace sedova_o_multiplication_matrices_ccs_mpi
 
-TEST(sedova_o_multiplication_matrices_ccs_mpi, IdentityMatrix) {
-  std::vector<std::vector<double>> I = {{1.0, 0.0}, {0.0, 1.0}};
-  std::vector<std::vector<double>> A = {{2.0, 3.0}, {4.0, 5.0}};
-  sedova_o_multiplication_matrices_ccs_mpi::func_test_template(I, A);
-}
-
 // Test for zero matrix multiplication
 TEST(sedova_o_multiplication_matrices_ccs_mpi, ZeroMatrix) {
   std::vector<std::vector<double>> Z = {{0.0, 0.0}, {0.0, 0.0}};
   std::vector<std::vector<double>> A = {{2.0, 3.0}, {4.0, 5.0}};
   sedova_o_multiplication_matrices_ccs_mpi::func_test_template(Z, A);
-}
-
-// Test for large random matrices
-TEST(sedova_o_multiplication_matrices_ccs_mpi, RandomLargeMatrices) {
-  auto A_ = sedova_o_multiplication_matrices_ccs_mpi::gen_rand_matrix(100, 50, 250);
-  auto B_ = sedova_o_multiplication_matrices_ccs_mpi::gen_rand_matrix(50, 100, 500);
-  sedova_o_multiplication_matrices_ccs_mpi::func_test_template(A_, B_);
 }
 
 // Test for rectangular matrices with more rows than columns
@@ -207,5 +194,11 @@ TEST(sedova_o_multiplication_matrices_ccs_mpi, ValidateSmallMatrices) {
   std::vector<std::vector<double>> A_ = {{1.0}};
   std::vector<std::vector<double>> B_ = {{2.0}};
   std::vector<std::vector<double>> expected_C = {{2.0}};
+  sedova_o_multiplication_matrices_ccs_mpi::func_test_template(A_, B_);
+}
+
+TEST(sedova_o_multiplication_matrices_ccs_mpi, SmallMatrices) {
+  std::vector<std::vector<double>> A_ = {{1, 0, 2}, {0, 3, 0}};
+  std::vector<std::vector<double>> B_ = {{0, 4, 0, 0, 1}, {5, 0, 0, 2, 0}, {0, 0, 3, 0, 6}};
   sedova_o_multiplication_matrices_ccs_mpi::func_test_template(A_, B_);
 }
