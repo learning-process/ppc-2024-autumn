@@ -79,8 +79,12 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
     bool StrassenAlgorithmMPI::run() {
       internal_order_test();
+      
+      boost::mpi::broadcast(world, matrixA, 0);
+      boost::mpi::broadcast(world, matrixB, 0);
+      boost::mpi::broadcast(world, size, 0);
+
       std::cout << "Rank " << world.rank() << ": Starting Strassen_multiply with matrixSize = " << matrixSize << std::endl;
-      world.barrier();
       outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
       return true;
     }
