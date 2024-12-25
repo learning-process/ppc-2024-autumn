@@ -342,6 +342,7 @@ void smirnov_i_binary_segmentation::TestMPITaskParallel::merge_global_eq_table(
   for (const auto& pair : local_eq_table) {
     int key = pair.first;
     auto values = pair.second;
+
     if (global_eq_table.find(key) == global_eq_table.end()) {
       global_eq_table[key] = values;
     } else {
@@ -525,6 +526,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
     unique_labels.erase(1);
 
     std::map<int, int> label_mapping;
+
     int new_label = 2;
 
     for (int label : unique_labels) {
