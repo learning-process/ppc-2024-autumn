@@ -94,6 +94,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     local_input_matrix_B = std::vector<double>(block_dimension * block_dimension);
     local_output_matrix_C = std::vector<double>(block_dimension * block_dimension);
     if (world.rank() == 0) {
+      k = 0;
       while (k != block_dimension) {
         std::copy(input_matrix_A.data() + k * dimension, input_matrix_A.data() + k * dimension + block_dimension,
                   local_input_matrix_A.begin() + k * block_dimension);
