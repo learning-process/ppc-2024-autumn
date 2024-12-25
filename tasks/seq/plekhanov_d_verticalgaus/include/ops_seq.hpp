@@ -19,7 +19,7 @@ class VerticalGausSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-  //
+  //Smt
 
  private:
   int rows;
