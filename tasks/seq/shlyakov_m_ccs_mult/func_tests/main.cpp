@@ -152,8 +152,8 @@ TEST(shlyakov_m_ccs_mult_seq, square_matrices_test1) {
 
   TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
   std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
@@ -204,8 +204,8 @@ TEST(shlyakov_m_ccs_mult_seq, square_matrices_test2) {
 
   TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
   std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
@@ -258,8 +258,8 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test1) {
 
   TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
   std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
@@ -312,8 +312,8 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test2) {
 
   TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
   std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
@@ -364,8 +364,8 @@ TEST(shlyakov_m_ccs_mult_seq, single_element_matrix_test) {
 
   TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
   std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
@@ -416,8 +416,8 @@ TEST(shlyakov_m_ccs_mult_seq, sparse_matrices_test) {
 
   TestTaskSequential task(taskData);
   ASSERT_TRUE(task.validation());
-  task.pre_processing();
-  task.run();
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
 
   std::vector<std::vector<double>> expected_result_matrix = matrix_multiply(matrix_a, matrix_b);
