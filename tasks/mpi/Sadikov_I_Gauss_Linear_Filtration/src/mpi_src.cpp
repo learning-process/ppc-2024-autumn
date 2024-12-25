@@ -139,8 +139,8 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::pre_processing() {
     }
     m_gaussMatrix.reserve(9);
     m_outMatrix = std::vector<Point<double>>(m_columnsCount * m_rowsCount);
+    CalculateGaussMatrix();
   }
-  CalculateGaussMatrix();
   return true;
 }
 
@@ -150,6 +150,7 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::run() {
   broadcast(world, m_columnsCount, 0);
   broadcast(world, m_rowsCount, 0);
   broadcast(world, m_pixelsMatrix, 0);
+  broadcast(world, m_gaussMatrix, 0);
   if (world.rank() < static_cast<int>(m_sizes.size())) {
     m_intermediateRes.resize(m_sizes[world.rank()]);
     int position = 0;

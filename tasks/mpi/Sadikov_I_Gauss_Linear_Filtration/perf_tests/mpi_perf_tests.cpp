@@ -68,9 +68,9 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, image_test_task_run_seqTest) {
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, image_test_pipeline_run) {
   boost::mpi::communicator world;
-  int rows_count = 300;
-  int columns_count = 300;
-  std::vector<Point<double>> in(90000, Point(100.0, 35.0, 78.0));
+  int rows_count = 400;
+  int columns_count = 400;
+  std::vector<Point<double>> in(160000, Point(100.0, 35.0, 78.0));
   std::vector<int> in_index{rows_count, columns_count};
   std::vector<Point<double>> out(columns_count * rows_count);
   auto taskData = std::make_shared<ppc::core::TaskData>();
@@ -103,9 +103,9 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, image_test_pipeline_run) {
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, image_test_task_run) {
   boost::mpi::communicator world;
-  int rows_count = 300;
-  int columns_count = 300;
-  std::vector<Point<double>> in(90000, Point(100.0, 35.0, 78.0));
+  int rows_count = 400;
+  int columns_count = 400;
+  std::vector<Point<double>> in(160000, Point(100.0, 35.0, 78.0));
   std::vector<int> in_index{rows_count, columns_count};
   std::vector<Point<double>> out(columns_count * rows_count);
   auto taskData = std::make_shared<ppc::core::TaskData>();
