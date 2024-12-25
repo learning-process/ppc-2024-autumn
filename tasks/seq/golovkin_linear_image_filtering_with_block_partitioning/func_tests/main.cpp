@@ -248,8 +248,8 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterUniformImage) {
   int rows = 5;
   int cols = 5;
-  vector<int> input(rows * cols, 128);            // Все пиксели равны 128
-  vector<int> expected_output(rows * cols, 128);  // Ожидаемый результат также будет 128
+  vector<int> input(rows * cols, 128);            // Р’СЃРµ РїРёРєСЃРµР»Рё СЂР°РІРЅС‹ 128
+  vector<int> expected_output(rows * cols, 128);  // РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚ С‚Р°РєР¶Рµ Р±СѓРґРµС‚ 128
   vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
@@ -277,10 +277,10 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
   int rows = 5;
   int cols = 5;
   vector<int> input = {0, 255, 0, 0, 0, 0,   0, 255, 0,   0, 255, 0, 0,
-                       0, 255, 0, 0, 0, 255, 0, 0,   255, 0, 0,   0};  // Ввод с шумом
+                       0, 255, 0, 0, 0, 255, 0, 0,   255, 0, 0,   0};  // Р’РІРѕРґ СЃ С€СѓРјРѕРј
   vector<int> expected_output = {
       32, 51, 32, 32, 32, 51, 85, 51, 32, 32, 32, 51, 32,
-      51, 32, 32, 32, 51, 51, 32, 32, 32, 32, 32, 32};  // Ожидаемый результат может быть рассчитан
+      51, 32, 32, 32, 51, 51, 32, 32, 32, 32, 32, 32};  // РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚ РјРѕР¶РµС‚ Р±С‹С‚СЊ СЂР°СЃСЃС‡РёС‚Р°РЅ
   vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
@@ -308,9 +308,9 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
   int rows = 5;
   int cols = 5;
   vector<int> input = {0,   51,  102, 153, 204, 51,  102, 153, 204, 255, 102, 153, 204,
-                       255, 255, 153, 204, 255, 255, 255, 204, 255, 255, 255, 255};  // Градиентное изображение
+                       255, 255, 153, 204, 255, 255, 255, 204, 255, 255, 255, 255};  // Р“СЂР°РґРёРµРЅС‚РЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ
   vector<int> expected_output = {25,  51,  76,  102, 127, 51,  76,  102, 127, 153, 76,  102, 127,
-                                 153, 178, 102, 127, 153, 178, 204, 127, 153, 178, 204, 229};  // Ожидаемый результат
+                                 153, 178, 102, 127, 153, 178, 204, 127, 153, 178, 204, 229};  // РћР¶РёРґР°РµРјС‹Р№ СЂРµР·СѓР»СЊС‚Р°С‚
   vector<int> actual_output(rows * cols, 0);
 
   gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
