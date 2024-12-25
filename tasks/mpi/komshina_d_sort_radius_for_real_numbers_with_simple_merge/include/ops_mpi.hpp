@@ -8,7 +8,6 @@
 #include <boost/serialization/vector.hpp>
 #include <cstdint>
 #include <cstring>
-#include <memory>
 #include <vector>
 
 #include "core/task/include/task.hpp"
