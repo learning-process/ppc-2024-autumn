@@ -75,7 +75,7 @@ void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>&
   world.barrier();
 }
 
-void quicksort_iterative(std::vector<int>& data, bool ascending) {
+void quicksort_iterative(std::vector<int>& data) {
   std::stack<std::pair<int, int>> stack;
   stack.emplace(0, data.size() - 1);
 
@@ -84,19 +84,19 @@ void quicksort_iterative(std::vector<int>& data, bool ascending) {
     stack.pop();
 
     if (low < high) {
-      int pivot = data[high]; // Выбор опорного элемента
+      int pivot = data[high];
       int i = low - 1;
 
       for (int j = low; j < high; ++j) {
-        if ((ascending && data[j] < pivot) || (!ascending && data[j] > pivot)) {
+        if (data[j] < pivot) {
           std::swap(data[++i], data[j]);
         }
       }
-      std::swap(data[i + 1], data[high]); // Помещаем опорный элемент на его правильное место
-      int p = i + 1; // Индекс опорного элемента
+      std::swap(data[i + 1], data[high]);
+      int p = i + 1;
 
-      stack.emplace(low, p - 1); // Сортировка левой части
-      stack.emplace(p + 1, high); // Сортировка правой части
+      stack.emplace(low, p - 1);
+      stack.emplace(p + 1, high);
     }
   }
 }
@@ -135,9 +135,9 @@ bool SimpleMergeQuicksort::run() {
   internal_order_test();
 
   boost::mpi::scatterv(world, original_vector.data(), element_sizes, displacement, partitioned_vector.data(),
-                        element_sizes[world.rank()], 0);
+                       element_sizes[world.rank()], 0);
 
-  quicksort_iterative(partitioned_vector, ascending); // Используйте переменную ascending
+  quicksort_iterative(partitioned_vector);
 
   mpi_merge_function(world, partitioned_vector, element_sizes, original_vector);
 

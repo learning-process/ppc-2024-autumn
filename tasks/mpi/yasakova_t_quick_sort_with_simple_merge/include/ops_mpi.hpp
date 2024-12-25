@@ -9,7 +9,7 @@
 
 namespace yasakova_t_quick_sort_with_simple_merge_mpi {
 
-void quicksort_iterative(std::vector<int>& data, bool ascending);
+void quicksort_iterative(std::vector<int>& data);
 void mpi_worker_function(boost::mpi::communicator& world, const std::vector<int>& local_data);
 std::vector<int> master_function(boost::mpi::communicator& world, const std::vector<int>& local_data,
                                  const std::vector<int>& element_sizes);
@@ -19,7 +19,6 @@ void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>&
 class SimpleMergeQuicksort : public ppc::core::Task {
  public:
   explicit SimpleMergeQuicksort(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  void set_sort_order(bool ascending) {this->ascending = ascending;}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -29,7 +28,6 @@ class SimpleMergeQuicksort : public ppc::core::Task {
   int size_of_vector;
   std::vector<int> original_vector;
   std::vector<int> partitioned_vector;
-  bool ascending;
   std::vector<int> element_sizes;
   std::vector<int> displacement;
   boost::mpi::communicator world;
