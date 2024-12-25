@@ -40,39 +40,6 @@ void radix_sort(std::vector<int>& arr) {
     counting_sort(arr, exp);
   }
 }
-
-void batcher_merge(std::vector<int>& arr, int low, int mid, int high) {
-  std::vector<int> left(arr.begin() + low, arr.begin() + mid + 1);
-  std::vector<int> right(arr.begin() + mid + 1, arr.begin() + high + 1);
-
-  size_t i = 0, j = 0, k = low;
-
-  while (i < left.size() && j < right.size()) {
-    if (left[i] <= right[j]) {
-      arr[k++] = left[i++];
-    } else {
-      arr[k++] = right[j++];
-    }
-  }
-
-  while (i < left.size()) {
-    arr[k++] = left[i++];
-  }
-
-  while (j < right.size()) {
-    arr[k++] = right[j++];
-  }
-}
-
-void batcher_sort_merge(std::vector<int>& arr, int low, int high) {
-  if (low < high) {
-    int mid = low + (high - low) / 2;
-
-    batcher_sort_merge(arr, low, mid);
-    batcher_sort_merge(arr, mid + 1, high);
-    batcher_merge(arr, low, mid, high);
-  }
-}
 }  // namespace budazhapova_betcher_odd_even_merge_mpi
 bool budazhapova_betcher_odd_even_merge_mpi::MergeSequential::pre_processing() {
   internal_order_test();
@@ -181,9 +148,29 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
 
   boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
 
-  if (world.rank() == 0) {
-    budazhapova_betcher_odd_even_merge_mpi::batcher_sort_merge(res, 0, res.size() - 1);
+  for (int phase = 0; phase < world.size(); ++phase) {
+    if (phase % 2 == 0) {
+      if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
+        boost::mpi::send(world, world.rank() + 1, 0, local_res);
+      } else if (world.rank() % 2 == 1) {
+        std::vector<int> received_data;
+        boost::mpi::recv(world, world.rank() - 1, 0, received_data);
+        local_res.insert(local_res.end(), received_data.begin(), received_data.end());
+        budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
+      }
+    } else {
+      if (world.rank() % 2 == 1 && world.rank() + 1 < world.size()) {
+        boost::mpi::send(world, world.rank() + 1, 0, local_res);
+      } else if (world.rank() % 2 == 0) {
+        std::vector<int> received_data;
+        boost::mpi::recv(world, world.rank() - 1, 0, received_data);
+        local_res.insert(local_res.end(), received_data.begin(), received_data.end());
+        budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
+      }
+    }
   }
+
+  boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
 
   return true;
 }
