@@ -75,8 +75,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::validati
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   internal_order_test();
   unsigned short i = 0;
-  unsigned short j = 0;
-  unsigned short k = 0;
+  unsigned short j;
+  unsigned short k;
   auto dimension = 0;
   unsigned short block_dimension = 0;
   unsigned short block_rows_columns = 0;
@@ -101,10 +101,11 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
                   local_input_matrix_B.begin() + k * block_dimension);
         k++;
       }
-      k = 0;
       while (i != block_rows_columns) {
+        j = 0;
         while (j != block_rows_columns) {
           if (i != 0 || j != 0) {
+            k = 0;
             while (k != block_dimension) {
               if (i == 0) {
                 world.send(i * block_rows_columns + j, k,
@@ -190,10 +191,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.recv(world.rank() + block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
       }
       i = 0;
-      j = 0;
-      k = 0;
       while (i != block_dimension) {
+        j = 0;
         while (j != block_dimension) {
+          k = 0;
           while (k != block_dimension) {
             local_output_matrix_C[i * block_dimension + j] +=
                 local_input_matrix_A[i * block_dimension + k] * local_input_matrix_B[k * block_dimension + j];
@@ -209,7 +210,9 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   } else {
     output_matrix_C = std::vector<double>(input_matrix_A.size());
     while (i != dimension) {
+      j = 0;
       while (j != dimension) {
+        k = 0;
         while (k != dimension) {
           output_matrix_C[i * dimension + j] += input_matrix_A[i * dimension + k] * input_matrix_B[k * dimension + j];
           k++;
