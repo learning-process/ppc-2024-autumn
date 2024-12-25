@@ -13,7 +13,6 @@
 
 namespace plekhanov_d_verticalgaus_mpi {
 
-
 void copy_input_data(double* source, std::vector<double>& destination, size_t size);
 
 bool validate_image(const std::vector<double>& image, size_t width, size_t height);

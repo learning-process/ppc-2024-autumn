@@ -104,7 +104,7 @@ void validation_test(int heightI, int widthI) {
     taskDataPar->outputs_count.emplace_back(global_ans.size());
   }
 
-  auto taskParallel = std::make_shared <plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
+  auto taskParallel = std::make_shared<plekhanov_d_verticalgaus_mpi::VerticalGausMPITest>(taskDataPar);
   if (world.rank() == 0) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
