@@ -160,7 +160,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     if (world.rank() < res_size) {
       local_res.resize(1);
       for (int i = start; i < end; i++) {
-        for (int j = 0; j < ; j++) {
+        for (int j = 0; j < n_of_send_elements; j++) {
           local_res[(i - start) * n_of_send_elements + j] = res[i * n_of_send_elements + j];
         }
       }
@@ -171,7 +171,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   } else {
     local_res.resize(end - start);
     for (int i = start; i < end; i++) {
-      for (int j = 0; j < ; j++) {
+      for (int j = 0; j < n_of_send_elements; j++) {
         local_res[(i - start) * n_of_send_elements + j] = res[i * n_of_send_elements + j];
       }
     }
