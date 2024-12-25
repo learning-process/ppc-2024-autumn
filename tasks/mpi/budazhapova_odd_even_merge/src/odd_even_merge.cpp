@@ -83,7 +83,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeSequential::pre_processing() {
 
 bool budazhapova_betcher_odd_even_merge_mpi::MergeSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[1] > 0;
+  return res.size() > 0;
 }
 
 bool budazhapova_betcher_odd_even_merge_mpi::MergeSequential::run() {
@@ -117,7 +117,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::pre_processing() {
 bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    return taskData->inputs_count[1] > 0;
+    return res.size() > 0;
   }
 }
 
