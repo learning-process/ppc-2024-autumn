@@ -120,8 +120,8 @@ bool StronginParallel::run() {
     while (true) {
       sort(x.begin(), x.end());
 
-      int part = static_cast<int>(x.size() / size);
-      int remain = static_cast<int>(x.size() % size);
+      int part = static_cast<int>((x.size() - 1) / size);
+      int remain = static_cast<int>((x.size() - 1) % size);
 
       if (part > 0) {
         for (int i = 1; i < size; ++i) {
