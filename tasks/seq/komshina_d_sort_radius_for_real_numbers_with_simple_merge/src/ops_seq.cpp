@@ -1,75 +1,87 @@
+
+#include <cmath>
+#include <queue>
+
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
 
-#include <bitset>
-#include <numeric>
+using namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq;
 
-bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::pre_processing() {
+bool TestTaskSequential::pre_processing() {
   internal_order_test();
-  input.resize(taskData->inputs_count[0]);
-  auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
-  std::copy(tmp_ptr, tmp_ptr + taskData->inputs_count[0], input.begin());
+
+  int input_size = *(reinterpret_cast<int*>(taskData->inputs[0]));
+  data.assign(reinterpret_cast<double*>(taskData->inputs[1]),
+              reinterpret_cast<double*>(taskData->inputs[1]) + input_size);
+
   return true;
 }
 
-bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::validation() {
+bool TestTaskSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[0] > 0;
+
+  int input_size = *(reinterpret_cast<int*>(taskData->inputs[0]));
+
+  return taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == static_cast<size_t>(input_size) &&
+         taskData->outputs_count[0] == static_cast<size_t>(input_size);
 }
 
-bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::run() {
+bool TestTaskSequential::run() {
   internal_order_test();
-  SortDoubleByBits(input);
-  return true;
-}
 
-bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::post_processing() {
-  internal_order_test();
-  auto* output = reinterpret_cast<double*>(taskData->outputs[0]);
-  std::copy(input.begin(), input.end(), output);
-  return true;
-}
-
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::SortDoubleByBits(
-    std::vector<double>& data) {
   std::vector<uint64_t> keys(data.size());
+  convert_doubles_to_uint64(data, keys);
+  radix_sort_uint64(keys);
+  convert_uint64_to_doubles(keys, data);
 
-  for (size_t i = 0; i < data.size(); ++i) {
-    uint64_t double_as_uint64;
-    std::memcpy(&double_as_uint64, &data[i], sizeof(double));
+  return true;
+}
 
-    double_as_uint64 = ((double_as_uint64 & (1ULL << 63)) != 0) ? ~double_as_uint64 : (double_as_uint64 | (1ULL << 63));
-    keys[i] = double_as_uint64;
-  }
+bool TestTaskSequential::post_processing() {
+  internal_order_test();
+  auto* out = reinterpret_cast<double*>(taskData->outputs[0]);
+  std::copy(data.begin(), data.end(), out);
+  return true;
+}
 
-  for (int shift = 0; shift < 64; shift += 8) {
-    BitwiseCountingSort(keys, shift);
-  }
+void TestTaskSequential::convert_doubles_to_uint64(const std::vector<double>& data_, std::vector<uint64_t>& keys) {
+  for (size_t i = 0; i < data_.size(); ++i) {
+    uint64_t uint64_value;
+    std::memcpy(&uint64_value, &data_[i], sizeof(double));
 
-  for (size_t i = 0; i < data.size(); ++i) {
-    uint64_t double_as_uint64 = keys[i];
-
-    double_as_uint64 =
-        ((double_as_uint64 & (1ULL << 63)) != 0) ? (double_as_uint64 & ~(1ULL << 63)) : ~double_as_uint64;
-    std::memcpy(&data[i], &double_as_uint64, sizeof(double));
+    uint64_value = ((uint64_value >> 63) & 1) ? ~uint64_value : (uint64_value | (1ULL << 63));
+    keys[i] = uint64_value;
   }
 }
 
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::BitwiseCountingSort(
-    std::vector<uint64_t>& keys, int shift) {
+void TestTaskSequential::convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    uint64_t uint64_value = keys[i];
+
+    uint64_value = ((uint64_value >> 63) & 1) ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
+    std::memcpy(&data_[i], &uint64_value, sizeof(double));
+  }
+}
+
+void TestTaskSequential::radix_sort_uint64(std::vector<uint64_t>& keys) {
+  constexpr int BITS = 64;
+  constexpr int RADIX = 256;
   std::vector<uint64_t> temp(keys.size());
-  size_t count[256 + 1] = {0};
 
-  for (size_t i = 0; i < keys.size(); ++i) {
-    auto byte = static_cast<uint8_t>((keys[i] >> shift) & ((1 << 8) - 1));
-    ++count[byte + 1];
+  for (int shift = 0; shift < BITS; shift += 8) {
+    size_t count[RADIX + 1] = {0};
+
+    for (uint64_t key : keys) {
+      ++count[((key >> shift) & 255) + 1];
+    }
+
+    for (int i = 0; i < RADIX; ++i) {
+      count[i + 1] += count[i];
+    }
+
+    for (uint64_t key : keys) {
+      temp[count[(key >> shift) & 255]++] = key;
+    }
+
+    keys.swap(temp);
   }
-
-  std::partial_sum(count, count + 256 + 1, count);
-
-  for (size_t i = 0; i < keys.size(); ++i) {
-    auto byte = static_cast<uint8_t>((keys[i] >> shift) & ((1 << 8) - 1));
-    temp[count[byte]++] = keys[i];
-  }
-
-  std::copy(temp.begin(), temp.end(), keys.begin());
 }
