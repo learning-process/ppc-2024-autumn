@@ -239,10 +239,9 @@ bool StrassenAlgorithmMPI::pre_processing() {
       while (new_size < size) {
         new_size *= 2;
       }
-      
-      size_t half_size = new_size / 2;
 
-      if (rank == 0) {
+      size_t half_size = new_size / 2;
+      
         std::cout << "Strassen_multiply: Padding matrices to size " << new_size << std::endl;
 
         std::vector<double> paddedA = pad_matrix(matrixA, size, new_size);
@@ -263,7 +262,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
                     << ", got: " << paddedA.size() << " and " << paddedB.size() << std::endl;
           return {};
         }
-      }
 
       for (size_t i = 0; i < half_size; ++i) {
         for (size_t j = 0; j < half_size; ++j) {
