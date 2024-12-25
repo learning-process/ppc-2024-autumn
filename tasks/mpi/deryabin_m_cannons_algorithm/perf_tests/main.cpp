@@ -31,6 +31,7 @@ TEST(deryabin_m_cannons_algorithm_mpi, test_pipeline_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
+
   
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -73,6 +74,7 @@ TEST(deryabin_m_cannons_algorithm_mpi, test_task_run) {
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
+
   
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
