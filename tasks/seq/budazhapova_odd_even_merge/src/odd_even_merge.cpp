@@ -5,7 +5,7 @@
 #include <thread>
 
 namespace budazhapova_betcher_odd_even_merge_seq {
-void budazhapova_betcher_odd_even_merge_seq::MergeSequential::counting_sort(std::vector<int>& arr, int exp) {
+void counting_sort(std::vector<int>& arr, int exp) {
   int n = arr.size();
   std::vector<int> output(n);
   std::vector<int> count(10, 0);
@@ -27,7 +27,7 @@ void budazhapova_betcher_odd_even_merge_seq::MergeSequential::counting_sort(std:
   }
 }
 
-void budazhapova_betcher_odd_even_merge_seq::MergeSequential::radix_sort(std::vector<int>& arr) {
+void radix_sort(std::vector<int>& arr) {
   int max_num = *std::max_element(arr.begin(), arr.end());
   for (int exp = 1; max_num / exp > 0; exp *= 10) {
     counting_sort(arr, exp);
