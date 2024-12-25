@@ -1,15 +1,18 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <algorithm>
+#include <boost/mpi.hpp>
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
-#include <cmath>
-#include <map>
+#include <chrono>
+#include <memory>
 #include <numeric>
-#include <unordered_set>
+#include <random>
+#include <thread>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -23,9 +26,9 @@ struct SparseMatrix {
 
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar & values;
-    ar & row_indices;
-    ar & col_pointers;
+    ar& values;
+    ar& row_indices;
+    ar& col_pointers;
   }
 };
 
