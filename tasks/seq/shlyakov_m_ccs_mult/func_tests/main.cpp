@@ -1,9 +1,6 @@
 // Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
-#include <random>
-#include <vector>
-
 #include "seq/shlyakov_m_ccs_mult/include/ops_seq.hpp"
 
 using namespace shlyakov_m_ccs_mult;
@@ -281,10 +278,6 @@ TEST(shlyakov_m_ccs_mult_seq, rectangular_matrices_test1) {
   actual_result.values.assign(values_ptr, values_ptr + values_size);
   actual_result.row_indices.assign(row_indices_ptr, row_indices_ptr + row_indices_size);
   actual_result.col_pointers.assign(col_pointers_ptr, col_pointers_ptr + col_pointers_size);
-
-  // std::cerr << actual_result.values << std::endl
-  //         << actual_result.row_indices << std::endl
-  //        << actual_result.col_pointers;
 
   ASSERT_TRUE(are_ccs_matrices_equal(expected_result, actual_result, 1e-9));
 }
