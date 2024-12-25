@@ -38,7 +38,7 @@ TEST(deryabin_m_cannons_algorithm_mpi, test_simple_matrix) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix_B.data()));
     taskDataSeq->inputs_count.emplace_back(input_matrix_A.size());
     taskDataSeq->inputs_count.emplace_back(input_matrix_B.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_matrix_C.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_out_matrix_C.data()));
     taskDataSeq->outputs_count.emplace_back(out_matrix_C.size());
 
     deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskSequential testMpiTaskSequential(taskDataSeq);
