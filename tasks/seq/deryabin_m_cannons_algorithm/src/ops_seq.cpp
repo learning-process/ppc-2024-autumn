@@ -20,11 +20,13 @@ bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::validatio
 bool deryabin_m_cannons_algorithm_seq::CannonsAlgorithmTaskSequential::run() {
   internal_order_test();
   unsigned short i = 0;
-  unsigned short j = 0;
-  unsigned short count = 0;
+  unsigned short j;
+  unsigned short count;
   auto dimension = (unsigned short)sqrt(input_matrix_A.size());
   while (i != dimension) {
+    j = 0;
     while (j != dimension) {
+      count = 0;
       while (count != dimension) {
         output_matrix_C[i * dimension + j] +=
             input_matrix_A[i * dimension + count] * input_matrix_B[count * dimension + j];
