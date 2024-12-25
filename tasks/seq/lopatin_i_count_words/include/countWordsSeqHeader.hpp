@@ -21,6 +21,7 @@ class TestTaskSequential : public ppc::core::Task {
  private:
   std::vector<char> input_;
   int wordCount{};
+  int spaceCount{};
 };
 
 }  // namespace lopatin_i_count_words_seq

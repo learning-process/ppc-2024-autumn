@@ -38,19 +38,14 @@ template <typename T>
 bool TestMPITaskParallel<T>::pre_processing() {
   internal_order_test();
 
-  int delta1 = 0;
-  int delta2 = 0;
-
+  int delta = 0;
   if (world.rank() == 0) {
     n = static_cast<int>(taskData->inputs_count[1]);
     m = static_cast<int>(taskData->inputs_count[2]);
-    int total_elements = n * m;
-    delta1 = total_elements / world.size();
-    delta2 = total_elements % world.size();
+    delta = (n * m) / world.size();
   }
 
-  boost::mpi::broadcast(world, delta1, 0);
-  boost::mpi::broadcast(world, delta2, 0);
+  boost::mpi::broadcast(world, delta, 0);
 
   if (world.rank() == 0) {
     input_ = std::vector<T>(n * m);
@@ -58,22 +53,16 @@ bool TestMPITaskParallel<T>::pre_processing() {
     for (int i = 0; i < static_cast<int>(taskData->inputs_count[0]); i++) {
       input_[i] = tmp_ptr[i];
     }
-
-    int start_index = delta1 + (delta2 > 0 ? 1 : 0);
     for (int proc = 1; proc < world.size(); proc++) {
-      int current_delta = delta1 + (proc < delta2 ? 1 : 0);
-      world.send(proc, 0, input_.data() + start_index, current_delta);
-      start_index += current_delta;
+      world.send(proc, 0, input_.data() + proc * delta, delta);
     }
   }
 
-  int local_size = delta1 + (world.rank() < delta2 ? 1 : 0);
-  local_input_ = std::vector<T>(local_size);
-
+  local_input_ = std::vector<T>(delta);
   if (world.rank() == 0) {
-    local_input_ = std::vector<T>(input_.begin(), input_.begin() + local_size);
+    local_input_ = std::vector<T>(input_.begin(), input_.begin() + delta);
   } else {
-    world.recv(0, 0, local_input_.data(), local_size);
+    world.recv(0, 0, local_input_.data(), delta);
   }
 
   return true;

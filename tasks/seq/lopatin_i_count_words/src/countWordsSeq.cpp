@@ -34,25 +34,12 @@ bool lopatin_i_count_words_seq::TestTaskSequential::validation() {
 
 bool lopatin_i_count_words_seq::TestTaskSequential::run() {
   internal_order_test();
-
-  wordCount = 0;
-  bool inWord = false;
-
-  for (size_t i = 0; i < input_.size(); ++i) {
-    if (input_[i] == ' ') {
-      if (inWord) {
-        wordCount++;
-        inWord = false;
-      }
-    } else if (!inWord) {
-      inWord = true;
+  for (char c : input_) {
+    if (c == ' ') {
+      spaceCount++;
     }
   }
-
-  if (inWord) {
-    wordCount++;
-  }
-
+  wordCount = spaceCount + 1;
   return true;
 }
 

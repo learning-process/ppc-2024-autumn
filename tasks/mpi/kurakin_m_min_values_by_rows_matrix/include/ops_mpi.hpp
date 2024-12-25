@@ -1,17 +1,20 @@
+// Copyright 2023 Nesterov Alexander
 #pragma once
 
-#include <algorithm>
+#include <gtest/gtest.h>
+
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
-#include <functional>
-#include <string>
+#include <memory>
+#include <numeric>
+#include <utility>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
-namespace lopatin_i_count_words_mpi {
+namespace kurakin_m_min_values_by_rows_matrix_mpi {
 
-std::vector<char> generateLongString(int n);
+std::vector<int> getRandomVector(int sz);
 
 class TestMPITaskSequential : public ppc::core::Task {
  public:
@@ -22,9 +25,10 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<char> input_;
-  int wordCount{};
-  int spaceCount{};
+  int count_rows{};
+  int size_rows{};
+  std::vector<int> input_;
+  std::vector<int> res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -36,12 +40,11 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<char> input_;
-  std::vector<char> localInput_;
-  int wordCount{};
-  int spaceCount{};
-  int localSpaceCount{};
+  int count_rows{};
+  int size_rows{};
+  std::vector<int> input_, local_input_;
+  std::vector<int> res;
   boost::mpi::communicator world;
 };
 
-}  // namespace lopatin_i_count_words_mpi
+}  // namespace kurakin_m_min_values_by_rows_matrix_mpi
