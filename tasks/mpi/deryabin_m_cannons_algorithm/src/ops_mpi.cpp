@@ -105,7 +105,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
       while (i != block_rows_columns) {
         j = 0;
         while (j != block_rows_columns) {
-          if (i != 0 || j != 0) {
+          if (i != 0 && j != 0) {
             k = 0;
             while (k != block_dimension) {
               if (i == 0) {
