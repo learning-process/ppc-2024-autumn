@@ -136,17 +136,67 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         k++;
       }
     }
-
-    
-    
+    i = 0;
+    j = 0;
+    k = 0;
+    while (i != block_dimension) {
+      while (j != block_dimension) {
+        while (k != block_dimension) {
+          local_output_matrix_C[i * block_dimension + j] +=
+              local_input_matrix_A[i * block_dimension + k] * local_input_matrix_B[k * block_dimension + j];
+          k++;
+        }
+        j++;
+      }
+      i++;
+    }
+    unsigned short p = 0;
+    while (p != block_rows_columns) {
+      if (world.rank() % block_rows_columns == 0) {
+        world.send(world.rank() + block_rows_columns - 1, 0, local_input_matrix_A.data(), block_dimension);
+      } else {
+        world.send(world.rank() - 1, 0, local_input_matrix_A.data(), block_dimension);
+      }
+      if (world.rank() < block_rows_columns) {
+        world.send(world.rank() + block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(), block_dimension);
+      } else {
+        world.send(world.rank() - block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
+      }
+      if ((world.rank() + 1) % block_rows_columns == 0) {
+        world.recv(world.rank() - block_rows_columns + 1, 0, local_input_matrix_A.data(), block_dimension);
+      } else {
+        world.recv(world.rank() + 1, 0, local_input_matrix_A.data(), block_dimension);
+      }
+      if (world.rank() >= block_rows_columns * (block_rows_columns - 1)) {
+        world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(), block_dimension);
+      } else {
+        world.recv(world.rank() + block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
+      }
+      i = 0;
+      j = 0;
+      k = 0;
+      while (i != block_dimension) {
+        while (j != block_dimension) {
+          while (k != block_dimension) {
+            local_output_matrix_C[i * block_dimension + j] +=
+                local_input_matrix_A[i * block_dimension + k] * local_input_matrix_B[k * block_dimension + j];
+            k++;
+          }
+          j++;
+        }
+        i++;
+      }
+      p++; 
+    }
+    boost::mpi::gather(world, local_output_matrix_C.data(), block_dimension * block_dimension, output_matrix_C, 0);
   } else {
     output_matrix_C = std::vector<double>(input_matrix_A.size());
       while (i != dimension) {
         while (j != dimension) {
-          while (count != dimension) {
+          while (k != dimension) {
             output_matrix_C[i * dimension + j] +=
-                input_matrix_A[i * dimension + count] * input_matrix_B[count * dimension + j];
-            count++;
+                input_matrix_A[i * dimension + k] * input_matrix_B[k * dimension + j];
+            k++;
           }
           j++;
         }
