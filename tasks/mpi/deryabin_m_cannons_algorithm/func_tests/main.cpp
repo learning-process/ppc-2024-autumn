@@ -7,11 +7,10 @@
 
 TEST(deryabin_m_cannons_algorithm_mpi, test_simple_matrix) {
   boost::mpi::communicator world;
-  std::vector<double> input_matrix_A{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  std::vector<double> input_matrix_B{1, 2, 3, 4, 5, 6, 7, 8, 9};
-  std::vector<double> output_matrix_C(9, 0);
-  std::vector<double> true_solution{30, 36, 42, 66, 81, 96, 102, 126, 150};
-  std::vector<double> output_x_vector_(10, 0);
+  std::vector<double> input_matrix_A{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+  std::vector<double> input_matrix_B{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+  std::vector<double> output_matrix_C(16, 0);
+  std::vector<double> true_solution{90, 100, 110, 120, 202, 228, 254, 280, 314, 356, 398, 440, 426, 484, 542, 600};
   std::vector<std::vector<double>> out_matrix_C(1, output_matrix_C);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
