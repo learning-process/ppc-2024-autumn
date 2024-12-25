@@ -52,7 +52,7 @@ void validation_test_template(boost::mpi::communicator& world, const int n) {
 TEST(tyurin_m_shell_sort_batcher_merge_mpi, all_permutations_test) {
   boost::mpi::communicator world;
   std::vector<int> data = {-4, -3, -2, -1, 0, 1, 2, 3};
-  if (data.size() % world.size() != 0) GTEST_SKIP();
+  if (world.size() % 2 != 0) GTEST_SKIP();
   do {
     tyurin_m_shell_sort_batcher_merge_mpi::run_test_template(world, data, data.size());
   } while (std::next_permutation(data.begin(), data.end()));
