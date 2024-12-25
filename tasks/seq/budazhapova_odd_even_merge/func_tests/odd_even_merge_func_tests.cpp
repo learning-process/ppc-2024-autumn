@@ -40,7 +40,7 @@ TEST(budazhapova_betcher_odd_even_merge_seq, ordinary_test) {
 }
 
 TEST(budazhapova_betcher_odd_even_merge_seq, random_vector_test) {
-  std::vector<int> input_vector = generateRandomVector(100, 5, 100);
+  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_seq::generateRandomVector(100, 5, 100);
   std::vector<int> out(100, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
