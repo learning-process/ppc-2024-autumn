@@ -83,10 +83,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     block_rows_columns = (unsigned short)sqrt(world.size());
     block_dimension = dimension / block_rows_columns;
   }
+  boost::mpi::broadcast(world, dimension, 0);
+  boost::mpi::broadcast(world, block_rows_columns, 0);
+  boost::mpi::broadcast(world, block_dimension, 0);
   if (world.size() != 1 && world.size() == pow(block_rows_columns, 2) && dimension % block_rows_columns == 0) {
-    boost::mpi::broadcast(world, dimension, 0);
-    boost::mpi::broadcast(world, block_rows_columns, 0);
-    boost::mpi::broadcast(world, block_dimension, 0);
     output_matrix_C = std::vector<double>(input_matrix_A.size());
     local_input_matrix_A = std::vector<double>(block_dimension * block_dimension);
     local_input_matrix_B = std::vector<double>(block_dimension * block_dimension);
