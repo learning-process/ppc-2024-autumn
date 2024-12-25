@@ -47,10 +47,6 @@ bool plekhanov_d_trapez_integration_mpi::TestMPITaskParallel::validation() {
     if ((taskData->inputs.size() != 3) || (taskData->outputs.size() != 1)) {
       return false;
     }
-    double epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
-    if (epsilon <= 0) {
-      return false;
-    }
   }
   return true;
 }
