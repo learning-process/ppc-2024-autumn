@@ -76,45 +76,44 @@ bool TestMPITaskSequential::post_processing() {
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double upper_bound,
-                                                         int num_steps, boost::mpi::communicator &world) {
+double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double upper_bound, int num_steps,
+                            boost::mpi::communicator &world) {
   double step_size = (upper_bound - lower_bound) / num_steps;
 
   int rank = world.rank();
   int size = world.size();
 
-  int local_steps = num_steps / size;
-  int remainder = num_steps % size;
-  if (rank < remainder) {
-    local_steps += 1;
-  }
+  int steps_per_process = num_steps / size;
+  int remaining_steps = num_steps % size;
 
-  double local_lower_bound = lower_bound + rank * local_steps * step_size;
-  double local_upper_bound = local_lower_bound + local_steps * step_size;
+  // Учитываем остаток
+  int extra_steps = (rank < remaining_steps) ? 1 : 0;
+
+  // Начальная и конечная границы для процесса
+  double local_lower_bound =
+      lower_bound + rank * steps_per_process * step_size + std::min(rank, remaining_steps) * step_size;
+  double local_upper_bound = local_lower_bound + (steps_per_process + extra_steps) * step_size;
 
   double local_result = 0.0;
-  if (local_steps > 0) {
+
+  if (steps_per_process + extra_steps > 0) {
     local_result += func(local_lower_bound);
 
-    for (int i = 1; i < local_steps; ++i) {
+    for (int i = 1; i < steps_per_process + extra_steps; ++i) {
       double x = local_lower_bound + i * step_size;
       int weight = (i % 2 == 0) ? 2 : 4;
       local_result += weight * func(x);
     }
 
     local_result += func(local_upper_bound);
-
     local_result *= step_size / 3.0;
   }
 
   double global_result = 0.0;
-  boost::mpi::reduce(world, local_result, global_result, std::plus<double>(), 0);
+  boost::mpi::all_reduce(world, local_result, global_result, std::plus<double>());
 
-  if (rank == 0) {
-    return global_result;
-  }
-
-  return 0.0;
+  // Все процессы возвращают одно значение
+  return global_result;
 }
 
 bool TestMPITaskParallel::pre_processing() {
