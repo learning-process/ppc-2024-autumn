@@ -7,7 +7,7 @@
 #include "seq/filatev_v_metod_belmana_forda/include/ops_seq.hpp"
 
 TEST(filatev_v_metod_belmana_forda_seq, test_pipeline_run) {
-  int n = 8001;
+  int n = 10000;
   int m = n * (n - 1);
   int start = 0;
   std::vector<int> Adjncy(m, 0);
@@ -65,7 +65,7 @@ TEST(filatev_v_metod_belmana_forda_seq, test_pipeline_run) {
 }
 
 TEST(filatev_v_metod_belmana_forda_seq, test_task_run) {
-  int n = 8001;
+  int n = 10000;
   int m = n * (n - 1);
   int start = 0;
   std::vector<int> Adjncy(m, 0);

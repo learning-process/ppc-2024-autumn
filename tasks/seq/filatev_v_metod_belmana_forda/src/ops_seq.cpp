@@ -17,15 +17,6 @@ bool filatev_v_metod_belmana_forda_seq::MetodBelmanaForda::pre_processing() {
   this->m = taskData->inputs_count[1];
   this->start = taskData->inputs_count[2];
 
-  auto* temp = reinterpret_cast<int*>(taskData->inputs[0]);
-  this->Adjncy.assign(temp, temp + m);
-  temp = reinterpret_cast<int*>(taskData->inputs[1]);
-  this->Xadj.assign(temp, temp + n + 1);
-  temp = reinterpret_cast<int*>(taskData->inputs[2]);
-  this->Eweights.assign(temp, temp + m);
-
-  this->d.resize(n);
-
   return true;
 }
 
@@ -35,6 +26,13 @@ bool filatev_v_metod_belmana_forda_seq::MetodBelmanaForda::run() {
   int inf = std::numeric_limits<int>::max();
   d.assign(n, inf);
   d[start] = 0;
+
+  auto* temp = reinterpret_cast<int*>(taskData->inputs[0]);
+  this->Adjncy.assign(temp, temp + m);
+  temp = reinterpret_cast<int*>(taskData->inputs[1]);
+  this->Xadj.assign(temp, temp + n + 1);
+  temp = reinterpret_cast<int*>(taskData->inputs[2]);
+  this->Eweights.assign(temp, temp + m);
 
   bool stop = true;
   for (int i = 0; i < n; i++) {
