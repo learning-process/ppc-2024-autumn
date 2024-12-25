@@ -16,8 +16,7 @@ namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_):Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -33,8 +32,7 @@ class TestTaskSequential : public ppc::core::Task {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_)
-      : Task(std::move(taskData_)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_):Task(std::move(taskData_)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;
@@ -48,4 +46,4 @@ class TestMPITaskParallel : public ppc::core::Task {
   static void convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_);
   static void radix_sort_uint64(std::vector<uint64_t>& keys);
 };
-}  // namespace kharin_m_radix_double_sort
+}  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi

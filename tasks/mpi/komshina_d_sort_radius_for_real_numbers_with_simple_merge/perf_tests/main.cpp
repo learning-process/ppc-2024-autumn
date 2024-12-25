@@ -34,7 +34,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_pipelin
     taskDataPar->outputs_count.emplace_back(count);
   }
 
-   auto testMpiTaskParallel =
+  auto testMpiTaskParallel =
       std::make_shared<komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
@@ -81,7 +81,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_task_ru
     taskDataPar->outputs_count.emplace_back(count);
   }
 
-   auto testMpiTaskParallel =
+  auto testMpiTaskParallel =
       std::make_shared<komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel>(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel->validation(), true);
   testMpiTaskParallel->pre_processing();
