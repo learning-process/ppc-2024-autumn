@@ -12,7 +12,6 @@
 
 namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq {
 
-// Класс для последовательной поразрядной сортировки real-чисел
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
