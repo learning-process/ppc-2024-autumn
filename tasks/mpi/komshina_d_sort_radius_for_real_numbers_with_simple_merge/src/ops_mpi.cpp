@@ -51,7 +51,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequ
     uint64_t uint64_value;
     std::memcpy(&uint64_value, &data_[i], sizeof(double));
 
-    uint64_value = ((uint64_value >> 63) & 1) ? ~uint64_value : (uint64_value | (1ULL << 63));
+    uint64_value = ((uint64_value >> 63) & 1) != 0 ? ~uint64_value : (uint64_value | (1ULL << 63));
     keys[i] = uint64_value;
   }
 }
@@ -61,7 +61,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequ
   for (size_t i = 0; i < keys.size(); ++i) {
     uint64_t uint64_value = keys[i];
 
-    uint64_value = ((uint64_value >> 63) & 1) ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
+    uint64_value = ((uint64_value >> 63) & 1) != 0 ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
     std::memcpy(&data_[i], &uint64_value, sizeof(double));
   }
 }
@@ -197,7 +197,6 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   return true;
 }
 
-
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
 
@@ -225,7 +224,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   for (size_t i = 0; i < keys.size(); ++i) {
     uint64_t uint64_value = keys[i];
 
-    uint64_value = ((uint64_value >> 63) & 1) ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
+    uint64_value = ((uint64_value >> 63) & 1) != 0 ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
     std::memcpy(&data_[i], &uint64_value, sizeof(double));
   }
 }
