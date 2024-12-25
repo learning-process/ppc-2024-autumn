@@ -1,17 +1,16 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <chrono>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
 
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_pipeline_run) {
-  std::vector<double> in = {0.5, 0.2, 0.9, 0.1, 0.4, 0.8, 0.6, 0.3, 0.7, 0.0};
-  std::vector<double> out(in.size());
+  std::vector<double> in = {3.0, -1.0, 7.5, 0.0, -8.2, 15.5, -3.4, 0.1, 9.8, 4.0};
+  std::vector<double> out(in.size(), 0);
 
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -33,19 +32,21 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_pipelin
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  std::vector<double> sorted_in = in;
-  std::sort(sorted_in.begin(), sorted_in.end());
-
-  ASSERT_TRUE(std::equal(out.begin(), out.end(), sorted_in.begin()));
+  std::vector<double> expected = in;
+  std::sort(expected.begin(), expected.end());
+  for (size_t i = 0; i < in.size(); ++i) {
+    ASSERT_EQ(out[i], expected[i]) << "Failed at index " << i;
+  }
 }
 
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_task_run) {
-  std::vector<double> in = {0.5, 0.2, 0.9, 0.1, 0.4, 0.8, 0.6, 0.3, 0.7, 0.0};
-  std::vector<double> out(in.size());
+  std::vector<double> in = {3.0, -1.0, 7.5, 0.0, -8.2, 15.5, -3.4, 0.1, 9.8, 4.0};
+  std::vector<double> out(in.size(), 0);
 
-  auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
   taskDataSeq->inputs_count.emplace_back(in.size());
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
@@ -67,10 +68,12 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_task_ru
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
+
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  std::vector<double> sorted_in = in;
-  std::sort(sorted_in.begin(), sorted_in.end());
-
-  ASSERT_TRUE(std::equal(out.begin(), out.end(), sorted_in.begin()));
+   std::vector<double> expected = in;
+  std::sort(expected.begin(), expected.end());
+  for (size_t i = 0; i < in.size(); ++i) {
+    ASSERT_EQ(out[i], expected[i]) << "Failed at index " << i;
+  }
 }
