@@ -38,13 +38,13 @@ bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::pre_processing() {
   internal_order_test();
   res = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
                          reinterpret_cast<int*>(taskData->inputs[0]) + taskData->inputs_count[0]);
-  n_el = taskData->inputs_count[0];
+  int n_el = taskData->inputs_count[0];
   return true;
 }
 
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::validation() {
   internal_order_test();
-  return n_el > 0;
+  return taskData->inputs_count[0] > 0;
 }
 
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::run() {
