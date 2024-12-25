@@ -61,7 +61,7 @@ TEST(shlyakov_m_ccs_mult, test_pipeline_run) {
 
   int rows = 6000;
   int cols = 6000;
-  double sparsity = 0.04;
+  double sparsity = 0.05;
 
   auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
   auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
@@ -107,7 +107,7 @@ TEST(shlyakov_m_ccs_mult, test_task_run) {
 
   int rows = 6000;
   int cols = 6000;
-  double sparsity = 0.04;
+  double sparsity = 0.05;
 
   auto matrix_a = generate_random_sparse_matrix(rows, cols, sparsity);
   auto matrix_b = generate_random_sparse_matrix(rows, cols, sparsity);
