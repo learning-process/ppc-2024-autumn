@@ -3,16 +3,27 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/budazhapova_odd_even_merge/include/odd_even_merge.hpp"
 
-std::vector<int> budazhapova_betcher_odd_even_merge_seq::MergeSequential::generateRandomVector(int size, int minValue,
-                                                                                               int maxValue) {
-  std::vector<int> randomVector;
-  randomVector.reserve(size);
-  std::srand(static_cast<unsigned int>(std::time(nullptr)));
-  for (int i = 0; i < size; ++i) {
-    int randomNum = std::rand() % (maxValue - minValue + 1) + minValue;
-    randomVector.push_back(randomNum);
+namespace budazhapova_betcher_odd_even_merge_seq {
+void counting_sort(std::vector<int>& arr, int exp) {
+  int n = arr.size();
+  std::vector<int> output(n);
+  std::vector<int> count(10, 0);
+
+  for (int i = 0; i < n; i++) {
+    int index = (arr[i] / exp) % 10;
+    count[index]++;
   }
-  return randomVector;
+  for (int i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+  for (int i = n - 1; i >= 0; i--) {
+    int index = (arr[i] / exp) % 10;
+    output[count[index] - 1] = arr[i];
+    count[index]--;
+  }
+  for (int i = 0; i < n; i++) {
+    arr[i] = output[i];
+  }
 }
 
 TEST(budazhapova_betcher_odd_even_merge_seq, test_pipeline_run) {
