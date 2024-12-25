@@ -244,3 +244,92 @@ TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilter
 
   ASSERT_EQ(expected_output, actual_output);
 }
+
+TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterUniformImage) {
+  int rows = 5;
+  int cols = 5;
+  vector<int> input(rows * cols, 128);            // Все пиксели равны 128
+  vector<int> expected_output(rows * cols, 128);  // Ожидаемый результат также будет 128
+  vector<int> actual_output(rows * cols, 0);
+
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
+
+  auto taskData = make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.push_back(input.size());
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(actual_output.data()));
+  taskData->outputs_count.push_back(actual_output.size());
+
+  golovkin_linear_image_filtering_with_block_partitioning::SimpleIntSEQ task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  ASSERT_EQ(expected_output, actual_output);
+}
+
+TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterImageWithNoise) {
+  int rows = 5;
+  int cols = 5;
+  vector<int> input = {0, 255, 0, 0, 0, 0,   0, 255, 0,   0, 255, 0, 0,
+                       0, 255, 0, 0, 0, 255, 0, 0,   255, 0, 0,   0};  // Ввод с шумом
+  vector<int> expected_output = {
+      32, 51, 32, 32, 32, 51, 85, 51, 32, 32, 32, 51, 32,
+      51, 32, 32, 32, 51, 51, 32, 32, 32, 32, 32, 32};  // Ожидаемый результат может быть рассчитан
+  vector<int> actual_output(rows * cols, 0);
+
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
+
+  auto taskData = make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.push_back(input.size());
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(actual_output.data()));
+  taskData->outputs_count.push_back(actual_output.size());
+
+  golovkin_linear_image_filtering_with_block_partitioning::SimpleIntSEQ task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  ASSERT_EQ(expected_output, actual_output);
+}
+
+TEST(golovkin_linear_image_filtering_with_block_partitioning, TestGaussianFilterGradientImage) {
+  int rows = 5;
+  int cols = 5;
+  vector<int> input = {0,   51,  102, 153, 204, 51,  102, 153, 204, 255, 102, 153, 204,
+                       255, 255, 153, 204, 255, 255, 255, 204, 255, 255, 255, 255};  // Градиентное изображение
+  vector<int> expected_output = {25,  51,  76,  102, 127, 51,  76,  102, 127, 153, 76,  102, 127,
+                                 153, 178, 102, 127, 153, 178, 204, 127, 153, 178, 204, 229};  // Ожидаемый результат
+  vector<int> actual_output(rows * cols, 0);
+
+  gaussian_filter_seq_block(input, rows, cols, expected_output, 3);
+
+  auto taskData = make_shared<ppc::core::TaskData>();
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
+  taskData->inputs_count.push_back(input.size());
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&rows));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->inputs.push_back(reinterpret_cast<uint8_t*>(&cols));
+  taskData->inputs_count.push_back(sizeof(int));
+  taskData->outputs.push_back(reinterpret_cast<uint8_t*>(actual_output.data()));
+  taskData->outputs_count.push_back(actual_output.size());
+
+  golovkin_linear_image_filtering_with_block_partitioning::SimpleIntSEQ task(taskData);
+  ASSERT_TRUE(task.validation());
+  ASSERT_TRUE(task.pre_processing());
+  ASSERT_TRUE(task.run());
+  ASSERT_TRUE(task.post_processing());
+
+  ASSERT_EQ(expected_output, actual_output);
+}
