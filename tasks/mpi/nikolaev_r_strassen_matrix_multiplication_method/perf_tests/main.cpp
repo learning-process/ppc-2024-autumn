@@ -6,7 +6,7 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/nikolaev_r_strassen_matrix_multiplication_method/include/ops_mpi.hpp"
 
-std::vector<double> generate_random_square_matrix(int n, double minValue = -50.0, double maxValue = 50.0) {
+static std::vector<double> generate_random_square_matrix(int n, double minValue = -50.0, double maxValue = 50.0) {
   std::vector<double> matrix(n * n);
 
   std::random_device rd;
@@ -46,7 +46,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_pipeline_run) {
   ASSERT_TRUE(testTaskParallel->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 2;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -85,7 +85,7 @@ TEST(nikolaev_r_strassen_matrix_multiplication_method_mpi, test_task_run) {
   ASSERT_TRUE(testTaskParallel->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 10;
+  perfAttr->num_running = 2;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 

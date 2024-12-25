@@ -3,7 +3,7 @@
 #include <mpi/nikolaev_r_strassen_matrix_multiplication_method/include/ops_mpi.hpp>
 #include <random>
 
-std::vector<double> generate_random_square_matrix(int n, double minValue = -200.0, double maxValue = 200.0) {
+static std::vector<double> generate_random_square_matrix(int n, double minValue = -200.0, double maxValue = 200.0) {
   std::vector<double> matrix(n * n);
 
   std::random_device rd;
@@ -16,7 +16,7 @@ std::vector<double> generate_random_square_matrix(int n, double minValue = -200.
   return matrix;
 }
 
-void create_test(size_t N) {
+static void create_test(size_t N) {
   boost::mpi::communicator world;
   std::vector<double> A = generate_random_square_matrix(N);
   std::vector<double> B = generate_random_square_matrix(N);
