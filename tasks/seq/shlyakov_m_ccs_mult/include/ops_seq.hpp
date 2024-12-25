@@ -1,7 +1,10 @@
 // Copyright 2023 Nesterov Alexander
 #pragma once
 
+#include <algorithm>
+#include <random>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -23,8 +26,6 @@ class TestTaskSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
-
-  SparseMatrix check_result() { return result_; };
 
  private:
   SparseMatrix A_;
