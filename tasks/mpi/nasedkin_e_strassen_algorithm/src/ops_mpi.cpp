@@ -219,34 +219,34 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
       int rank = world.rank();
       int num_procs = world.size();
-      std::vector<std::vector<double>> M(7);
-      size_t new_size = 1;
-      size_t half_size = new_size / 2;
 
-      if (rank == 0) {
       std::cout << "Num procs = " << num_procs << std::endl;
 
       if (rank == 0 && (matrixA.empty() || matrixB.empty() || size == 0)) {
         std::cout << "Rank " << rank << ": Error! matrixA, matrixB are empty, or size is zero before Strassen_multiply" << std::endl;
         return {};
       }
-
+      if (rank == 0) {
         std::cout << "Strassen_multiply: Received matrix size = " << size << ", rank = " << rank << std::endl;
-
+      }
 
       if (size == 1) {
         std::cout << "Strassen_multiply: Base case reached." << std::endl;
         return {matrixA[0] * matrixB[0]};
       }
 
+      size_t new_size = 1;
       while (new_size < size) {
         new_size *= 2;
       }
 
+      if (rank == 0) {
         std::cout << "Strassen_multiply: Padding matrices to size " << new_size << std::endl;
 
         std::vector<double> paddedA = pad_matrix(matrixA, size, new_size);
         std::vector<double> paddedB = pad_matrix(matrixB, size, new_size);
+
+        size_t half_size = new_size / 2;
 
         std::vector<double> A11(half_size * half_size);
         std::vector<double> A12(half_size * half_size);
@@ -258,10 +258,11 @@ bool StrassenAlgorithmMPI::pre_processing() {
         std::vector<double> B21(half_size * half_size);
         std::vector<double> B22(half_size * half_size);
 
-      if (paddedA.size() != new_size * new_size || paddedB.size() != new_size * new_size) {
-        std::cout << "Strassen_multiply: Padded matrix size mismatch. Expected: "
-                  << new_size * new_size << ", got: " << paddedA.size() << " and " << paddedB.size() << std::endl;
-        return {};
+        if (paddedA.size() != new_size * new_size || paddedB.size() != new_size * new_size) {
+          std::cout << "Strassen_multiply: Padded matrix size mismatch. Expected: " << new_size * new_size
+                    << ", got: " << paddedA.size() << " and " << paddedB.size() << std::endl;
+          return {};
+        }
       }
 
       for (size_t i = 0; i < half_size; ++i) {
@@ -285,6 +286,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
       std::cout << "B11 size = " << B11.size() << ", B12 size = " << B12.size()
                 << ", B21 size = " << B21.size() << ", B22 size = " << B22.size() << std::endl;
 
+        std::vector<std::vector<double>> M(7);
+        if (rank == 0) {
           std::vector<std::vector<double>> tasks = {
               matrix_add(A11, A22, half_size),
               matrix_add(A21, A22, half_size),
@@ -317,8 +320,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
               std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size()
                         << ") and taskB[" << i << "] (size = " << tasksB[i].size()
                         << ") to rank " << (i % num_procs) << std::endl;
-                world.send(i % num_procs, i, tasks[i]);
-                world.send(i % num_procs, i, tasksB[i]);
+              world.send(i % num_procs, i, tasks[i]);
+              world.send(i % num_procs, i, tasksB[i]);
               std::cout << "Rank 0 sent taskA[" << i << "] and taskB[" << i << "] to rank " << (i % num_procs) << std::endl;
             }
           }
