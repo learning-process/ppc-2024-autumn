@@ -5,13 +5,6 @@
 
 #include "core/task/include/task.hpp"
 
-template <typename T>
-void dumpv(const char* text, const std::vector<T>& v) {
-  std::cout << "\n" << text << ": [";
-  for (const auto& e : v) std::cout << (int)e << ", ";
-  std::cout << "]\n";
-}
-
 namespace koshkin_m_sobel_seq {
 
 class TestTaskSequential : public ppc::core::Task {
