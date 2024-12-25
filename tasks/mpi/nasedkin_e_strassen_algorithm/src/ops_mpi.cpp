@@ -220,6 +220,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
       int rank = world.rank();
       int num_procs = world.size();
       std::vector<std::vector<double>> M(7);
+      size_t new_size = 1;
+      size_t half_size = new_size / 2;
 
       if (rank == 0) {
       std::cout << "Num procs = " << num_procs << std::endl;
@@ -237,7 +239,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
         return {matrixA[0] * matrixB[0]};
       }
 
-      size_t new_size = 1;
       while (new_size < size) {
         new_size *= 2;
       }
@@ -246,8 +247,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
         std::vector<double> paddedA = pad_matrix(matrixA, size, new_size);
         std::vector<double> paddedB = pad_matrix(matrixB, size, new_size);
-
-        size_t half_size = new_size / 2;
 
         std::vector<double> A11(half_size * half_size);
         std::vector<double> A12(half_size * half_size);
