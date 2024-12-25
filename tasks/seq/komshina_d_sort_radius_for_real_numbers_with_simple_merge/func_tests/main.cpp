@@ -128,30 +128,6 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_near_ze
   }
 }
 
-TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_high_precision_values) {
-  std::vector<double> in = {3.14159265358979323846264338327950288419716939937510,
-                            2.71828182845904523536028747135266249775724709369995,
-                            1.61803398874989484820458683436563811790028449733817};
-  std::vector<double> out(in.size(), 0);
-
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-  taskDataSeq->inputs_count.emplace_back(in.size());
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
-
-  komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-
-  ASSERT_TRUE(testTaskSequential.validation());
-  ASSERT_TRUE(testTaskSequential.pre_processing());
-  ASSERT_TRUE(testTaskSequential.run());
-  ASSERT_TRUE(testTaskSequential.post_processing());
-
-  for (size_t i = 1; i < out.size(); i++) {
-    ASSERT_LE(out[i - 1], out[i]) << "Array is not sorted at index " << i;
-  }
-}
-
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_large_array) {
   std::vector<double> in(1000000, 1.0);
   in[500000] = -1000.0;

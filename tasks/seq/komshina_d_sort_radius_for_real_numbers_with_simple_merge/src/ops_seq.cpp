@@ -1,8 +1,11 @@
 #include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
 
-#include <bitset>
 #include <numeric>
 
+#include "seq/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_seq.hpp"
+
+#include <bitset>
+#include <numeric>
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -41,7 +44,7 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
     uint64_t double_as_uint64;
     std::memcpy(&double_as_uint64, &data[i], sizeof(double));
 
-    double_as_uint64 = (double_as_uint64 & (1ULL << 63)) ? ~double_as_uint64 : (double_as_uint64 | (1ULL << 63));
+    double_as_uint64 = ((double_as_uint64 & (1ULL << 63)) != 0) ? ~double_as_uint64 : (double_as_uint64 | (1ULL << 63));
     keys[i] = double_as_uint64;
   }
 
@@ -52,7 +55,8 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
   for (size_t i = 0; i < data.size(); ++i) {
     uint64_t double_as_uint64 = keys[i];
 
-    double_as_uint64 = (double_as_uint64 & (1ULL << 63)) ? (double_as_uint64 & ~(1ULL << 63)) : ~double_as_uint64;
+    double_as_uint64 =
+        ((double_as_uint64 & (1ULL << 63)) != 0) ? (double_as_uint64 & ~(1ULL << 63)) : ~double_as_uint64;
     std::memcpy(&data[i], &double_as_uint64, sizeof(double));
   }
 }
@@ -63,14 +67,14 @@ void komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
   size_t count[256 + 1] = {0};
 
   for (size_t i = 0; i < keys.size(); ++i) {
-    uint8_t byte = static_cast<uint8_t>((keys[i] >> shift) & ((1 << 8) - 1));
+    auto byte = static_cast<uint8_t>((keys[i] >> shift) & ((1 << 8) - 1));
     ++count[byte + 1];
   }
 
   std::partial_sum(count, count + 256 + 1, count);
 
   for (size_t i = 0; i < keys.size(); ++i) {
-    uint8_t byte = static_cast<uint8_t>((keys[i] >> shift) & ((1 << 8) - 1));
+    auto byte = static_cast<uint8_t>((keys[i] >> shift) & ((1 << 8) - 1));
     temp[count[byte]++] = keys[i];
   }
 
