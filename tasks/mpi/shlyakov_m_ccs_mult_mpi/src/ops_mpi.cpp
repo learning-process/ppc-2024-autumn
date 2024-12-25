@@ -2,9 +2,6 @@
 // shlyakov_m_min_value_of_row
 #include "mpi/shlyakov_m_ccs_mult_mpi/include/ops_mpi.hpp"
 
-#include <thread>
-#include <vector>
-
 using namespace shlyakov_m_ccs_mult_mpi;
 
 bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::pre_processing() {
