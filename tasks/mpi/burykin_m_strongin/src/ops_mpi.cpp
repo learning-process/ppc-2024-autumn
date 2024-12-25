@@ -156,6 +156,7 @@ bool StronginParallel::run() {
       if (x[interval + 1] - x[interval] <= eps) {
         for (int i = 1; i < size; ++i) MPI_Send(x.data(), 1, MPI_DOUBLE, i, 1, MPI_COMM_WORLD);
         res = x[interval + 1];
+        MPI_Barrier(MPI_COMM_WORLD);
         return true;
       }
 
@@ -171,7 +172,10 @@ bool StronginParallel::run() {
       std::vector<double> x(part + 1);
       MPI_Recv(x.data(), part, MPI_DOUBLE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
 
-      if (status.MPI_TAG == 1) return true;
+      if (status.MPI_TAG == 1) {
+        MPI_Barrier(MPI_COMM_WORLD);
+        return true;
+      }
 
       // double lipshM = 0;
       // double lipshm = 1.0;
