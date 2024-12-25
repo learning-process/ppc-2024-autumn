@@ -55,7 +55,7 @@ bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::run() {
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::post_processing() {
   internal_order_test();
   int* output = reinterpret_cast<int*>(taskData->outputs[0]);
-  for (int i = 0; i < res.size(); i++) {
+  for (size_t i = 0; i < res.size(); i++) {
     output[i] = res[i];
   }
   return true;

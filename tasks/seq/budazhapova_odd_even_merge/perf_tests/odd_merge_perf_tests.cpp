@@ -14,7 +14,7 @@ std::vector<int> generateRandomVector(int size, int minValue, int maxValue) {
   }
   return randomVector;
 }
-
+}  // namespace budazhapova_betcher_odd_even_merge_seq
 TEST(budazhapova_betcher_odd_even_merge_seq, test_pipeline_run) {
   std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_seq ::generateRandomVector(10000000, 5, 100);
   std::vector<int> out(10000000, 0);
