@@ -1,27 +1,29 @@
 #include <gtest/gtest.h>
 
-#include <chrono>
-#include <memory>
+#include <boost/mpi/timer.hpp>
 #include <random>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
-#include "seq/Sdobnov_V_mergesort_Betcher/include/ops_seq.hpp"
+#include "mpi/Sdobnov_V_mergesort_Betcher/include/ops_mpi.hpp"
 
-TEST(Sdobnov_V_mergesort_Betcher_seq, test_pipeline_run) {
+TEST(Sdobnov_V_mergesort_Betcher_par, test_pipeline_run) {
+  boost::mpi::communicator world;
+
   int size = 4096;
   std::vector<int> res(size, 0);
-  std::vector<int> input = Sdobnov_V_mergesort_Betcher_seq::generate_random_vector(size, 0, 1000);
+  std::vector<int> input = Sdobnov_V_mergesort_Betcher_par::generate_random_vector(size, 0, 1000);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  }
 
-  taskDataSeq->inputs_count.emplace_back(size);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->outputs_count.emplace_back(size);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
-
-  auto test = std::make_shared<Sdobnov_V_mergesort_Betcher_seq::MergesortBetcherSeq>(taskDataSeq);
-  ASSERT_EQ(test->validation(), true);
+  auto test = std::make_shared<Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar>(taskDataPar);
+  test->validation();
   test->pre_processing();
   test->run();
   test->post_processing();
@@ -38,23 +40,30 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(test);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(size, res.size());
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(size, res.size());
+  }
 }
 
-TEST(Sdobnov_V_mergesort_Betcher_seq, test_task_run) {
+TEST(Sdobnov_V_mergesort_Betcher_par, test_task_run) {
+  boost::mpi::communicator world;
+
   int size = 4096;
   std::vector<int> res(size, 0);
-  std::vector<int> input = Sdobnov_V_mergesort_Betcher_seq::generate_random_vector(size, 0, 1000);
+  std::vector<int> input = Sdobnov_V_mergesort_Betcher_par::generate_random_vector(size, 0, 1000);
 
-  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataSeq->inputs_count.emplace_back(size);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
-  taskDataSeq->outputs_count.emplace_back(size);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+  }
 
-  auto test = std::make_shared<Sdobnov_V_mergesort_Betcher_seq::MergesortBetcherSeq>(taskDataSeq);
-  ASSERT_EQ(test->validation(), true);
+  auto test = std::make_shared<Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar>(taskDataPar);
+  test->validation(), true;
   test->pre_processing();
   test->run();
   test->post_processing();
@@ -71,5 +80,8 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(test);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(size, res.size());
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(size, res.size());
+  }
 }

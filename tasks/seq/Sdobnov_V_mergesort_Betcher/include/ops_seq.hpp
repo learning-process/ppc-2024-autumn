@@ -9,8 +9,7 @@
 namespace Sdobnov_V_mergesort_Betcher_seq {
 
 void sortPair(int& a, int& b);
-void oddEvenMergeSort(std::vector<int>& a, int l, int r);
-void oddEvenMerge(std::vector<int>& a, int l, int r);
+void batchersort(std::vector<int>& a, int l, int r);
 std::vector<int> generate_random_vector(int size, int lower_bound = 0, int upper_bound = 50);
 
 class MergesortBetcherSeq : public ppc::core::Task {
@@ -25,4 +24,4 @@ class MergesortBetcherSeq : public ppc::core::Task {
   std::vector<int> res_;
   int size_;
 };
-}  // namespace Sdobnov_iteration_method_yakoby_seq
+}  // namespace Sdobnov_V_mergesort_Betcher_seq
