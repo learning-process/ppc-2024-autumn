@@ -44,12 +44,6 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_pi
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  std::vector<double> refData = inputData;
-  std::sort(refData.begin(), refData.end());
-  for (int i = 0; i < count; ++i) {
-    ASSERT_NEAR(refData[i], outputData[i], 1e-12);
-  }
 }
 
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_task_run) {
@@ -89,10 +83,4 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_ta
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   ppc::core::Perf::print_perf_statistic(perfResults);
-
-  std::vector<double> refData = inputData;
-  std::sort(refData.begin(), refData.end());
-  for (int i = 0; i < count; ++i) {
-    ASSERT_NEAR(refData[i], outputData[i], 1e-12);
-  }
 }

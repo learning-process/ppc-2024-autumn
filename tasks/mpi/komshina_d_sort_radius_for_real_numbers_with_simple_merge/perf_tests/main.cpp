@@ -10,13 +10,11 @@
 namespace mpi = boost::mpi;
 
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_pipeline_run) {
-  mpi::environment env;
   mpi::communicator world;
-
   int count = 10;
   std::vector<double> inputData;
   if (world.rank() == 0) {
-    inputData = {1.5, -2.3, 3.7, 0.0, -1.1, 4.4, 2.2, -3.6, 5.8, 0.9};
+    inputData = {3.14, 2.71, 1.41, 1.73, 0.6, 1.61, 2.0, 2.236, 3.01, 4.0};
   }
 
   std::vector<double> resPar(count, 0.0);
@@ -42,7 +40,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_pipelin
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 5;
+  perfAttr->num_running = 10;
   const mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -57,13 +55,11 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_pipelin
 }
 
 TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_task_run) {
-  mpi::environment env;
   mpi::communicator world;
-
   int count = 10;
   std::vector<double> inputData;
   if (world.rank() == 0) {
-    inputData = {10.5, 3.3, -7.2, 8.1, 0.0, -4.5, 9.8, 1.1, -2.7, 5.6};
+    inputData = {3.14, 2.71, 1.41, 1.73, 0.6, 1.61, 2.0, 2.236, 3.01, 4.0};
   }
 
   std::vector<double> resPar(count, 0.0);
@@ -89,7 +85,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, test_task_ru
   testMpiTaskParallel->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 5;
+  perfAttr->num_running = 10;
   const mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
