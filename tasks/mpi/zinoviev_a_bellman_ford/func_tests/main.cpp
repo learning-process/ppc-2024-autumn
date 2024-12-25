@@ -131,3 +131,28 @@ TEST(zinoviev_a_bellman_ford, Test_Random_Graph_mpi) {
     ASSERT_EQ(shortest_paths[0], 0);
   }
 }
+
+TEST(zinoviev_a_bellman_ford, Test_Small_Random_Graph_mpi) {
+  boost::mpi::communicator world;
+  size_t V = 5;
+  size_t E = 10;
+  std::vector<int> graph = zinoviev_a_bellman_ford_mpi::generateRandomGraph(V, E);
+  std::vector<int> shortest_paths(V, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskData->inputs_count.emplace_back(V);
+  taskData->inputs_count.emplace_back(E);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(shortest_paths.data()));
+  taskData->outputs_count.emplace_back(V);
+
+  zinoviev_a_bellman_ford_mpi::BellmanFordMPIMPI task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(shortest_paths[0], 0);
+  }
+}
