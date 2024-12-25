@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <memory>
 
 #include "../include/matrix_operations.hpp"
