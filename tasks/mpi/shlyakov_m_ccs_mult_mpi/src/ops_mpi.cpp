@@ -57,7 +57,7 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
 
   int size = world.size();
   int rank = world.rank();
-  
+
   boost::mpi::broadcast(world, A_.values, 0);
   boost::mpi::broadcast(world, A_.row_indices, 0);
   boost::mpi::broadcast(world, A_.col_pointers, 0);
@@ -69,7 +69,7 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
   boost::mpi::broadcast(world, B_.col_pointers, 0);
   boost::mpi::broadcast(world, rows_b, 0);
   boost::mpi::broadcast(world, cols_b, 0);
-  
+
   bool single_element_A = (A_.values.size() == 1 && A_.col_pointers.size() == 2);
   bool single_element_B = (B_.values.size() == 1 && B_.col_pointers.size() == 2);
 
