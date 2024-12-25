@@ -27,9 +27,7 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_5_vertex) {
   int st = 0;
   int min = 1;
   int max = 10;
-
   std::vector<int> matrix(size * size, 0);
-
   std::vector<int> res(size, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -80,7 +78,6 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_10_vertex) {
   int st = 3;
   int min = 5;
   int max = 50;
-
   std::vector<int> matrix(size * size, 0);
   std::vector<int> res(size, 0);
   // Create TaskData
@@ -132,7 +129,6 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_13_vertex) {
   int st = 3;
   int min = 4;
   int max = 20;
-
   std::vector<int> matrix(size * size, 0);
   std::vector<int> res(size, 0);
   // Create TaskData
@@ -184,7 +180,6 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Graph_20_vertex) {
   int st = 3;
   int min = 2;
   int max = 40;
-
   std::vector<int> matrix(size * size, 0);
   std::vector<int> res(size, 0);
   // Create TaskData
@@ -236,7 +231,6 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Source_Vertex_False) {
   int st = 13;
   int min = 2;
   int max = 20;
-
   std::vector<int> matrix(size * size, 0);
   std::vector<int> res(size, 0);
   // Create TaskData
@@ -262,7 +256,6 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Negative_Value) {
   boost::mpi::communicator world;
   int size = 3;
   int st = 0;
-  
   std::vector<int> matrix = {0, 2, 5, 4, 0, 2, 3, -1, 0};
   std::vector<int> res(size, 0);
   // Create TaskData
@@ -287,7 +280,6 @@ TEST(chizhov_m_dijkstra_realization_mpi, Test_Spare_Graph_5x5) {
   boost::mpi::communicator world;
   int size = 5;
   int st = 0;
-
   // Create data
   std::vector<int> matrix = {0, 5, 0, 3, 0, 0, 0, 4, 2, 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 2, 9, 0, 1, 0, 0};
   std::vector<int> res(size, 0);

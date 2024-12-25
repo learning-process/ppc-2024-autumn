@@ -8,7 +8,6 @@
 TEST(chizhov_m_dijkstra_realization, Test_Graph_3x3) {
   int size = 3;
   int st = 0;
-
   // Create data
   std::vector<int> matrix = {0, 2, 5, 4, 0, 2, 3, 1, 0};
   std::vector<int> res(size, 0);
@@ -35,7 +34,6 @@ TEST(chizhov_m_dijkstra_realization, Test_Graph_3x3) {
 TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_4x4) {
   int size = 4;
   int st = 0;
-
   // Create data
   std::vector<int> matrix = {0, 9, 9, 3, 6, 0, 3, 5, 1, 3, 0, 5, 2, 2, 10, 0};
   std::vector<int> res(size, 0);
@@ -62,7 +60,6 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_4x4) {
 TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_5x5) {
   int size = 5;
   int st = 0;
-
   // Create data
   std::vector<int> matrix = {0, 5, 0, 3, 0, 0, 0, 4, 2, 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 2, 9, 0, 1, 0, 0};
   std::vector<int> res(size, 0);
@@ -89,7 +86,6 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_5x5) {
 TEST(chizhov_m_dijkstra_realization_seq, Test_Negative_Value) {
   int size = 3;
   int st = 0;
-
   // Create data
   std::vector<int> matrix = {0, 2, 5, -4, 0, 2, 3, 1, 0};
   std::vector<int> res(size, 0);
@@ -111,7 +107,6 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Negative_Value) {
 TEST(chizhov_m_dijkstra_realization_seq, Test_Source_Vertex_False) {
   int size = 3;
   int st = 5;
-
   // Create data
   std::vector<int> matrix = {0, 2, 5, 4, 0, 2, 3, 1, 0};
   std::vector<int> res(size, 0);
