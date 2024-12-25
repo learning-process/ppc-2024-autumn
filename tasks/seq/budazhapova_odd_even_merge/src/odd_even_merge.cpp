@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <thread>
 
+namespace budazhapova_betcher_odd_even_merge_seq {
 void budazhapova_betcher_odd_even_merge_seq::MergeSequential::counting_sort(std::vector<int>& arr, int exp) {
   int n = arr.size();
   std::vector<int> output(n);
@@ -32,7 +33,7 @@ void budazhapova_betcher_odd_even_merge_seq::MergeSequential::radix_sort(std::ve
     counting_sort(arr, exp);
   }
 }
-
+}  // namespace budazhapova_betcher_odd_even_merge_seq
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::pre_processing() {
   internal_order_test();
   res = std::vector<int>(reinterpret_cast<int*>(taskData->inputs[0]),
@@ -54,7 +55,7 @@ bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::run() {
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::post_processing() {
   internal_order_test();
   int* output = reinterpret_cast<int*>(taskData->outputs[0]);
-  for (int i = 0; i < rows; i++) {
+  for (int i = 0; i < res.size(); i++) {
     output[i] = res[i];
   }
   return true;

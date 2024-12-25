@@ -8,8 +8,8 @@
 
 #include "seq/budazhapova_odd_even_merge/include/odd_even_merge.hpp"
 
-std::vector<int> budazhapova_betcher_odd_even_merge_seq::MergeSequential::generateRandomVector(int size, int minValue,
-                                                                                               int maxValue) {
+namespace budazhapova_betcher_odd_even_merge_seq {
+std::vector<int> generateRandomVector(int size, int minValue, int maxValue) {
   std::vector<int> randomVector;
   randomVector.reserve(size);
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -19,7 +19,7 @@ std::vector<int> budazhapova_betcher_odd_even_merge_seq::MergeSequential::genera
   }
   return randomVector;
 }
-
+}  // namespace budazhapova_betcher_odd_even_merge_seq
 TEST(budazhapova_betcher_odd_even_merge_seq, ordinary_test) {
   std::vector<int> input_vector = {34, 12, 5, 78, 23, 45, 67, 89, 10, 2, 56, 43, 91, 15, 30};
   std::vector<int> out(15, 0);
