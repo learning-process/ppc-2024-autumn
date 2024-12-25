@@ -2,13 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <boost/mpi.hpp>
-#include <chrono>
-#include <memory>
-#include <random>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "mpi/shlyakov_m_ccs_mult_mpi/include/ops_mpi.hpp"
 
