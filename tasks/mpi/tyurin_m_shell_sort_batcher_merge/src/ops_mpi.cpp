@@ -9,7 +9,7 @@ bool ShellSortBatcherMerge::validation() {
 
   int val_n = taskData->inputs_count[0];
 
-  return val_n > 0 && val_n % 2 == 0 && val_n % world.size() == 0;
+  return val_n > 0 && val_n % 2 == 0 && world.size() % 2 == 0;
 }
 
 bool ShellSortBatcherMerge::pre_processing() {
