@@ -40,7 +40,6 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, SortedData) 
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    // ѕроверка, что результаты одинаковы дл€ параллельного и последовательного выполнени€
     for (int i = 0; i < global; ++i) {
       ASSERT_NEAR(resP[i], resS[i], 1e-12);
     }
@@ -83,7 +82,6 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, AllEqualData
     sequentialTask.run();
     sequentialTask.post_processing();
 
-    // ѕроверка, что результаты одинаковы дл€ параллельного и последовательного выполнени€
     for (int i = 0; i < global; ++i) {
       ASSERT_NEAR(resP[i], resS[i], 1e-12);
     }
