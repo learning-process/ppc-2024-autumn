@@ -30,9 +30,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
     }
 
     matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
-    if (rank == 0) {
-      boost::mpi::broadcast(world, matrixSize, 0);
-    }
+
     std::cout << "Pre-processing: Matrix size = " << matrixSize << std::endl;
 
 
@@ -79,10 +77,10 @@ bool StrassenAlgorithmMPI::pre_processing() {
 
     bool StrassenAlgorithmMPI::run() {
       internal_order_test();
-      
-      boost::mpi::broadcast(world, matrixA, 0);
-      boost::mpi::broadcast(world, matrixB, 0);
-      boost::mpi::broadcast(world, size, 0);
+
+      boost::mpi::broadcast(world, inputMatrixA, 0);
+      boost::mpi::broadcast(world, inputMatrixB, 0);
+      boost::mpi::broadcast(world, matrixSize, 0);
 
       std::cout << "Rank " << world.rank() << ": Starting Strassen_multiply with matrixSize = " << matrixSize << std::endl;
       outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
