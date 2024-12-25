@@ -44,7 +44,7 @@ bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::pre_processing() {
 
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::validation() {
   internal_order_test();
-  return taskData->inputs_count[1] > 0;
+  return taskData->inputs_count[0] > 0;
 }
 
 bool budazhapova_betcher_odd_even_merge_seq::MergeSequential::run() {
