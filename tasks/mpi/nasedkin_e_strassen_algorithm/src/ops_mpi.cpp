@@ -384,7 +384,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
               result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
             }
           }
-          std::cout << "Rank 0: final result: " << result << << std::endl;
+          std::cout << "Rank 0: final result calculated" << std::endl;
           return result;
         }
         return {};
