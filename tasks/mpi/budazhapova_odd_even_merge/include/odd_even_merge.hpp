@@ -14,30 +14,30 @@
 
 namespace budazhapova_betcher_odd_even_merge_mpi {
 
-	class MergeSequential : public ppc::core::Task {
-	public:
-		explicit MergeSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-		bool pre_processing() override;
-		bool validation() override;
-		bool run() override;
-		bool post_processing() override;
+class MergeSequential : public ppc::core::Task {
+ public:
+  explicit MergeSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	private:
-		std::vector<int> res;
-		std::vector<int> local_res;
-	};
-	class MergeParallel : public ppc::core::Task {
-	public:
-		explicit MergeParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-		bool pre_processing() override;
-		bool validation() override;
-		bool run() override;
-		bool post_processing() override;
+ private:
+  std::vector<int> res;
+  std::vector<int> local_res;
+};
+class MergeParallel : public ppc::core::Task {
+ public:
+  explicit MergeParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
-	private:
-		std::vector<int> res;
-		std::vector<int> local_res;
+ private:
+  std::vector<int> res;
+  std::vector<int> local_res;
 
-		boost::mpi::communicator world;
-	};
-}
+  boost::mpi::communicator world;
+};
+}  // namespace budazhapova_betcher_odd_even_merge_mpi
