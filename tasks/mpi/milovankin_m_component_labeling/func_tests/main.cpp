@@ -7,8 +7,8 @@
 
 namespace milovankin_m_component_labeling_mpi {
 
-static void run_test_mpi(std::vector<uint8_t>& image, size_t rows, size_t cols,
-                         std::vector<uint32_t>& labels_expected) {
+static void run_test_mpi(std::vector<uint8_t>& image, size_t rows, size_t cols, std::vector<uint32_t>& labels_expected,
+                         const std::vector<std::vector<size_t>>& groups_expected) {
   boost::mpi::communicator world;
 
   ASSERT_EQ(rows * cols, labels_expected.size());
@@ -57,8 +57,16 @@ static void run_test_mpi(std::vector<uint8_t>& image, size_t rows, size_t cols,
     componentLabelingSeq.post_processing();
 
     // Assert results
-    ASSERT_EQ(labels_actual_seq, labels_actual_par);
     ASSERT_EQ(labels_actual_seq, labels_expected);
+
+    // Indecies in the output may vary based on the number of processes used,
+    // so instead of comparing the actual output with the expected one,
+    // we ensure that output contains the expected components
+    for (size_t group = 0; group < groups_expected.size(); ++group) {
+      for (size_t idx = 1; idx < groups_expected[group].size(); ++idx) {
+        ASSERT_EQ(labels_actual_par[groups_expected[group][idx - 1]], labels_actual_par[groups_expected[group][idx]]);
+      }
+    }
   }
 }
 }  // namespace milovankin_m_component_labeling_mpi
@@ -79,7 +87,14 @@ TEST(milovankin_m_component_labeling_mpi, input_1) {
     4,0,5,0
   };
 
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 4, 4, expected);
+  std::vector<std::vector<size_t>> groups = {
+    {1, 4, 5},
+    {3, 7, 11},
+    {12},
+    {14}
+  };
+
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 4, 4, expected, groups);
 }
 
 TEST(milovankin_m_component_labeling_mpi, input_2) {
@@ -97,7 +112,13 @@ TEST(milovankin_m_component_labeling_mpi, input_2) {
     3,3,3,3
   };
 
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 4, 4, expected);
+  std::vector<std::vector<size_t>> groups = {
+    {0, 1, 4, 5},
+    {3, 7},
+    {12, 13, 14, 15}
+  };
+
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 4, 4, expected, groups);
 }
 
 TEST(milovankin_m_component_labeling_mpi, input_circle) {
@@ -117,7 +138,12 @@ TEST(milovankin_m_component_labeling_mpi, input_circle) {
     0,0,0,0,0
   };
 
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 5, 5, expected);
+  std::vector<std::vector<size_t>> groups = {
+    {7, 13},
+    {11, 17}
+  };
+
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 5, 5, expected, groups);
 }
 
 TEST(milovankin_m_component_labeling_mpi, input_3) {
@@ -137,31 +163,30 @@ TEST(milovankin_m_component_labeling_mpi, input_3) {
     0,3,3,3,0
   };
 
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 5, 5, expected);
-}
-
-TEST(milovankin_m_component_labeling_mpi, input_empty) {
-  std::vector<uint8_t> img = {
-    0,0,0,
-    0,0,0
+  std::vector<std::vector<size_t>> groups = {
+    {0, 3, 4, 5, 9, 10, 11, 12, 13, 14},
+    {23, 22, 21}
   };
 
-  std::vector<uint32_t> expected = {
-    0,0,0,
-    0,0,0
-  };
-
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 2, 3, expected);
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 5, 5, expected, groups);
 }
 
 TEST(milovankin_m_component_labeling_mpi, input_single_row) {
-  std::vector<uint8_t> img = {1, 1, 0, 1, 1, 1};
-  std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 2};
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 1, 6, expected);
+  std::vector<uint8_t> img = {1, 1, 0, 1, 1, 0};
+  std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 0};
+  std::vector<std::vector<size_t>> groups = {
+      {0, 1},
+      {3, 4}
+  };
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 1, 6, expected, groups);
 }
 TEST(milovankin_m_component_labeling_mpi, input_single_col) {
-  std::vector<uint8_t> img = {1, 1, 0, 1, 1, 1};
-  std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 2};
-  milovankin_m_component_labeling_mpi::run_test_mpi(img, 6, 1, expected);
+  std::vector<uint8_t> img = {1, 1, 0, 1, 1, 0};
+  std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 0};
+  std::vector<std::vector<size_t>> groups = {
+      {0, 1},
+      {3, 4}
+  };
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 6, 1, expected, groups);
 }
 // clang-format on

@@ -224,19 +224,15 @@ bool ComponentLabelingPar::run() {
         uint32_t label_C = (row > 0) ? labels_[lbl - cols] : 0;
         uint32_t label_D = (row > 0 && col > 0) ? labels_[lbl - cols - 1] : 0;
 
-        std::cout << "-----\n" << label_D << " " << label_C << "\n" << label_B << " " << labels_[lbl] << "\n------\n";
-
-        if (label_B == 0 && label_C == 0 && label_D == 0) {
-          labels_[lbl] = next_label++;
-        } else {
+        if (!(label_B == 0 && label_C == 0 && label_D == 0)) {
           uint32_t min_label = std::min({label_B, label_C, label_D}, [](uint32_t a, uint32_t b) {
             return (a == 0) ? false : (b == 0) ? true : a < b;  // min higher than 0
           });
           labels_[lbl] = min_label;
 
-          for (uint32_t _lbl : {label_B, label_C, label_D}) {
-            if (_lbl != 0 && _lbl != min_label) {
-              label_equivalences[std::max(_lbl, min_label)] = std::min(_lbl, min_label);
+          for (uint32_t lbl_ : {label_B, label_C, label_D}) {
+            if (lbl_ != 0 && lbl_ != min_label) {
+              label_equivalences[std::max(lbl_, min_label)] = std::min(lbl_, min_label);
             }
           }
         }

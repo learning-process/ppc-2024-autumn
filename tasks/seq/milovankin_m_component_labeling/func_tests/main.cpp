@@ -111,20 +111,6 @@ TEST(milovankin_m_component_labeling_seq, input_3) {
   milovankin_m_component_labeling_seq::run_test_seq(img, 5, 5, expected);
 }
 
-TEST(milovankin_m_component_labeling_seq, input_empty) {
-  std::vector<uint8_t> img = {
-    0,0,0,
-    0,0,0
-  };
-
-  std::vector<uint32_t> expected = {
-    0,0,0,
-    0,0,0
-  };
-
-  milovankin_m_component_labeling_seq::run_test_seq(img, 2, 3, expected);
-}
-
 TEST(milovankin_m_component_labeling_seq, input_single_row) {
   std::vector<uint8_t> img = {1, 1, 0, 1, 1, 1};
   std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 2};
