@@ -373,6 +373,8 @@ bool StrassenAlgorithmMPI::pre_processing() {
           std::vector<double> C22 =
               matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
 
+          std::cout << "Rank 0: all С calculated" << std::endl;
+
           std::vector<double> result(size * size);
           for (size_t i = 0; i < half_size; ++i) {
             for (size_t j = 0; j < half_size; ++j) {
@@ -382,6 +384,7 @@ bool StrassenAlgorithmMPI::pre_processing() {
               result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
             }
           }
+          std::cout << "Rank 0: final result: " << result << << std::endl;
           return result;
         }
         return {};
