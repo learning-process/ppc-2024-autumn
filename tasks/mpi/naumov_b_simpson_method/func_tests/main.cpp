@@ -37,7 +37,7 @@ TEST(naumov_b_simpson_method_mpi, exponential_function) {
   ASSERT_NEAR(result, expected, 1e-5);
 }
 
-TEST(naumov_b_simpson_method_mpi, quartic_function) {
+TEST(naumov_b_simpson_method_mpi, forx_function) {
   auto func = [](double x) { return x * x * x * x; };
   double lower_bound = 0.0;
   double upper_bound = 1.0;
