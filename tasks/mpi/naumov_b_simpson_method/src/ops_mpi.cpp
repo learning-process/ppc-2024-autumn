@@ -86,10 +86,10 @@ double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double up
   int steps_per_process = num_steps / size;
   int remaining_steps = num_steps % size;
 
-  // Учитываем остаток
+
   int extra_steps = (rank < remaining_steps) ? 1 : 0;
 
-  // Начальная и конечная границы для процесса
+
   double local_lower_bound =
       lower_bound + rank * steps_per_process * step_size + std::min(rank, remaining_steps) * step_size;
   double local_upper_bound = local_lower_bound + (steps_per_process + extra_steps) * step_size;
@@ -112,7 +112,7 @@ double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double up
   double global_result = 0.0;
   boost::mpi::all_reduce(world, local_result, global_result, std::plus<double>());
 
-  // Все процессы возвращают одно значение
+
   return global_result;
 }
 
@@ -139,23 +139,14 @@ bool TestMPITaskParallel::pre_processing() {
 bool TestMPITaskParallel::validation() {
   internal_order_test();
   if (lower_bound_ >= upper_bound_) {
-    if (world.rank() == 0) {
-      std::cerr << "Ошибка: нижняя граница должна быть меньше верхней." << std::endl;
-    }
     return false;
   }
 
   if (num_steps_ < world.size() || num_steps_ % 2 != 0) {
-    if (world.rank() == 0) {
-      std::cerr << "Ошибка: количество шагов должно быть чётным и не меньше числа процессов." << std::endl;
-    }
     return false;
   }
 
   if (!function_) {
-    if (world.rank() == 0) {
-      std::cerr << "Ошибка: функция для интегрирования не задана." << std::endl;
-    }
     return false;
   }
 

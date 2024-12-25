@@ -27,9 +27,9 @@ class TestMPITaskSequential : public ppc::core::Task {
   TestMPITaskSequential(std::shared_ptr<ppc::core::TaskData> task_data, func_1d_t function, bound_t bounds,
                         int num_steps)
       : Task(std::move(task_data)),
-        function_(std::move(function)),
-        num_steps_(num_steps),
         bounds_(std::move(bounds)),
+        num_steps_(num_steps),
+        function_(std::move(function)),
         result_(0.0) {}
 
   bool pre_processing() override;
@@ -50,10 +50,14 @@ class TestMPITaskParallel : public ppc::core::Task {
   TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> task_data, func_1d_t function, double lower_bound,
                       double upper_bound, int num_steps)
       : Task(std::move(task_data)),
-        function_(std::move(function)),
-        num_steps_(num_steps),
+        local_lower_bound_(0.0),
+        local_upper_bound_(0.0),
+        local_steps_(0),
         lower_bound_(lower_bound),
         upper_bound_(upper_bound),
+        num_steps_(num_steps),
+        function_(std::move(function)),
+        local_result_(0.0),
         world(boost::mpi::communicator()) {}
 
   bool pre_processing() override;
