@@ -7,16 +7,16 @@
 
 const int INF = std::numeric_limits<int>::max();
 
-void chizhov_m_dijkstra_mpi::convertToCRS(const std::vector<std::vector<int>>& w, std::vector<int>& values,
-                                          std::vector<int>& colIndex, std::vector<int>& rowPtr) {
-  int n = w.size();
+void chizhov_m_dijkstra_mpi::convertToCRS(const std::vector<int>& w, std::vector<int>& values,
+                                          std::vector<int>& colIndex, std::vector<int>& rowPtr, int n) {
   rowPtr.resize(n + 1);
   int nnz = 0;
   for (int i = 0; i < n; i++) {
     rowPtr[i] = nnz;
     for (int j = 0; j < n; j++) {
-      if (w[i][j] != 0) {
-        values.emplace_back(w[i][j]);
+      int weight = w[i * n + j];
+      if (weight != 0) {
+        values.emplace_back(weight);
         colIndex.emplace_back(j);
         nnz++;
       }
@@ -28,16 +28,12 @@ void chizhov_m_dijkstra_mpi::convertToCRS(const std::vector<std::vector<int>>& w
 bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init vectors
-  size = taskData->inputs_count[0];
-  st = taskData->inputs_count[1];
+  size = taskData->inputs_count[1];
+  st = taskData->inputs_count[2];
 
-  input_ = std::vector<std::vector<int>>(size, std::vector<int>(size));
-  for (int i = 0; i < size; i++) {
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    for (int j = 0; j < size; j++) {
-      input_[i][j] = tmp_ptr[j];
-    }
-  }
+  input_ = std::vector<int>(size * size);
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
 
   res_ = std::vector<int>(size, 0);
   return true;
@@ -46,28 +42,25 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::pre_processing() {
 bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
 
-  if (taskData->inputs.empty() || taskData->inputs.size() < 2 || taskData->inputs[0] == nullptr ||
-      taskData->inputs[1] == nullptr) {
+  if (taskData->inputs.empty()) {
     return false;
   }
 
-  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0) {
+  if (taskData->inputs_count.size() < 2 || taskData->inputs_count[1] <= 1) {
     return false;
   }
 
-  for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-    if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
-      return false;
-    }
+  auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+  if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
+    return false;
   }
 
-  if (taskData->inputs_count[1] < 0 || taskData->inputs_count[1] >= taskData->inputs_count[0]) {
+  if (taskData->inputs_count[2] < 0 || taskData->inputs_count[2] >= taskData->inputs_count[1]) {
     return false;
   }
 
   if (taskData->outputs.empty() || taskData->outputs[0] == nullptr || taskData->outputs.size() != 1 ||
-      taskData->outputs_count[0] != taskData->inputs_count[0]) {
+      taskData->outputs_count[0] != taskData->inputs_count[1]) {
     return false;
   }
   return true;
@@ -78,7 +71,7 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::run() {
   std::vector<int> values;
   std::vector<int> colIndex;
   std::vector<int> rowPtr;
-  convertToCRS(input_, values, colIndex, rowPtr);
+  convertToCRS(input_, values, colIndex, rowPtr, size);
 
   std::vector<bool> visited(size, false);
   std::vector<int> D(size, INF);
@@ -123,21 +116,17 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskSequential::post_processing() {
 bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    size = taskData->inputs_count[0];
-    st = taskData->inputs_count[1];
+    size = taskData->inputs_count[1];
+    st = taskData->inputs_count[2];
   }
 
   if (world.rank() == 0) {
-    input_ = std::vector<std::vector<int>>(size, std::vector<int>(size));
-    for (int i = 0; i < size; i++) {
-      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      for (int j = 0; j < size; j++) {
-        input_[i][j] = tmp_ptr[j];
-      }
-    }
-    convertToCRS(input_, values, colIndex, rowPtr);
+    input_ = std::vector<int>(size * size);
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    input_.assign(tmp_ptr, tmp_ptr + taskData->inputs_count[0]);
+    convertToCRS(input_, values, colIndex, rowPtr, size);
   } else {
-    input_ = std::vector<std::vector<int>>(size, std::vector<int>(size, 0));
+    input_ = std::vector<int>(size * size, 0);
   }
   return true;
 }
@@ -145,28 +134,25 @@ bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::pre_processing() {
 bool chizhov_m_dijkstra_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs.empty() || taskData->inputs.size() < 2 || taskData->inputs[0] == nullptr ||
-        taskData->inputs[1] == nullptr) {
+    if (taskData->inputs.empty()) {
       return false;
     }
 
-    if (taskData->inputs_count.size() < 2 || taskData->inputs_count[0] <= 0) {
+    if (taskData->inputs_count.size() < 2 || taskData->inputs_count[1] <= 1) {
       return false;
     }
 
-    for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
-      auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[i]);
-      if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
-        return false;
-      }
+    auto* tmp_ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+    if (!std::all_of(tmp_ptr, tmp_ptr + taskData->inputs_count[0], [](int val) { return val >= 0; })) {
+      return false;
     }
 
-    if (taskData->inputs_count[1] < 0 || taskData->inputs_count[1] >= taskData->inputs_count[0]) {
+    if (taskData->inputs_count[2] < 0 || taskData->inputs_count[2] >= taskData->inputs_count[1]) {
       return false;
     }
 
     if (taskData->outputs.empty() || taskData->outputs[0] == nullptr || taskData->outputs.size() != 1 ||
-        taskData->outputs_count[0] != taskData->inputs_count[0]) {
+        taskData->outputs_count[0] != taskData->inputs_count[1]) {
       return false;
     }
   }

@@ -10,14 +10,14 @@ TEST(chizhov_m_dijkstra_realization, Test_Graph_3x3) {
   int st = 0;
 
   // Create data
-  std::vector<std::vector<int>> matrix = {{0, 2, 5}, {4, 0, 2}, {3, 1, 0}};
+  std::vector<int> matrix = {0, 2, 5, 4, 0, 2, 3, 1, 0};
   std::vector<int> res(size, 0);
   std::vector<int> ans = {0, 2, 4};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(st);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
@@ -37,14 +37,14 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_4x4) {
   int st = 0;
 
   // Create data
-  std::vector<std::vector<int>> matrix = {{0, 9, 9, 3}, {6, 0, 3, 5}, {1, 3, 0, 5}, {2, 2, 10, 0}};
+  std::vector<int> matrix = {0, 9, 9, 3, 6, 0, 3, 5, 1, 3, 0, 5, 2, 2, 10, 0};
   std::vector<int> res(size, 0);
   std::vector<int> ans = {0, 5, 8, 3};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(st);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
@@ -64,16 +64,16 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Graph_5x5) {
   int st = 0;
 
   // Create data
-  std::vector<std::vector<int>> matrix = {
-      {0, 5, 0, 3, 0}, {0, 0, 4, 2, 2}, {0, 0, 0, 3, 0}, {0, 3, 0, 0, 2}, {9, 0, 1, 0, 0},
+  std::vector<int> matrix = {
+      0, 5, 0, 3, 0, 0, 0, 4, 2, 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 2, 9, 0, 1, 0, 0
   };
   std::vector<int> res(size, 0);
   std::vector<int> ans = {0, 5, 6, 3, 5};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(st);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
@@ -93,13 +93,13 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Negative_Value) {
   int st = 0;
 
   // Create data
-  std::vector<std::vector<int>> matrix = {{0, 2, 5}, {-4, 0, 2}, {3, 1, 0}};
+  std::vector<int> matrix = {0, 2, 5, -4, 0, 2, 3, 1, 0};
   std::vector<int> res(size, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(st);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
@@ -115,13 +115,13 @@ TEST(chizhov_m_dijkstra_realization_seq, Test_Source_Vertex_False) {
   int st = 5;
 
   // Create data
-  std::vector<std::vector<int>> matrix = {{0, 2, 5}, {4, 0, 2}, {3, 1, 0}};
+  std::vector<int> matrix = {0, 2, 5, 4, 0, 2, 3, 1, 0};
   std::vector<int> res(size, 0);
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  for (unsigned int i = 0; i < matrix.size(); i++)
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix[i].data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
+  taskDataSeq->inputs_count.emplace_back(matrix.size());
   taskDataSeq->inputs_count.emplace_back(size);
   taskDataSeq->inputs_count.emplace_back(st);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));

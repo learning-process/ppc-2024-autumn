@@ -11,18 +11,17 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   int count_size_vector = 1000;
   int st = 0;
-  std::vector<std::vector<int>> global_matrix;
+  std::vector<int> global_matrix(count_size_vector * count_size_vector, 3);
   std::vector<int32_t> global_path(count_size_vector, 3);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix.resize(count_size_vector, std::vector<int>(count_size_vector, 3));
     for (int i = 0; i < count_size_vector; i++) {
-      global_matrix[i][i] = 0;
+      global_matrix[i * count_size_vector + i] = 0;
     }
     global_path[0] = 0;
-    for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->inputs_count.emplace_back(count_size_vector);
     taskDataPar->inputs_count.emplace_back(st);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_path.data()));
@@ -57,18 +56,17 @@ TEST(chizhov_m_dijkstra_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
   int count_size_vector = 1000;
   int st = 5;
-  std::vector<std::vector<int>> global_matrix;
+  std::vector<int> global_matrix(count_size_vector * count_size_vector, 3);
   std::vector<int32_t> global_path(count_size_vector, 3);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_matrix.resize(count_size_vector, std::vector<int>(count_size_vector, 3));
     for (int i = 0; i < count_size_vector; i++) {
-      global_matrix[i][i] = 0;
+      global_matrix[i * count_size_vector + i] = 0;
     }
     global_path[0] = 0;
-    for (unsigned int i = 0; i < global_matrix.size(); i++)
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix[i].data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_matrix.data()));
+    taskDataPar->inputs_count.emplace_back(global_matrix.size());
     taskDataPar->inputs_count.emplace_back(count_size_vector);
     taskDataPar->inputs_count.emplace_back(st);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_path.data()));
