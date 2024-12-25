@@ -4,16 +4,6 @@
 #include <iostream>
 #include <random>
 
-std::vector<int> pikarychev_i_monte_carlo_parallel::getRandomVector(int sz) {
-  std::random_device dev;
-  std::mt19937 gen(dev());
-  std::vector<int> vec(sz);
-  for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
-  }
-  return vec;
-}
-
 bool pikarychev_i_monte_carlo_parallel::TestMPITaskSequential::validation() {
   internal_order_test();
   return (taskData->inputs_count[0] == 4 && taskData->outputs_count[0] == 1);
