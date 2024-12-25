@@ -26,9 +26,9 @@ struct SparseMatrix {
 
   template <class Archive>
   void serialize(Archive& ar, const unsigned int version) {
-    ar& values;
-    ar& row_indices;
-    ar& col_pointers;
+    ar & values;
+    ar & row_indices;
+    ar & col_pointers;
   }
 };
 
