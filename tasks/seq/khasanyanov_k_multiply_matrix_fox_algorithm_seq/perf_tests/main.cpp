@@ -1,10 +1,29 @@
+#include <gtest/gtest.h>
 #include <memory>
 
 #include "../include/matrix_operations.hpp"
-#include "../include/tests.hpp"
 #include "core/perf/include/perf.hpp"
 
 using namespace khasanyanov_k_fox_algorithm;
+
+template <typename DataType>
+static std::shared_ptr<ppc::core::TaskData> create_task_data(matrix<DataType>& A, matrix<DataType>& B, matrix<DataType>& C) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(*A));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(A.rows));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(A.columns));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(A.size()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(*B));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(B.rows));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(B.columns));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(B.size()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(*C));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(C.rows));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(C.columns));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(C.size()));
+  return taskData;
+}
 
 TEST(khasanyanov_k_mult_matrix_tests_seq, test_pipeline_run) {
   const int m = 512;
@@ -16,7 +35,11 @@ TEST(khasanyanov_k_mult_matrix_tests_seq, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData = create_task_data(A, B, C);
   auto test = std::make_shared<MatrixMultiplication<double>>(taskData);
-  RUN_TASK(*test);
+  auto t = *test;
+  EXPECT_TRUE(t.validation());
+  t.pre_processing();
+  t.run();
+  t.post_processing();
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 8;
   const auto t0 = std::chrono::high_resolution_clock::now();
@@ -43,7 +66,11 @@ TEST(khasanyanov_k_mult_matrix_tests_seq, test_task_run) {
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   taskData = create_task_data(A, B, C);
   auto test = std::make_shared<MatrixMultiplication<double>>(taskData);
-  RUN_TASK(*test);
+  auto t = *test;
+  EXPECT_TRUE(t.validation());
+  t.pre_processing();
+  t.run();
+  t.post_processing();
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 8;
   const auto t0 = std::chrono::high_resolution_clock::now();

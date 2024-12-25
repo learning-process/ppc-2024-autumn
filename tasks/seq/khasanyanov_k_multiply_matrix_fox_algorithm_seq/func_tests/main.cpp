@@ -1,9 +1,27 @@
 #include <gtest/gtest.h>
 
 #include "../include/matrix_operations.hpp"
-#include "../include/tests.hpp"
 
 using namespace khasanyanov_k_fox_algorithm;
+
+template <typename DataType>
+static std::shared_ptr<ppc::core::TaskData> create_task_data(matrix<DataType>& A, matrix<DataType>& B, matrix<DataType>& C) {
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(*A));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(A.rows));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(A.columns));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(A.size()));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(*B));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(B.rows));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(B.columns));
+  taskData->inputs_count.emplace_back(static_cast<uint32_t>(B.size()));
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(*C));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(C.rows));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(C.columns));
+  taskData->outputs_count.emplace_back(static_cast<uint32_t>(C.size()));
+  return taskData;
+}
 
 TEST(khasanyanov_k_matrix_tests_seq, test_wrong_sizes) {
   matrix<int> A{3, 2, {5, 6, 7, 8, 5, 6}};
@@ -68,6 +86,9 @@ TEST(khasanyanov_k_matrix_tests_seq, test_int_sequential_multiply) {
   matrix<int> actual_solution(3, 3);
   std::shared_ptr<ppc::core::TaskData> taskData = create_task_data(A, B, actual_solution);
   MatrixMultiplication<int> test(taskData);
-  RUN_TASK(test);
+  EXPECT_TRUE(test.validation());
+  test.pre_processing();
+  test.run();
+  test.post_processing();
   ASSERT_EQ(expected_solution, actual_solution);
 }
