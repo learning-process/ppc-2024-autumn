@@ -12,9 +12,10 @@ static pikarychev_i_gauss3_vertical_seq::Image CreateRandomImage(size_t width, s
 
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::uniform_int_distribution<> distrib(0, 255);
+  std::uniform_int_distribution<uint8_t> distrib(0, 255);
   std::generate(img.data.begin(), img.data.end(), [&]() {
-    return pikarychev_i_gauss3_vertical_seq::Image::Pixel{.r = distrib(gen), .g = distrib(gen), .b = distrib(gen)};
+    return pikarychev_i_gauss3_vertical_seq::Image::Pixel{
+        .r = (uint8_t)distrib(gen), .g = (uint8_t)distrib(gen), .b = (uint8_t)distrib(gen)};
   });
 
   return img;
