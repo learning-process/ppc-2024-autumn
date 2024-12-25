@@ -104,8 +104,7 @@ TEST(shuravina_o_jarvis_pass, Test_Empty_Points) {
   global_hull = jarvis_mpi.get_hull();
 
   if (rank == 0) {
-    std::vector<Point> seq_hull = jarvis_march(global_points);
-    EXPECT_EQ(global_hull.size(), seq_hull.size());
+    EXPECT_EQ(global_hull.size(), size_t(0));
   }
 }
 
@@ -185,7 +184,7 @@ TEST(shuravina_o_jarvis_pass, Test_Single_Point) {
   global_hull = jarvis_mpi.get_hull();
 
   if (rank == 0) {
-    EXPECT_EQ(global_hull.size(), 0);
+    EXPECT_EQ(global_hull.size(), size_t(0));
   }
 }
 
@@ -202,7 +201,7 @@ TEST(shuravina_o_jarvis_pass, Test_Two_Points) {
   global_hull = jarvis_mpi.get_hull();
 
   if (rank == 0) {
-    EXPECT_EQ(global_hull.size(), 0);
+    EXPECT_EQ(global_hull.size(), size_t(0));
   }
 }
 
