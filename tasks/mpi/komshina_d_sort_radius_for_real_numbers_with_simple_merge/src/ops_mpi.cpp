@@ -27,7 +27,6 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskS
 }
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::pre_processing() {
-  // Предобработка данных
   if (world.rank() == 0) {
     input.resize(taskData->inputs_count[0]);
     auto* tmp_ptr = reinterpret_cast<double*>(taskData->inputs[0]);
@@ -114,7 +113,7 @@ void SortDoubleByBits(std::vector<double>& data) {
     uint64_t double_as_uint64;
     std::memcpy(&double_as_uint64, &data[i], sizeof(double));
 
-    double_as_uint64 = (double_as_uint64 & (1ULL << 63)) ? ~double_as_uint64 : (double_as_uint64 | (1ULL << 63));
+    double_as_uint64 = ((double_as_uint64 & (1ULL << 63)) != 0) ? ~double_as_uint64 : (double_as_uint64 | (1ULL << 63));
     keys[i] = double_as_uint64;
   }
 
@@ -125,7 +124,8 @@ void SortDoubleByBits(std::vector<double>& data) {
   for (size_t i = 0; i < data.size(); ++i) {
     uint64_t double_as_uint64 = keys[i];
 
-    double_as_uint64 = (double_as_uint64 & (1ULL << 63)) ? (double_as_uint64 & ~(1ULL << 63)) : ~double_as_uint64;
+    double_as_uint64 =
+        ((double_as_uint64 & (1ULL << 63)) != 0) ? (double_as_uint64 & ~(1ULL << 63)) : ~double_as_uint64;
     std::memcpy(&data[i], &double_as_uint64, sizeof(double));
   }
 }
