@@ -31,13 +31,13 @@ void shellSort(RandomIt begin, RandomIt end) {
   } while (gap < n);
 
   std::sort(gaps.rbegin(), gaps.rend());
-  for (int gap : gaps) {
-    for (auto i = begin + gap; i != end; ++i) {
+  for (int gap2 : gaps) {
+    for (auto i = begin + gap2; i != end; ++i) {
       auto temp = *i;
       auto j = i;
-      while (j >= begin + gap && *(j - gap) > temp) {
-        *j = *(j - gap);
-        j -= gap;
+      while (j >= begin + gap2 && *(j - gap2) > temp) {
+        *j = *(j - gap2);
+        j -= gap2;
       }
       *j = temp;
     }

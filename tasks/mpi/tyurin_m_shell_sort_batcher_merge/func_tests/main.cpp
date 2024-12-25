@@ -54,14 +54,21 @@ TEST(tyurin_m_shell_sort_batcher_merge_mpi, all_permutations_test) {
   std::vector<int> data = {-4, -3, -2, -1, 0, 1, 2, 3};
   if (data.size() % world.size() != 0) GTEST_SKIP();
   do {
-    world.barrier();
     tyurin_m_shell_sort_batcher_merge_mpi::run_test_template(world, data, data.size());
   } while (std::next_permutation(data.begin(), data.end()));
 }
 
-TEST(tyurin_m_shell_sort_batcher_merge_mpi, validation_test) {
+TEST(tyurin_m_shell_sort_batcher_merge_mpi, validation_test_0_size) {
   boost::mpi::communicator world;
   tyurin_m_shell_sort_batcher_merge_mpi::validation_test_template(world, 0);
-  if (world.size() == 2) tyurin_m_shell_sort_batcher_merge_mpi::validation_test_template(world, 3);
+}
+
+TEST(tyurin_m_shell_sort_batcher_merge_mpi, validation_test_n_not_even_size) {
+  boost::mpi::communicator world;
+  tyurin_m_shell_sort_batcher_merge_mpi::validation_test_template(world, 3);
+}
+
+TEST(tyurin_m_shell_sort_batcher_merge_mpi, validation_test_world_size_not_even) {
+  boost::mpi::communicator world;
   if (world.size() == 3) tyurin_m_shell_sort_batcher_merge_mpi::validation_test_template(world, 4);
 }
