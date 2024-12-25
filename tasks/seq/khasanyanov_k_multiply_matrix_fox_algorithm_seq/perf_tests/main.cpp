@@ -8,7 +8,7 @@
 using namespace khasanyanov_k_fox_algorithm;
 
 template <typename DataType>
-static std::shared_ptr<ppc::core::TaskData> create_task_data(matrix<DataType>& A, matrix<DataType>& B, 
+static std::shared_ptr<ppc::core::TaskData> create_task_data(matrix<DataType>& A, matrix<DataType>& B,
                                                              matrix<DataType>& C) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
 
