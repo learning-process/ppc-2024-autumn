@@ -24,6 +24,10 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_pi
 
   auto testTaskSequential =
       std::make_shared<komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential>(taskDataSeq);
+  ASSERT_TRUE(testTaskSequential->validation());
+  testTaskSequential->pre_processing();
+  testTaskSequential->run();
+  testTaskSequential->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -36,7 +40,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_pi
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskSeq);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   ppc::core::Perf::print_perf_statistic(perfResults);
@@ -65,6 +69,10 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_ta
 
   auto testTaskSequential =
       std::make_shared<komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential>(taskDataSeq);
+  ASSERT_TRUE(testTaskSequential->validation());
+  testTaskSequential->pre_processing();
+  testTaskSequential->run();
+  testTaskSequential->post_processing();
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -77,7 +85,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq_perf, test_ta
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskSeq);
+  auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
   ppc::core::Perf::print_perf_statistic(perfResults);
