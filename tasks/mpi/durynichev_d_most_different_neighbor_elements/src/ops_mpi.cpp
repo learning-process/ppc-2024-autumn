@@ -59,35 +59,38 @@ bool durynichev_d_most_different_neighbor_elements_mpi::TestMPITaskParallel::pre
 
   int chunk_size = input_size / world.size();
   int extra_chunks = input_size % world.size();
+  int used = std::min(world.size(), input_size);
 
-  std::vector<int> all_chunk_sizes(world.size(), chunk_size);
+  std::vector<int> all_chunk_sizes(world.size(), 0);
+  std::fill(all_chunk_sizes.begin(), all_chunk_sizes.begin() + used, chunk_size);
   for (int i = 0; i < extra_chunks; i++) {
     all_chunk_sizes.at(i)++;
   }
   std::vector<int> chunk_offsets(world.size(), 0);
-  for (int i = 1; i < world.size(); i++) {
-    chunk_offsets[i] = chunk_offsets[i - 1] + all_chunk_sizes[i] - 1;
+  for (int i = 1; i < used; i++) {
+    chunk_offsets[i] = chunk_offsets[i - 1] + all_chunk_sizes[i];
   }
-  all_chunk_sizes.front()++;
-  for (int i = 1; i < world.size() - 1; i++) {
-    all_chunk_sizes.at(i) += 2;
+  for (int i = 0; i < used - 1; i++) {
+    all_chunk_sizes.at(i)++;
   }
-  all_chunk_sizes.back()++;
 
   chunkStart = chunk_offsets[world.rank()];
   chunk.resize(all_chunk_sizes[world.rank()]);
-  boost::mpi::scatterv(world, input_ptr, all_chunk_sizes, chunk_offsets, chunk.data(), chunk.size(), 0);
+  boost::mpi::scatterv(world, input.data(), all_chunk_sizes, chunk_offsets, chunk.data(), chunk.size(), 0);
 
   return true;
 }
 
 bool durynichev_d_most_different_neighbor_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
-  auto chunk_result = ChunkResult{chunkStart, chunkStart + 1, std::abs(chunk[0] - chunk[1])};
-  for (size_t i = 1; i < chunk.size(); ++i) {
-    int diff = std::abs(chunk[i] - chunk[i - 1]);
-    if (diff > chunk_result.diff) {
-      chunk_result = ChunkResult{i - 1 + chunkStart, i + chunkStart, diff};
+  ChunkResult chunk_result{0, 0, std::numeric_limits<int>::min()};
+  if (!chunk.empty()) {
+    chunk_result = ChunkResult{chunkStart, chunkStart + 1, std::abs(chunk[0] - chunk[1])};
+    for (size_t i = 1; i < chunk.size(); ++i) {
+      int diff = std::abs(chunk[i] - chunk[i - 1]);
+      if (diff > chunk_result.diff) {
+        chunk_result = ChunkResult{i - 1 + chunkStart, i + chunkStart, diff};
+      }
     }
   }
   boost::mpi::reduce(world, chunk_result, result, ChunkResult(), 0);
