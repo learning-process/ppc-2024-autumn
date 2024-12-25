@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <boost/mpi/timer.hpp>
 #include <random>
 #include <vector>
 
@@ -46,12 +47,8 @@ TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_pipeline_run) {
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const auto t0 = std::chrono::high_resolution_clock::now();
-  perfAttr->current_timer = [&] {
-    auto current_time_point = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
-    return static_cast<double>(duration) * 1e-9;
-  };
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
@@ -59,8 +56,10 @@ TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_pipeline_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  ppc::core::Perf::print_perf_statistic(perfResults);
-}
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+  }
+};
 
 TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_task_run) {
   boost::mpi::communicator world;
@@ -91,12 +90,8 @@ TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_task_run) {
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
-  const auto t0 = std::chrono::high_resolution_clock::now();
-  perfAttr->current_timer = [&] {
-    auto current_time_point = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>(current_time_point - t0).count();
-    return static_cast<double>(duration) * 1e-9;
-  };
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
@@ -104,5 +99,7 @@ TEST(sorochkin_d_matrix_col_min_mpi_perf_test, test_task_run) {
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
-  ppc::core::Perf::print_perf_statistic(perfResults);
-}
+  if (world.rank() == 0) {
+    ppc::core::Perf::print_perf_statistic(perfResults);
+  }
+};
