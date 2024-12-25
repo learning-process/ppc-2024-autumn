@@ -24,7 +24,7 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works) {
   int width = 7;
 
   std::vector<int> picture(width * height);
-  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(height, width);
   std::vector<int> res_out_paral(width * height, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -67,7 +67,7 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works2) {
   int width = 2;
 
   std::vector<int> picture(width * height);
-  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(height, width);
 
   std::vector<int> res_out_paral(width * height, 0);
 
@@ -130,7 +130,7 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works5) {
   int width = 2000;
 
   std::vector<int> picture(width * height);
-  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(height, width);
   std::vector<int> res_out_paral(width * height, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -173,7 +173,7 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works6) {
   int width = 30;
 
   std::vector<int> picture(width * height);
-  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(height, width);
   std::vector<int> res_out_paral(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -212,7 +212,7 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works7) {
   int width = 88;
 
   std::vector<int> picture(width * height);
-  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(height, width);
   std::vector<int> res_out_paral(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -253,7 +253,7 @@ TEST(dormidontov_e_highcontrast_mpi, Test_just_test_if_it_finally_works8) {
   int width = 43;
 
   std::vector<int> picture(width * height);
-  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(width, height);
+  picture = dormidontov_e_highcontrast_mpi::generate_halftone_pic(height, width);
   std::vector<int> res_out_paral(width * height);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
