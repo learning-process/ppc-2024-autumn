@@ -56,7 +56,6 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::pre_proc
       auto* tmp_ptr_B = reinterpret_cast<double*>(taskData->inputs[1]);
       std::copy(tmp_ptr_A, tmp_ptr_A + taskData->inputs_count[0], input_matrix_A.begin());
       std::copy(tmp_ptr_B, tmp_ptr_B + taskData->inputs_count[1], input_matrix_B.begin());
-      output_matrix_C = std::vector<double>(input_matrix_A.size());
   }
   return true;
 }
@@ -75,21 +74,73 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   internal_order_test();
   unsigned short i = 0;
   unsigned short j = 0;
-  unsigned short count = 0;
+  unsigned short k = 0;
   auto dimension = 0;
   unsigned short block_dimension = 0;
+  unsigned short block_rows_columns = 0;
   if (world.rank() == 0) {
     dimension = (unsigned short)sqrt(input_matrix_A.size());
-    block_dimension = dimension / (unsigned short)sqrt(world.size());
+    block_rows_columns = (unsigned short)sqrt(world.size());
+    block_dimension = dimension / block_rows_columns;
   }
-  boost::mpi::broadcast(world, dimension, 0);
-  boost::mpi::broadcast(world, block_dimension, 0);
   if (world.size() != 1 && world.size() ==
-             pow((unsigned short)sqrt(world.size()), 2) && dimension % (unsigned short)sqrt(world.size()) == 0) {
+             pow(block_rows_columns, 2) && dimension % block_rows_columns == 0) {
+    boost::mpi::broadcast(world, dimension, 0);
+    boost::mpi::broadcast(world, block_rows_columns, 0);
+    boost::mpi::broadcast(world, block_dimension, 0);
+    output_matrix_C = std::vector<double>(input_matrix_A.size());
+    local_input_matrix_A = std::vector<double>(block_dimension * block_dimension);
+    local_input_matrix_B = std::vector<double>(block_dimension * block_dimension);
+    local_output_matrix_C = std::vector<double>(block_dimension * block_dimension);
+    if (world.rank() == 0) {
+      while (k != block_dimension) {
+        std::copy(input_matrix_A.data() + k * dimension, input_matrix_A.data() + k * dimension + block_dimension, local_input_matrix_A.begin() + k * block_dimension);
+        std::copy(input_matrix_B.data() + k * dimension, input_matrix_B.data() + k * dimension + block_dimension, local_input_matrix_B.begin() + k * block_dimension);
+        k++;
+      }
+      k = 0;
+      while (i != block_rows_columns) {
+        while (j != block_rows_columns) {
+          if (i != 0 || j != 0) {
+            while (k != block_dimension) {
+              if (i == 0) {
+                world.send(i * block_rows_columns + j, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+              } else {
+                if (i * block_rows_columns + j - i < i * block_rows_columns) {
+                  world.send(i * block_rows_columns + j + block_rows_columns - i, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                } else {
+                  world.send(i * block_rows_columns + j - i, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                }
+              }
+              if (j == 0) {
+                world.send(i * block_rows_columns + j, k, input_matrix_B.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+              } else {
+                if ((i - j) * block_rows_columns + j < 0) {
+                  world.send((i + block_rows_columns - j) * block_rows_columns + j, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                } else {
+                  world.send((i - j) * block_rows_columns + j, k, input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension, block_dimension);
+                }
+              }
+              k++;
+            }
+          }
+          j++;
+        }
+        i++;
+      }
+    } else {
+      k = 0;
+      while (k != block_dimension) {
+        world.recv(0, k, local_input_matrix_A.data() + k * block_dimension, block_dimension);
+        world.recv(0, k, local_input_matrix_B.data() + k * block_dimension, block_dimension);
+        k++;
+      }
+    }
 
-  
+    
     
   } else {
+    output_matrix_C = std::vector<double>(input_matrix_A.size());
       while (i != dimension) {
         while (j != dimension) {
           while (count != dimension) {
