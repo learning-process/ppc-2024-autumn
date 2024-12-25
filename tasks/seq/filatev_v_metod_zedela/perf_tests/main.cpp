@@ -45,8 +45,7 @@ std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &ve
 }  // namespace filatev_v_metod_zedela_seq
 
 TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
-  int size = 500;
-  double alfa = 0.01;
+  int size = 700;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -62,7 +61,6 @@ TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
   taskData->outputs_count.emplace_back(size);
 
   auto metodZedela = std::make_shared<filatev_v_metod_zedela_seq::MetodZedela>(taskData);
-  metodZedela->setAlfa(alfa);
 
   ASSERT_EQ(metodZedela->validation(), true);
   metodZedela->pre_processing();
@@ -88,13 +86,12 @@ TEST(filatev_v_metod_zedela_seq, test_pipeline_run) {
 
   EXPECT_EQ(answer.size(), resh.size());
   for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(resh[i], answer[i], alfa);
+    EXPECT_NEAR(resh[i], answer[i], 1e-3);
   }
 }
 
 TEST(filatev_v_metod_zedela_seq, test_task_run) {
-  int size = 500;
-  double alfa = 0.01;
+  int size = 700;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -110,7 +107,6 @@ TEST(filatev_v_metod_zedela_seq, test_task_run) {
   taskData->outputs_count.emplace_back(size);
 
   auto metodZedela = std::make_shared<filatev_v_metod_zedela_seq::MetodZedela>(taskData);
-  metodZedela->setAlfa(alfa);
 
   ASSERT_EQ(metodZedela->validation(), true);
   metodZedela->pre_processing();
@@ -136,6 +132,6 @@ TEST(filatev_v_metod_zedela_seq, test_task_run) {
 
   EXPECT_EQ(answer.size(), resh.size());
   for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(resh[i], answer[i], alfa);
+    EXPECT_NEAR(resh[i], answer[i], 1e-3);
   }
 }

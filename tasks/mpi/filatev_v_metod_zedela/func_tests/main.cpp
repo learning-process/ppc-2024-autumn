@@ -48,7 +48,6 @@ std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &ve
 TEST(filatev_v_metod_zedela_mpi, test_size_3) {
   boost::mpi::communicator world;
   int size = 3;
-  double alfa = 0.01;
   std::vector<double> answer;
   std::vector<int> resh;
   std::vector<int> matrix;
@@ -70,7 +69,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_3) {
   }
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -83,7 +81,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_3) {
 
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }
@@ -91,7 +89,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_3) {
 TEST(filatev_v_metod_zedela_mpi, test_size_10) {
   boost::mpi::communicator world;
   int size = 10;
-  double alfa = 0.01;
   std::vector<double> answer;
   std::vector<int> matrix;
   std::vector<int> vecB;
@@ -113,7 +110,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_10) {
   }
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -126,7 +122,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_10) {
 
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }
@@ -134,7 +130,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_10) {
 TEST(filatev_v_metod_zedela_mpi, test_size_100) {
   boost::mpi::communicator world;
   int size = 100;
-  double alfa = 0.01;
   std::vector<double> answer;
   std::vector<int> matrix;
   std::vector<int> vecB;
@@ -156,7 +151,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_100) {
   }
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -169,7 +163,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_100) {
 
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }
@@ -177,7 +171,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_100) {
 TEST(filatev_v_metod_zedela_mpi, test_size_500) {
   boost::mpi::communicator world;
   int size = 500;
-  double alfa = 0.01;
   std::vector<double> answer;
   std::vector<int> matrix;
   std::vector<int> vecB;
@@ -199,7 +192,6 @@ TEST(filatev_v_metod_zedela_mpi, test_size_500) {
   }
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, world);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -212,7 +204,7 @@ TEST(filatev_v_metod_zedela_mpi, test_size_500) {
 
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }
@@ -327,7 +319,6 @@ TEST(filatev_v_metod_zedela_mpi, test_error_diagonal) {
 TEST(filatev_v_metod_zedela_mpi, test_codecov_1_procces) {
   boost::mpi::communicator world;
   int size = 3;
-  double alfa = 0.01;
   std::vector<double> answer;
   std::vector<int> resh;
   std::vector<int> matrix;
@@ -352,7 +343,6 @@ TEST(filatev_v_metod_zedela_mpi, test_codecov_1_procces) {
   }
 
   filatev_v_metod_zedela_mpi::MetodZedela metodZedela(taskData, new_comm);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -365,7 +355,7 @@ TEST(filatev_v_metod_zedela_mpi, test_codecov_1_procces) {
 
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }

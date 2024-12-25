@@ -19,7 +19,6 @@ class MetodZedela : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void setAlfa(double alfa);
   int rankMatrix(std::vector<int>& matrixT, int n) const;
   int rankRMatrix();
   double determinant();
@@ -28,7 +27,7 @@ class MetodZedela : public ppc::core::Task {
   boost::mpi::communicator world;
   boost::mpi::status status;
   int size;
-  double alfa;
+  double alfa = 1e-15;
   std::vector<int> matrix;
   std::vector<int> tMatrix;
   std::vector<int> bVectrot;

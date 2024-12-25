@@ -17,14 +17,13 @@ class MetodZedela : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void setAlfa(double alfa);
   int rankMatrix(std::vector<int>& matrixT, int n) const;
   int rankRMatrix();
   double determinant();
 
  private:
   int size;
-  double alfa;
+  double alfa = 1e-15;
   std::vector<int> matrix;
   std::vector<int> bVectrot;
   std::vector<double> answer;

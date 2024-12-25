@@ -45,7 +45,6 @@ std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &ve
 
 TEST(filatev_v_metod_zedela_seq, test_size_3) {
   int size = 3;
-  double alfa = 0.01;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -61,7 +60,6 @@ TEST(filatev_v_metod_zedela_seq, test_size_3) {
   taskData->outputs_count.emplace_back(size);
 
   filatev_v_metod_zedela_seq::MetodZedela metodZedela(taskData);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -73,13 +71,12 @@ TEST(filatev_v_metod_zedela_seq, test_size_3) {
 
   EXPECT_EQ(answer.size(), resh.size());
   for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(resh[i], answer[i], alfa);
+    EXPECT_NEAR(resh[i], answer[i], 1e-3);
   }
 }
 
 TEST(filatev_v_metod_zedela_seq, test_size_5) {
   int size = 5;
-  double alfa = 0.01;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -95,7 +92,6 @@ TEST(filatev_v_metod_zedela_seq, test_size_5) {
   taskData->outputs_count.emplace_back(size);
 
   filatev_v_metod_zedela_seq::MetodZedela metodZedela(taskData);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -107,13 +103,12 @@ TEST(filatev_v_metod_zedela_seq, test_size_5) {
 
   EXPECT_EQ(answer.size(), resh.size());
   for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(resh[i], answer[i], alfa);
+    EXPECT_NEAR(resh[i], answer[i], 1e-3);
   }
 }
 
 TEST(filatev_v_metod_zedela_seq, test_size_10) {
   int size = 10;
-  double alfa = 0.01;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -129,7 +124,6 @@ TEST(filatev_v_metod_zedela_seq, test_size_10) {
   taskData->outputs_count.emplace_back(size);
 
   filatev_v_metod_zedela_seq::MetodZedela metodZedela(taskData);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -141,7 +135,7 @@ TEST(filatev_v_metod_zedela_seq, test_size_10) {
 
   EXPECT_EQ(answer.size(), resh.size());
   for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(resh[i], answer[i], alfa);
+    EXPECT_NEAR(resh[i], answer[i], 1e-3);
   }
 }
 
@@ -220,7 +214,6 @@ TEST(filatev_v_metod_zedela_seq, test_error_different_size) {
 
 TEST(filatev_v_metod_zedela_seq, test_maxi_rz) {
   int size = 500;
-  double alfa = 0.01;
   std::vector<int> matrix(size * size);
   std::vector<int> vecB(size);
   std::vector<double> answer;
@@ -236,7 +229,6 @@ TEST(filatev_v_metod_zedela_seq, test_maxi_rz) {
   taskData->outputs_count.emplace_back(size);
 
   filatev_v_metod_zedela_seq::MetodZedela metodZedela(taskData);
-  metodZedela.setAlfa(alfa);
 
   ASSERT_EQ(metodZedela.validation(), true);
   metodZedela.pre_processing();
@@ -248,6 +240,6 @@ TEST(filatev_v_metod_zedela_seq, test_maxi_rz) {
 
   EXPECT_EQ(answer.size(), resh.size());
   for (int i = 0; i < size; i++) {
-    EXPECT_NEAR(resh[i], answer[i], alfa);
+    EXPECT_NEAR(resh[i], answer[i], 1e-3);
   }
 }

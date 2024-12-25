@@ -90,8 +90,6 @@ bool filatev_v_metod_zedela_seq::MetodZedela::post_processing() {
   return true;
 }
 
-void filatev_v_metod_zedela_seq::MetodZedela::setAlfa(double _alfa) { this->alfa = _alfa / 10000; }
-
 int filatev_v_metod_zedela_seq::MetodZedela::rankMatrix(std::vector<int>& matrixT, int n) const {
   std::vector<double> _matrix(matrixT.size());
   std::transform(matrixT.begin(), matrixT.end(), _matrix.begin(), [](int val) { return static_cast<double>(val); });

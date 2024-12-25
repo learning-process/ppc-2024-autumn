@@ -47,8 +47,7 @@ std::vector<int> genetatirVectorB(std::vector<int> &matrix, std::vector<int> &ve
 
 TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  int size = 500;
-  double alfa = 0.01;
+  int size = 700;
   std::vector<double> answer;
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> matrix;
@@ -68,7 +67,6 @@ TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
   }
 
   auto metodZedela = std::make_shared<filatev_v_metod_zedela_mpi::MetodZedela>(taskData, world);
-  metodZedela->setAlfa(alfa);
 
   ASSERT_EQ(metodZedela->validation(), true);
   metodZedela->pre_processing();
@@ -96,15 +94,14 @@ TEST(filatev_v_metod_zedela_mpi, test_pipeline_run) {
 
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }
 
 TEST(filatev_v_metod_zedela_mpi, test_task_run) {
   boost::mpi::communicator world;
-  int size = 500;
-  double alfa = 0.01;
+  int size = 700;
   std::vector<double> answer;
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   std::vector<int> matrix;
@@ -124,7 +121,6 @@ TEST(filatev_v_metod_zedela_mpi, test_task_run) {
   }
 
   auto metodZedela = std::make_shared<filatev_v_metod_zedela_mpi::MetodZedela>(taskData, world);
-  metodZedela->setAlfa(alfa);
 
   ASSERT_EQ(metodZedela->validation(), true);
   metodZedela->pre_processing();
@@ -150,7 +146,7 @@ TEST(filatev_v_metod_zedela_mpi, test_task_run) {
     answer.insert(answer.end(), temp, temp + size);
     EXPECT_EQ(answer.size(), resh.size());
     for (int i = 0; i < size; i++) {
-      EXPECT_NEAR(resh[i], answer[i], alfa);
+      EXPECT_NEAR(resh[i], answer[i], 1e-3);
     }
   }
 }
