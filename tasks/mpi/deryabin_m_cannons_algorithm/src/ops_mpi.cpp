@@ -24,11 +24,13 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskSequential::valida
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskSequential::run() {
   internal_order_test();
   unsigned short i = 0;
-  unsigned short j = 0;
-  unsigned short count = 0;
+  unsigned short j;
+  unsigned short count;
   auto dimension = (unsigned short)sqrt(input_matrix_A.size());
   while (i != dimension) {
+    j = 0;
     while (j != dimension) {
+      count = 0;
       while (count != dimension) {
         output_matrix_C[i * dimension + j] +=
             input_matrix_A[i * dimension + count] * input_matrix_B[count * dimension + j];
@@ -150,10 +152,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
       }
     }
     i = 0;
-    j = 0;
-    k = 0;
     while (i != block_dimension) {
+      j = 0;
       while (j != block_dimension) {
+        k = 0;
         while (k != block_dimension) {
           local_output_matrix_C[i * block_dimension + j] +=
               local_input_matrix_A[i * block_dimension + k] * local_input_matrix_B[k * block_dimension + j];
