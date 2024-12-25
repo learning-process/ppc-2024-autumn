@@ -38,6 +38,8 @@ void run_test(int num_rows, int num_cols, const std::vector<double>& input_matri
 
 }  // namespace plekhanov_d_verticalgaus_seq
 
+//smt
+
 TEST(plekhanov_d_verticalgaus_seq, Matrix1x1) { plekhanov_d_verticalgaus_seq::run_test(1, 1, {1}, {0}, false); }
 
 TEST(plekhanov_d_verticalgaus_seq, Matrix_3x5) {
