@@ -151,19 +151,19 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   for (int phase = 0; phase < world.size(); ++phase) {
     if (phase % 2 == 0) {
       if (world.rank() % 2 == 0 && world.rank() + 1 < world.size()) {
-        boost::mpi::send(world, world.rank() + 1, 0, local_res);
+        world.send(world.rank() + 1, 0, local_res);
       } else if (world.rank() % 2 == 1) {
         std::vector<int> received_data;
-        boost::mpi::recv(world, world.rank() - 1, 0, received_data);
+        world.recv(world.rank() - 1, 0, received_data);
         local_res.insert(local_res.end(), received_data.begin(), received_data.end());
         budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
       }
     } else {
       if (world.rank() % 2 == 1 && world.rank() + 1 < world.size()) {
-        boost::mpi::send(world, world.rank() + 1, 0, local_res);
+        world.send(world.rank() + 1, 0, local_res);
       } else if (world.rank() % 2 == 0) {
         std::vector<int> received_data;
-        boost::mpi::recv(world, world.rank() - 1, 0, received_data);
+        world.recv(world.rank() - 1, 0, received_data);
         local_res.insert(local_res.end(), received_data.begin(), received_data.end());
         budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
       }
