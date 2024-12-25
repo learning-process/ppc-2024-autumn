@@ -86,9 +86,7 @@ double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double up
   int steps_per_process = num_steps / size;
   int remaining_steps = num_steps % size;
 
-
   int extra_steps = (rank < remaining_steps) ? 1 : 0;
-
 
   double local_lower_bound =
       lower_bound + rank * steps_per_process * step_size + std::min(rank, remaining_steps) * step_size;
@@ -111,7 +109,6 @@ double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double up
 
   double global_result = 0.0;
   boost::mpi::all_reduce(world, local_result, global_result, std::plus<double>());
-
 
   return global_result;
 }

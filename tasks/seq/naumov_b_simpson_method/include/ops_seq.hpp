@@ -21,9 +21,9 @@ class TestTaskSequential : public ppc::core::Task {
  public:
   TestTaskSequential(std::shared_ptr<ppc::core::TaskData> task_data, func_1d_t function, bound_t bounds, int num_steps)
       : Task(std::move(task_data)),
-        function_(std::move(function)),
         bounds_(std::move(bounds)),
         num_steps_(num_steps),
+        function_(std::move(function)),
         result_(0.0) {}
 
   bool pre_processing() override;
