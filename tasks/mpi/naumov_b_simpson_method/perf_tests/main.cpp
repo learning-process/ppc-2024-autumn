@@ -19,7 +19,7 @@ TEST(naumov_b_simpson_method_par, perf_pipeline_run) {
   boost::mpi::communicator world;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
+ // task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
@@ -58,7 +58,7 @@ TEST(naumov_b_simpson_method_par, perf_task_run) {
   boost::mpi::communicator world;
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
-  task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
+  //task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
