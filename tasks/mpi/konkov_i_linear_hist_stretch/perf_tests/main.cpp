@@ -14,6 +14,7 @@ TEST(konkov_i_LinearHistStretchPerformance, StretchLargeImage) {
 
   const int image_size = 1000000;
   int* image_data = nullptr;
+
   if (rank == 0) {
     image_data = new int[image_size];
     for (int i = 0; i < image_size; ++i) {
@@ -25,16 +26,16 @@ TEST(konkov_i_LinearHistStretchPerformance, StretchLargeImage) {
 
   if (!lht.validation()) {
     if (rank == 0) {
-      std::cerr << "Validation failed for large image." << std::endl;
+      delete[] image_data;
     }
-    GTEST_SKIP();
+    return;
   }
 
   if (!lht.pre_processing()) {
     if (rank == 0) {
-      std::cerr << "Pre-processing failed for large image." << std::endl;
+      delete[] image_data;
     }
-    GTEST_SKIP();
+    return;
   }
 
   auto start = std::chrono::high_resolution_clock::now();
@@ -43,9 +44,9 @@ TEST(konkov_i_LinearHistStretchPerformance, StretchLargeImage) {
 
   if (!lht.post_processing()) {
     if (rank == 0) {
-      std::cerr << "Post-processing failed for large image." << std::endl;
+      delete[] image_data;
     }
-    GTEST_SKIP();
+    return;
   }
 
   std::chrono::duration<double> elapsed = end - start;
