@@ -63,7 +63,7 @@ TEST(Sdobnov_V_mergesort_Betcher_par, test_task_run) {
   }
 
   auto test = std::make_shared<Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar>(taskDataPar);
-  test->validation(), true;
+  test->validation();
   test->pre_processing();
   test->run();
   test->post_processing();
