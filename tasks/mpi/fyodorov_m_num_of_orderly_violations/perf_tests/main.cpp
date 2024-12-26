@@ -48,8 +48,16 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   if (world.rank() == 0) {
+    // Вычисляем ожидаемое количество нарушений
+    int expected_violations = 0;
+    for (size_t i = 1; i < global_vec.size(); ++i) {
+      if (global_vec[i] < global_vec[i - 1]) {
+        ++expected_violations;
+      }
+    }
+
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(0, global_violations[0]);
+    ASSERT_EQ(expected_violations, global_violations[0]);
   }
 }
 
@@ -92,7 +100,15 @@ TEST(fyodorov_m_num_of_orderly_violations_mpi, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
+    // Вычисляем ожидаемое количество нарушений
+    int expected_violations = 0;
+    for (size_t i = 1; i < global_vec.size(); ++i) {
+      if (global_vec[i] < global_vec[i - 1]) {
+        ++expected_violations;
+      }
+    }
+
     ppc::core::Perf::print_perf_statistic(perfResults);
-    ASSERT_EQ(0, global_violations[0]);
+    ASSERT_EQ(expected_violations, global_violations[0]);
   }
 }
