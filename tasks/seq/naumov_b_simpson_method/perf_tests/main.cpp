@@ -1,3 +1,4 @@
+// Copyright 2023 Nesterov Alexander
 #include <gtest/gtest.h>
 
 #include <chrono>
@@ -9,9 +10,7 @@
 #include "core/perf/include/perf.hpp"
 #include "seq/naumov_b_simpson_method/include/ops_seq.hpp"
 
-namespace naumov_b_simpson_method_seq {
-
-TEST(naumov_b_simpson_method_seq, perf_pipeline_run) {
+TEST(naumov_b_simpson_method_seq_perf_pipeline_run, perf_pipeline_run) {
   auto func = [](double x) -> double { return std::sin(x) * std::log(x + 1.0); };
 
   naumov_b_simpson_method_seq::bound_t bounds = {0.0, 3.14159265358979323846};
@@ -28,7 +27,7 @@ TEST(naumov_b_simpson_method_seq, perf_pipeline_run) {
   task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&output));
   task_data->outputs_count.emplace_back(1);
 
-  auto task = std::make_shared<TestTaskSequential>(task_data, func, bounds, num_steps);
+  auto task = std::make_shared<naumov_b_simpson_method_seq::TestTaskSequential>(task_data, func, bounds, num_steps);
 
   auto perf_attributes = std::make_shared<ppc::core::PerfAttr>();
   perf_attributes->num_running = 10;
@@ -46,7 +45,7 @@ TEST(naumov_b_simpson_method_seq, perf_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perf_results);
 }
 
-TEST(naumov_b_simpson_method_seq, perf_task_run) {
+TEST(naumov_b_simpson_method_seq_perf_task_run, perf_task_run) {
   auto func = [](double x) -> double { return std::exp(-x * x); };
 
   naumov_b_simpson_method_seq::bound_t bounds = {0.0, 2.0};
@@ -63,7 +62,7 @@ TEST(naumov_b_simpson_method_seq, perf_task_run) {
   task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&output));
   task_data->outputs_count.emplace_back(1);
 
-  auto task = std::make_shared<TestTaskSequential>(task_data, func, bounds, num_steps);
+  auto task = std::make_shared<naumov_b_simpson_method_seq::TestTaskSequential>(task_data, func, bounds, num_steps);
 
   auto perf_attributes = std::make_shared<ppc::core::PerfAttr>();
   perf_attributes->num_running = 10;
@@ -80,5 +79,3 @@ TEST(naumov_b_simpson_method_seq, perf_task_run) {
 
   ppc::core::Perf::print_perf_statistic(perf_results);
 }
-
-}  // namespace naumov_b_simpson_method_seq
