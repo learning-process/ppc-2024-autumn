@@ -13,8 +13,6 @@ bool plekhanov_d_verticalgaus_seq::VerticalGausSequential::pre_processing() {
 
   rows = *reinterpret_cast<int*>(taskData->inputs[1]);
   cols = *reinterpret_cast<int*>(taskData->inputs[2]);
-
-  //Something
   matrix.assign(matrix_data, matrix_data + matrix_size);
 
   int result_size = taskData->outputs_count[0];

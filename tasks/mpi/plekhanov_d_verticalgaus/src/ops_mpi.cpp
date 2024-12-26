@@ -79,8 +79,8 @@ bool plekhanov_d_verticalgaus_mpi::VerticalGausSeqTest::validation() {
   size_t img_size = taskData->inputs_count[1] * taskData->inputs_count[2];
 
   return taskData->inputs_count[0] == img_size && taskData->outputs_count[0] == img_size &&
-         taskData->inputs_count[1] >= 3 &&
-         taskData->inputs_count[2] >= 3 && validate_image(inputImage, inputWidth, inputHeight);
+         taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3 &&
+         validate_image(inputImage, inputWidth, inputHeight);
 }
 
 bool plekhanov_d_verticalgaus_mpi::VerticalGausSeqTest::run() {
@@ -116,8 +116,8 @@ bool plekhanov_d_verticalgaus_mpi::VerticalGausMPITest::validation() {
     size_t img_size = taskData->inputs_count[1] * taskData->inputs_count[2];
 
     return taskData->inputs_count[0] == img_size && taskData->outputs_count[0] == img_size &&
-           taskData->inputs_count[1] >= 3 &&
-           taskData->inputs_count[2] >= 3 && validate_image(inputImage, inputWidth, inputHeight);
+           taskData->inputs_count[1] >= 3 && taskData->inputs_count[2] >= 3 &&
+           validate_image(inputImage, inputWidth, inputHeight);
   }
   return true;
 }
