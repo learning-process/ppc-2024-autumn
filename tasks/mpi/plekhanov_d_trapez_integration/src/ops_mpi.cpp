@@ -49,7 +49,7 @@ bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::run() {
   if (world.rank() == 0) {
     params[0] = a_;
     params[1] = b_;
-    params[2] = static_cast<double>(n_);
+    params[2] = n_;
   }
   boost::mpi::broadcast(world, params, std::size(params), 0);
   double local_res = integrate_function(params[0], params[1], static_cast<int>(params[2]), function_);

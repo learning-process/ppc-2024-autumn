@@ -19,7 +19,7 @@ auto func7 = [](double x) { return std::pow(x, 4) - std::exp(x) + std::pow(4, x)
 
 namespace plekhanov_d_trapez_integration_mpi {
 
-void run_test(double a_, double b_, std::function<double(double)> f_) {
+void run_test(double a_, double b_, const std::function<double(double)>& f_) {
   boost::mpi::communicator world;
   std::vector<double> global_result(1, 0);
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
