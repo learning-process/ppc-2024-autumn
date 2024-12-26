@@ -239,7 +239,7 @@ TEST(korneeva_e_rectangular_integration_method_mpi, LinearEighthIntegralThreeVar
 
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricDoubleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{-2, 0}, {4, 5}}, korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, 1e-3);
+      {{-2, 0}, {-2, 0}}, korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, 1e-3);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricTripleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
