@@ -27,24 +27,25 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::pre_processing()
 bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
-  return taskData->outputs_count[0] == 1;
+  if (taskData->outputs_count[0] != 1) {
+    return false;
+  }
+  // Check that all vectors are not empty
+  for (const auto& vec : input_) {
+    if (vec.empty()) {
+      return false;
+    }
+  }
+  return true;
 }
 
 bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::run() {
   internal_order_test();
-  if (!input_.empty()) {
-    std::vector<int> local_res(input_.size());
-    for (unsigned int i = 0; i < input_.size(); i++) {
-      if (!input_[i].empty()) {
-        local_res[i] = *std::max_element(input_[i].begin(), input_[i].end());
-      } else {
-        local_res[i] = INT_MIN;
-      }
-    }
-    res_ = *std::max_element(local_res.begin(), local_res.end());
-  } else {
-    res_ = INT_MIN;
+  std::vector<int> local_res(input_.size());
+  for (unsigned int i = 0; i < input_.size(); i++) {
+    local_res[i] = *std::max_element(input_[i].begin(), input_[i].end());
   }
+  res_ = *std::max_element(local_res.begin(), local_res.end());
   return true;
 }
 
@@ -113,14 +114,23 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
     // Check count elements of output
-    return taskData->outputs_count[0] == 1;
+    if (taskData->outputs_count[0] != 1) {
+      return false;
+    }
+    // Check that matrix is not empty
+    if (taskData->inputs_count[0] == 0 || taskData->inputs_count[1] == 0) {
+      return false;
+    }
   }
   return true;
 }
 
 bool kovalchuk_a_max_of_vector_elements::TestMPITaskParallel::run() {
   internal_order_test();
-  int local_res = local_input_.empty() ? INT_MIN : *std::max_element(local_input_.begin(), local_input_.end());
+  int local_res = INT_MIN;
+  if (!local_input_.empty()) {
+    local_res = *std::max_element(local_input_.begin(), local_input_.end());
+  }
   reduce(world, local_res, res_, boost::mpi::maximum<int>(), 0);
   return true;
 }
