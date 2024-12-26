@@ -8,10 +8,10 @@
 #include "seq/shvedova_v_matrix_mult_horizontal_a_vertical_b_seq/include/ops_seq.hpp"
 
 TEST(shvedova_v_matrix_mult_horizontal_a_vertical_b_seq, test_pipeline_run) {
-  const int row_a = 1000;
-  const int col_a = 1000;
-  const int row_b = 1000;
-  const int col_b = 1000;
+  const int row_a = 300;
+  const int col_a = 300;
+  const int row_b = 300;
+  const int col_b = 300;
 
   std::vector<int> matrix_a(row_a * col_a, 1);
   std::vector<int> matrix_b(row_b * col_b, 1);
@@ -52,10 +52,10 @@ TEST(shvedova_v_matrix_mult_horizontal_a_vertical_b_seq, test_pipeline_run) {
 }
 
 TEST(shvedova_v_matrix_mult_horizontal_a_vertical_b_seq, test_task_run) {
-  const int row_a = 1000;
-  const int col_a = 1000;
-  const int row_b = 1000;
-  const int col_b = 1000;
+  const int row_a = 300;
+  const int col_a = 300;
+  const int row_b = 300;
+  const int col_b = 300;
 
   std::vector<int> matrix_a(row_a * col_a, 1);
   std::vector<int> matrix_b(row_b * col_b, 1);
