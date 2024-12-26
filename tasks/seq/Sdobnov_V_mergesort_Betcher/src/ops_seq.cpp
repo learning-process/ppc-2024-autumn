@@ -49,7 +49,8 @@ bool Sdobnov_V_mergesort_Betcher_seq::MergesortBetcherSeq::validation() {
   internal_order_test();
 
   return (taskData->inputs_count.size() == 1 && taskData->inputs_count[0] >= 0 && taskData->inputs.size() == 1 &&
-          taskData->outputs_count.size() == 1 && taskData->outputs_count[0] >= 0 && taskData->outputs.size() == 1);
+          taskData->outputs_count.size() == 1 && taskData->outputs_count[0] >= 0 && taskData->outputs.size() == 1 &&
+          taskData->inputs_count[0] > 0 && (taskData->inputs_count[0] & (taskData->inputs_count[0] - 1)) == 0);
 }
 
 bool Sdobnov_V_mergesort_Betcher_seq::MergesortBetcherSeq::run() {
