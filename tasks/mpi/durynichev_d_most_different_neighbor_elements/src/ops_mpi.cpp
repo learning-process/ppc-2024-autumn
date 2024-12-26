@@ -84,7 +84,7 @@ bool durynichev_d_most_different_neighbor_elements_mpi::TestMPITaskParallel::pre
 bool durynichev_d_most_different_neighbor_elements_mpi::TestMPITaskParallel::run() {
   internal_order_test();
   ChunkResult chunk_result{0, 0, std::numeric_limits<int>::min()};
-  if (!chunk.empty()) {
+  if (chunk.size() >= 2) {
     chunk_result = ChunkResult{chunkStart, chunkStart + 1, std::abs(chunk[0] - chunk[1])};
     for (size_t i = 1; i < chunk.size(); ++i) {
       int diff = std::abs(chunk[i] - chunk[i - 1]);
