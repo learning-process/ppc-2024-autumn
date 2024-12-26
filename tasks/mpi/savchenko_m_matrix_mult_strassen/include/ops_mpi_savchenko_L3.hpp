@@ -19,15 +19,16 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<double> matrix_A{};
-  std::vector<double> matrix_B{};
-  std::vector<double> matrix_C{};
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_C;
   size_t dims;
 
-  bool is_power_of_two(size_t _size);
-  std::vector<double> add_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
-  std::vector<double> sub_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
-  std::vector<double> multiply_standard(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
+  static bool is_power_of_two(size_t _size);
+  static std::vector<double> add_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
+  static std::vector<double> sub_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
+  static std::vector<double> multiply_standard(const std::vector<double>& A, const std::vector<double>& B,
+                                               size_t _size);
   std::vector<double> strassen(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
 };
 
@@ -42,15 +43,16 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
 
-  std::vector<double> matrix_A{};
-  std::vector<double> matrix_B{};
-  std::vector<double> matrix_C{};
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_C;
   size_t dims;
 
-  bool is_power_of_two(size_t _size);
-  std::vector<double> add_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
-  std::vector<double> sub_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
-  std::vector<double> multiply_standard(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
+  static bool is_power_of_two(size_t _size);
+  static std::vector<double> add_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
+  static std::vector<double> sub_matrices(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
+  static std::vector<double> multiply_standard(const std::vector<double>& A, const std::vector<double>& B,
+                                               size_t _size);
   std::vector<double> strassen(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
   std::vector<double> strassen_parallel(const std::vector<double>& A, const std::vector<double>& B, size_t _size);
 };
