@@ -64,7 +64,7 @@ template std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVecto
 template std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
 }  // namespace drozhdinov_d_gauss_vertical_scheme_mpi
 
-TEST(MPIGAUSS, WrongValidationTest) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, WrongValidationTest) {
   boost::mpi::communicator world;
   int rows = 3;
   int columns = 3;
@@ -91,7 +91,7 @@ TEST(MPIGAUSS, WrongValidationTest) {
   // std::cout << world.rank();
 }
 
-TEST(MPIGAUSS, WrongValidationTest2) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, WrongValidationTest2) {
   boost::mpi::communicator world;
   int rows = 3;
   int columns = 3;
@@ -117,7 +117,7 @@ TEST(MPIGAUSS, WrongValidationTest2) {
   }
 }
 
-TEST(MPIGAUSS, EquationTest) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, EquationTest) {
   boost::mpi::communicator world;
   int rows = 2;
   int columns = 2;
@@ -173,7 +173,7 @@ TEST(MPIGAUSS, EquationTest) {
   }
 }
 
-TEST(MPIGAUSS, Equation2Test) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, Equation2Test) {
   boost::mpi::communicator world;
   int rows = 3;
   int columns = 3;
@@ -228,7 +228,7 @@ TEST(MPIGAUSS, Equation2Test) {
   }
 }
 
-TEST(MPIGAUSS, Size100TestIdentity) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, Size100TestIdentity) {
   boost::mpi::communicator world;
   int rows = 10;
   int columns = 10;
@@ -283,7 +283,7 @@ TEST(MPIGAUSS, Size100TestIdentity) {
   }
 }
 
-TEST(MPIGAUSS, Size100TestDense) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, Size100TestDense) {
   boost::mpi::communicator world;
   int rows = 10;
   int columns = 10;
@@ -341,7 +341,7 @@ TEST(MPIGAUSS, Size100TestDense) {
   }
 }
 
-TEST(MPIGAUSS, EmptyTest) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, EmptyTest) {
   boost::mpi::communicator world;
   int rows = 0;
   int columns = 0;
@@ -396,7 +396,7 @@ TEST(MPIGAUSS, EmptyTest) {
   }
 }
 
-TEST(MPIGAUSS, Size10000TestIdentity) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, Size10000TestIdentity) {
   boost::mpi::communicator world;
   int rows = 100;
   int columns = 100;
@@ -451,7 +451,7 @@ TEST(MPIGAUSS, Size10000TestIdentity) {
   }
 }
 
-TEST(MPIGAUSS, RandomVectorB) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, RandomVectorB) {
   boost::mpi::communicator world;
   int rows = 10;
   int columns = 10;
@@ -505,7 +505,7 @@ TEST(MPIGAUSS, RandomVectorB) {
   }
 }
 
-TEST(MPIGAUSS, Size10000TestDense) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi, Size10000TestDense) {
   boost::mpi::communicator world;
   int rows = 100;
   int columns = 100;
