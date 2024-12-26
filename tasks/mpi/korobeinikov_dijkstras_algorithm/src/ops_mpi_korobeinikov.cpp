@@ -157,7 +157,6 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
   int end_for_proc = std::min(size, delta * (world.rank() + 1));
 
   std::vector<bool> visited(size, false);
-  std::vector<int> D(size, std::numeric_limits<int>::max());
   res = std::vector<int>(size, std::numeric_limits<int>::max());
   res[sv] = 0;
 
@@ -190,9 +189,6 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
         res[v] = res[global_pair.second] + w;
       }
     }
-
-    boost::mpi::all_reduce(world, res.data(), size, D.data(), boost::mpi::minimum<int>());
-    res = D;
   }
 
   return true;
