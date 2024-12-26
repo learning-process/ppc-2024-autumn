@@ -210,3 +210,20 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, LargeData) {
     }
   }
 }
+
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, ConvertDoublesToUint64) {
+  std::vector<double> inputData = {10.1, -6.3, 4.4, 0.6};
+
+  std::vector<uint64_t> keys(inputData.size(), 0);
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::convert_doubles_to_uint64(inputData, keys);
+
+  for (size_t i = 0; i < inputData.size(); ++i) {
+    uint64_t expectedKey;
+    std::memcpy(&expectedKey, &inputData[i], sizeof(double));
+
+    expectedKey = ((expectedKey >> 63) & 1) != 0 ? ~expectedKey : (expectedKey | (1ULL << 63));
+
+    ASSERT_EQ(keys[i], expectedKey) << i << expectedKey << keys[i];
+  }
+}
