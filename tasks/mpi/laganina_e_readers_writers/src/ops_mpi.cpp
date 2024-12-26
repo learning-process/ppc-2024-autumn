@@ -135,8 +135,8 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
     int* out_data = reinterpret_cast<int*>(taskData->outputs[0]);
-    for (int i = 0; i < res_.len() - 1; i++) {
-      out_data[i] = res[i];
+    for (int i = 0; i < res_.size() - 1; i++) {
+      out_data[i] = res_[i];
     }
   }
   return true;
