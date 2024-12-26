@@ -15,7 +15,7 @@ std::vector<double> generateRandomVector(uint32_t size, double min_value, double
   std::vector<double> data(size);
 
   for (auto &el : data) {
-    el = min_value + static_cast<double>(gen()) / static_cast<double>(gen.max()) * (max_value - min_value);
+    el = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
   }
 
   return data;
@@ -28,7 +28,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
 
   for (uint32_t i = 0; i < size; ++i) {
     for (uint32_t j = 0; j < size; ++j) {
-      data[i][j] = min_value + static_cast<double>(gen()) / static_cast<double>(gen.max()) * (max_value - min_value);
+      data[i][j] = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
       if (i == j) {
         data[i][j] += size * max_value;  // Ensure diagonal dominance for positive definiteness
       }

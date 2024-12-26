@@ -14,7 +14,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::pre_processing() {
   vector_.resize(size);
   result_.resize(size);
 
-  double* data = reinterpret_cast<double*>(taskData->inputs[0]);
+  auto* data = reinterpret_cast<double*>(taskData->inputs[0]);
   std::copy(data, data + size * size, matrix_[0].data());
 
   data = reinterpret_cast<double*>(taskData->inputs[1]);
@@ -28,7 +28,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::validation() {
 
   uint32_t size = taskData->inputs_count[0];
 
-  if (taskData->inputs.size() != 2 || taskData->inputs_count.size() < 1) {
+  if (taskData->inputs.size() != 2 || taskData->inputs_count.empty()) {
     return false;
   }
 
@@ -106,7 +106,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::pre_processing() {
     vector_.resize(size);
     result_.resize(size);
 
-    double* data = reinterpret_cast<double*>(taskData->inputs[0]);
+    auto* data = reinterpret_cast<double*>(taskData->inputs[0]);
     std::copy(data, data + size * size, matrix_[0].data());
 
     data = reinterpret_cast<double*>(taskData->inputs[1]);
@@ -122,7 +122,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::validation() {
   if (world.rank() == 0) {
     uint32_t size = taskData->inputs_count[0];
 
-    if (taskData->inputs.size() != 2 || taskData->inputs_count.size() < 1) {
+    if (taskData->inputs.size() != 2 || taskData->inputs_count.empty()) {
       return false;
     }
 
