@@ -97,7 +97,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         i++;
       }
     }
-    boost::mpi::broadcast(world, output_matrix_C.data(), output_matrix_C.size(), 0);
+    //boost::mpi::broadcast(world, output_matrix_C.data(), output_matrix_C.size(), 0);
     return true;
   }
   if (world.rank() == 0) {
