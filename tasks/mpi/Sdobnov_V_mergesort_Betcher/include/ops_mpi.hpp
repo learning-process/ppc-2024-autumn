@@ -11,6 +11,8 @@
 namespace Sdobnov_V_mergesort_Betcher_par {
 
 std::vector<int> generate_random_vector(int size, int lower_bound = 0, int upper_bound = 50);
+int partition(std::vector<int>& vec, int low, int high);
+void quickSortIterative(std::vector<int>& vec, int low, int high);
 
 class MergesortBetcherPar : public ppc::core::Task {
  public:
