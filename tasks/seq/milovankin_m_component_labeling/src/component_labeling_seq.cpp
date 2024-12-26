@@ -52,7 +52,13 @@ bool ComponentLabelingSeq::run() {
         labels_[linear_index(row, col)] = next_label++;
       } else {
         uint32_t min_label = std::min({label_B, label_C, label_D}, [](uint32_t a, uint32_t b) {
-          return (a == 0) ? false : (b == 0) ? true : a < b;
+          if (a == 0) {
+            return false;
+          }
+          if (b == 0) {
+            return true;
+          }
+          return a < b;  // min higher than 0
         });
 
         labels_[linear_index(row, col)] = min_label;
@@ -68,7 +74,7 @@ bool ComponentLabelingSeq::run() {
 
   // Resolve label equivalences
   for (auto& label : labels_) {
-    while (label_equivalences.count(label)) {
+    while (label_equivalences.contains(label)) {
       label = label_equivalences[label];
     }
   }

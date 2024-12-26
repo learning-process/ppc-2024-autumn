@@ -65,7 +65,13 @@ bool ComponentLabelingSeq::run() {
         labels_[linear_index(row, col)] = next_label++;
       } else {
         uint32_t min_label = std::min({label_B, label_C, label_D}, [](uint32_t a, uint32_t b) {
-          return (a == 0) ? false : (b == 0) ? true : a < b;
+          if (a == 0) {
+            return false;
+          }
+          if (b == 0) {
+            return true;
+          }
+          return a < b;  // min higher than 0
         });
 
         labels_[linear_index(row, col)] = min_label;
@@ -81,7 +87,7 @@ bool ComponentLabelingSeq::run() {
 
   // Resolve label equivalences
   for (auto& label : labels_) {
-    while (label_equivalences.count(label)) {
+    while (label_equivalences.contains(label)) {
       label = label_equivalences[label];
     }
   }
@@ -183,7 +189,13 @@ bool ComponentLabelingPar::run() {
       local_labels_[i] = next_label++;
     } else {
       uint32_t min_label = std::min({label_B, label_C, label_D}, [](uint32_t a, uint32_t b) {
-        return (a == 0) ? false : (b == 0) ? true : a < b;  // min higher than 0
+        if (a == 0) {
+          return false;
+        }
+        if (b == 0) {
+          return true;
+        }
+        return a < b;  // min higher than 0
       });
       local_labels_[i] = min_label;
 
@@ -196,7 +208,7 @@ bool ComponentLabelingPar::run() {
   }
   // Update table according to equivalences
   for (auto& label : local_labels_) {
-    while (local_label_equivalences.count(label)) {
+    while (local_label_equivalences.contains(label)) {
       label = local_label_equivalences[label];
     }
   }
@@ -224,9 +236,15 @@ bool ComponentLabelingPar::run() {
         uint32_t label_C = (row > 0) ? labels_[lbl - cols] : 0;
         uint32_t label_D = (row > 0 && col > 0) ? labels_[lbl - cols - 1] : 0;
 
-        if (!(label_B == 0 && label_C == 0 && label_D == 0)) {
+        if (label_B != 0 || label_C != 0 || label_D != 0) {
           uint32_t min_label = std::min({label_B, label_C, label_D}, [](uint32_t a, uint32_t b) {
-            return (a == 0) ? false : (b == 0) ? true : a < b;  // min higher than 0
+            if (a == 0) {
+              return false;
+            }
+            if (b == 0) {
+              return true;
+            }
+            return a < b;  // min higher than 0
           });
           labels_[lbl] = min_label;
 
@@ -240,7 +258,7 @@ bool ComponentLabelingPar::run() {
     }
     // Update table according to equivalences
     for (auto& label : labels_) {
-      while (label_equivalences.count(label)) {
+      while (label_equivalences.contains(label)) {
         label = label_equivalences[label];
       }
     }
