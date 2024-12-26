@@ -86,8 +86,7 @@ TEST(malyshev_v_conjugate_gradient_method, test_large_system) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> expectedResult = {0.090909, 0.181818, 0.272727,
-                                          0.363636};
+    std::vector<double> expectedResult = {0.090909, 0.181818, 0.272727, 0.363636};
     for (uint32_t i = 0; i < mpiResult.size(); i++) {
       ASSERT_NEAR(expectedResult[i], mpiResult[i], 1e-5);
     }
