@@ -2,6 +2,7 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <climits>
+#include <cmath>
 #include <random>
 #include <vector>
 
@@ -15,7 +16,7 @@ std::vector<double> generateRandomVector(uint32_t size, double min_value, double
   std::vector<double> data(size);
 
   for (auto &el : data) {
-    el = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
+    el = min_value + static_cast<double>(gen()) / static_cast<double>(gen.max()) * (max_value - min_value);
   }
 
   return data;
@@ -27,11 +28,12 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
   std::vector<std::vector<double>> data(size, std::vector<double>(size));
 
   for (uint32_t i = 0; i < size; ++i) {
-    for (uint32_t j = 0; j < size; ++j) {
-      data[i][j] = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
+    for (uint32_t j = 0; j <= i; ++j) {
+      data[i][j] = min_value + static_cast<double>(gen()) / static_cast<double>(gen.max()) * (max_value - min_value);
       if (i == j) {
-        data[i][j] += size * max_value;  // Ensure diagonal dominance for positive definiteness
+        data[i][j] += size * max_value;
       }
+      data[j][i] = data[i][j];
     }
   }
 
@@ -42,7 +44,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
 
 TEST(malyshev_conjugate_gradient, test_small_system) {
   uint32_t size = 10;
-  double min_value = -10.0;
+  double min_value = 0.0;
   double max_value = 10.0;
 
   boost::mpi::communicator world;
@@ -88,6 +90,8 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < size; i++) {
+      ASSERT_FALSE(std::isnan(seqResult[i]));
+      ASSERT_FALSE(std::isnan(mpiResult[i]));
       ASSERT_NEAR(seqResult[i], mpiResult[i], 1e-6);
     }
   }
@@ -95,7 +99,7 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
 
 TEST(malyshev_conjugate_gradient, test_medium_system) {
   uint32_t size = 100;
-  double min_value = -100.0;
+  double min_value = 0.0;
   double max_value = 100.0;
 
   boost::mpi::communicator world;
@@ -141,6 +145,8 @@ TEST(malyshev_conjugate_gradient, test_medium_system) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < size; i++) {
+      ASSERT_FALSE(std::isnan(seqResult[i]));
+      ASSERT_FALSE(std::isnan(mpiResult[i]));
       ASSERT_NEAR(seqResult[i], mpiResult[i], 1e-6);
     }
   }
@@ -148,7 +154,7 @@ TEST(malyshev_conjugate_gradient, test_medium_system) {
 
 TEST(malyshev_conjugate_gradient, test_large_system) {
   uint32_t size = 1000;
-  double min_value = -1000.0;
+  double min_value = 0.0;
   double max_value = 1000.0;
 
   boost::mpi::communicator world;
@@ -194,6 +200,8 @@ TEST(malyshev_conjugate_gradient, test_large_system) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < size; i++) {
+      ASSERT_FALSE(std::isnan(seqResult[i]));
+      ASSERT_FALSE(std::isnan(mpiResult[i]));
       ASSERT_NEAR(seqResult[i], mpiResult[i], 1e-6);
     }
   }
