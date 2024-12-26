@@ -12,7 +12,7 @@ TEST(naumov_b_simpson_method_par, perf_pipeline_run) {
   auto func = [](double x) -> double { return std::sin(x) * std::log(x + 1.0); };
   double lower_bound = 0.0;
   double upper_bound = std::numbers::pi;
-  int num_steps = 1000;
+  int num_steps = 10000;
   double output = 0.0;
 
   boost::mpi::communicator world;
@@ -51,7 +51,7 @@ TEST(naumov_b_simpson_method_par, perf_task_run) {
 
   double lower_bound = 0.0;
   double upper_bound = 2.0;
-  int num_steps = 1000;
+  int num_steps = 10000;
   double output = 0.0;
 
   boost::mpi::communicator world;
