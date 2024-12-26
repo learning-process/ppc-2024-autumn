@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <vector>
-#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/yasakova_t_quick_sort_with_simple_merge/include/ops_seq.hpp"

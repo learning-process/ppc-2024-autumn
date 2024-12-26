@@ -5,7 +5,6 @@
 #include <boost/mpi/environment.hpp>
 #include <boost/mpi/timer.hpp>
 #include <vector>
-#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/yasakova_t_quick_sort_with_simple_merge/include/ops_mpi.hpp"
