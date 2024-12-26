@@ -8,9 +8,7 @@ std::shared_ptr<ppc::core::TaskData> prepareTaskData(const std::vector<std::pair
   auto taskData = std::make_shared<ppc::core::TaskData>();
   taskData->inputs_count.emplace_back(limits.size());
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<std::pair<double, double>*>(limits.data())));
-  if (epsilon) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(epsilon));
-  }
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(epsilon));
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputs.data()));
   taskData->outputs_count.emplace_back(outputs.size());
   return taskData;
@@ -47,24 +45,6 @@ TEST(korneeva_e_rectangular_integration_method_seq, invalid_epsilon_used_default
   auto task = createIntegrationTask(taskData, f1cos);
 
   ASSERT_TRUE(task.validation());  // Validation should pass as default precision will be used
-
-  task.pre_processing();
-  task.run();
-  task.post_processing();
-
-  ASSERT_NEAR(0.84147, out[0], 1e-4);  // Verify result with 1e-4 precision
-}
-
-// Test for default precision usage when precision is not provided
-TEST(korneeva_e_rectangular_integration_method_seq, epsilon_default_when_not_provided) {
-  std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
-  std::vector<double> out(1);
-
-  auto taskData = prepareTaskData(lims, nullptr, out);
-  auto f1cos = [](const std::vector<double>& args) { return std::cos(args[0]); };
-  auto task = createIntegrationTask(taskData, f1cos);
-
-  ASSERT_TRUE(task.validation());
 
   task.pre_processing();
   task.run();
@@ -281,7 +261,7 @@ TEST(korneeva_e_rectangular_integration_method_seq, zero_function) {
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto fzero = [](const std::vector<double>& args) { return 0.0; };
+  auto fzero = [](const std::vector<double>& args) { return args[0] * 0.0; };
   auto task = createIntegrationTask(taskData, fzero);
 
   ASSERT_TRUE(task.validation());
@@ -319,7 +299,7 @@ TEST(korneeva_e_rectangular_integration_method_seq, constant_function) {
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto fconstant = [](const std::vector<double>& args) { return 1.0; };
+  auto fconstant = [](const std::vector<double>& args) { return std::pow(args[0], 0); };
   auto task = createIntegrationTask(taskData, fconstant);
 
   ASSERT_TRUE(task.validation());
@@ -339,7 +319,7 @@ TEST(korneeva_e_rectangular_integration_method_seq, max_double_limits_integratio
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto fconstant = [](const std::vector<double>& args) { return 1.0; };  // Constant function
+  auto fconstant = [](const std::vector<double>& args) { return std::pow(args[0], 0); };  // Constant function
   auto task = createIntegrationTask(taskData, fconstant);
 
   ASSERT_TRUE(task.validation());
@@ -359,7 +339,7 @@ TEST(korneeva_e_rectangular_integration_method_seq, large_but_finite_limits_inte
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto fconstant = [](const std::vector<double>& args) { return 1.0; };
+  auto fconstant = [](const std::vector<double>& args) { return std::pow(args[0], 0); };
   auto task = createIntegrationTask(taskData, fconstant);
 
   ASSERT_TRUE(task.validation());

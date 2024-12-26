@@ -2,10 +2,7 @@
 
 #include <cmath>
 #include <functional>
-#include <limits>
-#include <memory>
 #include <numbers>
-#include <numeric>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -25,17 +22,13 @@ class RectangularIntegration : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  // Method to calculate the integral using the rectangular method with specified precision
-  double calculateIntegral();
-
  private:
   Function integrandFunction;                     // Integrand function
   std::vector<std::pair<double, double>> limits;  // Integration bounds
   double result;                                  // Computed integral result
   double epsilon;                                 // Precision (replacing step size)
 
-  static constexpr double DEFAULT_EPSILON = 1e-4;  // Default precision
-  static constexpr double MIN_EPSILON = 1e-6;      // Minimum allowable precision
+  static constexpr double MIN_EPSILON = 1e-6;  // Minimum allowable precision
 };
 
 bool RectangularIntegration::pre_processing() {
@@ -43,69 +36,40 @@ bool RectangularIntegration::pre_processing() {
 
   // Extract integration bounds and store them in the limits vector
   auto* ptrInput = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[0]);
-  size_t numDimensions = taskData->inputs_count[0];
-  limits.assign(ptrInput, ptrInput + numDimensions);
+  limits.assign(ptrInput, ptrInput + taskData->inputs_count[0]);
+  result = 0.0;
 
-  // Extract precision if provided; use default value otherwise
-  if (taskData->inputs_count.size() > 1 && taskData->inputs_count[1] > 0) {
-    epsilon = *reinterpret_cast<double*>(taskData->inputs[1]);
-  } else {
-    epsilon = DEFAULT_EPSILON;  // Default precision
-  }
-
-  // Validate precision
+  epsilon = *reinterpret_cast<double*>(taskData->inputs[1]);
   if (epsilon < MIN_EPSILON) {
-    epsilon = MIN_EPSILON;  // Enforce minimum precision
+    epsilon = MIN_EPSILON;
   }
-
-  result = 0.0;  // Initialize the result
   return true;
 }
 
 bool RectangularIntegration::validation() {
   internal_order_test();
 
+  // Validate input parameters and output
+  bool validInput = taskData->inputs_count[0] > 0 && taskData->inputs.size() == 2;
+  bool validOutput = taskData->outputs_count[0] == 1 && !taskData->outputs.empty();
+
+  // Validate limits: lower bound must not be greater than upper bound
   size_t numDimensions = taskData->inputs_count[0];
-
-  // Validate input count matches the number of dimensions
-  if (taskData->inputs_count[0] <= 0) {
-    return false;
-  }
-
-  // Validate there is exactly one output
-  if (taskData->outputs_count[0] != 1) {
-    return false;
-  }
-
-  // Validate integration bounds
+  bool validLimits = true;
   auto* ptrInput = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[0]);
+
   for (size_t i = 0; i < numDimensions; ++i) {
     if (ptrInput[i].first > ptrInput[i].second) {
-      return false;  // Minimum bound must not exceed maximum bound
+      validLimits = false;
+      break;
     }
   }
-
-  // Validate precision is positive
-  if (epsilon <= 0) {
-    return false;
-  }
-
-  return true;
+  return validInput && validOutput && validLimits;
 }
 
 bool RectangularIntegration::run() {
   internal_order_test();
-  result = calculateIntegral();  // Perform the integration
-  return true;
-}
 
-bool RectangularIntegration::post_processing() {
-  internal_order_test();
-  reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
-  return true;
-}
-
-double RectangularIntegration::calculateIntegral() {
   size_t numDimensions = limits.size();
   std::vector<double> args(numDimensions, 0.0);  // Current arguments for integration
   double integral = 0.0;                         // Current value of the integral
@@ -143,9 +107,8 @@ double RectangularIntegration::calculateIntegral() {
         if (++indices[i] < divisions) {
           done = false;
           break;
-        } else {
-          indices[i] = 0;
         }
+        indices[i] = 0;
       }
       if (done) break;
     }
@@ -154,7 +117,13 @@ double RectangularIntegration::calculateIntegral() {
     divisions *= 2;
   } while (std::abs(integral - prevIntegral) > epsilon);
 
-  return integral;
+  result = integral;
+  return true;
 }
 
+bool RectangularIntegration::post_processing() {
+  internal_order_test();
+  reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
+  return true;
+}
 }  // namespace korneeva_e_rectangular_integration_method_seq

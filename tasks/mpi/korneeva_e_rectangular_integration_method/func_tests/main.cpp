@@ -21,7 +21,7 @@ std::shared_ptr<ppc::core::TaskData> prepareTaskData(const std::vector<std::pair
 }
 
 // Custom test function to compare results of MPI-based and sequential integration
-void customTest(std::vector<std::pair<double, double>> limits,
+void customTest(const std::vector<std::pair<double, double>>& limits,
                 korneeva_e_rectangular_integration_method_mpi::Function func, double epsilon) {
   boost::mpi::communicator world;
   double mpi_out = 0;

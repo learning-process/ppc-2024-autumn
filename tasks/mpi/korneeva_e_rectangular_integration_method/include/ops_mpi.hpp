@@ -54,8 +54,6 @@ class RectangularIntegrationMPI : public ppc::core::Task {
   double epsilon;                                 // Precision threshold
 
   boost::mpi::communicator mpi_comm;  // MPI communicator
-
-  double calculateIntegralMPI();  // MPI method to calculate integral
 };
 /////////////////////////////////////
 
@@ -159,19 +157,7 @@ bool RectangularIntegrationMPI::validation() {
 
 bool RectangularIntegrationMPI::run() {
   internal_order_test();
-  result = calculateIntegralMPI();
-  return true;
-}
 
-bool RectangularIntegrationMPI::post_processing() {
-  internal_order_test();
-  if (mpi_comm.rank() == 0) {
-    reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
-  }
-  return true;
-}
-
-double RectangularIntegrationMPI::calculateIntegralMPI() {
   std::vector<double> args;
 
   // Broadcast limits and epsilon to all processes
@@ -225,7 +211,16 @@ double RectangularIntegrationMPI::calculateIntegralMPI() {
     totalProcesses *= 2;  // Double the number of processes for the next refinement
   }
 
-  return (mpi_comm.rank() == 0) ? globalIntegral : 0.0;  // Return result only for root process
+  result = (mpi_comm.rank() == 0) ? globalIntegral : 0.0;  // Set result for root process
+  return true;
+}
+
+bool RectangularIntegrationMPI::post_processing() {
+  internal_order_test();
+  if (mpi_comm.rank() == 0) {
+    reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
+  }
+  return true;
 }
 ////////////////////////////////////////////////////////
 
