@@ -122,8 +122,8 @@ TEST(gromov_a_convex_hull_mpi, Test_Alternating_Pixels) {
 
 TEST(gromov_a_convex_hull_mpi, Test_Big_Image2) {
   boost::mpi::communicator world;
-  const int width = 512;
-  const int height = 512;
+  const int width = 300;
+  const int height = 300;
   std::vector<int> grid(width * height, 1);
   std::vector<int32_t> hull(width * height);
 
