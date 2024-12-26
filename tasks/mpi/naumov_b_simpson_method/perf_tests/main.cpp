@@ -8,6 +8,7 @@
 #include "mpi/naumov_b_simpson_method/include/ops_mpi.hpp"
 
 namespace naumov_b_simpson_method_mpi {
+
 TEST(naumov_b_simpson_method_par, perf_pipeline_run) {
   auto func = [](double x) -> double { return std::sin(x) * std::log(x + 1.0); };
   double lower_bound = 0.0;
@@ -19,14 +20,10 @@ TEST(naumov_b_simpson_method_par, perf_pipeline_run) {
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
-  task_data->inputs_count.emplace_back(1);
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
-  task_data->inputs_count.emplace_back(1);
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
-  task_data->inputs_count.emplace_back(1);
   task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&output));
-  task_data->outputs_count.emplace_back(1);
 
   auto task = std::make_shared<TestMPITaskParallel>(task_data, func, lower_bound, upper_bound, num_steps);
 
@@ -62,14 +59,10 @@ TEST(naumov_b_simpson_method_par, perf_task_run) {
 
   auto task_data = std::make_shared<ppc::core::TaskData>();
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&func));
-  task_data->inputs_count.emplace_back(1);
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
-  task_data->inputs_count.emplace_back(1);
   task_data->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
-  task_data->inputs_count.emplace_back(1);
   task_data->outputs.emplace_back(reinterpret_cast<uint8_t *>(&output));
-  task_data->outputs_count.emplace_back(1);
 
   auto task = std::make_shared<TestMPITaskParallel>(task_data, func, lower_bound, upper_bound, num_steps);
 
@@ -92,4 +85,5 @@ TEST(naumov_b_simpson_method_par, perf_task_run) {
     ppc::core::Perf::print_perf_statistic(perf_results);
   }
 }
+
 }  // namespace naumov_b_simpson_method_mpi
