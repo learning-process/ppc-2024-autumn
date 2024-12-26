@@ -74,40 +74,28 @@ double exponentialTwoVar(std::vector<double>& args) { return std::exp(args.at(0)
 
 }  // namespace korneeva_e_rectangular_integration_method_mpi
 
-TEST(korneeva_e_rectangular_integration_method_mpi, ValidationValidInput) {
-  boost::mpi::communicator world;
-  std::vector<std::pair<double, double>> validLimits = {{0, 2}, {1, 3}};
-  double epsilon = 1e-6;
-  double output = 0.0;
-  auto taskData = korneeva_e_rectangular_integration_method_mpi::prepareTaskData(validLimits, &output, epsilon, world);
-  korneeva_e_rectangular_integration_method_mpi::Function func =
-      korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
-
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
-  ASSERT_TRUE(mpiTask.validation());
-
-  if (world.rank() == 0) {
-    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-    ASSERT_TRUE(seqTask.validation());
-  }
-}
-
 TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidLimits) {
   boost::mpi::communicator world;
   std::vector<std::pair<double, double>> invalidLimits = {{3, 1}, {0, -2}};
   double epsilon = 1e-6;
-  double output = 0.0;
-  auto taskData =
-      korneeva_e_rectangular_integration_method_mpi::prepareTaskData(invalidLimits, &output, epsilon, world);
+  double mpi_output = 0.0;
+  double seq_output = 0.0;
+
+  // MPI Task Data
+  auto mpi_task_data =
+      korneeva_e_rectangular_integration_method_mpi::prepareTaskData(invalidLimits, &mpi_output, epsilon, world);
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
-  ASSERT_FALSE(mpiTask.validation());
+  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(mpi_task_data, func);
 
   if (world.rank() == 0) {
-    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    // Sequential Task Data
+    auto seq_task_data =
+        korneeva_e_rectangular_integration_method_mpi::prepareTaskData(invalidLimits, &seq_output, epsilon, world);
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(seq_task_data, func);
     ASSERT_FALSE(seqTask.validation());
+    ASSERT_FALSE(mpiTask.validation());
   }
 }
 
@@ -115,18 +103,35 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidEpsilon) {
   boost::mpi::communicator world;
   std::vector<std::pair<double, double>> validLimits = {{0, 2}, {1, 3}};
   double invalidEpsilon = 0.0;
-  double output = 0.0;
-  auto taskData =
-      korneeva_e_rectangular_integration_method_mpi::prepareTaskData(validLimits, &output, invalidEpsilon, world);
+  double mpi_output = 0.0;
+  double seq_output = 0.0;
+
+  // MPI Task Data
+  auto mpi_task_data =
+      korneeva_e_rectangular_integration_method_mpi::prepareTaskData(validLimits, &mpi_output, invalidEpsilon, world);
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
-  ASSERT_TRUE(mpiTask.validation());  // Should reset epsilon to MIN_EPSILON
+  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(mpi_task_data, func);
+  ASSERT_TRUE(mpiTask.validation());
+
+  mpiTask.pre_processing();
+  mpiTask.run();
+  mpiTask.post_processing();
 
   if (world.rank() == 0) {
-    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-    ASSERT_TRUE(seqTask.validation());  // Should reset epsilon to MIN_EPSILON
+    // Sequential Task Data
+    auto seq_task_data =
+        korneeva_e_rectangular_integration_method_mpi::prepareTaskData(validLimits, &seq_output, invalidEpsilon, world);
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(seq_task_data, func);
+
+    ASSERT_TRUE(seqTask.validation());
+
+    seqTask.pre_processing();
+    seqTask.run();
+    seqTask.post_processing();
+
+    ASSERT_NEAR(mpi_output, seq_output, std::max(invalidEpsilon, 1e-6));
   }
 }
 
@@ -134,17 +139,24 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationEmptyLimits) {
   boost::mpi::communicator world;
   std::vector<std::pair<double, double>> emptyLimits;
   double epsilon = 1e-6;
-  double output = 0.0;
-  auto taskData = korneeva_e_rectangular_integration_method_mpi::prepareTaskData(emptyLimits, &output, epsilon, world);
+  double mpi_output = 0.0;
+  double seq_output = 0.0;
+
+  // MPI Task Data
+  auto mpi_task_data =
+      korneeva_e_rectangular_integration_method_mpi::prepareTaskData(emptyLimits, &mpi_output, epsilon, world);
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
-  ASSERT_FALSE(mpiTask.validation());
+  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(mpi_task_data, func);
 
   if (world.rank() == 0) {
-    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    // Sequential Task Data
+    auto seq_task_data =
+        korneeva_e_rectangular_integration_method_mpi::prepareTaskData(emptyLimits, &seq_output, epsilon, world);
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(seq_task_data, func);
     ASSERT_FALSE(seqTask.validation());
+    ASSERT_FALSE(mpiTask.validation());
   }
 }
 
@@ -152,25 +164,36 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidNumOutputs)
   boost::mpi::communicator world;
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
   double epsilon = 1e-4;
-  std::vector<double> output(2);  // Invalid number of outputs
+  std::vector<double> mpi_output(2);
+  std::vector<double> seq_output(2);
 
-  auto taskData = std::make_shared<ppc::core::TaskData>();
+  // MPI Task Data
+  auto mpi_task_data = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<std::pair<double, double>*>(lims.data())));
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
-    taskData->inputs_count.emplace_back(lims.size());
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(output.data()));
-    taskData->outputs_count.emplace_back(output.size());
+    mpi_task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<std::pair<double, double>*>(lims.data())));
+    mpi_task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    mpi_task_data->inputs_count.emplace_back(lims.size());
+    mpi_task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpi_output.data()));
+    mpi_task_data->outputs_count.emplace_back(mpi_output.size());
   }
+
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
-  ASSERT_FALSE(mpiTask.validation());
+  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(mpi_task_data, func);
 
   if (world.rank() == 0) {
-    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    // Sequential Task Data
+    auto seq_task_data = std::make_shared<ppc::core::TaskData>();
+    seq_task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(const_cast<std::pair<double, double>*>(lims.data())));
+    seq_task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&epsilon));
+    seq_task_data->inputs_count.emplace_back(lims.size());
+    seq_task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(seq_output.data()));
+    seq_task_data->outputs_count.emplace_back(seq_output.size());
+
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(seq_task_data, func);
     ASSERT_FALSE(seqTask.validation());
+    ASSERT_FALSE(mpiTask.validation());
   }
 }
 
