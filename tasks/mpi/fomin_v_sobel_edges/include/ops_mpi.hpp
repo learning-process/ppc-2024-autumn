@@ -25,8 +25,9 @@ class SobelEdgeDetectionMPI : public ppc::core::Task {
  private:
   std::vector<unsigned char> input_image_;
   std::vector<unsigned char> output_image_;
-  int height_, width_;
-  int local_height_, local_width_;
+  int height_;
+  int width_;
+  int local_height_;
   std::vector<unsigned char> local_input_image_;
   std::vector<unsigned char> local_output_image_;
   boost::mpi::communicator world;
@@ -43,6 +44,7 @@ class SobelEdgeDetection : public ppc::core::Task {
  private:
   std::vector<unsigned char> input_image_;
   std::vector<unsigned char> output_image_;
-  int height_, width_;
+  int height_;
+  int width_;
 };
 }  // namespace fomin_v_sobel_edges

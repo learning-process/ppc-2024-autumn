@@ -4,7 +4,6 @@
 #include <cmath>
 #include <thread>
 
-
 bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
   internal_order_test();
 
