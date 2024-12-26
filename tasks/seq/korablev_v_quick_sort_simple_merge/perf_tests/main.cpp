@@ -23,7 +23,7 @@ std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_v
 }  // namespace korablev_v_qucik_sort_simple_merge_seq
 
 TEST(korablev_v_quick_sort_simple_merge_seq, test_pipeline_run) {
-  const size_t vector_size = 10000;
+  const size_t vector_size = 999999;
   std::vector<size_t> in_size(1, vector_size);
   std::vector<int> input_data = korablev_v_qucik_sort_simple_merge_seq::generate_random_vector(vector_size);
   std::vector<int> output_data(vector_size, 0);
@@ -62,7 +62,7 @@ TEST(korablev_v_quick_sort_simple_merge_seq, test_pipeline_run) {
 }
 
 TEST(korablev_v_quick_sort_simple_merge_seq, test_task_run) {
-  const size_t vector_size = 10000;
+  const size_t vector_size = 999999;
   std::vector<size_t> in_size(1, vector_size);
   std::vector<int> input_data = korablev_v_qucik_sort_simple_merge_seq::generate_random_vector(vector_size);
   std::vector<int> output_data(vector_size, 0.0);

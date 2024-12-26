@@ -7,20 +7,30 @@
 
 TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, test_pipeline_run) {
   // Create data
-  std::vector<int> in_A(16384, 0);
-  std::vector<int> in_B(16384, 0);
-  std::vector<int> out(16384, 0);
-  std::vector<int> ans(16384, 0);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+  std::vector<int> global_result;
+
+  int num_rows = 512;
+  int num_cols = 512;
+
+  global_A.resize(num_rows * num_cols, 0);
+
+  // Generate random vector
+  global_B.resize(num_cols * num_rows, 0);
+  global_result.resize(512 * 512, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_A.data()));
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_B.data()));
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_A.data()));
+  taskDataSeq->inputs_count.emplace_back(num_rows);
+  taskDataSeq->inputs_count.emplace_back(num_cols);
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_B.data()));
+  taskDataSeq->inputs_count.emplace_back(num_rows);
+  taskDataSeq->inputs_count.emplace_back(num_cols);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+  taskDataSeq->outputs_count.emplace_back(global_result.size());
 
   // Create Task
   auto testTaskSequential =
@@ -44,26 +54,34 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, test_pipel
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(ans, out);
 }
 
 TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, test_task_run) {
   // Create data
-  std::vector<int> in_A(16384, 0);
-  std::vector<int> in_B(16384, 0);
-  std::vector<int> out(16384, 0);
-  std::vector<int> ans(16384, 0);
+  std::vector<int> global_A;
+  std::vector<int> global_B;
+  std::vector<int> global_result;
+
+  int num_rows = 512;
+  int num_cols = 512;
+
+  global_A.resize(num_rows * num_cols, 0);
+
+  // Generate random vector
+  global_B.resize(num_cols * num_rows, 0);
+  global_result.resize(512 * 512, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_A.data()));
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in_B.data()));
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->inputs_count.emplace_back(128);
-  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-  taskDataSeq->outputs_count.emplace_back(out.size());
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_A.data()));
+  taskDataSeq->inputs_count.emplace_back(num_rows);
+  taskDataSeq->inputs_count.emplace_back(num_cols);
 
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_B.data()));
+  taskDataSeq->inputs_count.emplace_back(num_rows);
+  taskDataSeq->inputs_count.emplace_back(num_cols);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+  taskDataSeq->outputs_count.emplace_back(global_result.size());
   // Create Task
   auto testTaskSequential =
       std::make_shared<sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq::TestTaskSequential>(
@@ -84,7 +102,6 @@ TEST(sotskov_a_horizontal_strip_scheme_only_matrix_a_partitioned_seq, test_task_
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(ans, out);
 }

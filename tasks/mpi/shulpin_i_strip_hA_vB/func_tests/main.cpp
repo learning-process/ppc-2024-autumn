@@ -931,7 +931,7 @@ TEST(shulpin_strip_scheme_A_B, invalid_matrix) {
   int rows_b = 4;
 
   std::vector<int> global_A(2, 1);
-  std::vector<int> global_B(12, 1);
+  std::vector<int> global_B(13, 1);
   std::vector<int> global_res_mpi;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
