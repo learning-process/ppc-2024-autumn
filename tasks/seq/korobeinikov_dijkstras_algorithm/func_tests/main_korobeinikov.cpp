@@ -1,8 +1,6 @@
 // Copyright 2024 Korobeinikov Arseny
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "seq/korobeinikov_dijkstras_algorithm/include/ops_seq_korobeinikov.hpp"
 
 TEST(korobeinikov_dijkstras_algorithm_seq, Test_1_const_numbers) {

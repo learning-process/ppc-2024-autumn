@@ -178,7 +178,7 @@ TEST(korobeinikov_dijkstras_algorithm_mpi, Test_3_empty_graph) {
   std::vector<int> col;
   std::vector<int> RowIndex;
 
-  int size = 5;
+  size_t size = 5;
   int sv = 0;
 
   std::vector<int> out;

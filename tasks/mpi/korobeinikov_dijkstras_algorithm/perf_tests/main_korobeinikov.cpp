@@ -9,7 +9,7 @@
 TEST(mpi_korobeinikov_perf_test_lab_03, test_pipeline_run) {
   boost::mpi::communicator world;
   // Create data
-  int size = 10000;
+  size_t size = 10000;
 
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);
@@ -73,7 +73,7 @@ TEST(mpi_korobeinikov_perf_test_lab_03, test_pipeline_run) {
 TEST(mpi_korobeinikov_perf_test_lab_03, test_task_run) {
   boost::mpi::communicator world;
   // Create data
-  int size = 10000;
+  size_t size = 10000;
 
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);

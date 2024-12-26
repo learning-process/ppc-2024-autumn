@@ -6,8 +6,6 @@
 #include <random>
 #include <thread>
 
-using namespace std::chrono_literals;
-
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output
@@ -176,7 +174,7 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
     std::pair<int, int> local_pair = {local_min, local_index};
     std::pair<int, int> global_pair = {std::numeric_limits<int>::max(), -1};
 
-    boost::mpi::all_reduce(world, local_pair, global_pair, ComparePairs());   
+    boost::mpi::all_reduce(world, local_pair, global_pair, ComparePairs());
 
     if (global_pair.first == std::numeric_limits<int>::max()) {
       break;

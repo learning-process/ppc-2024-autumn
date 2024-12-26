@@ -6,7 +6,7 @@
 
 TEST(korobeinikov_sequential_perf_test_lab_03, test_pipeline_run) {
   // Create data
-  int size = 10000;
+  size_t size = 10000;
 
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);
@@ -71,7 +71,7 @@ TEST(korobeinikov_sequential_perf_test_lab_03, test_pipeline_run) {
 
 TEST(korobeinikov_sequential_perf_test_lab_03, test_task_run) {
   // Create data
-  int size = 10000;
+  size_t size = 10000;
 
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);
