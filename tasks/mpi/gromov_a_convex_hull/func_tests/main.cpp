@@ -8,7 +8,6 @@
 
 namespace gromov_a_convex_hull_mpi {
 std::vector<int> CreateCanvas(int height, int width) {
-
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<int> dist(0, 1);
