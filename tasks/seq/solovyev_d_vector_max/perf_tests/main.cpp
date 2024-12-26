@@ -5,7 +5,7 @@
 
 #include "core/perf/include/perf.hpp"
 #include "seq/solovyev_d_vector_max/include/header.hpp"
-
+namespace solovyev_d_vector_max_mpi {
 std::vector<int> getRandomVector(int sz) {
   std::random_device dev;
   std::mt19937 gen(dev());
@@ -15,12 +15,12 @@ std::vector<int> getRandomVector(int sz) {
   }
   return vec;
 }
-
+}  // namespace solovyev_d_vector_max_mpi
 TEST(solovyev_d_vector_max_mpi, test_pipeline_run) {
   const int count = 12000000;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
   // Create TaskData
@@ -57,7 +57,7 @@ TEST(solovyev_d_vector_max_mpi, test_task_run) {
   const int count = 12000000;
 
   // Create data
-  std::vector<int> in = getRandomVector(count);
+  std::vector<int> in = solovyev_d_vector_max_mpi::getRandomVector(count);
   in[count / 2] = 1024;
   std::vector<int> out(1, 0);
 
