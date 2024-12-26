@@ -18,14 +18,14 @@ namespace varfolomeev_g_matrix_max_rows_vals_mpi {
 class MaxInRowsSequential : public ppc::core::Task {
  public:
   explicit MaxInRowsSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;   // task data to vec of vecs or general vec
-  bool validation() override;       // input data check (n > 0, mem of enter and exit)
-  bool run() override;              //
-  bool post_processing() override;  // vec to taskdata
+  bool pre_processing() override;
+  bool validation() override;
+  bool run() override;
+  bool post_processing() override;
 
  private:
   int size_n, size_m;
-  std::vector<int> mtr;  // vector one-row matrix
+  std::vector<int> mtr;
   std::vector<int> res_vec;
 };
 
