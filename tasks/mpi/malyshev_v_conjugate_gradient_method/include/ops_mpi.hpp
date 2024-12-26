@@ -41,4 +41,6 @@ class TestTaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
+double dot(const std::vector<double>& a, const std::vector<double>& b);
+
 }  // namespace malyshev_v_conjugate_gradient_method

@@ -7,6 +7,8 @@
 
 namespace malyshev_v_conjugate_gradient_method {
 
+double dot(const std::vector<double>& a, const std::vector<double>& b);
+
 bool TestTaskSequential::pre_processing() {
   internal_order_test();
 
