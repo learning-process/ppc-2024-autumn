@@ -132,7 +132,7 @@ struct ComparePairs {
 
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
   internal_order_test();
-  
+
   broadcast(world, size, 0);
   broadcast(world, sv, 0);
   int count_edges = values.size();
