@@ -60,9 +60,7 @@ void customTest(const std::vector<std::pair<double, double>>& limits,
 double linearSingleVar(std::vector<double>& args) { return args.at(0); }
 double linearTwoVar(std::vector<double>& args) { return args.at(0) + args.at(1); }
 double linearThreeVar(std::vector<double>& args) { return args.at(0) + args.at(1) + args.at(2); }
-double trigonometricSingleVar(std::vector<double>& args) {
-  return std::sin(args.at(0)) / (std::pow(std::cos(args.at(0)), 2) + 1);
-}
+double trigonometricSingleVar(std::vector<double>& args) { return std::sin(args.at(0)) + std::cos(args.at(0)); }
 double trigonometricTwoVar(std::vector<double>& args) { return std::sin(args.at(0)) + std::cos(args.at(1)); }
 double trigonometricThreeVar(std::vector<double>& args) {
   return args.at(0) + std::cos(args.at(1)) - std::sin(args.at(2));
