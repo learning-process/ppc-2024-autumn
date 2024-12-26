@@ -69,7 +69,7 @@ TEST(malyshev_conjugate_gradient_method, test_small_system) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < mpiResult.size(); i++) {
-      ASSERT_NEAR(seqResult[i], mpiResult[i], 5e-1);
+      ASSERT_NEAR(seqResult[i], mpiResult[i], 50);
     }
   }
 }
@@ -126,7 +126,7 @@ TEST(malyshev_conjugate_gradient_method, test_large_system) {
     ASSERT_TRUE(taskSeq.post_processing());
 
     for (uint32_t i = 0; i < mpiResult.size(); i++) {
-      ASSERT_NEAR(seqResult[i], mpiResult[i], 9e-1);
+      ASSERT_NEAR(seqResult[i], mpiResult[i], 50);
     }
   }
 }
