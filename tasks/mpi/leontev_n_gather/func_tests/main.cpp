@@ -10,11 +10,12 @@
 
 namespace leontev_n_mat_vec_mpi {
 std::vector<int> getRandomVector(int sz) {
+  const int max_value = 100;
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
   for (int i = 0; i < sz; i++) {
-    vec[i] = gen() % 100;
+    vec[i] = gen() % max_value;
   }
   return vec;
 }
