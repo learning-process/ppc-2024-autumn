@@ -74,8 +74,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::validati
 
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   internal_order_test();
-  unsigned short i = 0;
-  unsigned short j;
+  //unsigned short i = 0;
+  //unsigned short j;
   unsigned short k;
   auto dimension = 0;
   unsigned short block_dimension = 0;
