@@ -8,9 +8,9 @@
 
 bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::pre_processing() {
   internal_order_test();
-  a_ = *reinterpret_cast<double*>(taskData->inputs[0]);
-  b_ = *reinterpret_cast<double*>(taskData->inputs[1]);
-  n_ = *reinterpret_cast<int*>(taskData->inputs[2]);
+  a_ = *reinterpret_cast<double *>(taskData->inputs[0]);
+  b_ = *reinterpret_cast<double *>(taskData->inputs[1]);
+  n_ = *reinterpret_cast<int *>(taskData->inputs[2]);
   return true;
 }
 bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::validation() {
@@ -24,15 +24,15 @@ bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::run() {
 }
 bool plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::post_processing() {
   internal_order_test();
-  *reinterpret_cast<double*>(taskData->outputs[0]) = res_;
+  *reinterpret_cast<double *>(taskData->outputs[0]) = res_;
   return true;
 }
 bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::pre_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    a_ = *reinterpret_cast<double*>(taskData->inputs[0]);
-    b_ = *reinterpret_cast<double*>(taskData->inputs[1]);
-    n_ = *reinterpret_cast<int*>(taskData->inputs[2]);
+    a_ = *reinterpret_cast<double *>(taskData->inputs[0]);
+    b_ = *reinterpret_cast<double *>(taskData->inputs[1]);
+    n_ = *reinterpret_cast<int *>(taskData->inputs[2]);
   }
   return true;
 }
@@ -59,20 +59,18 @@ bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::run() {
 bool plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    *reinterpret_cast<double*>(taskData->outputs[0]) = res_;
+    *reinterpret_cast<double *>(taskData->outputs[0]) = res_;
   }
   return true;
 }
-void plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::set_function(
-    const std::function<double(double)>& f) {
+void plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::set_function(const std::function<double(double)> &f) {
   function_ = f;
 }
-void plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::set_function(
-    const std::function<double(double)>& f) {
+void plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::set_function(const std::function<double(double)> &f) {
   function_ = f;
 }
 double plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::integrate_function(
-    double a, double b, int n, const std::function<double(double)>& f) {
+    double a, double b, int n, const std::function<double(double)> &f) {
   const double width = (b - a) / n;
   double result = 0.0;
   for (int step = 0; step < n; step++) {
@@ -83,7 +81,7 @@ double plekhanov_d_trapez_integration_mpi::trapezIntegrationSEQ::integrate_funct
   return result;
 }
 double plekhanov_d_trapez_integration_mpi::trapezIntegrationMPI::integrate_function(
-    double a, double b, int n, const std::function<double(double)>& f) {
+    double a, double b, int n, const std::function<double(double)> &f) {
   int rank = world.rank();
   int size = world.size();
   const double width = (b - a) / n;
