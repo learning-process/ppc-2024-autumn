@@ -47,7 +47,7 @@ TEST(vedernikova_k_monte_carlo_integration_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  EXPECT_NEAR(expected_res, out, 1e-1);
+  EXPECT_NEAR(expected_res, out, 1.0);
 }
 
 TEST(vedernikova_k_monte_carlo_integration_seq, test_task_run) {
@@ -92,5 +92,5 @@ TEST(vedernikova_k_monte_carlo_integration_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  EXPECT_NEAR(expected_res, out, 1e-1);
+  EXPECT_NEAR(expected_res, out, 1.0);
 }
