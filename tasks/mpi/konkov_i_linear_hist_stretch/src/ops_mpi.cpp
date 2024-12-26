@@ -75,7 +75,7 @@ void LinearHistogramStretch::distribute_data() {
     }
   }
 
-  MPI_Scatterv((rank_ == 0) ? image_data_ : nullptr, send_counts, displacements, MPI_INT, local_data_, local_size_, 
+  MPI_Scatterv((rank_ == 0) ? image_data_ : nullptr, send_counts, displacements, MPI_INT, local_data_, local_size_,
                MPI_INT, 0, MPI_COMM_WORLD);
 
   delete[] send_counts;
@@ -97,7 +97,7 @@ void LinearHistogramStretch::gather_data() {
     }
   }
 
-  MPI_Gatherv(local_data_, local_size_, MPI_INT, (rank_ == 0) ? image_data_ : nullptr,send_counts, displacements, 
+  MPI_Gatherv(local_data_, local_size_, MPI_INT, (rank_ == 0) ? image_data_ : nullptr, send_counts, displacements, 
               MPI_INT, 0, MPI_COMM_WORLD);
 
   delete[] send_counts;
