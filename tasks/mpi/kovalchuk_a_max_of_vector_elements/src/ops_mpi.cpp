@@ -3,10 +3,10 @@
 
 #include <algorithm>
 #include <functional>
+#include <ranges>
 #include <random>
 #include <string>
 #include <vector>
-#include <ranges>
 
 bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::pre_processing() {
   internal_order_test();
