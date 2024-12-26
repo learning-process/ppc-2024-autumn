@@ -1,11 +1,6 @@
 // Copyright 2024 Korobeinikov Arseny
 #include "mpi/korobeinikov_dijkstras_algorithm/include/ops_mpi_korobeinikov.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <random>
-#include <thread>
-
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskSequential::pre_processing() {
   internal_order_test();
   // Init value for input and output

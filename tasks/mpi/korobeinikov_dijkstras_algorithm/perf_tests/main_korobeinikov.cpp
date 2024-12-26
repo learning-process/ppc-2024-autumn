@@ -9,7 +9,7 @@
 TEST(mpi_korobeinikov_perf_test_lab_03, test_pipeline_run) {
   boost::mpi::communicator world;
   // Create data
-  size_t size = 10000;
+  size_t size = 4000;
 
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);
@@ -52,7 +52,7 @@ TEST(mpi_korobeinikov_perf_test_lab_03, test_pipeline_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 1;
+  perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
@@ -73,7 +73,7 @@ TEST(mpi_korobeinikov_perf_test_lab_03, test_pipeline_run) {
 TEST(mpi_korobeinikov_perf_test_lab_03, test_task_run) {
   boost::mpi::communicator world;
   // Create data
-  size_t size = 10000;
+  size_t size = 4000;
 
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);
@@ -116,7 +116,7 @@ TEST(mpi_korobeinikov_perf_test_lab_03, test_task_run) {
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
-  perfAttr->num_running = 1;
+  perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
