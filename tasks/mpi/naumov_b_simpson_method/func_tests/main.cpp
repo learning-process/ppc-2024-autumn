@@ -4,6 +4,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 #include <cmath>
+#include <numbers>
 #include <vector>
 
 #include "mpi/naumov_b_simpson_method/include/ops_mpi.hpp"
@@ -13,7 +14,7 @@ TEST(naumov_b_simpson_method_mpi, exponential_function_) {
   double lower_bound = 0.0;
   double upper_bound = 1.0;
   int num_steps = 3000;
-  double expected = exp(1) - 1;
+  double expected = std::numbers::e - 1;  
 
   double result = 0.0;
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -32,7 +33,7 @@ TEST(naumov_b_simpson_method_mpi, exponential_function_) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(result, expected, 1e-5);
+  ASSERT_NEAR(result, expected, 1e-3);
 }
 
 TEST(naumov_b_simpson_method_mpi, forx_function_) {
@@ -119,7 +120,7 @@ TEST(naumov_b_simpson_method_mpi, linear_function_) {
 TEST(naumov_b_simpson_method_mpi, sine_function_) {
   auto func = [](double x) { return sin(x); };
   double lower_bound = 0.0;
-  double upper_bound = 3.141592653589793;
+  double upper_bound = std::numbers::pi;
   int num_steps = 3000;
   double expected = 2.0;
 

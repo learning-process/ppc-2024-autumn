@@ -20,11 +20,7 @@ double integrir_1d(const func_1d_t &func, const bound_t &bound, int num_steps);
 class TestTaskSequential : public ppc::core::Task {
  public:
   TestTaskSequential(std::shared_ptr<ppc::core::TaskData> task_data, func_1d_t function, bound_t bounds, int num_steps)
-      : Task(std::move(task_data)),
-        bounds_(std::move(bounds)),
-        num_steps_(num_steps),
-        function_(std::move(function)),
-        result_(0.0) {}
+      : Task(std::move(task_data)), bounds_(std::move(bounds)), num_steps_(num_steps), function_(std::move(function)) {}
 
   bool pre_processing() override;
   bool validation() override;

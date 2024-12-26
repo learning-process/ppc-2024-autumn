@@ -5,6 +5,7 @@
 #include <cmath>
 #include <functional>
 #include <memory>
+#include <numbers>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -13,7 +14,7 @@
 TEST(naumov_b_simpson_method_seq_perf_pipeline_run, perf_pipeline_run) {
   auto func = [](double x) -> double { return std::sin(x) * std::log(x + 1.0); };
 
-  naumov_b_simpson_method_seq::bound_t bounds = {0.0, 3.14159265358979323846};
+  naumov_b_simpson_method_seq::bound_t bounds = {0.0, std::numbers::pi};
   int num_steps = 1000;
   double output = 0.0;
 

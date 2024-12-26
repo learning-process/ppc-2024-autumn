@@ -3,6 +3,7 @@
 #include <cmath>
 #include <functional>
 #include <memory>
+#include <numbers>
 #include <vector>
 
 #include "seq/naumov_b_simpson_method/include/ops_seq.hpp"
@@ -87,7 +88,7 @@ TEST(naumov_b_simpson_method_seq, cubic_function) {
 
 TEST(naumov_b_simpson_method_seq, sine_function) {
   auto func = [](double x) { return sin(x); };
-  naumov_b_simpson_method_seq::bound_t bounds = {0.0, 3.141592653589793};
+  naumov_b_simpson_method_seq::bound_t bounds = {0.0, std::numbers::pi};
   int num_steps = 8;
   double expected = 2.0;  // Интеграл от sin(x) на [0, π] = -cos(x) = 2
 

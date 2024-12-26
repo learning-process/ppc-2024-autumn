@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <boost/mpi/timer.hpp>
+#include <numbers>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -10,7 +11,7 @@
 TEST(naumov_b_simpson_method_par, perf_pipeline_run) {
   auto func = [](double x) -> double { return std::sin(x) * std::log(x + 1.0); };
   double lower_bound = 0.0;
-  double upper_bound = 3.14159265358979323846;
+  double upper_bound = std::numbers::pi;
   int num_steps = 1000;
   double output = 0.0;
 
