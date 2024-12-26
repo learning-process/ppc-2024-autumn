@@ -42,7 +42,7 @@ TEST(Sdobnov_V_mergesort_Betcher_par, test_pipeline_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   if (world.rank() == 0) {
-    ASSERT_EQ((int)res.size(), size);
+    ASSERT_EQ(res.size(), size);
   }
 }
 
