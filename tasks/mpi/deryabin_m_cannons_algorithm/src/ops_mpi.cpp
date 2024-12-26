@@ -77,9 +77,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   unsigned short i = 0;
   unsigned short j;
   unsigned short k;
-  auto dimension = 0;
-  unsigned short block_dimension = 0;
-  unsigned short block_rows_columns = 0;
+  unsigned short dimension;
   if (world.size() == 1 || world.size() != pow((unsigned short)sqrt(world.size()), 2) || (unsigned short)sqrt(input_matrix_A.size()) % (unsigned short)sqrt(world.size()) != 0) {
     if (world.rank() == 0) {
       dimension = (unsigned short)sqrt(input_matrix_A.size());
@@ -99,6 +97,9 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     }
     return true;
   }
+  dimension = 0;
+  unsigned short block_dimension = 0;
+  unsigned short block_rows_columns = 0;
   if (world.rank() == 0) {
     dimension = (unsigned short)sqrt(input_matrix_A.size());
     block_rows_columns = (unsigned short)sqrt(world.size());
