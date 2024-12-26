@@ -2,6 +2,7 @@
 #include "mpi/Sdobnov_V_mergesort_Betcher/include/ops_mpi.hpp"
 
 #include <random>
+#include <stack>
 #include <vector>
 
 std::vector<int> Sdobnov_V_mergesort_Betcher_par::generate_random_vector(int size, int lower_bound, int upper_bound) {
@@ -10,6 +11,36 @@ std::vector<int> Sdobnov_V_mergesort_Betcher_par::generate_random_vector(int siz
     res[i] = lower_bound + rand() % (upper_bound - lower_bound + 1);
   }
   return res;
+}
+
+int Sdobnov_V_mergesort_Betcher_par::partition(std::vector<int>& vec, int low, int high) {
+  int pivot = vec[high];
+  int i = low - 1;
+
+  for (int j = low; j < high; ++j) {
+    if (vec[j] <= pivot) {
+      i++;
+      std::swap(vec[i], vec[j]);
+    }
+  }
+
+  std::swap(vec[i + 1], vec[high]);
+  return i + 1;
+}
+
+void Sdobnov_V_mergesort_Betcher_par::quickSortIterative(std::vector<int>& vec, int low, int high) {
+  std::stack<std::pair<int, int>> s;
+  s.push({low, high});
+
+  while (!s.empty()) {
+    auto [l, h] = s.top();
+    s.pop();
+    if (l < h) {
+      int pi = partition(vec, l, h);
+      s.push({l, pi - 1});
+      s.push({pi + 1, h});
+    }
+  }
 }
 
 bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::pre_processing() {
@@ -62,7 +93,7 @@ bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::run() {
   local_vec_.resize(counts[rank]);
   boost::mpi::scatterv(world, input_.data(), counts, displacment, local_vec_.data(), process_count, 0);
 
-  std::sort(local_vec_.begin(), local_vec_.end());
+  quickSortIterative(local_vec_, 0, counts[rank] - 1);
 
   for (int step = 0; step < size; step++) {
     if (rank % 2 == 0) {
@@ -73,7 +104,7 @@ bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::run() {
             world.recv(rank + 1, 0, tmp);
             local_vec_.push_back(tmp);
           }
-          std::sort(local_vec_.begin(), local_vec_.end());
+          quickSortIterative(local_vec_, 0, counts[rank] + counts[rank + 1] - 1);
           for (int i = local_vec_.size() - 1; i >= counts[rank]; i--) {
             world.send(rank + 1, 0, local_vec_[i]);
             local_vec_.pop_back();
@@ -104,7 +135,7 @@ bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::run() {
             world.recv(rank + 1, 0, tmp);
             local_vec_.push_back(tmp);
           }
-          std::sort(local_vec_.begin(), local_vec_.end());
+          quickSortIterative(local_vec_, 0, counts[rank] + counts[rank + 1] - 1);
           for (int i = local_vec_.size() - 1; i >= counts[rank]; i--) {
             world.send(rank + 1, 0, local_vec_[i]);
             local_vec_.pop_back();
@@ -112,7 +143,7 @@ bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::run() {
         }
       }
     }
-    std::sort(local_vec_.begin(), local_vec_.end());
+    quickSortIterative(local_vec_, 0, counts[rank] - 1);
   }
   boost::mpi::gather(world, local_vec_.data(), counts[rank], input_.data(), 0);
 
