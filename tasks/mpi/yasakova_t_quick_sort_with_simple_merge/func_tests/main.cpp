@@ -12,52 +12,52 @@
 
 namespace yasakova_t_quick_sort_with_simple_merge_mpi {
 
-  std::vector<int> create_random_integer_vector(int size, int minimum_value = -100, int maximum_value = 100,
-                                                unsigned random_seed = std::random_device{}()) {
-    static std::mt19937 generator(random_seed);
-    std::uniform_int_distribution<int> distribution(minimum_value, maximum_value);
+std::vector<int> create_random_integer_vector(int size, int minimum_value = -100, int maximum_value = 100,
+                                              unsigned random_seed = std::random_device{}()) {
+  static std::mt19937 generator(random_seed);
+  std::uniform_int_distribution<int> distribution(minimum_value, maximum_value);
 
-    std::vector<int> random_vector(size);
-    std::generate(random_vector.begin(), random_vector.end(), [&]() { return distribution(generator); });
-    return random_vector;
+  std::vector<int> random_vector(size);
+  std::generate(random_vector.begin(), random_vector.end(), [&]() { return distribution(generator); });
+  return random_vector;
+}
+
+void execute_parallel_sort_test(int vector_length) {
+  boost::mpi::communicator mpi_comm;
+  std::vector<int> input_vector;
+  std::vector<int> output_vector;
+
+  std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
+
+  task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_length));
+  task_data->inputs_count.emplace_back(1);
+
+  if (mpi_comm.rank() == 0) {
+    input_vector = create_random_integer_vector(vector_length);
+    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
+    task_data->inputs_count.emplace_back(input_vector.size());
+
+    output_vector.resize(vector_length);
+    task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_vector.data()));
+    task_data->outputs_count.emplace_back(output_vector.size());
   }
 
-  void execute_parallel_sort_test(int vector_length) {
-    boost::mpi::communicator mpi_comm;
-    std::vector<int> input_vector;
-    std::vector<int> output_vector;
+  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
-    std::shared_ptr<ppc::core::TaskData> task_data = std::make_shared<ppc::core::TaskData>();
-
-    task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_length));
-    task_data->inputs_count.emplace_back(1);
+  bool is_valid = parallel_sort_task->validation();
+  boost::mpi::broadcast(mpi_comm, is_valid, 0);
+  if (is_valid) {
+    parallel_sort_task->pre_processing();
+    parallel_sort_task->run();
+    parallel_sort_task->post_processing();
 
     if (mpi_comm.rank() == 0) {
-      input_vector = create_random_integer_vector(vector_length);
-      task_data->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
-      task_data->inputs_count.emplace_back(input_vector.size());
-
-      output_vector.resize(vector_length);
-      task_data->outputs.emplace_back(reinterpret_cast<uint8_t*>(output_vector.data()));
-      task_data->outputs_count.emplace_back(output_vector.size());
-    }
-
-    auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
-
-    bool is_valid = parallel_sort_task->validation();
-    boost::mpi::broadcast(mpi_comm, is_valid, 0);
-    if (is_valid) {
-      parallel_sort_task->pre_processing();
-      parallel_sort_task->run();
-      parallel_sort_task->post_processing();
-
-      if (mpi_comm.rank() == 0) {
-        std::sort(input_vector.begin(), input_vector.end());
-        EXPECT_EQ(input_vector, output_vector);
-      }
+      std::sort(input_vector.begin(), input_vector.end());
+      EXPECT_EQ(input_vector, output_vector);
     }
   }
-}  // namespace yasakova_t_quick_sort_with_simple_merge_mpi
+}
+
 void execute_parallel_sort_test(const std::vector<int>& input_vector) {
   boost::mpi::communicator mpi_comm;
   std::vector<int> local_data = input_vector;
@@ -93,6 +93,7 @@ void execute_parallel_sort_test(const std::vector<int>& input_vector) {
     }
   }
 }
+}  // namespace yasakova_t_quick_sort_with_simple_merge_mpi
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_sorted_array_ascending) {
   yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({1, 2, 3, 4, 5, 6, 8, 9, 5, 4, 3, 2, 1});

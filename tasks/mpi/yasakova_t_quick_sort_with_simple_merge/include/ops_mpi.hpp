@@ -13,8 +13,8 @@ void quicksort_iterative(std::vector<int>& data);
 void mpi_worker_function(boost::mpi::communicator& world, const std::vector<int>& local_data);
 std::vector<int> master_function(boost::mpi::communicator& world, const std::vector<int>& local_data,
                                  const std::vector<int>& element_sizes);
-void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>& local_data, const std::vector<int>& element_sizes,
-                std::vector<int>& res);
+void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>& local_data,
+                        const std::vector<int>& element_sizes, std::vector<int>& res);
 
 class SimpleMergeQuicksort : public ppc::core::Task {
  public:
