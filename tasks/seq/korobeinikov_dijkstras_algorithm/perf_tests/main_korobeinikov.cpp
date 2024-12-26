@@ -9,9 +9,9 @@ TEST(korobeinikov_sequential_perf_test_lab_03, test_pipeline_run) {
   int size = 10000;
 
   std::vector<int> values(size * size, 1);
-  std::vector<int> col (size * size, 1);
+  std::vector<int> col(size * size, 1);
   std::vector<int> RowIndex(size + 1, 1);
-  
+
   for (size_t i = 0; i < size; i++) {
     for (size_t j = 0; j < size; j++) {
       col[i * size + j] = j;
@@ -24,7 +24,7 @@ TEST(korobeinikov_sequential_perf_test_lab_03, test_pipeline_run) {
   int sv = 0;
 
   std::vector<int> out(size, 0);
-  std::vector<int> right_answer (size, 1);
+  std::vector<int> right_answer(size, 1);
   right_answer[0] = 0;
 
   // Create TaskData

@@ -23,7 +23,7 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> res;
 
   int size;
-  int sv;						// selected_vertex
+  int sv;  // selected_vertex
 };
 
 }  // namespace korobeinikov_a_test_task_seq_lab_03

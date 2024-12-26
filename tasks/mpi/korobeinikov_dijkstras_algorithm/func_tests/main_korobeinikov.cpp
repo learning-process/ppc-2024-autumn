@@ -7,7 +7,6 @@
 
 #include "mpi/korobeinikov_dijkstras_algorithm/include/ops_mpi_korobeinikov.hpp"
 
-
 namespace korobeinikov_a_test_task_mpi_lab_03 {
 
 std::vector<int> getRandomVector(int sz, int size_cols) {
@@ -22,7 +21,7 @@ std::vector<int> getRandomVector(int sz, int size_cols) {
 
 }  // namespace korobeinikov_a_test_task_mpi_lab_03
 
-TEST(korobeinikov_dijkstras_algorithm_mpi,Test_1_const_numbers) {
+TEST(korobeinikov_dijkstras_algorithm_mpi, Test_1_const_numbers) {
   boost::mpi::communicator world;
   // Create data
   std::vector<int> values = {10, 30, 100, 50, 10, 20, 60};
@@ -101,9 +100,9 @@ TEST(korobeinikov_dijkstras_algorithm_mpi,Test_1_const_numbers) {
 TEST(korobeinikov_dijkstras_algorithm_mpi, Test_2_random_numbers) {
   boost::mpi::communicator world;
   // Create data
-  std::vector<int> values (7);
+  std::vector<int> values(7);
   std::vector<int> col(7);
-  std::vector<int> RowIndex= {0, 3, 4, 5, 7, 7};
+  std::vector<int> RowIndex = {0, 3, 4, 5, 7, 7};
 
   int size = 5;
   int sv = 0;
@@ -208,7 +207,7 @@ TEST(korobeinikov_dijkstras_algorithm_mpi, Test_3_empty_graph) {
   }
 
   korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(),false);
+  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(korobeinikov_dijkstras_algorithm_mpi, Test_4_validation_false_sv_greater_size) {

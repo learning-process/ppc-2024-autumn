@@ -14,7 +14,7 @@ TEST(korobeinikov_dijkstras_algorithm_seq, Test_1_const_numbers) {
   int size = 5;
   int sv = 0;
 
-  std::vector<int> out(size, 0);    
+  std::vector<int> out(size, 0);
   std::vector<int> right_answer = {0, 10, 50, 30, 60};
 
   // Create TaskData

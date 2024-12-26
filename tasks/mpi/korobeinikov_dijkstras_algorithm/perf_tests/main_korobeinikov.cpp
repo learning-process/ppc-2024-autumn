@@ -14,7 +14,7 @@ TEST(mpi_korobeinikov_perf_test_lab_03, test_pipeline_run) {
   std::vector<int> values(size * size, 1);
   std::vector<int> col(size * size, 1);
   std::vector<int> RowIndex(size + 1, 1);
- 
+
   int sv = 0;
   std::vector<int> out(size, 0);
   std::vector<int> right_answer(size, 1);
@@ -112,7 +112,7 @@ TEST(mpi_korobeinikov_perf_test_lab_03, test_task_run) {
     taskDataPar->outputs_count.emplace_back(out.size());
   }
 
-  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel>(taskDataPar); 
+  auto testMpiTaskParallel = std::make_shared<korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel>(taskDataPar);
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

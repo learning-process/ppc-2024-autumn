@@ -50,7 +50,7 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskSequential::validation() {
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskSequential::run() {
   internal_order_test();
 
-    std::vector<bool> visited(size, false);
+  std::vector<bool> visited(size, false);
   std::vector<int> D(size, std::numeric_limits<int>::max());
   D[sv] = 0;
   for (int i = 0; i < size; i++) {
@@ -84,7 +84,7 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskSequential::post_processing
 }
 
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::pre_processing() {
-  internal_order_test();  
+  internal_order_test();
   return true;
 }
 
@@ -153,7 +153,7 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
   if (num_use_proc == 0) {
     return true;
   }
-  int delta = size % num_use_proc == 0 ? (size / num_use_proc) : ((size / num_use_proc) + 1); 
+  int delta = size % num_use_proc == 0 ? (size / num_use_proc) : ((size / num_use_proc) + 1);
 
   int begin_for_proc = world.rank() * delta;
   int end_for_proc = std::min(size, delta * (world.rank() + 1));
@@ -162,7 +162,6 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
   std::vector<int> D(size, std::numeric_limits<int>::max());
   res = std::vector<int>(size, std::numeric_limits<int>::max());
   res[sv] = 0;
-
 
   for (int k = 0; k < size; k++) {
     int local_min = std::numeric_limits<int>::max();

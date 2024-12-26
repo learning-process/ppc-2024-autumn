@@ -1,5 +1,6 @@
 // Copyright 2024 Korobeiinikov Arseny
 #include "seq/korobeinikov_dijkstras_algorithm/include/ops_seq_korobeinikov.hpp"
+
 #include <algorithm>
 
 bool korobeinikov_a_test_task_seq_lab_03::TestTaskSequential::pre_processing() {
@@ -20,11 +21,10 @@ bool korobeinikov_a_test_task_seq_lab_03::TestTaskSequential::pre_processing() {
   size = *reinterpret_cast<int *>(taskData->inputs[3]);
   sv = *reinterpret_cast<int *>(taskData->inputs[4]);
 
-
-  res = std::vector<int>(size, 0); 
+  res = std::vector<int>(size, 0);
   return true;
 }
-    
+
 bool korobeinikov_a_test_task_seq_lab_03::TestTaskSequential::validation() {
   internal_order_test();
   // Check count elements of output
