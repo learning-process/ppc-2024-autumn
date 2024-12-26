@@ -4,7 +4,6 @@
 #include <cstring>
 #include <iostream>
 #include <random>
-#include <unordered_map>
 #include <vector>
 
 namespace gromov_a_convex_hull_seq {
@@ -111,7 +110,8 @@ std::vector<Point> jarvis(std::vector<Point> points) {
       leftmost = i;
     }
   }
-  int p = leftmost, q;
+  int p = leftmost;
+  int q;
   do {
     hull.push_back(points[p]);
     q = (p + 1) % points.size();

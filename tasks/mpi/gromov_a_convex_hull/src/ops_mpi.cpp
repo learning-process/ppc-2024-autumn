@@ -115,7 +115,8 @@ std::vector<Point> jarvis(std::vector<Point> points) {
       leftmost = i;
     }
   }
-  int p = leftmost, q;
+  int p = leftmost;
+  int q;
   do {
     hull.push_back(points[p]);
     q = (p + 1) % points.size();
