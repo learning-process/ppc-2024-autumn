@@ -19,8 +19,8 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
 
   int delta_height = height_ / world.size();
   local_height_ = delta_height;
-  if (world.rank() == world.size() - 1) {
-    local_height_ = height_ - delta_height * (world.size() - 1);
+  if (world.rank() < height_ % world.size()) {
+    local_height_ += 1;
   }
 
   local_input_image_.resize((local_height_ + 2) * width_, 0);
@@ -28,13 +28,17 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
 
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); ++proc) {
-      int start_row = proc * delta_height;
-      int end_row = (proc == world.size() - 1) ? height_ : (proc + 1) * delta_height;
-      int rows_to_send = end_row - start_row;
-
-      world.send(proc, 0, input_image_.data() + start_row * width_, rows_to_send * width_);
+      int proc_local_height = delta_height;
+      if (proc < height_ % world.size()) {
+        proc_local_height += 1;
+      }
+      world.send(proc, 0,
+                 input_image_.data() +
+                     (delta_height * proc + (proc < height_ % world.size() ? proc : height_ % world.size())) * width_,
+                 proc_local_height * width_);
     }
-    std::copy(input_image_.begin(), input_image_.begin() + (delta_height + 1) * width_, local_input_image_.begin());
+    std::copy(input_image_.begin(), input_image_.begin() + (local_height_ * width_),
+              local_input_image_.begin() + width_);
   } else {
     world.recv(0, 0, local_input_image_.data() + width_, local_height_ * width_);
   }
@@ -77,12 +81,11 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
 
   if (world.rank() > 0) {
     world.send(world.rank() - 1, 0, local_input_image_.data() + width_, width_);
-
     world.recv(world.rank() - 1, 0, local_input_image_.data(), width_);
   }
   if (world.rank() < world.size() - 1) {
-    world.send(world.rank() + 1, 0, local_input_image_.data() + local_height_ * width_, width_);
-    world.recv(world.rank() + 1, 0, local_input_image_.data() + (local_height_ + 1) * width_, width_);
+    world.send(world.rank() + 1, 0, local_input_image_.data() + (local_height_ + 1) * width_, width_);
+    world.recv(world.rank() + 1, 0, local_input_image_.data() + (local_height_ + 2) * width_, width_);
   }
 
   return true;
@@ -96,15 +99,18 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
     std::copy(local_output_image_.begin(), local_output_image_.end(), output_image_.begin());
   }
 
-  if (world.rank() > 0) {
+  if (world.rank() != 0) {
     world.send(0, 0, local_output_image_.data(), local_height_ * width_);
   } else {
+    int delta_height = height_ / world.size();
+    int start_row = local_height_;
     for (int proc = 1; proc < world.size(); ++proc) {
-      int start_row = proc * (height_ / world.size());
-      int end_row = (proc == world.size() - 1) ? height_ : (proc + 1) * (height_ / world.size());
-      int rows_to_recv = end_row - start_row;
-
-      world.recv(proc, 0, output_image_.data() + start_row * width_, rows_to_recv * width_);
+      int proc_local_height = delta_height;
+      if (proc < height_ % world.size()) {
+        proc_local_height += 1;
+      }
+      world.recv(proc, 0, output_image_.data() + start_row * width_, proc_local_height * width_);
+      start_row += proc_local_height;
     }
   }
 
