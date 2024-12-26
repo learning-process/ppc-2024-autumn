@@ -36,13 +36,12 @@ TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_pipeline_run) {
   std::vector<int32_t> max_vec(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  // Setting rows(size_m) and cols(size_n)
-
-  taskDataPar->inputs_count.emplace_back(size_m);
-  taskDataPar->inputs_count.emplace_back(size_n);
+  // Setting rows and cols
 
   // If curr. proc. is root (r.0), setting the input and output data
   if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(rows);
+    taskDataPar->inputs_count.emplace_back(cols);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(max_vec.data()));
     taskDataPar->outputs_count.emplace_back(max_vec.size());
@@ -83,8 +82,8 @@ TEST(mpi_varfolomeev_g_matrix_max_rows_perf_test, test_task_run) {
   std::vector<int32_t> max_vec(size_m, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  taskDataPar->inputs_count.emplace_back(size_m);
-  taskDataPar->inputs_count.emplace_back(size_n);
+  taskDataPar->inputs_count.emplace_back(rows);
+  taskDataPar->inputs_count.emplace_back(cols);
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(max_vec.data()));
