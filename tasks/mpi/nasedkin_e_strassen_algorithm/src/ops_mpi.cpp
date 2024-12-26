@@ -1,5 +1,3 @@
-#include "mpi/nasedkin_e_strassen_algorithm/include/ops_mpi.hpp"
-
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <boost/serialization/vector.hpp>
@@ -10,27 +8,18 @@
 #include <memory>
 #include <vector>
 
+#include "mpi/nasedkin_e_strassen_algorithm/include/ops_mpi.hpp"
+
 namespace nasedkin_e_strassen_algorithm {
 
 bool StrassenAlgorithmSEQ::pre_processing() {
   internal_order_test();
   auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
   auto* inputsB = reinterpret_cast<double*>(taskData->inputs[1]);
-
-  if (inputsA == nullptr || inputsB == nullptr) {
-    return false;
-  }
-
   matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
-
-  if (matrixSize * matrixSize != taskData->inputs_count[0]) {
-    return false;
-  }
-
   inputMatrixA.assign(inputsA, inputsA + matrixSize * matrixSize);
   inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
   outputMatrix.resize(matrixSize * matrixSize, 0.0);
-
   return true;
 }
 
@@ -40,6 +29,9 @@ bool StrassenAlgorithmSEQ::validation() {
     return false;
   }
   if (taskData->inputs_count[0] != taskData->inputs_count[1]) {
+    return false;
+  }
+  if (taskData->inputs_count[0] != taskData->outputs_count[0]) {
     return false;
   }
   return true;
@@ -92,17 +84,18 @@ bool StrassenAlgorithmMPI::validation() {
     if (taskData->inputs_count[0] != taskData->inputs_count[1]) {
       return false;
     }
+    if (taskData->inputs_count[0] != taskData->outputs_count[0]) {
+      return false;
+    }
   }
   return true;
 }
 
 bool StrassenAlgorithmMPI::run() {
   internal_order_test();
-
   boost::mpi::broadcast(world, inputMatrixA, 0);
   boost::mpi::broadcast(world, inputMatrixB, 0);
   boost::mpi::broadcast(world, matrixSize, 0);
-
   outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
   return true;
 }
@@ -152,10 +145,6 @@ std::vector<double> strassen_recursive(const std::vector<double>& matrixA, const
   std::vector<double> B21(half_size * half_size);
   std::vector<double> B22(half_size * half_size);
 
-  if (matrixA.size() != size * size || matrixB.size() != size * size) {
-    return {};
-  }
-
   for (size_t i = 0; i < half_size; ++i) {
     for (size_t j = 0; j < half_size; ++j) {
       A11[i * half_size + j] = matrixA[i * size + j];
@@ -201,10 +190,6 @@ std::vector<double> strassen_recursive(const std::vector<double>& matrixA, const
 
 std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vector<double>& matrixA,
                                                                 const std::vector<double>& matrixB, size_t size) {
-  if (matrixA.empty() || matrixB.empty() || size == 0) {
-    return {};
-  }
-
   if (size == 1) {
     return {matrixA[0] * matrixB[0]};
   }
@@ -291,10 +276,6 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
   int rank = world.rank();
   int num_procs = world.size();
 
-  if (rank == 0 && (matrixA.empty() || matrixB.empty() || size == 0)) {
-    return {};
-  }
-
   if (size == 1) {
     return {matrixA[0] * matrixB[0]};
   }
@@ -379,25 +360,26 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
     }
   }
 
-  std::vector<double> C11 =
-      matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
-  std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
-  std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
-  std::vector<double> C22 =
-      matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
+  if (rank == 0) {
+    std::vector<double> C11 =
+        matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
+    std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
+    std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
+    std::vector<double> C22 =
+        matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
 
-  std::vector<double> result(size * size);
-  for (size_t i = 0; i < half_size; ++i) {
-    for (size_t j = 0; j < half_size; ++j) {
-      result[i * size + j] = C11[i * half_size + j];
-      result[i * size + j + half_size] = C12[i * half_size + j];
-      result[(i + half_size) * size + j] = C21[i * half_size + j];
-      result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
+    std::vector<double> result(size * size);
+    for (size_t i = 0; i < half_size; ++i) {
+      for (size_t j = 0; j < half_size; ++j) {
+        result[i * size + j] = C11[i * half_size + j];
+        result[i * size + j + half_size] = C12[i * half_size + j];
+        result[(i + half_size) * size + j] = C21[i * half_size + j];
+        result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
+      }
     }
+    return result;
   }
-  return result;
-}
-return {};
+  return {};
 }
 
 }  // namespace nasedkin_e_strassen_algorithm
