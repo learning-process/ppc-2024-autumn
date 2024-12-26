@@ -192,7 +192,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
   }
 
   double global_residual_norm_sq;
-  reduce(world, local_residual_norm_sq, global_residual_norm_sq, std::plus<double>(), 0);
+  reduce(world, local_residual_norm_sq, global_residual_norm_sq, std::plus<>(), 0);
 
   for (uint32_t iter = 0; iter < local_size; ++iter) {
     std::fill(local_temp.begin(), local_temp.end(), 0.0);
@@ -208,7 +208,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
     }
 
     double global_alpha;
-    reduce(world, local_alpha, global_alpha, std::plus<double>(), 0);
+    reduce(world, local_alpha, global_alpha, std::plus<>(), 0);
 
     double denominator = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
@@ -216,7 +216,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
     }
 
     double global_denominator;
-    reduce(world, denominator, global_denominator, std::plus<double>(), 0);
+    reduce(world, denominator, global_denominator, std::plus<>(), 0);
 
     global_alpha /= global_denominator;
 
@@ -231,7 +231,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
     }
 
     double new_global_residual_norm_sq;
-    reduce(world, new_local_residual_norm_sq, new_global_residual_norm_sq, std::plus<double>(), 0);
+    reduce(world, new_local_residual_norm_sq, new_global_residual_norm_sq, std::plus<>(), 0);
 
     if (std::sqrt(new_global_residual_norm_sq) < 1e-6) {
       break;
