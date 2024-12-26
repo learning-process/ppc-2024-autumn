@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <chrono>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/burykin_m_strongin/include/ops_seq.hpp"

@@ -1,12 +1,5 @@
 #include "mpi/burykin_m_strongin/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <random>
-#include <string>
-#include <thread>
-#include <vector>
-
 namespace burykin_m_strongin {
 
 bool StronginSequential::pre_processing() {

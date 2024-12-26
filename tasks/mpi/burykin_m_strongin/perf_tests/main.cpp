@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <cmath>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "mpi/burykin_m_strongin/include/ops_mpi.hpp"
 

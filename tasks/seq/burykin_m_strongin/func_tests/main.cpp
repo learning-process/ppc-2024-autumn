@@ -1,8 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <memory>
-#include <vector>
-
 #include "seq/burykin_m_strongin/include/ops_seq.hpp"
 
 TEST(burykin_m_strongin_SEQ, Test_1_1000_001) {
