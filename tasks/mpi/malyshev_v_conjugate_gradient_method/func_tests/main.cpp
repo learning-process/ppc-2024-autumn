@@ -1,42 +1,39 @@
+#define _USE_MATH_DEFINES
+
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
+#include <climits>
 #include <vector>
 
 #include "mpi/malyshev_v_conjugate_gradient_method/include/ops_mpi.hpp"
 
-namespace malyshev_v_conjugate_gradient_method {
+namespace malyshev_v_conjugate_gradient_method_mpi {
 
-std::vector<std::vector<double>> getSmallMatrix() { return {{4, 1}, {1, 3}}; }
-std::vector<double> getSmallVector() { return {1, 2}; }
-std::vector<std::vector<double>> getLargeMatrix() { return {{5, 1, 0, 0}, {1, 5, 1, 0}, {0, 1, 5, 1}, {0, 0, 1, 5}}; }
-std::vector<double> getLargeVector() { return {1, 2, 3, 4}; }
-
-}  // namespace malyshev_v_conjugate_gradient_method
-
-TEST(malyshev_v_conjugate_gradient_method, test_small_system) {
+void test_task(const std::vector<std::vector<double>> &A, const std::vector<double> &b, const std::vector<double> &ref,
+               double eps) {
   boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrix;
-  std::vector<double> vector;
-  std::vector<double> mpiResult;
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_v_conjugate_gradient_method::TestTaskParallel taskMPI(taskDataPar);
+  std::shared_ptr<ppc::core::TaskData> taskDataMPI = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  malyshev_v_conjugate_gradient_method_mpi::TestTaskParallel taskMPI(taskDataMPI, A, b);
+  malyshev_v_conjugate_gradient_method_mpi::TestTaskSequential taskSeq(taskDataSeq, A, b);
+
+  std::vector<double> resSeq(b.size());
+  std::vector<double> resMPI(b.size());
 
   if (world.rank() == 0) {
-    matrix = malyshev_v_conjugate_gradient_method::getSmallMatrix();
-    vector = malyshev_v_conjugate_gradient_method::getSmallVector();
-    mpiResult.resize(vector.size());
+    taskDataMPI->inputs.emplace_back(reinterpret_cast<uint8_t *>(&A));
+    taskDataMPI->inputs.emplace_back(reinterpret_cast<uint8_t *>(&b));
+    taskDataMPI->outputs.emplace_back(reinterpret_cast<uint8_t *>(&resMPI));
+    taskDataMPI->inputs_count.emplace_back(1);
+    taskDataMPI->inputs_count.emplace_back(1);
+    taskDataMPI->outputs_count.emplace_back(1);
 
-    for (auto& row : matrix) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
-    }
-
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
-    taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
-    taskDataPar->outputs_count.push_back(mpiResult.size());
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(&resSeq));
+    taskDataSeq->inputs = taskDataMPI->inputs;
+    taskDataSeq->inputs_count = taskDataMPI->inputs_count;
+    taskDataSeq->outputs_count = taskDataMPI->outputs_count;
   }
 
   ASSERT_TRUE(taskMPI.validation());
@@ -45,47 +42,43 @@ TEST(malyshev_v_conjugate_gradient_method, test_small_system) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> expectedResult = {0.090909, 0.636364};
-    for (uint32_t i = 0; i < mpiResult.size(); i++) {
-      ASSERT_NEAR(expectedResult[i], mpiResult[i], 1e-5);
+    ASSERT_TRUE(taskSeq.validation());
+    ASSERT_TRUE(taskSeq.pre_processing());
+    ASSERT_TRUE(taskSeq.run());
+    ASSERT_TRUE(taskSeq.post_processing());
+
+    for (size_t i = 0; i < ref.size(); ++i) {
+      ASSERT_NEAR(resMPI[i], resSeq[i], eps);
+      ASSERT_NEAR(resMPI[i], ref[i], eps);
     }
   }
 }
 
-TEST(malyshev_v_conjugate_gradient_method, test_large_system) {
-  boost::mpi::communicator world;
-  std::vector<std::vector<double>> matrix;
-  std::vector<double> vector;
-  std::vector<double> mpiResult;
+}  // namespace malyshev_v_conjugate_gradient_method_mpi
 
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_v_conjugate_gradient_method::TestTaskParallel taskMPI(taskDataPar);
+TEST(malyshev_v_conjugate_gradient_method_mpi, SimpleTest) {
+  std::vector<std::vector<double>> A = {{4, 1}, {1, 3}};
+  std::vector<double> b = {1, 2};
+  std::vector<double> ref = {0.0909, 0.6364};
+  double eps = 1e-4;
 
-  if (world.rank() == 0) {
-    matrix = malyshev_v_conjugate_gradient_method::getLargeMatrix();
-    vector = malyshev_v_conjugate_gradient_method::getLargeVector();
-    mpiResult.resize(vector.size());
+  test_task(A, b, ref, eps);
+}
 
-    for (auto& row : matrix) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
-    }
+TEST(malyshev_v_conjugate_gradient_method_mpi, MediumTest) {
+  std::vector<std::vector<double>> A = {{5, 2, 0}, {2, 5, 2}, {0, 2, 5}};
+  std::vector<double> b = {1, 2, 3};
+  std::vector<double> ref = {0.0769, 0.2308, 0.5385};
+  double eps = 1e-4;
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
-    taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
-    taskDataPar->outputs_count.push_back(mpiResult.size());
-  }
+  test_task(A, b, ref, eps);
+}
 
-  ASSERT_TRUE(taskMPI.validation());
-  ASSERT_TRUE(taskMPI.pre_processing());
-  ASSERT_TRUE(taskMPI.run());
-  ASSERT_TRUE(taskMPI.post_processing());
+TEST(malyshev_v_conjugate_gradient_method_mpi, LargeTest) {
+  std::vector<std::vector<double>> A = {{8, 3, 0, 0}, {3, 9, 4, 0}, {0, 4, 10, 5}, {0, 0, 5, 12}};
+  std::vector<double> b = {1, 2, 3, 4};
+  std::vector<double> ref = {0.0806, 0.1613, 0.1935, 0.2903};
+  double eps = 1e-4;
 
-  if (world.rank() == 0) {
-    std::vector<double> expectedResult = {0.090909, 0.181818, 0.272727, 0.363636};
-    for (uint32_t i = 0; i < mpiResult.size(); i++) {
-      ASSERT_NEAR(expectedResult[i], mpiResult[i], 1e-5);
-    }
-  }
+  test_task(A, b, ref, eps);
 }
