@@ -60,13 +60,15 @@ void customTest(const std::vector<std::pair<double, double>>& limits,
 double linearSingleVar(std::vector<double>& args) { return args.at(0); }
 double linearTwoVar(std::vector<double>& args) { return args.at(0) + args.at(1); }
 double linearThreeVar(std::vector<double>& args) { return args.at(0) + args.at(1) + args.at(2); }
-double trigonometricSingleVar(std::vector<double>& args) { return std::sin(args.at(0)); }
-double trigonometricTwoVar(std::vector<double>& args) { return args.at(0) + std::cos(args.at(1)); }
-double trigonometricThreeVar(std::vector<double>& args) {
-  return args.at(1) + std::cos(args.at(0)) + std::cos(args.at(2));
+double trigonometricSingleVar(std::vector<double>& args) {
+  return std::sin(args.at(0)) / (std::pow(std::cos(args.at(0)), 2) + 1);
 }
-double logarithmicSingleVar(std::vector<double>& args) { return std::log(args.at(0)); }
-double logarithmicTwoVar(std::vector<double>& args) { return std::log(args.at(0)) + args.at(1); }
+double trigonometricTwoVar(std::vector<double>& args) { return std::sin(args.at(0)) + std::cos(args.at(1)); }
+double trigonometricThreeVar(std::vector<double>& args) {
+  return args.at(0) + std::cos(args.at(1)) - std::sin(args.at(2));
+}
+double logarithmicSingleVar(std::vector<double>& args) { return std::log(args.at(0) + 1); }
+double logarithmicTwoVar(std::vector<double>& args) { return std::log(args.at(0) + 1) + std::log(args.at(1) + 1); }
 double exponentialSingleVar(std::vector<double>& args) { return std::exp(args.at(0)); }
 double exponentialTwoVar(std::vector<double>& args) { return std::exp(args.at(0)) + std::exp(args.at(1)); }
 
@@ -186,94 +188,94 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidNumOutputs)
 
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearDoubleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
+      {{-1, 1}, {-1, 1}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearTripleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 2}, {0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
+      {{-1, 1}, {-1, 1}, {-1, 1}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearQuadIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 2}, {0, 2}, {0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
+      {{-1, 1}, {-1, 1}, {-1, 1}, {-1, 1}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearEighthIntegralOneVariable) {
   int32_t dimension = 8;
-  std::vector<std::pair<double, double>> limits(dimension, {0, 2});
+  std::vector<std::pair<double, double>> limits(dimension, {-1, 1});
   korneeva_e_rectangular_integration_method_mpi::customTest(
       limits, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearDoubleIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
+      {{-1, 1}, {-1, 1}}, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearTripleIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 2}, {0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
+      {{-1, 1}, {-1, 1}, {-1, 1}}, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearQuadIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 2}, {0, 2}, {0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
+      {{-1, 1}, {-1, 1}, {-1, 1}, {-1, 1}}, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearEighthIntegralTwoVariables) {
   int32_t dimension = 8;
-  std::vector<std::pair<double, double>> limits(dimension, {0, 2});
+  std::vector<std::pair<double, double>> limits(dimension, {-1, 1});
   korneeva_e_rectangular_integration_method_mpi::customTest(
       limits, korneeva_e_rectangular_integration_method_mpi::linearTwoVar, 1e-6);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearTripleIntegralThreeVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{1, 3}, {1, 3}, {1, 3}}, korneeva_e_rectangular_integration_method_mpi::linearThreeVar, 1e-6);
+      {{-2, 2}, {-2, 2}, {-2, 2}}, korneeva_e_rectangular_integration_method_mpi::linearThreeVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearQuadIntegralThreeVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{1, 3}, {1, 3}, {1, 3}, {1, 3}}, korneeva_e_rectangular_integration_method_mpi::linearThreeVar, 1e-6);
+      {{-2, 2}, {-2, 2}, {-2, 2}, {-2, 2}}, korneeva_e_rectangular_integration_method_mpi::linearThreeVar, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearEighthIntegralThreeVariables) {
   int32_t dimension = 8;
-  std::vector<std::pair<double, double>> limits(dimension, {1, 3});
+  std::vector<std::pair<double, double>> limits(dimension, {-2, 2});
   korneeva_e_rectangular_integration_method_mpi::customTest(
       limits, korneeva_e_rectangular_integration_method_mpi::linearThreeVar, 1e-6);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricDoubleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{-5, 2}, {3, 6}}, korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, 2e-1);
+      {{-2, 0}, {4, 5}}, korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, 2e-1);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricTripleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{-5, 2}, {3, 6}, {2, 2.5}}, korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, 4e-1);
+      {{0, 2}, {3, 4}, {10, 10.5}}, korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, 3e-1);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricDoubleIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{-0.5, 0.8}, {-2, 2}}, korneeva_e_rectangular_integration_method_mpi::trigonometricTwoVar, 6e-1);
+      {{-0.5, 0.8}, {-2, 2}}, korneeva_e_rectangular_integration_method_mpi::trigonometricTwoVar, 4e-1);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricTripleIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, korneeva_e_rectangular_integration_method_mpi::trigonometricTwoVar, 6e-1);
+      {{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, korneeva_e_rectangular_integration_method_mpi::trigonometricTwoVar, 5e-1);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricTripleIntegralThreeVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, korneeva_e_rectangular_integration_method_mpi::trigonometricThreeVar, 6e-1);
+      {{-0.5, 0.8}, {-2, 2}, {2.5, 2.6}}, korneeva_e_rectangular_integration_method_mpi::trigonometricThreeVar, 5e-1);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, LogarithmicDoubleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{1, 3}, {2, 5}}, korneeva_e_rectangular_integration_method_mpi::logarithmicSingleVar, 2e-1);
+      {{1, 2}, {2, 4}}, korneeva_e_rectangular_integration_method_mpi::logarithmicSingleVar, 2e-1);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LogarithmicDoubleIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{1, 3}, {2, 5}}, korneeva_e_rectangular_integration_method_mpi::logarithmicTwoVar, 4e-1);
+      {{1, 2}, {2, 3}}, korneeva_e_rectangular_integration_method_mpi::logarithmicTwoVar, 4e-1);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, ExponentialDoubleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 1}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::exponentialSingleVar, 2e-1);
+      {{0, 1}, {0, 1}}, korneeva_e_rectangular_integration_method_mpi::exponentialSingleVar, 2e-1);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, ExponentialDoubleIntegralTwoVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{0, 1}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::exponentialTwoVar, 4e-1);
+      {{0, 1}, {0, 1}}, korneeva_e_rectangular_integration_method_mpi::exponentialTwoVar, 4e-1);
 }
