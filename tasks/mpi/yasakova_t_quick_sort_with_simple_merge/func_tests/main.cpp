@@ -42,7 +42,8 @@ void execute_parallel_sort_test(int vector_length) {
     task_data->outputs_count.emplace_back(output_vector.size());
   }
 
-  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
+  auto parallel_sort_task =
+      std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
   bool is_valid = parallel_sort_task->validation();
   boost::mpi::broadcast(mpi_comm, is_valid, 0);
@@ -78,7 +79,8 @@ void execute_parallel_sort_test(const std::vector<int>& input_vector) {
     task_data->outputs_count.emplace_back(sorted_data.size());
   }
 
-  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
+  auto parallel_sort_task =
+      std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
   bool is_valid = parallel_sort_task->validation();
   boost::mpi::broadcast(mpi_comm, is_valid, 0);

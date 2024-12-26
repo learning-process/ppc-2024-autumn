@@ -7,30 +7,31 @@
 
 namespace yasakova_t_quick_sort_with_simple_merge_seq {
 
-  void executeQuickSortTest(const std::vector<int>& inputData) {
-    std::vector<int> unsortedData = inputData;
-    std::vector<int> sortedData;
+void executeQuickSortTest(const std::vector<int>& inputData) {
+  std::vector<int> unsortedData = inputData;
+  std::vector<int> sortedData;
 
-    std::shared_ptr<ppc::core::TaskData> taskDataPtr = std::make_shared<ppc::core::TaskData>();
+  std::shared_ptr<ppc::core::TaskData> taskDataPtr = std::make_shared<ppc::core::TaskData>();
 
-    taskDataPtr->inputs.emplace_back(reinterpret_cast<uint8_t*>(unsortedData.data()));
-    taskDataPtr->inputs_count.emplace_back(unsortedData.size());
+  taskDataPtr->inputs.emplace_back(reinterpret_cast<uint8_t*>(unsortedData.data()));
+  taskDataPtr->inputs_count.emplace_back(unsortedData.size());
 
-    sortedData.resize(unsortedData.size());
-    taskDataPtr->outputs.emplace_back(reinterpret_cast<uint8_t*>(sortedData.data()));
-    taskDataPtr->outputs_count.emplace_back(sortedData.size());
+  sortedData.resize(unsortedData.size());
+  taskDataPtr->outputs.emplace_back(reinterpret_cast<uint8_t*>(sortedData.data()));
+  taskDataPtr->outputs_count.emplace_back(sortedData.size());
 
-    auto quickSortTask = std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
+  auto quickSortTask =
+      std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
 
-    if (quickSortTask->validation()) {
-      quickSortTask->pre_processing();
-      quickSortTask->run();
-      quickSortTask->post_processing();
+  if (quickSortTask->validation()) {
+    quickSortTask->pre_processing();
+    quickSortTask->run();
+    quickSortTask->post_processing();
 
-      std::sort(unsortedData.begin(), unsortedData.end());
-      EXPECT_EQ(unsortedData, sortedData);
-    }
+    std::sort(unsortedData.begin(), unsortedData.end());
+    EXPECT_EQ(unsortedData, sortedData);
   }
+}
 }  // namespace yasakova_t_quick_sort_with_simple_merge_seq
 
 TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesSortedInput) {
@@ -79,7 +80,8 @@ TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesRandomNumbers) {
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesMaxAndMinIntValues) {
-  yasakova_t_quick_sort_with_simple_merge_seq::executeQuickSortTest({std::numeric_limits<int>::max(), std::numeric_limits<int>::min(), 0});
+  yasakova_t_quick_sort_with_simple_merge_seq::executeQuickSortTest(
+      {std::numeric_limits<int>::max(), std::numeric_limits<int>::min(), 0});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesPrimeNumbers) {
@@ -113,4 +115,3 @@ TEST(yasakova_t_quick_sort_with_simple_merge_seq, HandlesMixedDigitsAndZero) {
 TEST(yasakova_t_quick_sort_with_simple_merge_seq, Test_negative_numbers) {
   yasakova_t_quick_sort_with_simple_merge_seq::executeQuickSortTest({0, -1, -2, -3, -4, -5, -6, -7, -8, -9});
 }
-
