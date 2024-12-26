@@ -9,7 +9,7 @@ LinearHistogramStretch::LinearHistogramStretch(int image_size, int* image_data)
   MPI_Comm_rank(MPI_COMM_WORLD, &rank_);
   MPI_Comm_size(MPI_COMM_WORLD, &size_);
 
-  if (image_size_ <= 0 || image_data_ == nullptr) {
+  if (image_size_ <= 0) {
     return;
   }
 
@@ -23,37 +23,37 @@ LinearHistogramStretch::LinearHistogramStretch(int image_size, int* image_data)
 
 LinearHistogramStretch::~LinearHistogramStretch() { delete[] local_data_; }
 
-bool LinearHistogramStretch::validation() const { return image_size_ > 0 && image_data_ != nullptr; }
+bool LinearHistogramStretch::validation() const {
+  return image_size_ > 0;
+}
 
 bool LinearHistogramStretch::pre_processing() {
   if (!validation()) return false;
-
-  if (image_data_ == nullptr) {
-    return false;
-  }
 
   distribute_data();
   return true;
 }
 
 bool LinearHistogramStretch::run() {
-  // Compute local min and max
   int local_min = *std::min_element(local_data_, local_data_ + local_size_);
   int local_max = *std::max_element(local_data_, local_data_ + local_size_);
 
-  // Compute global min and max
   int global_min;
   int global_max;
   MPI_Allreduce(&local_min, &global_min, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD);
   MPI_Allreduce(&local_max, &global_max, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
 
-  // Stretch local pixels
   if (global_max > global_min) {
     for (int i = 0; i < local_size_; ++i) {
-      local_data_[i] =
-          static_cast<int>((static_cast<double>(local_data_[i] - global_min) / (global_max - global_min)) * 255.0);
+      double stretched_value = (static_cast<double>(local_data_[i] - global_min) / (global_max - global_min)) * 255.0;
+      local_data_[i] = static_cast<int>(std::clamp(stretched_value, 0.0, 255.0));
+    }
+  } else {
+    for (int i = 0; i < local_size_; ++i) {
+      local_data_[i] = 128;
     }
   }
+
   return true;
 }
 
@@ -77,7 +77,8 @@ void LinearHistogramStretch::distribute_data() {
     }
   }
 
-  MPI_Scatterv(image_data_, send_counts, displacements, MPI_INT, local_data_, local_size_, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Scatterv((rank_ == 0) ? image_data_ : nullptr,
+               send_counts, displacements, MPI_INT, local_data_, local_size_, MPI_INT, 0, MPI_COMM_WORLD);
 
   delete[] send_counts;
   delete[] displacements;
@@ -98,7 +99,9 @@ void LinearHistogramStretch::gather_data() {
     }
   }
 
-  MPI_Gatherv(local_data_, local_size_, MPI_INT, image_data_, send_counts, displacements, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Gatherv(local_data_, local_size_, MPI_INT,
+              (rank_ == 0) ? image_data_ : nullptr,
+              send_counts, displacements, MPI_INT, 0, MPI_COMM_WORLD);
 
   delete[] send_counts;
   delete[] displacements;
