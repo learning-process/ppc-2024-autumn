@@ -132,3 +132,30 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_negativ
     ASSERT_LE(out[i - 1], out[i]);
   }
 }
+
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_mixed_numbers) {
+  std::vector<double> inputData = {10.1, -6.3, 4.4, 0.6, -2.2, 3.5};
+  std::vector<double> out(inputData.size(), 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  int input_size = inputData.size();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&input_size));
+  taskDataSeq->inputs_count.emplace_back(1);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(inputData.data()));
+  taskDataSeq->inputs_count.emplace_back(inputData.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+
+  ASSERT_EQ(testTaskSequential.validation(), true);
+
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+
+  for (size_t i = 1; i < out.size(); ++i) {
+    ASSERT_LE(out[i - 1], out[i]) << "Failed at index " << i << ": expected " << out[i - 1] << " <= " << out[i];
+  }
+}

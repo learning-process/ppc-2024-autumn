@@ -1,10 +1,55 @@
 #include "mpi/komshina_d_sort_radius_for_real_numbers_with_simple_merge/include/ops_mpi.hpp"
 
-#include <boost/mpi.hpp>
+#include <mpi.h>
+
 #include <cmath>
 #include <queue>
 
-namespace mpi = boost::mpi;
+namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi {
+
+void convert_doubles_to_uint64(const std::vector<double>& data_, std::vector<uint64_t>& keys) {
+  for (size_t i = 0; i < data_.size(); ++i) {
+    uint64_t uint64_value;
+    std::memcpy(&uint64_value, &data_[i], sizeof(double));
+
+    uint64_value = ((uint64_value >> 63) & 1) != 0 ? ~uint64_value : (uint64_value | (1ULL << 63));
+    keys[i] = uint64_value;
+  }
+}
+
+void convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_) {
+  for (size_t i = 0; i < keys.size(); ++i) {
+    uint64_t uint64_value = keys[i];
+
+    uint64_value = ((uint64_value >> 63) & 1) != 0 ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
+    std::memcpy(&data_[i], &uint64_value, sizeof(double));
+  }
+}
+
+void radix_sort_uint64(std::vector<uint64_t>& keys) {
+  constexpr int BITS = 64;
+  constexpr int RADIX = 256;
+  std::vector<uint64_t> temp(keys.size());
+
+  for (int shift = 0; shift < BITS; shift += 8) {
+    size_t count[RADIX + 1] = {0};
+
+    for (uint64_t key : keys) {
+      ++count[((key >> shift) & 255) + 1];
+    }
+
+    for (int i = 0; i < RADIX; ++i) {
+      count[i + 1] += count[i];
+    }
+
+    for (uint64_t key : keys) {
+      temp[count[(key >> shift) & 255]++] = key;
+    }
+
+    keys.swap(temp);
+  }
+}
+}  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequential::pre_processing() {
   internal_order_test();
@@ -45,52 +90,6 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequ
   return true;
 }
 
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequential::convert_doubles_to_uint64(
-    const std::vector<double>& data_, std::vector<uint64_t>& keys) {
-  for (size_t i = 0; i < data_.size(); ++i) {
-    uint64_t uint64_value;
-    std::memcpy(&uint64_value, &data_[i], sizeof(double));
-
-    uint64_value = ((uint64_value >> 63) & 1) != 0 ? ~uint64_value : (uint64_value | (1ULL << 63));
-    keys[i] = uint64_value;
-  }
-}
-
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequential::convert_uint64_to_doubles(
-    const std::vector<uint64_t>& keys, std::vector<double>& data_) {
-  for (size_t i = 0; i < keys.size(); ++i) {
-    uint64_t uint64_value = keys[i];
-
-    uint64_value = ((uint64_value >> 63) & 1) != 0 ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
-    std::memcpy(&data_[i], &uint64_value, sizeof(double));
-  }
-}
-
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestTaskSequential::radix_sort_uint64(
-    std::vector<uint64_t>& keys) {
-  constexpr int BITS = 64;
-  constexpr int RADIX = 256;
-  std::vector<uint64_t> temp(keys.size());
-
-  for (int shift = 0; shift < BITS; shift += 8) {
-    size_t count[RADIX + 1] = {0};
-
-    for (uint64_t key : keys) {
-      ++count[((key >> shift) & 255) + 1];
-    }
-
-    for (int i = 0; i < RADIX; ++i) {
-      count[i + 1] += count[i];
-    }
-
-    for (uint64_t key : keys) {
-      temp[count[(key >> shift) & 255]++] = key;
-    }
-
-    keys.swap(temp);
-  }
-}
-
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
@@ -106,19 +105,21 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  bool is_valid = true;
   if (world.rank() == 0) {
     int input_size = *(reinterpret_cast<int*>(taskData->inputs[0]));
 
-    if (taskData->inputs_count[0] != 1 || taskData->inputs_count[1] != static_cast<size_t>(input_size) ||
-        taskData->outputs_count[0] != static_cast<size_t>(input_size)) {
-      is_valid = false;
-    }
+    bool is_valid = (taskData->inputs_count[0] == 1) &&
+                    (taskData->inputs_count[1] == static_cast<size_t>(input_size)) &&
+                    (taskData->outputs_count[0] == static_cast<size_t>(input_size));
+
+    MPI_Bcast(&is_valid, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
+  } else {
+    bool is_valid;
+    MPI_Bcast(&is_valid, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
   }
 
-  mpi::broadcast(world, is_valid, 0);
-  mpi::broadcast(world, data, 0);
-  return is_valid;
+  MPI_Bcast(data.data(), data.size(), MPI_DOUBLE, 0, MPI_COMM_WORLD);
+  return true;
 }
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::run() {
@@ -144,11 +145,12 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
     }
   }
 
-  mpi::broadcast(world, data_sizes, 0);
-  mpi::broadcast(world, offsets, 0);
+  MPI_Bcast(data_sizes.data(), size, MPI_INT, 0, MPI_COMM_WORLD);
+  MPI_Bcast(offsets.data(), size, MPI_INT, 0, MPI_COMM_WORLD);
 
   std::vector<double> local_data(data_sizes[rank]);
-  mpi::scatterv(world, data.data(), data_sizes, offsets, local_data.data(), data_sizes[rank], 0);
+  MPI_Scatterv(data.data(), data_sizes.data(), offsets.data(), MPI_DOUBLE, local_data.data(), data_sizes[rank],
+               MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
   std::vector<uint64_t> local_keys(local_data.size());
   convert_doubles_to_uint64(local_data, local_keys);
@@ -167,10 +169,10 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
 
     if (can_merge && has_partner) {
       int partner_data_size;
-      world.recv(partner_rank, 0, partner_data_size);
+      MPI_Recv(&partner_data_size, 1, MPI_INT, partner_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
       std::vector<double> partner_data(partner_data_size);
-      world.recv(partner_rank, 1, partner_data.data(), partner_data_size);
+      MPI_Recv(partner_data.data(), partner_data_size, MPI_DOUBLE, partner_rank, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
       std::vector<double> merged_data;
       merged_data.reserve(local_data.size() + partner_data.size());
@@ -181,8 +183,8 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
       int receiver = rank - group_size;
       int current_data_size = local_data.size();
 
-      world.send(receiver, 0, current_data_size);
-      world.send(receiver, 1, local_data.data(), current_data_size);
+      MPI_Send(&current_data_size, 1, MPI_INT, receiver, 0, MPI_COMM_WORLD);
+      MPI_Send(local_data.data(), current_data_size, MPI_DOUBLE, receiver, 1, MPI_COMM_WORLD);
 
       local_data.clear();
     }
@@ -206,50 +208,4 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   }
 
   return true;
-}
-
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::convert_doubles_to_uint64(
-    const std::vector<double>& data_, std::vector<uint64_t>& keys) {
-  for (size_t i = 0; i < data_.size(); ++i) {
-    uint64_t uint64_value;
-    std::memcpy(&uint64_value, &data_[i], sizeof(double));
-
-    uint64_value = ((uint64_value >> 63) & 1) != 0 ? ~uint64_value : (uint64_value | (1ULL << 63));
-    keys[i] = uint64_value;
-  }
-}
-
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::convert_uint64_to_doubles(
-    const std::vector<uint64_t>& keys, std::vector<double>& data_) {
-  for (size_t i = 0; i < keys.size(); ++i) {
-    uint64_t uint64_value = keys[i];
-
-    uint64_value = ((uint64_value >> 63) & 1) != 0 ? (uint64_value & ~(1ULL << 63)) : ~uint64_value;
-    std::memcpy(&data_[i], &uint64_value, sizeof(double));
-  }
-}
-
-void komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::radix_sort_uint64(
-    std::vector<uint64_t>& keys) {
-  constexpr int BITS = 64;
-  constexpr int RADIX = 256;
-  std::vector<uint64_t> temp(keys.size());
-
-  for (int shift = 0; shift < BITS; shift += 8) {
-    size_t count[RADIX + 1] = {0};
-
-    for (uint64_t key : keys) {
-      ++count[((key >> shift) & 255) + 1];
-    }
-
-    for (int i = 0; i < RADIX; ++i) {
-      count[i + 1] += count[i];
-    }
-
-    for (uint64_t key : keys) {
-      temp[count[(key >> shift) & 255]++] = key;
-    }
-
-    keys.swap(temp);
-  }
 }

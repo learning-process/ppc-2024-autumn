@@ -14,6 +14,10 @@
 
 namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi {
 
+void convert_doubles_to_uint64(const std::vector<double>& data_, std::vector<uint64_t>& keys);
+void convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_);
+void radix_sort_uint64(std::vector<uint64_t>& keys);
+
 class TestTaskSequential : public ppc::core::Task {
  public:
   explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
@@ -24,10 +28,6 @@ class TestTaskSequential : public ppc::core::Task {
 
  private:
   std::vector<double> data;
-
-  static void convert_doubles_to_uint64(const std::vector<double>& data_, std::vector<uint64_t>& keys);
-  static void convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_);
-  static void radix_sort_uint64(std::vector<uint64_t>& keys);
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -41,9 +41,5 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   std::vector<double> data;
   boost::mpi::communicator world;
-
-  static void convert_doubles_to_uint64(const std::vector<double>& data_, std::vector<uint64_t>& keys);
-  static void convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_);
-  static void radix_sort_uint64(std::vector<uint64_t>& keys);
 };
 }  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi
