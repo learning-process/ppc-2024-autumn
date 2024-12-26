@@ -59,7 +59,12 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
 
   for (int y = 1; y < local_height_ + 1; ++y) {
     for (int x = 1; x < width_ - 1; ++x) {
+<<<<<<< Updated upstream
       int sumX = 0, sumY = 0;
+=======
+      int sumX = 0;
+      int sumY = 0;
+>>>>>>> Stashed changes
 
       for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
