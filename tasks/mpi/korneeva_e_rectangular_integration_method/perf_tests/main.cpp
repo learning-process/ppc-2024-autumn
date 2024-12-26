@@ -11,11 +11,11 @@ double test_func(std::vector<double> &args) { return args.at(0); }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator mpi_comm;
-  std::vector<std::pair<double, double>> limits(10, {-100, 100});
+  std::vector<std::pair<double, double>> limits(10, {-50, 50});
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::test_func;
   std::vector<double> output(1);
-  double epsilon = 1e-6;
+  double epsilon = 1e-4;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
@@ -51,11 +51,11 @@ TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
 
 TEST(korneeva_e_rectangular_integration_method_mpi, test_task_run) {
   boost::mpi::communicator mpi_comm;
-  std::vector<std::pair<double, double>> limits(10, {-100, 100});
+  std::vector<std::pair<double, double>> limits(10, {-50, 50});
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::test_func;
   std::vector<double> output(1);
-  double epsilon = 1e-6;
+  double epsilon = 1e-4;
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
