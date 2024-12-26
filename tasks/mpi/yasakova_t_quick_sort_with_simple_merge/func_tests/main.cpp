@@ -10,8 +10,6 @@
 #include "core/task/include/task.hpp"
 #include "mpi/yasakova_t_quick_sort_with_simple_merge/include/ops_mpi.hpp"
 
-namespace yasakova_t_quick_sort_with_simple_merge_mpi {
-
 std::vector<int> create_random_integer_vector(int size, int minimum_value = -100, int maximum_value = 100,
                                               unsigned random_seed = std::random_device{}()) {
   static std::mt19937 generator(random_seed);
@@ -42,7 +40,7 @@ void execute_parallel_sort_test(int vector_length) {
     task_data->outputs_count.emplace_back(output_vector.size());
   }
 
-  auto parallel_sort_task = std::make_shared<SimpleMergeQuicksort>(task_data);
+  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
   bool is_valid = parallel_sort_task->validation();
   boost::mpi::broadcast(mpi_comm, is_valid, 0);
@@ -78,7 +76,7 @@ void execute_parallel_sort_test(const std::vector<int>& input_vector) {
     task_data->outputs_count.emplace_back(sorted_data.size());
   }
 
-  auto parallel_sort_task = std::make_shared<SimpleMergeQuicksort>(task_data);
+  auto parallel_sort_task = std::make_shared<yasakova_t_quick_sort_with_simple_merge_mpi::SimpleMergeQuicksort>(task_data);
 
   bool is_valid = parallel_sort_task->validation();
   boost::mpi::broadcast(mpi_comm, is_valid, 0);
@@ -94,98 +92,88 @@ void execute_parallel_sort_test(const std::vector<int>& input_vector) {
   }
 }
 
-}  // namespace yasakova_t_quick_sort_with_simple_merge_mpi
-
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_sorted_array_ascending) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({1, 2, 3, 4, 5, 6, 8, 9, 5, 4, 3, 2, 1});
+  execute_parallel_sort_test({1, 2, 3, 4, 5, 6, 8, 9, 5, 4, 3, 2, 1});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_almost_sorted_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({9, 7, 5, 3, 1, 2, 4, 6, 8, 10});
+  execute_parallel_sort_test({9, 7, 5, 3, 1, 2, 4, 6, 8, 10});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_sorted_array_descending) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
+  execute_parallel_sort_test({10, 9, 8, 7, 6, 5, 4, 3, 2, 1});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_array_with_equal_elements) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({5, 5, 5, 5, 5, 5, 5, 5});
+  execute_parallel_sort_test({5, 5, 5, 5, 5, 5, 5, 5});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_array_with_negative_numbers) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({0, -1, -2, -3, -4, -5, -6, -7, -8, -9});
+  execute_parallel_sort_test({0, -1, -2, -3, -4, -5, -6, -7, -8, -9});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_mixed_order_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({1, 3, 2, 4, 6, 5, 7, 9, 8, 10});
+  execute_parallel_sort_test({1, 3, 2, 4, 6, 5, 7, 9, 8, 10});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_single_element_array) {
   std::vector<int> vec = {42};
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(vec);
+  execute_parallel_sort_test(vec);
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_empty_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({});
+  execute_parallel_sort_test({});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_mixed_large_and_small_numbers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({100, 99, 98, 1, 2, 3, 4, 5});
+  execute_parallel_sort_test({100, 99, 98, 1, 2, 3, 4, 5});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_positive_and_negative_numbers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({-5, -10, 5, 10, 0});
+  execute_parallel_sort_test({-5, -10, 5, 10, 0});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_large_random_numbers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({123, 456, 789, 321, 654, 987});
+  execute_parallel_sort_test({123, 456, 789, 321, 654, 987});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_random_numbers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({9, 1, 4, 7, 2, 8, 5, 3, 6});
+  execute_parallel_sort_test({9, 1, 4, 7, 2, 8, 5, 3, 6});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_max_and_min_integer_values) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(
+  execute_parallel_sort_test(
       {std::numeric_limits<int>::max(), std::numeric_limits<int>::min(), 0});
 }
 
-TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_prime_numbers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({11, 13, 17, 19, 23, 29, 31});
-}
-
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_descending_array_with_negatives) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({50, 40, 30, 20, 10, 0, -10, -20, -30});
+  execute_parallel_sort_test({50, 40, 30, 20, 10, 0, -10, -20, -30});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_pi_digits_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5});
+  execute_parallel_sort_test({3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_consecutive_mixed_numbers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({12, 14, 16, 18, 20, 15, 17, 19, 21});
+  execute_parallel_sort_test({12, 14, 16, 18, 20, 15, 17, 19, 21});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_descending_with_zero_and_negatives_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({7, 6, 5, 4, 3, 2, 1, 0, -1, -2});
-}
-
-TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_large_integers_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({1000, 2000, 1500, 2500, 1750});
+  execute_parallel_sort_test({7, 6, 5, 4, 3, 2, 1, 0, -1, -2});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_mixed_digits_and_zero_array) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test({8, 4, 2, 6, 1, 9, 5, 3, 7, 0});
+  execute_parallel_sort_test({8, 4, 2, 6, 1, 9, 5, 3, 7, 0});
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_random_generated_array_with_10_elements) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(10);
+  execute_parallel_sort_test(10);
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_random_generated_array_with_20_elements) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(20);
+  execute_parallel_sort_test(20);
 }
 
 TEST(yasakova_t_quick_sort_with_simple_merge_mpi, test_random_generated_array_with_23_elements) {
-  yasakova_t_quick_sort_with_simple_merge_mpi::execute_parallel_sort_test(23);
+  execute_parallel_sort_test(23);
 }

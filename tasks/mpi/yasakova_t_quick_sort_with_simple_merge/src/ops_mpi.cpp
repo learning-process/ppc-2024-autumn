@@ -10,7 +10,8 @@ namespace yasakova_t_quick_sort_with_simple_merge_mpi {
 struct PriorityQueueNode {
   int key;
   int origin_rank;
-  bool operator>(const PriorityQueueNode& other) const { return key > other.key; }
+
+  bool operator>(const PriorityQueueNode& other) const { return key > other.key;}
 };
 
 void mpi_worker_function(boost::mpi::communicator& world, const std::vector<int>& local_data) {
@@ -65,8 +66,8 @@ std::vector<int> master_function(boost::mpi::communicator& world, const std::vec
   return result;
 }
 
-void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>& local_data,
-                        const std::vector<int>& element_sizes, std::vector<int>& res) {
+void mpi_merge_function(boost::mpi::communicator& world, const std::vector<int>& local_data, const std::vector<int>& element_sizes,
+                std::vector<int>& res) {
   if (world.rank() == 0) {
     res = master_function(world, local_data, element_sizes);
   } else {
@@ -134,8 +135,7 @@ bool SimpleMergeQuicksort::pre_processing() {
 bool SimpleMergeQuicksort::run() {
   internal_order_test();
 
-  boost::mpi::scatterv(world, original_vector.data(), element_sizes, displacement, partitioned_vector.data(),
-                       element_sizes[world.rank()], 0);
+  boost::mpi::scatterv(world, original_vector.data(), element_sizes, displacement, partitioned_vector.data(), element_sizes[world.rank()], 0);
 
   quicksort_iterative(partitioned_vector);
 

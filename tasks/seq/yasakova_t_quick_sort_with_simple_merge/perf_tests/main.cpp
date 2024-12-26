@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <vector>
+#include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/yasakova_t_quick_sort_with_simple_merge/include/ops_seq.hpp"
@@ -22,8 +23,7 @@ TEST(yasakova_t_quick_sort_with_simple_merge_seq, ExecutesPipelineRunWithLargeDa
   taskDataPtr->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputData.data()));
   taskDataPtr->outputs_count.emplace_back(outputData.size());
 
-  auto quickSortTask =
-      std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
+  auto quickSortTask = std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
   ASSERT_TRUE(quickSortTask->validation());
   quickSortTask->pre_processing();
   quickSortTask->run();
@@ -62,8 +62,7 @@ TEST(QuickSortWithMergeSeqTests, ExecutesTaskRunWithLargeDataSet) {
   taskDataPtr->outputs.emplace_back(reinterpret_cast<uint8_t*>(outputData.data()));
   taskDataPtr->outputs_count.emplace_back(outputData.size());
 
-  auto quickSortTask =
-      std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
+  auto quickSortTask = std::make_shared<yasakova_t_quick_sort_with_simple_merge_seq::QuickSortWithMergeSeq>(taskDataPtr);
   ASSERT_TRUE(quickSortTask->validation());
   quickSortTask->pre_processing();
   quickSortTask->run();
