@@ -138,8 +138,3 @@ TEST(gromov_a_convex_hull_seq, Test_Some_Image) {
   testTaskSequential.post_processing();
   ASSERT_EQ(expected_hull, hull);
 }
-
-int main(int argc, char **argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
