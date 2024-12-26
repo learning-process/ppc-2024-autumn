@@ -21,8 +21,7 @@ struct Point {
 
 class TestMPITaskParallel : public ppc::core::Task {
  public:
-  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData)
-      : Task(std::move(taskData)) {}
+  explicit TestMPITaskParallel(std::shared_ptr<ppc::core::TaskData> taskData) : Task(std::move(taskData)) {}
   bool pre_processing() override;
   bool validation() override;
   bool run() override;

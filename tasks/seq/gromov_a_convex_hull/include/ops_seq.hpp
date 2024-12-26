@@ -11,7 +11,7 @@
 #include "core/task/include/task.hpp"
 
 namespace gromov_a_convex_hull_seq {
-struct Point{
+struct Point {
   int x, y;
 };
 class TestTaskSequential : public ppc::core::Task {

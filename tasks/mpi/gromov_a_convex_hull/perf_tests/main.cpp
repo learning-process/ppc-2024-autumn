@@ -25,7 +25,6 @@ TEST(gromov_a_convex_hull_mpi, test_pipeline_run) {
       }
     }
 
-
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
     taskDataPar->inputs_count.emplace_back(width * height);
     taskDataPar->inputs_count.emplace_back(width);
