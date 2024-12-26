@@ -108,7 +108,7 @@ double parallel_integrir_1d(const func_1d_t &func, double lower_bound, double up
   }
 
   double global_result = 0.0;
-  boost::mpi::all_reduce(world, local_result, global_result, std::plus<double>());
+  boost::mpi::all_reduce(world, local_result, global_result, std::plus<>());
 
   return global_result;
 }

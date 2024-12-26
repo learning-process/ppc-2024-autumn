@@ -14,7 +14,7 @@ TEST(naumov_b_simpson_method_mpi, exponential_function_) {
   double lower_bound = 0.0;
   double upper_bound = 1.0;
   int num_steps = 3000;
-  double expected = std::numbers::e - 1;  
+  double expected = std::numbers::e - 1;
 
   double result = 0.0;
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
