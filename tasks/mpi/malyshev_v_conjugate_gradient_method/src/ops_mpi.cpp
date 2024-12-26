@@ -89,10 +89,6 @@ bool malyshev_v_conjugate_gradient_method::TestTaskSequential::run() {
       new_residual_norm_sq += residual[i] * residual[i];
     }
 
-    if (std::sqrt(new_residual_norm_sq) < 1e-6) {
-      break;
-    }
-
     double beta = new_residual_norm_sq / residual_norm_sq;
     residual_norm_sq = new_residual_norm_sq;
 
@@ -236,10 +232,6 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
     double new_global_residual_norm_sq;
     reduce(world, new_local_residual_norm_sq, new_global_residual_norm_sq, std::plus<>(), 0);
     broadcast(world, new_global_residual_norm_sq, 0);
-
-    if (std::sqrt(new_global_residual_norm_sq) < 1e-6) {
-      break;
-    }
 
     double beta = new_global_residual_norm_sq / global_residual_norm_sq;
     global_residual_norm_sq = new_global_residual_norm_sq;
