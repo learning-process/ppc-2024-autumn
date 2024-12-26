@@ -204,10 +204,9 @@ TEST(korobeinikov_dijkstras_algorithm_mpi, Test_3_empty_graph) {
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
+    korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
-  korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
 
 TEST(korobeinikov_dijkstras_algorithm_mpi, Test_4_validation_false_sv_greater_size) {
@@ -243,8 +242,7 @@ TEST(korobeinikov_dijkstras_algorithm_mpi, Test_4_validation_false_sv_greater_si
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     taskDataPar->outputs_count.emplace_back(out.size());
+    korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-
-  korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel.validation(), false);
 }
