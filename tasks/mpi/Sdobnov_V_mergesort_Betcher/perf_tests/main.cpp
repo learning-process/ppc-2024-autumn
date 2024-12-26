@@ -10,7 +10,7 @@
 TEST(Sdobnov_V_mergesort_Betcher_par, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  int size = 4096;
+  long unsigned int size = 4096;
   std::vector<int> res(size, 0);
   std::vector<int> input = Sdobnov_V_mergesort_Betcher_par::generate_random_vector(size, 0, 1000);
 
@@ -49,7 +49,7 @@ TEST(Sdobnov_V_mergesort_Betcher_par, test_pipeline_run) {
 TEST(Sdobnov_V_mergesort_Betcher_par, test_task_run) {
   boost::mpi::communicator world;
 
-  int size = 4096;
+  long unsigned int size = 4096;
   std::vector<int> res(size, 0);
   std::vector<int> input = Sdobnov_V_mergesort_Betcher_par::generate_random_vector(size, 0, 1000);
 
@@ -82,6 +82,6 @@ TEST(Sdobnov_V_mergesort_Betcher_par, test_task_run) {
   ppc::core::Perf::print_perf_statistic(perfResults);
 
   if (world.rank() == 0) {
-    ASSERT_EQ((int)res.size(), size);
+    ASSERT_EQ(res.size(), size);
   }
 }
