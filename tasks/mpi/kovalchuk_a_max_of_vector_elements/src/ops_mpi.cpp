@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::pre_processing() {
+bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential ::pre_processing() {
   internal_order_test();
   // Инициализация векторов
   if (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) {
@@ -25,7 +25,7 @@ bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::pre_processing(
   return true;
 }
 
-bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::validation() {
+bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential ::validation() {
   internal_order_test();
   // Проверка количества элементов на выходе
   if (taskData->outputs_count[0] != 1) {
@@ -35,7 +35,7 @@ bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::validation() {
   return std::ranges::all_of(input_, [](const auto& vec) { return !vec.empty(); });
 }
 
-bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::run() {
+bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential ::run() {
   internal_order_test();
   std::vector<int> local_res(input_.size());
   for (unsigned int i = 0; i < input_.size(); i++) {
@@ -45,7 +45,7 @@ bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::run() {
   return true;
 }
 
-bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::post_processing() {
+bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential ::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
