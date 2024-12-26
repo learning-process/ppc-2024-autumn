@@ -7,9 +7,10 @@
 bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
   internal_order_test();
 
-  input_image_ = *reinterpret_cast<std::vector<unsigned char>*>(taskData->inputs[0]);
   width_ = taskData->inputs_count[0];
   height_ = taskData->inputs_count[1];
+  input_image_.assign(reinterpret_cast<unsigned char*>(taskData->inputs[0]),
+                      reinterpret_cast<unsigned char*>(taskData->inputs[0]) + width_ * height_);
   output_image_.resize(width_ * height_, 0);
   return true;
 }
@@ -48,6 +49,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
 bool fomin_v_sobel_edges::SobelEdgeDetection::post_processing() {
   internal_order_test();
 
-  *reinterpret_cast<std::vector<unsigned char>*>(taskData->outputs[0]) = output_image_;
+  std::copy(output_image_.begin(), output_image_.end(), reinterpret_cast<unsigned char*>(taskData->outputs[0]));
   return true;
 }
