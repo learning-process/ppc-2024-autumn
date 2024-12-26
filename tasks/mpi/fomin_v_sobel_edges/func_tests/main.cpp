@@ -72,7 +72,6 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection) {
 TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Large_Image) {
   boost::mpi::communicator world;
   std::vector<unsigned char> global_image;
-  std::vector<unsigned char> global_output_image;
 
   // Создание большого тестового изображения
   const int width = 8;
@@ -83,6 +82,7 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Large_Image) {
       global_image[i * width + j] = 200;
     }
   }
+  std::vector<unsigned char> global_output_image(global_image.size(), 0);
 
   // Создание TaskData для параллельной версии
 
