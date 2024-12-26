@@ -30,15 +30,15 @@ int Sdobnov_V_mergesort_Betcher_par::partition(std::vector<int>& vec, int low, i
 
 void Sdobnov_V_mergesort_Betcher_par::quickSortIterative(std::vector<int>& vec, int low, int high) {
   std::stack<std::pair<int, int>> s;
-  s.emplace(std::pair{low, high});
+  s.emplace(low, high);
 
   while (!s.empty()) {
     auto [l, h] = s.top();
     s.pop();
     if (l < h) {
       int pi = partition(vec, l, h);
-      s.emplace(std::pair{l, pi - 1});
-      s.emplace(std::pair{pi + 1, h});
+      s.emplace(l, pi - 1);
+      s.emplace(pi + 1, h);
     }
   }
 }
