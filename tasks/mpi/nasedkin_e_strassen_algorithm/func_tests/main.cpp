@@ -20,6 +20,61 @@ std::vector<double> generateRandomMatrix(int size) {
   return matrix;
 }
 
+TEST(nasedkin_e_strassen_algorithm_mpi, EmptyInputs) {
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+    taskData->inputs = {};
+
+    nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI task(taskData);
+    ASSERT_FALSE(task.validation());
+  }
+}
+
+TEST(nasedkin_e_strassen_algorithm_mpi, MismatchedMatrixSizes) {
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<double> matrixA = {1, 2, 3, 4};
+    std::vector<double> matrixB = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixA.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixB.data()));
+    taskData->inputs_count.emplace_back(matrixA.size());
+    taskData->inputs_count.emplace_back(matrixB.size());
+    taskData->outputs.emplace_back(nullptr);
+    taskData->outputs_count.emplace_back(0);
+
+    nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI task(taskData);
+    ASSERT_FALSE(task.validation());
+  }
+}
+
+TEST(nasedkin_e_strassen_algorithm_mpi, InvalidOutputSize) {
+  boost::mpi::communicator world;
+
+  if (world.rank() == 0) {
+    auto taskData = std::make_shared<ppc::core::TaskData>();
+
+    std::vector<double> matrixA = {1, 2, 3, 4};
+    std::vector<double> matrixB = {5, 6, 7, 8};
+    std::vector<double> result(6);
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixA.data()));
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixB.data()));
+    taskData->inputs_count.emplace_back(matrixA.size());
+    taskData->inputs_count.emplace_back(matrixB.size());
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(result.data()));
+    taskData->outputs_count.emplace_back(result.size());
+
+    nasedkin_e_strassen_algorithm::StrassenAlgorithmMPI task(taskData);
+    ASSERT_FALSE(task.validation());
+  }
+}
+
 TEST(nasedkin_e_strassen_algorithm_mpi, Test_2x2) {
   boost::mpi::communicator world;
 

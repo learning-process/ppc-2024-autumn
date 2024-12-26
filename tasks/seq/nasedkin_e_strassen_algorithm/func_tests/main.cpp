@@ -17,6 +17,64 @@ std::vector<double> generateRandomMatrix(int size) {
   return matrix;
 }
 
+TEST(nasedkin_e_strassen_algorithm_seq, Test_InvalidInputSize) {
+  int matrixSizeA = 32;
+  int matrixSizeB = 64;
+
+  std::vector<double> matrixA = generateRandomMatrix(matrixSizeA);
+  std::vector<double> matrixB = generateRandomMatrix(matrixSizeB);
+  std::vector<double> resultSeq(matrixSizeA * matrixSizeA, 0.0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixA.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixB.data()));
+  taskDataSeq->inputs_count.emplace_back(matrixA.size());
+  taskDataSeq->inputs_count.emplace_back(matrixB.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(resultSeq.size());
+
+  nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
+  ASSERT_FALSE(testSeqTask.validation());
+}
+
+TEST(nasedkin_e_strassen_algorithm_seq, Test_IdentityMatrix) {
+  int matrixSize = 16;
+  std::vector<double> matrixA(matrixSize * matrixSize, 0.0);
+  std::vector<double> matrixB(matrixSize * matrixSize, 0.0);
+  std::vector<double> resultSeq(matrixSize * matrixSize, 0.0);
+
+  for (int i = 0; i < matrixSize; ++i) {
+    matrixA[i * matrixSize + i] = 1.0;
+    matrixB[i * matrixSize + i] = 1.0;
+  }
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixA.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixB.data()));
+  taskDataSeq->inputs_count.emplace_back(matrixA.size());
+  taskDataSeq->inputs_count.emplace_back(matrixB.size());
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
+  taskDataSeq->outputs_count.emplace_back(resultSeq.size());
+
+  nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
+  ASSERT_TRUE(testSeqTask.validation());
+  ASSERT_TRUE(testSeqTask.pre_processing());
+  ASSERT_TRUE(testSeqTask.run());
+  ASSERT_TRUE(testSeqTask.post_processing());
+
+  for (int i = 0; i < matrixSize; ++i) {
+    for (int j = 0; j < matrixSize; ++j) {
+      if (i == j) {
+        ASSERT_NEAR(resultSeq[i * matrixSize + j], 1.0, 1e-9);
+      } else {
+        ASSERT_NEAR(resultSeq[i * matrixSize + j], 0.0, 1e-9);
+      }
+    }
+  }
+}
+
 TEST(nasedkin_e_strassen_algorithm_seq, Test_2x2) {
   int matrixSize = 2;
   std::vector<double> matrixA = generateRandomMatrix(matrixSize);
