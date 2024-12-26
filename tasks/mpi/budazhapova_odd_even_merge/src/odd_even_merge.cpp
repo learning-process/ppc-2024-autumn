@@ -145,10 +145,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       }
     }
   }
-  std ::cout << "rank " << world_rank;
-  for (int i = 0; i++; i < local_res.size()) {
-    cout << local_res[i] << " ";
-  }
+
   budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
 
   for (int phase = 0; phase < world.size(); ++phase) {
