@@ -29,7 +29,8 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
 
   for (int y = 1; y < height_ - 1; ++y) {
     for (int x = 1; x < width_ - 1; ++x) {
-      int sumX = 0, sumY = 0;
+      int sumX = 0;
+      int sumY = 0;
 
       for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
