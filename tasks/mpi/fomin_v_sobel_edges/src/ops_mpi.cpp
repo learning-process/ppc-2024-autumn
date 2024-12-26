@@ -37,8 +37,8 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   const int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
-  unsigned int blockSize = (height_ - 2) / world.size();
-  unsigned int reminder = (height_ - 2) % world.size();
+  int blockSize = (height_ - 2) / world.size();
+  int reminder = (height_ - 2) % world.size();
 
   std::vector<unsigned char> local_input;
 
