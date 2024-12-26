@@ -81,7 +81,7 @@ bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::run() {
         }
       } else {
         if (rank - 1 > 0) {
-          for (int i = 0; i < local_vec_.size(); i++) {
+          for (int i = 0; i < counts[rank]; i++) {
             world.send(rank - 1, 0, local_vec_[i]);
           }
           for (int i = local_vec_.size() - 1; i >= 0; i--) {
@@ -91,7 +91,7 @@ bool Sdobnov_V_mergesort_Betcher_par::MergesortBetcherPar::run() {
       }
     } else {
       if (step % 2 == 0) {
-        for (int i = 0; i < local_vec_.size(); i++) {
+        for (int i = 0; i < counts[rank]; i++) {
           world.send(rank - 1, 0, local_vec_[i]);
         }
         for (int i = local_vec_.size() - 1; i >= 0; i--) {
