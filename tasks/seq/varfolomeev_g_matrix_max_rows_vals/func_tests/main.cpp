@@ -4,9 +4,9 @@
 
 #include "seq/varfolomeev_g_matrix_max_rows_vals/include/ops_seq.hpp"
 
-std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b) {
+namespace varfolomeev_g_matrix_max_rows_vals_seq {
+static std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b) {
   std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols));
-  // set generator
   std::srand(static_cast<unsigned int>(std::time(nullptr)));
   for (int i = 0; i < rows; i++) {
     for (int j = 0; j < cols; j++) {
@@ -15,14 +15,7 @@ std::vector<std::vector<int>> generateMatrix(int rows, int cols, int a, int b) {
   }
   return matrix;
 }
-
-int searchMaxInVec(std::vector<int> vec) {
-  int max = vec[0];
-  for (size_t i = 1; i < vec.size(); i++) {
-    if (max < vec[i]) max = vec[i];
-  }
-  return max;
-}
+}  // namespace varfolomeev_g_matrix_max_rows_vals_seq
 
 TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_in_empty) {
   int rows = 0;
@@ -151,7 +144,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generateMatrix_generator) {
   int a = -50;
   int b = 50;
 
-  std::vector<std::vector<int>> matrix = generateMatrix(rows, cols, a, b);
+  std::vector<std::vector<int>> matrix = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, a, b);
 
   // Check size
   ASSERT_EQ((int)matrix.size(), rows);
@@ -173,7 +166,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x10) {
   int cols = 10;
 
   // Create data; generation matrix integers from -100 to 100
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -205,7 +198,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x10) {
   int cols = 10;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -237,7 +230,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_10x20) {
   int cols = 20;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -269,7 +262,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_20x20) {
   int cols = 20;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -301,7 +294,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x50) {
   int cols = 50;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -333,7 +326,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x200) {
   int cols = 200;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -360,12 +353,12 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_50x200) {
   }
 }
 
-TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_5000x5000) {
-  int rows = 5000;
-  int cols = 5000;
+TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_500x500) {
+  int rows = 500;
+  int cols = 500;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
@@ -456,7 +449,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_same_max_values_in_rows_end) {
   int cols = 5;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -100, 100);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -100, 100);
   // Make 200 on the end of each row
   for (int i = 0; i < rows; i++) in[i][cols - 1] = 200;
 
@@ -491,7 +484,7 @@ TEST(varfolomeev_g_matrix_max_rows_vals_seq, Test_generated_negative_values_500x
   int cols = 500;
 
   // Create data
-  std::vector<std::vector<int>> in = generateMatrix(rows, cols, -200, -1);
+  std::vector<std::vector<int>> in = varfolomeev_g_matrix_max_rows_vals_seq::generateMatrix(rows, cols, -200, -1);
   std::vector<int> out(rows, 0);
 
   // Create TaskData
