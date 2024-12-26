@@ -83,6 +83,23 @@ bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskSequential::post_processing
 
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::pre_processing() {
   internal_order_test();
+  if (world.rank() == 0) {
+    // Init value for input and output
+    values.resize(taskData->inputs_count[0]);
+    auto *tmp_ptr_1 = reinterpret_cast<int *>(taskData->inputs[0]);
+    std::copy(tmp_ptr_1, tmp_ptr_1 + taskData->inputs_count[0], values.begin());
+
+    col.resize(taskData->inputs_count[1]);
+    auto *tmp_ptr_2 = reinterpret_cast<int *>(taskData->inputs[1]);
+    std::copy(tmp_ptr_2, tmp_ptr_2 + taskData->inputs_count[1], col.begin());
+
+    RowIndex.resize(taskData->inputs_count[2]);
+    auto *tmp_ptr_3 = reinterpret_cast<int *>(taskData->inputs[2]);
+    std::copy(tmp_ptr_3, tmp_ptr_3 + taskData->inputs_count[2], RowIndex.begin());
+
+    size = *reinterpret_cast<int *>(taskData->inputs[3]);
+    sv = *reinterpret_cast<int *>(taskData->inputs[4]);
+  }
   return true;
 }
 
@@ -115,23 +132,7 @@ struct ComparePairs {
 
 bool korobeinikov_a_test_task_mpi_lab_03::TestMPITaskParallel::run() {
   internal_order_test();
-  if (world.rank() == 0) {
-    // Init value for input and output
-    values.resize(taskData->inputs_count[0]);
-    auto *tmp_ptr_1 = reinterpret_cast<int *>(taskData->inputs[0]);
-    std::copy(tmp_ptr_1, tmp_ptr_1 + taskData->inputs_count[0], values.begin());
-
-    col.resize(taskData->inputs_count[1]);
-    auto *tmp_ptr_2 = reinterpret_cast<int *>(taskData->inputs[1]);
-    std::copy(tmp_ptr_2, tmp_ptr_2 + taskData->inputs_count[1], col.begin());
-
-    RowIndex.resize(taskData->inputs_count[2]);
-    auto *tmp_ptr_3 = reinterpret_cast<int *>(taskData->inputs[2]);
-    std::copy(tmp_ptr_3, tmp_ptr_3 + taskData->inputs_count[2], RowIndex.begin());
-
-    size = *reinterpret_cast<int *>(taskData->inputs[3]);
-    sv = *reinterpret_cast<int *>(taskData->inputs[4]);
-  }
+  
   broadcast(world, size, 0);
   broadcast(world, sv, 0);
   int count_edges = values.size();
