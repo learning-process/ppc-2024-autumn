@@ -80,12 +80,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   auto dimension = 0;
   unsigned short block_dimension = 0;
   unsigned short block_rows_columns = 0;
-  if (world.rank() == 0) {
-    dimension = (unsigned short)sqrt(input_matrix_A.size());
-    output_matrix_C = std::vector<double>(dimension * dimension);
-    block_rows_columns = (unsigned short)sqrt(world.size());
-    block_dimension = dimension / block_rows_columns;
-    if (world.size() == 1 || world.size() != pow(block_rows_columns, 2) || dimension % block_rows_columns != 0) {
+  if (world.size() == 1 || world.size() != pow(block_rows_columns, 2) || dimension % block_rows_columns != 0) {
+    if (world.rank() == 0) {
+      dimension = (unsigned short)sqrt(input_matrix_A.size());
+      output_matrix_C = std::vector<double>(dimension * dimension);
       while (i != dimension) {
         j = 0;
         while (j != dimension) {
@@ -98,8 +96,15 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         }
         i++;
       }
-      return true;
     }
+    boost::mpi::broadcast(world, output_matrix_C.data(), output_matrix_C.size(), 0);
+    return true;
+  }
+  if (world.rank() == 0) {
+    dimension = (unsigned short)sqrt(input_matrix_A.size());
+    output_matrix_C = std::vector<double>(dimension * dimension);
+    block_rows_columns = (unsigned short)sqrt(world.size());
+    block_dimension = dimension / block_rows_columns;
   }
   boost::mpi::broadcast(world, dimension, 0);
   boost::mpi::broadcast(world, output_matrix_C.data(), output_matrix_C.size(), 0);
