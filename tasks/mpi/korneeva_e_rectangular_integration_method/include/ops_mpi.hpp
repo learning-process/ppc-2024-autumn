@@ -167,9 +167,11 @@ bool RectangularIntegrationMPI::run() {
   double globalIntegral = 0.0;
   double previousGlobalIntegral = 0.0;
   double localIntegral = 0.0;
+  int totalProcesses = mpi_comm.size();
 
+  // Calculate the local interval for each process
   auto [intervalStart, intervalEnd] = limits.front();
-  double intervalStep = (intervalEnd - intervalStart) / mpi_comm.size();
+  double intervalStep = (intervalEnd - intervalStart) / totalProcesses;
 
   double localStart = intervalStart + intervalStep * mpi_comm.rank();
   double localEnd = localStart + intervalStep;
@@ -183,36 +185,33 @@ bool RectangularIntegrationMPI::run() {
     globalIntegral = 0.0;
     localIntegral = 0.0;
 
-    int localSegments = 10;  // Start with a small number of segments
+    // Perform local integration
+    int localSegments = totalProcesses / mpi_comm.size();
     double segmentWidth = (localEnd - localStart) / localSegments;
+    args.back() = localStart + segmentWidth / 2.0;
 
-    for (int i = 0; i < localSegments; ++i) {
-      args.back() = localStart + segmentWidth * (i + 0.5);
-
+    for (int segment = 0; segment < localSegments; segment++) {
       if (limits.empty()) {
         localIntegral += integrandFunction(args) * segmentWidth;
       } else {
         localIntegral += calculateIntegral(integrandFunction, epsilon, limits, args) * segmentWidth;
       }
+      args.back() += segmentWidth;
     }
 
+    // Aggregate the results from all processes
     reduce(mpi_comm, localIntegral, globalIntegral, std::plus<>(), 0);
 
     if (mpi_comm.rank() == 0) {
-      double relativeError =
-          std::abs(globalIntegral - previousGlobalIntegral) / std::max(std::abs(globalIntegral), MIN_EPSILON);
-      continueRefining = relativeError > epsilon;
-
-      if (continueRefining) {
-        localSegments *= 2;  // Increase segments for refinement
-      }
+      // Continue refining until the global integral converges
+      continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) * (1.0 / 3.0) > epsilon);
     }
-
     broadcast(mpi_comm, continueRefining, 0);
-    broadcast(mpi_comm, localSegments, 0);
+
+    totalProcesses *= 2;  // Double the number of processes for the next refinement
   }
 
-  result = (mpi_comm.rank() == 0) ? globalIntegral : 0.0;
+  result = (mpi_comm.rank() == 0) ? globalIntegral : 0.0;  // Return result only for root process
   return true;
 }
 
