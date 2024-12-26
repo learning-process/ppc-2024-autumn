@@ -62,10 +62,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
           std::cout << "Validation failed: Input sizes do not match." << std::endl;
           return false;
         }
-        if (!matrix_is_square(taskData->inputs_count[0])) {
-          std::cout << "Validation failed: Input matrix is not square." << std::endl;
-          return false;
-        }
         if (taskData->inputs_count[0] != taskData->outputs_count[0]) {
           std::cout << "Validation failed: Input and output sizes do not match." << std::endl;
           return false;
@@ -97,7 +93,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
         std::cout << "Post-processing: Output saved successfully." << std::endl;
       }
       return true;
-      std::cout << "Post-processing: returned true" << std::endl;
     }
 
     std::vector<double> StrassenAlgorithmMPI::matrix_add(const std::vector<double>& matrixA,
@@ -308,9 +303,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
           };
           std::cout << "Tasks created successfully" << std::endl;
 
-          std::cout << "Rank " << rank << ": Reached barrier before task distribution." << std::endl;
-          world.barrier();
-          std::cout <<"Rank " << rank << ": passed barrier before task distribution." << std::endl;
           for (int i = 0; i < 7; ++i) {
             if (i % num_procs == 0) {
               std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
@@ -326,9 +318,6 @@ bool StrassenAlgorithmMPI::pre_processing() {
           }
         }
 
-        std::cout << "Rank " << rank << ": Reached barrier after task distribution." << std::endl;
-        world.barrier();
-        std::cout <<"Rank " << rank << ": passed barrier after task distribution" << std::endl;
         for (int i = 0; i < 7; ++i) {
           if (i % num_procs == rank && i % num_procs != 0) {
             std::vector<double> taskA;
