@@ -83,10 +83,13 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationValidInput) {
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-  ASSERT_TRUE(seqTask.validation());
   korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
   ASSERT_TRUE(mpiTask.validation());
+
+  if (world.rank() == 0) {
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    ASSERT_TRUE(seqTask.validation());
+  }
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidLimits) {
@@ -99,10 +102,13 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidLimits) {
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-  ASSERT_FALSE(seqTask.validation());
   korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
   ASSERT_FALSE(mpiTask.validation());
+
+  if (world.rank() == 0) {
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    ASSERT_FALSE(seqTask.validation());
+  }
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidEpsilon) {
@@ -115,10 +121,13 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidEpsilon) {
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-  ASSERT_TRUE(seqTask.validation());  // Should reset epsilon to MIN_EPSILON
   korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
   ASSERT_TRUE(mpiTask.validation());  // Should reset epsilon to MIN_EPSILON
+
+  if (world.rank() == 0) {
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    ASSERT_TRUE(seqTask.validation());  // Should reset epsilon to MIN_EPSILON
+  }
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, ValidationEmptyLimits) {
@@ -130,10 +139,13 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationEmptyLimits) {
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-  ASSERT_FALSE(seqTask.validation());
   korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
   ASSERT_FALSE(mpiTask.validation());
+
+  if (world.rank() == 0) {
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    ASSERT_FALSE(seqTask.validation());
+  }
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidNumOutputs) {
@@ -153,11 +165,13 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidNumOutputs)
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
-  korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
-  ASSERT_FALSE(seqTask.validation());
-
   korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(taskData, func);
   ASSERT_FALSE(mpiTask.validation());
+
+  if (world.rank() == 0) {
+    korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(taskData, func);
+    ASSERT_FALSE(seqTask.validation());
+  }
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, ValidationReplacesTinyEpsilonWithMinimum) {

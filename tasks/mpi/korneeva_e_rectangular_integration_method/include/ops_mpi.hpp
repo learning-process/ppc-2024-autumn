@@ -128,7 +128,7 @@ bool RectangularIntegrationMPI::pre_processing() {
       epsilon = MIN_EPSILON;
     }
   }
-
+  result = 0.0;
   return true;
 }
 
