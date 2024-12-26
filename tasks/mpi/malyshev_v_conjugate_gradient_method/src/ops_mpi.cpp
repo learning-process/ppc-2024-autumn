@@ -61,7 +61,10 @@ bool malyshev_v_conjugate_gradient_method::TestTaskSequential::run() {
     residual_norm_sq += residual[i] * residual[i];
   }
 
-  for (uint32_t iter = 0; iter < size; ++iter) {
+  const double tolerance = 1e-6;
+  const uint32_t max_iterations = size;
+
+  for (uint32_t iter = 0; iter < max_iterations; ++iter) {
     std::fill(temp.begin(), temp.end(), 0.0);
     for (uint32_t i = 0; i < size; ++i) {
       for (uint32_t j = 0; j < size; ++j) {
@@ -69,24 +72,37 @@ bool malyshev_v_conjugate_gradient_method::TestTaskSequential::run() {
       }
     }
 
-    double alpha = 0.0;
+    double alpha_numerator = 0.0;
     for (uint32_t i = 0; i < size; ++i) {
-      alpha += direction[i] * residual[i];
+      alpha_numerator += residual[i] * residual[i];
     }
-    double denominator = 0.0;
+
+    double alpha_denominator = 0.0;
     for (uint32_t i = 0; i < size; ++i) {
-      denominator += direction[i] * temp[i];
+      alpha_denominator += direction[i] * temp[i];
     }
-    alpha /= denominator;
+
+    if (alpha_denominator == 0.0) {
+      break;
+    }
+
+    double alpha = alpha_numerator / alpha_denominator;
 
     for (uint32_t i = 0; i < size; ++i) {
       result_[i] += alpha * direction[i];
+    }
+
+    for (uint32_t i = 0; i < size; ++i) {
       residual[i] -= alpha * temp[i];
     }
 
     double new_residual_norm_sq = 0.0;
     for (uint32_t i = 0; i < size; ++i) {
       new_residual_norm_sq += residual[i] * residual[i];
+    }
+
+    if (std::sqrt(new_residual_norm_sq) < tolerance) {
+      break;
     }
 
     double beta = new_residual_norm_sq / residual_norm_sq;
@@ -191,7 +207,10 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
   reduce(world, local_residual_norm_sq, global_residual_norm_sq, std::plus<>(), 0);
   broadcast(world, global_residual_norm_sq, 0);
 
-  for (uint32_t iter = 0; iter < local_size; ++iter) {
+  const double tolerance = 1e-6;
+  const uint32_t max_iterations = local_size;
+
+  for (uint32_t iter = 0; iter < max_iterations; ++iter) {
     std::fill(local_temp.begin(), local_temp.end(), 0.0);
     for (uint32_t i = 0; i < local_size; ++i) {
       for (uint32_t j = 0; j < local_size; ++j) {
@@ -199,28 +218,35 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
       }
     }
 
-    double local_alpha = 0.0;
+    double local_alpha_numerator = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
-      local_alpha += local_direction[i] * local_residual[i];
+      local_alpha_numerator += local_residual[i] * local_residual[i];
     }
 
-    double global_alpha;
-    reduce(world, local_alpha, global_alpha, std::plus<>(), 0);
-    broadcast(world, global_alpha, 0);
+    double global_alpha_numerator;
+    reduce(world, local_alpha_numerator, global_alpha_numerator, std::plus<>(), 0);
+    broadcast(world, global_alpha_numerator, 0);
 
-    double denominator = 0.0;
+    double local_alpha_denominator = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
-      denominator += local_direction[i] * local_temp[i];
+      local_alpha_denominator += local_direction[i] * local_temp[i];
     }
 
-    double global_denominator;
-    reduce(world, denominator, global_denominator, std::plus<>(), 0);
-    broadcast(world, global_denominator, 0);
+    double global_alpha_denominator;
+    reduce(world, local_alpha_denominator, global_alpha_denominator, std::plus<>(), 0);
+    broadcast(world, global_alpha_denominator, 0);
 
-    global_alpha /= global_denominator;
+    if (global_alpha_denominator == 0.0) {
+      break;
+    }
+
+    double global_alpha = global_alpha_numerator / global_alpha_denominator;
 
     for (uint32_t i = 0; i < local_size; ++i) {
       local_result_[i] += global_alpha * local_direction[i];
+    }
+
+    for (uint32_t i = 0; i < local_size; ++i) {
       local_residual[i] -= global_alpha * local_temp[i];
     }
 
@@ -232,6 +258,10 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
     double new_global_residual_norm_sq;
     reduce(world, new_local_residual_norm_sq, new_global_residual_norm_sq, std::plus<>(), 0);
     broadcast(world, new_global_residual_norm_sq, 0);
+
+    if (std::sqrt(new_global_residual_norm_sq) < tolerance) {
+      break;
+    }
 
     double beta = new_global_residual_norm_sq / global_residual_norm_sq;
     global_residual_norm_sq = new_global_residual_norm_sq;

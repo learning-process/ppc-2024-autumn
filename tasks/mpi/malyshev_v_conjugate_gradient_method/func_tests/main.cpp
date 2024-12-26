@@ -48,28 +48,9 @@ TEST(malyshev_v_conjugate_gradient_method, test_small_system) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> seqResult(vector.size());
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_v_conjugate_gradient_method::TestTaskSequential taskSeq(taskDataSeq);
-
-    for (auto &row : matrix) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
-    }
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
-    taskDataSeq->inputs_count.push_back(vector.size());
-    taskDataSeq->inputs_count.push_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
-    taskDataSeq->outputs_count.push_back(seqResult.size());
-
-    ASSERT_TRUE(taskSeq.validation());
-    ASSERT_TRUE(taskSeq.pre_processing());
-    ASSERT_TRUE(taskSeq.run());
-    ASSERT_TRUE(taskSeq.post_processing());
-
+    std::vector<double> expectedResult = {0.090909, 0.636364};
     for (uint32_t i = 0; i < mpiResult.size(); i++) {
-      ASSERT_NEAR(seqResult[i], mpiResult[i], 50);
+      ASSERT_NEAR(expectedResult[i], mpiResult[i], 1e-5);
     }
   }
 }
@@ -105,28 +86,10 @@ TEST(malyshev_v_conjugate_gradient_method, test_large_system) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> seqResult(vector.size());
-
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    malyshev_v_conjugate_gradient_method::TestTaskSequential taskSeq(taskDataSeq);
-
-    for (auto &row : matrix) {
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
-    }
-
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
-    taskDataSeq->inputs_count.push_back(vector.size());
-    taskDataSeq->inputs_count.push_back(vector.size());
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
-    taskDataSeq->outputs_count.push_back(seqResult.size());
-
-    ASSERT_TRUE(taskSeq.validation());
-    ASSERT_TRUE(taskSeq.pre_processing());
-    ASSERT_TRUE(taskSeq.run());
-    ASSERT_TRUE(taskSeq.post_processing());
-
+    std::vector<double> expectedResult = {0.090909, 0.181818, 0.272727,
+                                          0.363636};
     for (uint32_t i = 0; i < mpiResult.size(); i++) {
-      ASSERT_NEAR(seqResult[i], mpiResult[i], 50);
+      ASSERT_NEAR(expectedResult[i], mpiResult[i], 1e-5);
     }
   }
 }
