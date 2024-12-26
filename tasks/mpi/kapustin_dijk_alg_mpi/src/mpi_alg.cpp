@@ -28,9 +28,8 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ::pre_processing() {
 }
 bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->inputs[0] == nullptr) return false;
-  if (taskData->outputs.empty() || taskData->outputs[0] == nullptr) return false;
-  return true;
+  return !(taskData->inputs.empty() || taskData->inputs[0] == nullptr || taskData->outputs.empty() ||
+           taskData->outputs[0] == nullptr);
 }
 bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ::run() {
   internal_order_test();
@@ -61,9 +60,7 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ::run() {
     }
   }
 
-  for (size_t i = 0; i < V; ++i) {
-    res_[i] = distances[i];
-  }
+  std::copy(distances.begin(), distances.end(), res_.begin());
 
   return true;
 }
@@ -113,9 +110,8 @@ bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::pre_processing() {
 }
 bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::validation() {
   internal_order_test();
-  if (taskData->inputs.empty() || taskData->inputs[0] == nullptr) return false;
-  if (taskData->outputs.empty() || taskData->outputs[0] == nullptr) return false;
-  return true;
+  return !(taskData->inputs.empty() || taskData->inputs[0] == nullptr || taskData->outputs.empty() ||
+           taskData->outputs[0] == nullptr);
 }
 bool kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI::run() {
   internal_order_test();
