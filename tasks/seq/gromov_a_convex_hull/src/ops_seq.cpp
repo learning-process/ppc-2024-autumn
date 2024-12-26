@@ -125,7 +125,6 @@ std::vector<Point> jarvis(std::vector<Point> points) {
   return hull;
 }
 
-
 bool gromov_a_convex_hull_seq::TestTaskSequential::pre_processing() {
   internal_order_test();
   size = static_cast<int>(taskData->inputs_count[0]);
