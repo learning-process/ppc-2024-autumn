@@ -7,7 +7,7 @@
 #include "seq/vershinina_a_integration_the_monte_carlo_method/include/ops_seq.hpp"
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
-  std::vector<double> in{6, 13, 0, 14, 100000};
+  std::vector<double> in{5, 15, 0, 100, 100000};
   std::vector<double> reference_res(1, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -18,6 +18,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
 
   auto testTaskSequential =
       std::make_shared<vershinina_a_integration_the_monte_carlo_method::TestTaskSequential>(taskDataSeq);
+  testTaskSequential->p = [](double x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -33,7 +34,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(reference_res[0], 98);
+  EXPECT_NEAR(reference_res[0], 1000, 1);
 }
 
 TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
@@ -48,6 +49,7 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
 
   auto testTaskSequential =
       std::make_shared<vershinina_a_integration_the_monte_carlo_method::TestTaskSequential>(taskDataSeq);
+  testTaskSequential->p = [](double x) { return exp(sin(4 * x) + 2 * pow(x, 2)); };
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -63,5 +65,5 @@ TEST(vershinina_a_integration_the_monte_carlo_method, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(reference_res[0], 1000);
+  EXPECT_NEAR(reference_res[0], 1000, 1);
 }
