@@ -11,11 +11,6 @@ std::vector<double> generateRandomMatrix(int size) {
   std::uniform_real_distribution<> dis(-100.0, 100.0);
   std::vector<double> matrix(size * size);
 
-  if (size <= 0) {
-    std::cout << "generateRandomMatrix: Invalid size: " << size << std::endl;
-    return matrix;
-  }
-
   for (int i = 0; i < size * size; i++) {
     matrix[i] = dis(gen);
   }
@@ -37,15 +32,11 @@ TEST(nasedkin_e_strassen_algorithm_seq, Test_2x2) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
   taskDataSeq->outputs_count.emplace_back(resultSeq.size());
 
-  std::cout << "Test: TaskData inputs_count[0] = " << taskDataSeq->inputs_count[0]
-            << ", inputs_count[1] = " << taskDataSeq->inputs_count[1] << std::endl;
-
   nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
   ASSERT_TRUE(testSeqTask.validation());
   ASSERT_TRUE(testSeqTask.pre_processing());
   ASSERT_TRUE(testSeqTask.run());
   ASSERT_TRUE(testSeqTask.post_processing());
-  std::cout << "SEQ Test for " << matrixSize << "x" << matrixSize << " matrix finished" << std::endl;
 }
 
 TEST(nasedkin_e_strassen_algorithm_seq, Test_4x4) {
@@ -63,15 +54,11 @@ TEST(nasedkin_e_strassen_algorithm_seq, Test_4x4) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
   taskDataSeq->outputs_count.emplace_back(resultSeq.size());
 
-  std::cout << "Test: TaskData inputs_count[0] = " << taskDataSeq->inputs_count[0]
-            << ", inputs_count[1] = " << taskDataSeq->inputs_count[1] << std::endl;
-
   nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
   ASSERT_TRUE(testSeqTask.validation());
   ASSERT_TRUE(testSeqTask.pre_processing());
   ASSERT_TRUE(testSeqTask.run());
   ASSERT_TRUE(testSeqTask.post_processing());
-  std::cout << "SEQ Test for " << matrixSize << "x" << matrixSize << " matrix finished" << std::endl;
 }
 
 TEST(nasedkin_e_strassen_algorithm_seq, Test_8x8) {
@@ -89,15 +76,11 @@ TEST(nasedkin_e_strassen_algorithm_seq, Test_8x8) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
   taskDataSeq->outputs_count.emplace_back(resultSeq.size());
 
-  std::cout << "Test: TaskData inputs_count[0] = " << taskDataSeq->inputs_count[0]
-            << ", inputs_count[1] = " << taskDataSeq->inputs_count[1] << std::endl;
-
   nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
   ASSERT_TRUE(testSeqTask.validation());
   ASSERT_TRUE(testSeqTask.pre_processing());
   ASSERT_TRUE(testSeqTask.run());
   ASSERT_TRUE(testSeqTask.post_processing());
-  std::cout << "SEQ Test for " << matrixSize << "x" << matrixSize << " matrix finished" << std::endl;
 }
 
 TEST(nasedkin_e_strassen_algorithm_seq, Test_16x16) {
@@ -115,15 +98,11 @@ TEST(nasedkin_e_strassen_algorithm_seq, Test_16x16) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
   taskDataSeq->outputs_count.emplace_back(resultSeq.size());
 
-  std::cout << "Test: TaskData inputs_count[0] = " << taskDataSeq->inputs_count[0]
-            << ", inputs_count[1] = " << taskDataSeq->inputs_count[1] << std::endl;
-
   nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
   ASSERT_TRUE(testSeqTask.validation());
   ASSERT_TRUE(testSeqTask.pre_processing());
   ASSERT_TRUE(testSeqTask.run());
   ASSERT_TRUE(testSeqTask.post_processing());
-  std::cout << "SEQ Test for " << matrixSize << "x" << matrixSize << " matrix finished" << std::endl;
 }
 
 TEST(nasedkin_e_strassen_algorithm_seq, Test_32x32) {
@@ -141,13 +120,9 @@ TEST(nasedkin_e_strassen_algorithm_seq, Test_32x32) {
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(resultSeq.data()));
   taskDataSeq->outputs_count.emplace_back(resultSeq.size());
 
-  std::cout << "Test: TaskData inputs_count[0] = " << taskDataSeq->inputs_count[0]
-            << ", inputs_count[1] = " << taskDataSeq->inputs_count[1] << std::endl;
-
   nasedkin_e_strassen_algorithm::StrassenAlgorithmSEQ testSeqTask(taskDataSeq);
   ASSERT_TRUE(testSeqTask.validation());
   ASSERT_TRUE(testSeqTask.pre_processing());
   ASSERT_TRUE(testSeqTask.run());
   ASSERT_TRUE(testSeqTask.post_processing());
-  std::cout << "SEQ Test for " << matrixSize << "x" << matrixSize << " matrix finished" << std::endl;
 }

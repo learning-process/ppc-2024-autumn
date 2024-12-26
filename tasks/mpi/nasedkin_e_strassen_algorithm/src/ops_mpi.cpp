@@ -14,25 +14,16 @@ namespace nasedkin_e_strassen_algorithm {
 
 bool StrassenAlgorithmSEQ::pre_processing() {
   internal_order_test();
-  std::cout << "Pre-processing: Loading inputs..." << std::endl;
   auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
   auto* inputsB = reinterpret_cast<double*>(taskData->inputs[1]);
 
   if (inputsA == nullptr || inputsB == nullptr) {
-    std::cout << "Pre-processing failed: Input pointers are null." << std::endl;
     return false;
   }
 
-  std::cout << "Pre-processing: inputs_count[0] = " << taskData->inputs_count[0] << std::endl;
-  std::cout << "Pre-processing: inputs_count[1] = " << taskData->inputs_count[1] << std::endl;
-
   matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
 
-  std::cout << "Pre-processing: Matrix size = " << matrixSize << std::endl;
-
   if (matrixSize * matrixSize != taskData->inputs_count[0]) {
-    std::cout << "Pre-processing failed: Input size mismatch. Expected: " << matrixSize * matrixSize
-              << ", got: " << taskData->inputs_count[0] << std::endl;
     return false;
   }
 
@@ -40,39 +31,30 @@ bool StrassenAlgorithmSEQ::pre_processing() {
   inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
   outputMatrix.resize(matrixSize * matrixSize, 0.0);
 
-  std::cout << "Pre-processing: Input matrices loaded successfully." << std::endl;
   return true;
 }
 
 bool StrassenAlgorithmSEQ::validation() {
   internal_order_test();
-  std::cout << "Validation: Checking inputs..." << std::endl;
   if (taskData->inputs.empty()) {
-    std::cout << "Validation failed: Inputs are empty." << std::endl;
     return false;
   }
   if (taskData->inputs_count[0] != taskData->inputs_count[1]) {
-    std::cout << "Validation failed: Input sizes do not match." << std::endl;
     return false;
   }
-  std::cout << "Validation passed." << std::endl;
-
   return true;
 }
 
 bool StrassenAlgorithmSEQ::run() {
   internal_order_test();
-  std::cout << "Starting Strassen_multiply with matrixSize = " << matrixSize << std::endl;
   outputMatrix = strassen_multiply_seq(inputMatrixA, inputMatrixB, matrixSize);
   return true;
 }
 
 bool StrassenAlgorithmSEQ::post_processing() {
   internal_order_test();
-  std::cout << "Post-processing: Saving output..." << std::endl;
   auto* outputs = reinterpret_cast<double*>(taskData->outputs[0]);
   std::copy(outputMatrix.begin(), outputMatrix.end(), outputs);
-  std::cout << "Post-processing: Output saved successfully." << std::endl;
   return true;
 }
 
@@ -80,35 +62,22 @@ bool StrassenAlgorithmMPI::pre_processing() {
   internal_order_test();
   int rank = world.rank();
   if (rank == 0) {
-    std::cout << "Pre-processing: Loading inputs..." << std::endl;
     auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
     auto* inputsB = reinterpret_cast<double*>(taskData->inputs[1]);
 
     if (inputsA == nullptr || inputsB == nullptr) {
-      std::cout << "Pre-processing failed: Input pointers are null." << std::endl;
       return false;
-    }
-
-    if (rank == 0) {
-      std::cout << "Pre-processing: inputs_count[0] = " << taskData->inputs_count[0] << std::endl;
-      std::cout << "Pre-processing: inputs_count[1] = " << taskData->inputs_count[1] << std::endl;
     }
 
     matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
 
-    std::cout << "Pre-processing: Matrix size = " << matrixSize << std::endl;
-
     if (matrixSize * matrixSize != taskData->inputs_count[0]) {
-      std::cout << "Pre-processing failed: Input size mismatch. Expected: " << matrixSize * matrixSize
-                << ", got: " << taskData->inputs_count[0] << std::endl;
       return false;
     }
 
     inputMatrixA.assign(inputsA, inputsA + matrixSize * matrixSize);
     inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
     outputMatrix.resize(matrixSize * matrixSize, 0.0);
-
-    std::cout << "Pre-processing: Input matrices loaded successfully." << std::endl;
   }
   return true;
 }
@@ -117,16 +86,12 @@ bool StrassenAlgorithmMPI::validation() {
   internal_order_test();
   int rank = world.rank();
   if (rank == 0) {
-    std::cout << "Validation: Checking inputs..." << std::endl;
     if (taskData->inputs.empty()) {
-      std::cout << "Validation failed: Inputs are empty." << std::endl;
       return false;
     }
     if (taskData->inputs_count[0] != taskData->inputs_count[1]) {
-      std::cout << "Validation failed: Input sizes do not match." << std::endl;
       return false;
     }
-    std::cout << "Validation passed." << std::endl;
   }
   return true;
 }
@@ -138,7 +103,6 @@ bool StrassenAlgorithmMPI::run() {
   boost::mpi::broadcast(world, inputMatrixB, 0);
   boost::mpi::broadcast(world, matrixSize, 0);
 
-  std::cout << "Rank " << world.rank() << ": Starting Strassen_multiply with matrixSize = " << matrixSize << std::endl;
   outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
   return true;
 }
@@ -147,10 +111,8 @@ bool StrassenAlgorithmMPI::post_processing() {
   internal_order_test();
   int rank = world.rank();
   if (rank == 0) {
-    std::cout << "Post-processing: Saving output..." << std::endl;
     auto* outputs = reinterpret_cast<double*>(taskData->outputs[0]);
     std::copy(outputMatrix.begin(), outputMatrix.end(), outputs);
-    std::cout << "Post-processing: Output saved successfully." << std::endl;
   }
   return true;
 }
@@ -191,8 +153,6 @@ std::vector<double> strassen_recursive(const std::vector<double>& matrixA, const
   std::vector<double> B22(half_size * half_size);
 
   if (matrixA.size() != size * size || matrixB.size() != size * size) {
-    std::cout << "strassen_recursive: Matrix size mismatch. Expected: " << size * size << ", got: " << matrixA.size()
-              << " and " << matrixB.size() << std::endl;
     return {};
   }
 
@@ -242,14 +202,10 @@ std::vector<double> strassen_recursive(const std::vector<double>& matrixA, const
 std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vector<double>& matrixA,
                                                                 const std::vector<double>& matrixB, size_t size) {
   if (matrixA.empty() || matrixB.empty() || size == 0) {
-    std::cout << "Error! matrixA, matrixB are empty, or size is zero before Strassen_multiply" << std::endl;
     return {};
   }
 
-  std::cout << "Strassen_multiply: Received matrix size = " << size << std::endl;
-
   if (size == 1) {
-    std::cout << "Strassen_multiply: Base case reached." << std::endl;
     return {matrixA[0] * matrixB[0]};
   }
 
@@ -283,13 +239,6 @@ std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vecto
       B22[i * half_size + j] = matrixB[(i + half_size) * new_size + j + half_size];
     }
   }
-
-  std::cout << "Strassen_multiply: Divided matrices into submatrices." << std::endl;
-
-  std::cout << "A11 size = " << A11.size() << ", A12 size = " << A12.size() << ", A21 size = " << A21.size()
-            << ", A22 size = " << A22.size() << std::endl;
-  std::cout << "B11 size = " << B11.size() << ", B12 size = " << B12.size() << ", B21 size = " << B21.size()
-            << ", B22 size = " << B22.size() << std::endl;
 
   std::vector<std::vector<double>> M(7);
   std::vector<std::vector<double>> tasks = {matrix_add(A11, A22, half_size),
@@ -304,7 +253,6 @@ std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vecto
       matrix_add(B11, B22, half_size),      B11, matrix_subtract(B12, B22, half_size),
       matrix_subtract(B21, B11, half_size), B22, matrix_add(B11, B12, half_size),
       matrix_add(B21, B22, half_size)};
-  std::cout << "Tasks created successfully" << std::endl;
 
   for (int i = 0; i < 7; ++i) {
     M[i] = strassen_recursive(tasks[i], tasksB[i], half_size);
@@ -315,19 +263,12 @@ std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vecto
     M[i] = result;
   }
 
-  std::cout << "Final results collected. Verifying matrix sizes:" << std::endl;
-  for (int i = 0; i < 7; ++i) {
-    std::cout << "M[" << i << "] size = " << M[i].size() << std::endl;
-  }
-
   std::vector<double> C11 =
       matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
   std::vector<double> C12 = matrix_add(M[2], M[4], half_size);
   std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
   std::vector<double> C22 =
       matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
-
-  std::cout << "All С calculated" << std::endl;
 
   std::vector<double> result(size * size);
   for (size_t i = 0; i < half_size; ++i) {
@@ -338,7 +279,6 @@ std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vecto
       result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
     }
   }
-  std::cout << "Final result calculated" << std::endl;
   return result;
   return {};
 }
@@ -351,19 +291,11 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
   int rank = world.rank();
   int num_procs = world.size();
 
-  std::cout << "Num procs = " << num_procs << std::endl;
-
   if (rank == 0 && (matrixA.empty() || matrixB.empty() || size == 0)) {
-    std::cout << "Rank " << rank << ": Error! matrixA, matrixB are empty, or size is zero before Strassen_multiply"
-              << std::endl;
     return {};
-  }
-  if (rank == 0) {
-    std::cout << "Strassen_multiply: Received matrix size = " << size << ", rank = " << rank << std::endl;
   }
 
   if (size == 1) {
-    std::cout << "Strassen_multiply: Base case reached." << std::endl;
     return {matrixA[0] * matrixB[0]};
   }
 
@@ -397,13 +329,6 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
       B22[i * half_size + j] = matrixB[(i + half_size) * new_size + j + half_size];
     }
   }
-
-  std::cout << "Strassen_multiply: Rank " << rank << " divided matrices into submatrices." << std::endl;
-
-  std::cout << "A11 size = " << A11.size() << ", A12 size = " << A12.size() << ", A21 size = " << A21.size()
-            << ", A22 size = " << A22.size() << std::endl;
-  std::cout << "B11 size = " << B11.size() << ", B12 size = " << B12.size() << ", B21 size = " << B21.size()
-            << ", B22 size = " << B22.size() << std::endl;
 
   std::vector<std::vector<double>> M(7);
   if (rank == 0) {
@@ -419,18 +344,13 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
         matrix_add(B11, B22, half_size),      B11, matrix_subtract(B12, B22, half_size),
         matrix_subtract(B21, B11, half_size), B22, matrix_add(B11, B12, half_size),
         matrix_add(B21, B22, half_size)};
-    std::cout << "Tasks created successfully" << std::endl;
 
     for (int i = 0; i < 7; ++i) {
       if (i % num_procs == 0) {
-        std::cout << "Rank 0 processing taskA[" << i << "] and taskB[" << i << "] locally." << std::endl;
         M[i] = strassen_recursive(tasks[i], tasksB[i], half_size);
       } else {
-        std::cout << "Rank 0 sending taskA[" << i << "] (size = " << tasks[i].size() << ") and taskB[" << i
-                  << "] (size = " << tasksB[i].size() << ") to rank " << (i % num_procs) << std::endl;
         world.send(i % num_procs, i, tasks[i]);
         world.send(i % num_procs, i, tasksB[i]);
-        std::cout << "Rank 0 sent taskA[" << i << "] and taskB[" << i << "] to rank " << (i % num_procs) << std::endl;
       }
     }
   }
@@ -440,39 +360,24 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
       std::vector<double> taskA;
       std::vector<double> taskB;
 
-      std::cout << "Rank " << rank << " waiting for taskA and taskB for M[" << i << "]..." << std::endl;
       world.recv(0, i, taskA);
       world.recv(0, i, taskB);
-      std::cout << "Rank " << rank << " received taskA size = " << taskA.size() << ", taskB size = " << taskB.size()
-                << std::endl;
 
       M[i] = strassen_recursive(taskA, taskB, half_size);
 
       world.send(0, i, M[i]);
-      std::cout << "Rank " << rank << " sent result for M[" << i << "] to rank 0." << std::endl;
     }
   }
 
   if (rank == 0) {
     for (int i = 0; i < 7; ++i) {
-      if (i % num_procs == 0) {
-        std::cout << "Rank 0 already processed result for M[" << i << "] locally." << std::endl;
-      } else {
-        std::cout << "Rank 0 waiting to receive result for M[" << i << "] from rank " << (i % num_procs) << "..."
-                  << std::endl;
+      if (i % num_procs != 0) {
         std::vector<double> result;
         world.recv(i % num_procs, i, result);
         M[i] = result;
-        std::cout << "Rank 0 received result for M[" << i << "] from rank " << (i % num_procs) << std::endl;
       }
     }
   }
-
-  if (rank == 0) {
-    std::cout << "Rank 0: Final results collected. Verifying matrix sizes:" << std::endl;
-    for (int i = 0; i < 7; ++i) {
-      std::cout << "M[" << i << "] size = " << M[i].size() << std::endl;
-    }
 
     std::vector<double> C11 =
         matrix_add(matrix_subtract(matrix_add(M[0], M[3], half_size), M[4], half_size), M[6], half_size);
@@ -480,8 +385,6 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
     std::vector<double> C21 = matrix_add(M[1], M[3], half_size);
     std::vector<double> C22 =
         matrix_add(matrix_subtract(matrix_add(M[0], M[2], half_size), M[1], half_size), M[5], half_size);
-
-    std::cout << "Rank 0: all С calculated" << std::endl;
 
     std::vector<double> result(size * size);
     for (size_t i = 0; i < half_size; ++i) {
@@ -492,7 +395,6 @@ std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<do
         result[(i + half_size) * size + j + half_size] = C22[i * half_size + j];
       }
     }
-    std::cout << "Rank 0: final result calculated" << std::endl;
     return result;
   }
   return {};
