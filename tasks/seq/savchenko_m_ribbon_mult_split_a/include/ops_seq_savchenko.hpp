@@ -16,11 +16,11 @@ class TestTaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrix_A{};
-  std::vector<int> matrix_B{};
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
   size_t columns_A, rows_A;
   size_t columns_B, rows_B;
-  std::vector<int> matrix_res{};
+  std::vector<int> matrix_res;
 };
 
 }  // namespace savchenko_m_ribbon_mult_split_a_seq

@@ -79,10 +79,11 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_inputs_count) {
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
     taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
-  // Create Task
-  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_more_than_one_inputs_count) {
@@ -112,10 +113,11 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_more_than_one_inputs_count)
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
     taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
-  // Create Task
-  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_outputs_count) {
@@ -143,10 +145,11 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_outputs_count) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
-  // Create Task
-  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_more_than_one_outputs_count) {
@@ -176,10 +179,11 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_more_than_one_outputs_count
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
     taskDataPar->outputs_count.emplace_back(matrix_res.size());
     taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
-  // Create Task
-  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_matrix_size) {
@@ -208,10 +212,11 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_matrix_size) {
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
     taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
-  // Create Task
-  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
-  ASSERT_FALSE(testMpiTaskParallel.validation());
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_mpi, matrixes_5x5) {

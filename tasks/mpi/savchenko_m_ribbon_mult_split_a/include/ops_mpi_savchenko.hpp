@@ -19,11 +19,11 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrix_A{};
-  std::vector<int> matrix_B{};
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
   int columns_A, rows_A;
   int columns_B, rows_B;
-  std::vector<int> matrix_res{};
+  std::vector<int> matrix_res;
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -35,11 +35,11 @@ class TestMPITaskParallel : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  std::vector<int> matrix_A{};
-  std::vector<int> matrix_B{};
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
   int size;
 
-  std::vector<int> matrix_res{};
+  std::vector<int> matrix_res;
 
   boost::mpi::communicator world;
 };
