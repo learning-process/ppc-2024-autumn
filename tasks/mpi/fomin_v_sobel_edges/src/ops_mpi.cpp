@@ -40,15 +40,42 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   unsigned int blockSize = (height_ - 2) / world.size();
   unsigned int reminder = (height_ - 2) % world.size();
 
-  std::vector<unsigned char> local_input((blockSize + 2) * width_);
+  std::vector<unsigned char> local_input;
+
   if (world.rank() == 0) {
-    for (int proc = 1; proc < world.size(); proc++) {
-      int start_row = proc * blockSize + reminder;
-      world.send(proc, 0, input_image_.data() + start_row * width_, (blockSize + 2) * width_);
+    // Send data to other processes
+    for (int proc = 1; proc < world.size(); ++proc) {
+      int start_row = reminder + blockSize * proc;
+      int local_height = blockSize + 2;  // Include boundary rows
+      if (proc < reminder) {
+        local_height += 1;
+        start_row += proc;
+      }
+      local_input.resize(local_height * width_);
+      for (int y = start_row - 1; y < start_row + blockSize + 1; ++y) {
+        for (int x = 0; x < width_; ++x) {
+          local_input[(y - start_row + 1) * width_ + x] = input_image_[y * width_ + x];
+        }
+      }
+      world.send(proc, 0, local_input.data(), local_height * width_);
     }
-    local_input.assign(input_image_.begin(), input_image_.begin() + (blockSize + reminder + 2) * width_);
+
+    // Prepare local input for root process
+    int local_height = reminder + 2;  // Include boundary rows
+    local_input.resize(local_height * width_);
+    for (int y = 0; y < local_height; ++y) {
+      for (int x = 0; x < width_; ++x) {
+        local_input[y * width_ + x] = input_image_[y * width_ + x];
+      }
+    }
   } else {
-    world.recv(0, 0, local_input.data(), (blockSize + 2) * width_);
+    // Receive data from root process
+    int local_height = blockSize + 2;  // Include boundary rows
+    if (world.rank() <= reminder) {
+      local_height += 1;
+    }
+    local_input.resize(local_height * width_);
+    world.recv(0, 0, local_input.data(), local_height * width_);
   }
 
   int local_height = local_input.size() / width_;
