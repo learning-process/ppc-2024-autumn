@@ -16,7 +16,7 @@ std::vector<double> generateRandomVector(uint32_t size, double min_value, double
   std::vector<double> data(size);
 
   for (auto &el : data) {
-    el = min_value + static_cast<double>(gen()) / static_cast<double>(gen.max()) * (max_value - min_value);
+    el = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
   }
 
   return data;
