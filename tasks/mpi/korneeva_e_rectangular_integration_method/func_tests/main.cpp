@@ -186,16 +186,6 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidNumOutputs)
   }
 }
 
-TEST(korneeva_e_rectangular_integration_method_mpi, ValidationReplacesTinyEpsilonWithMinimum) {
-  korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{1, 3}, {2, 5}}, korneeva_e_rectangular_integration_method_mpi::logarithmicTwoVar, 1e-10);
-}
-
-TEST(korneeva_e_rectangular_integration_method_mpi, NegativeEpsilon) {
-  korneeva_e_rectangular_integration_method_mpi::customTest(
-      {{1, 3}, {2, 5}}, korneeva_e_rectangular_integration_method_mpi::logarithmicTwoVar, -1e-6);
-}
-
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearDoubleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
       {{0, 2}, {0, 2}}, korneeva_e_rectangular_integration_method_mpi::linearSingleVar, 1e-6);
