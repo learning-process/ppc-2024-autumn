@@ -135,48 +135,45 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     std::cerr << "Warning: local_res is empty on rank " << world_rank << std::endl;
   }
   for (int phase = 0; phase < world_size; ++phase) {
-    int next_rank = world_rank + 1;
-    int prev_rank = world_rank - 1;
-
     if (phase % 2 == 0) {
-      if (world_rank % 2 == 0 && next_rank < world_size) {
-        std::cout << "Rank " << world_rank << " sending to " << next_rank << std::endl;
-        world.send(next_rank, world_rank, local_res);
+      if (world_rank % 2 == 0 && world_rank + 1 < world_size) {
+        std::cout << "Rank " << world_rank << " sending to " << world_rank + 1 << std::endl;
+        world.send(world_rank + 1, world_rank, local_res);
       } else if (world_rank % 2 == 1) {
         std::vector<int> received_data;
-        world.recv(prev_rank, prev_rank, received_data);
-        std::cout << "Rank " << prev_rank << " received data from " << prev_rank << std::endl;
+        world.recv(world_rank - 1, world_rank - 1, received_data);
+        std::cout << "Rank " << world_rank - 1 << " received data from " << world_rank - 1 << std::endl;
         odd_even_merge(local_res, received_data);
-        std::cout << "Rank " << world_rank << " sending to " << prev_rank << std::endl;
-        world.send(prev_rank, world_rank, received_data);
+        std::cout << "Rank " << world_rank << " sending to " << world_rank - 1 << std::endl;
+        world.send(world_rank - 1, world_rank, received_data);
       }
-      if (world_rank % 2 == 0 && next_rank < world_size) {
-        world.recv(next_rank, next_rank, local_res);
+      if (world_rank % 2 == 0 && world_rank + 1 < world_size) {
+        world.recv(world_rank + 1, world_rank + 1, local_res);
       }
     } else {
-      if (world_rank % 2 == 1 && next_rank < world_size) {
-        std::cout << "Rank " << world_rank << " sending to " << next_rank << std::endl;
-        world.send(next_rank, world_rank, local_res);
+      if (world_rank % 2 == 1 && world_rank + 1 < world_size) {
+        std::cout << "Rank " << world_rank << " sending to " << world_rank + 1 << std::endl;
+        world.send(world_rank + 1, world_rank, local_res);
       } else if (world_rank % 2 == 0) {
         std::vector<int> received_data;
-        world.recv(prev_rank, prev_rank, received_data);
-        std::cout << "Rank " << prev_rank << " received data from " << prev_rank << std::endl;
+        world.recv(world_rank - 1, world_rank - 1, received_data);
+        std::cout << "Rank " << world_rank - 1 << " received data from " << world_rank - 1 << std::endl;
         odd_even_merge(local_res, received_data);
-        std::cout << "Rank " << world_rank << " sending to " << prev_rank << std::endl;
-        world.send(prev_rank, world_rank, received_data);
+        std::cout << "Rank " << world_rank << " sending to " << world_rank - 1 << std::endl;
+        world.send(world_rank - 1, world_rank, received_data);
       }
-      if (world_rank % 2 == 1 && next_rank < world_size) {
-        world.recv(next_rank, next_rank, local_res);
+      if (world_rank % 2 == 1 && world_rank + 1 < world_size) {
+        world.recv(world_rank + 1, world_rank + 1, local_res);
       }
     }
   }
-  /*
+
   for (int i = 0; i < world_size; ++i) {
     recv_counts[i] = local_res.size();
     displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
-  }*/
+  }
   boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
-  /*
+
   if (world.rank() == 0) {
     std::vector<int> temp_res(res.size());
     for (int i = 0; i < world_size; ++i) {
@@ -187,7 +184,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     }
     res = std::move(temp_res);
   }
-  */
+
   return true;
 }
 
