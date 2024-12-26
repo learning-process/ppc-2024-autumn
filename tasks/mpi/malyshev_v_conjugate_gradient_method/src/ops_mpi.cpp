@@ -46,10 +46,8 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
   std::vector<double> direction(size);
   std::vector<double> temp(size);
 
-  // Initialize result vector with zeros
   std::fill(result_.begin(), result_.end(), 0.0);
 
-  // Compute initial residual r = b - Ax
   for (uint32_t i = 0; i < size; ++i) {
     residual[i] = vector_[i];
     for (uint32_t j = 0; j < size; ++j) {
@@ -64,7 +62,6 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
   }
 
   for (uint32_t iter = 0; iter < size; ++iter) {
-    // Compute matrix-vector product Ap
     std::fill(temp.begin(), temp.end(), 0.0);
     for (uint32_t i = 0; i < size; ++i) {
       for (uint32_t j = 0; j < size; ++j) {
@@ -72,7 +69,6 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
       }
     }
 
-    // Compute step size alpha
     double alpha = 0.0;
     for (uint32_t i = 0; i < size; ++i) {
       alpha += direction[i] * residual[i];
@@ -83,13 +79,11 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
     }
     alpha /= denominator;
 
-    // Update result and residual
     for (uint32_t i = 0; i < size; ++i) {
       result_[i] += alpha * direction[i];
       residual[i] -= alpha * temp[i];
     }
 
-    // Check for convergence
     double new_residual_norm_sq = 0.0;
     for (uint32_t i = 0; i < size; ++i) {
       new_residual_norm_sq += residual[i] * residual[i];
@@ -99,11 +93,9 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
       break;
     }
 
-    // Compute beta
     double beta = new_residual_norm_sq / residual_norm_sq;
     residual_norm_sq = new_residual_norm_sq;
 
-    // Update direction
     for (uint32_t i = 0; i < size; ++i) {
       direction[i] = residual[i] + beta * direction[i];
     }
@@ -179,16 +171,13 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
 
   scatterv(world, matrix_, sizes, local_matrix_.data(), 0);
 
-  // Parallel CG implementation
   uint32_t local_size = local_matrix_.size();
   std::vector<double> local_residual(local_size);
   std::vector<double> local_direction(local_size);
   std::vector<double> local_temp(local_size);
 
-  // Initialize result vector with zeros
   std::fill(local_result_.begin(), local_result_.end(), 0.0);
 
-  // Compute initial residual r = b - Ax
   for (uint32_t i = 0; i < local_size; ++i) {
     local_residual[i] = vector_[i];
     for (uint32_t j = 0; j < local_size; ++j) {
@@ -206,7 +195,6 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
   reduce(world, local_residual_norm_sq, global_residual_norm_sq, std::plus<double>(), 0);
 
   for (uint32_t iter = 0; iter < local_size; ++iter) {
-    // Compute matrix-vector product Ap
     std::fill(local_temp.begin(), local_temp.end(), 0.0);
     for (uint32_t i = 0; i < local_size; ++i) {
       for (uint32_t j = 0; j < local_size; ++j) {
@@ -214,7 +202,6 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
       }
     }
 
-    // Compute step size alpha
     double local_alpha = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
       local_alpha += local_direction[i] * local_residual[i];
@@ -233,13 +220,11 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
 
     global_alpha /= global_denominator;
 
-    // Update result and residual
     for (uint32_t i = 0; i < local_size; ++i) {
       local_result_[i] += global_alpha * local_direction[i];
       local_residual[i] -= global_alpha * local_temp[i];
     }
 
-    // Check for convergence
     double new_local_residual_norm_sq = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
       new_local_residual_norm_sq += local_residual[i] * local_residual[i];
@@ -252,11 +237,9 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
       break;
     }
 
-    // Compute beta
     double beta = new_global_residual_norm_sq / global_residual_norm_sq;
     global_residual_norm_sq = new_global_residual_norm_sq;
 
-    // Update direction
     for (uint32_t i = 0; i < local_size; ++i) {
       local_direction[i] = local_residual[i] + beta * local_direction[i];
     }
