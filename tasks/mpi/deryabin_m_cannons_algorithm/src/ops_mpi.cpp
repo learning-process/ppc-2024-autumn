@@ -117,72 +117,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
                 local_input_matrix_B.begin() + k * block_dimension);
       k++;
     }
-    while (i != block_rows_columns) {
-      j = 0;
-      while (j != block_rows_columns) {
-        if (i != 0 && j != 0) {
-          k = 0;
-          while (k != block_dimension) {
-            if (i == 0) {
-              world.send(i * block_rows_columns + j, k,
-                         input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                         block_dimension);
-            } else {
-              if (i * block_rows_columns + j - i < i * block_rows_columns) {
-                world.send(i * block_rows_columns + j + block_rows_columns - i, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
-              } else {
-                world.send(i * block_rows_columns + j - i, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
-              }
-            }
-            if (j == 0) {
-              world.send(i * block_rows_columns + j, k,
-                         input_matrix_B.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                         block_dimension);
-            } else {
-              if ((i - j) * block_rows_columns + j < 0) {
-                world.send((i + block_rows_columns - j) * block_rows_columns + j, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
-              } else {
-                world.send((i - j) * block_rows_columns + j, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
-              }
-            }
-            k++;
-          }
-        }
-        j++;
-      }
-      i++;
-    }
-  } else {
-    //k = 0;
-    //while (k != block_dimension) {
-      //world.recv(0, k, local_input_matrix_A.data() + k * block_dimension, block_dimension);
-      //world.recv(0, k, local_input_matrix_B.data() + k * block_dimension, block_dimension);
-      //k++;
-    //}
   }
-  i = 0;
-  while (i != block_dimension) {
-    j = 0;
-    while (j != block_dimension) {
-      k = 0;
-      while (k != block_dimension) {
-        local_output_matrix_C[i * block_dimension + j] +=
-            local_input_matrix_A[i * block_dimension + k] * local_input_matrix_B[k * block_dimension + j];
-        k++;
-      }
-      j++;
-    }
-    i++;
-  }
-
   return true;
 }
 
