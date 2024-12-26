@@ -204,7 +204,7 @@ bool RectangularIntegrationMPI::run() {
 
     if (mpi_comm.rank() == 0) {
       // Continue refining until the global integral converges
-      continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) * (1.0 / 3.0) > epsilon);
+      continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) > epsilon);
     }
     broadcast(mpi_comm, continueRefining, 0);
 
