@@ -9,7 +9,7 @@
 #include "seq/Sdobnov_V_mergesort_Betcher/include/ops_seq.hpp"
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, test_pipeline_run) {
-  int size = 4096;
+  long unsigned int size = 4096;
   std::vector<int> res(size, 0);
   std::vector<int> input = Sdobnov_V_mergesort_Betcher_seq::generate_random_vector(size, 0, 1000);
 
@@ -38,11 +38,11 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(test);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(size, res.size());
+  ASSERT_EQ(res.size(), size);
 }
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, test_task_run) {
-  int size = 4096;
+  long unsigned int size = 4096;
   std::vector<int> res(size, 0);
   std::vector<int> input = Sdobnov_V_mergesort_Betcher_seq::generate_random_vector(size, 0, 1000);
 
@@ -71,5 +71,5 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(test);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  ASSERT_EQ(size, res.size());
+  ASSERT_EQ(res.size(), size);
 }
