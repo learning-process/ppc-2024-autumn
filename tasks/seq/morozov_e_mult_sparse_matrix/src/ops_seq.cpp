@@ -4,7 +4,8 @@
 #include <thread>
 
 using namespace std::chrono_literals;
-void morozov_e_mult_sparse_matrix::printMatrix(std::vector<std::vector<double>> m) {
+template <typename T>
+void morozov_e_mult_sparse_matrix::printMatrix(std::vector<std::vector<T>> m) {
   for (size_t i = 0; i < m.size(); ++i) {
     for (size_t j = 0; j < m[0].size(); ++j) {
       std::cout << m[i][j] << " ";
@@ -147,7 +148,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::pre_processing() {
   ans.resize(rowsA, std::vector<double>(columnsB, 0));
   for (int i = 0; i < rowsA; ++i) {
     for (int j = 0; j < columnsB; ++j) {
-      ans[i][j] = scalMultOfVectors(pairMatrix.first[i], pairMatrix.second[j]);
+      ans[i][j] = morozov_e_mult_sparse_matrix::scalMultOfVectors(pairMatrix.first[i], pairMatrix.second[j]);
     }
   }
   return true;

@@ -162,7 +162,7 @@ bool morozov_e_mult_sparse_matrix::TestTaskSequential::run() {
   ans.resize(rowsA, std::vector<double>(columnsB, 0));
   for (int i = 0; i < rowsA; ++i) {
     for (int j = 0; j < columnsB; ++j) {
-      ans[i][j] = scalMultOfVectors(pairMatrix.first[i], pairMatrix.second[j]);
+      ans[i][j] = morozov_e_mult_sparse_matrix::scalMultOfVectors(pairMatrix.first[i], pairMatrix.second[j]);
     }
   }
   return true;

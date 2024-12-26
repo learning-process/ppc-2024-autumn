@@ -30,7 +30,8 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int> row_indA, row_indB, col_indA, col_indB;
   int rowsA, rowsB, columnsA, columnsB, dA_size, dB_size, row_indA_size, row_indB_size, col_indA_size, col_indB_size;
 };
-void printMatrix(std::vector<std::vector<double>> m);
+template <typename T>
+void printMatrix(std::vector<std::vector<T>> m);
 template <typename T>
 void printVector(std::vector<T> v);
 }  // namespace morozov_e_mult_sparse_matrix
