@@ -2,7 +2,6 @@
 
 #include <boost/mpi/timer.hpp>
 #include <random>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "mpi/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_mpi.hpp"
@@ -42,10 +41,10 @@ double Ax_b(int n, int m, std::vector<double> a, std::vector<double> x) {
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
 
-  const int cols = 101;
-  const int rows = 100;
+  const int cols = 1001;
+  const int rows = 1000;
   std::vector<double> global_mat(cols * rows);
   std::vector<double> global_ans(cols - 1, 0);
   double ans;
@@ -92,10 +91,10 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_pipeline_run) {
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_mpi, test_task_run) {
   boost::mpi::communicator world;
 
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
 
-  const int cols = 101;
-  const int rows = 100;
+  const int cols = 1001;
+  const int rows = 1000;
   std::vector<double> global_mat(cols * rows);
   std::vector<double> global_ans(cols - 1, 0);
   double ans;

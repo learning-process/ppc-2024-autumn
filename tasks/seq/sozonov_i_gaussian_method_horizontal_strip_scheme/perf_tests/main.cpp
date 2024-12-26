@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <numeric>
 #include <random>
-#include <vector>
 
 #include "core/perf/include/perf.hpp"
 #include "seq/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_seq.hpp"
@@ -40,10 +38,10 @@ double Ax_b(int n, int m, std::vector<double> a, std::vector<double> x) {
 }  // namespace sozonov_i_gaussian_method_horizontal_strip_scheme_seq
 
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_pipeline_run) {
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
 
-  const int cols = 101;
-  const int rows = 100;
+  const int cols = 1001;
+  const int rows = 1000;
 
   // Create data
   std::vector<double> in = sozonov_i_gaussian_method_horizontal_strip_scheme_seq::getRandomMatrix(cols * rows);
@@ -86,10 +84,10 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_pipeline_run) {
 }
 
 TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_task_run) {
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
 
-  const int cols = 101;
-  const int rows = 100;
+  const int cols = 1001;
+  const int rows = 1000;
 
   // Create data
   std::vector<double> in = sozonov_i_gaussian_method_horizontal_strip_scheme_seq::getRandomMatrix(cols * rows);

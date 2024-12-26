@@ -133,29 +133,31 @@ TEST(kholin_k_iterative_methods_Seidel_seq, validation_false_when_matrix_no_diag
 
   std::vector<float> in(count_rows * count_colls);
 
-  for (size_t i = 0; i < count_rows; i++) {
-    for (size_t j = 0; j < count_colls; j++) {
-      if (i == j) {
-        in[count_colls * i + j] = 1.0f;
+  do {
+    for (size_t i = 0; i < count_rows; i++) {
+      for (size_t j = 0; j < count_colls; j++) {
+        if (i == j) {
+          in[count_colls * i + j] = 1.0f;
+        }
+        in[count_colls * i + j] = kholin_k_iterative_methods_Seidel_seq::gen_float_value();
       }
-      in[count_colls * i + j] = kholin_k_iterative_methods_Seidel_seq::gen_float_value();
     }
+  } while (kholin_k_iterative_methods_Seidel_seq::CheckDiagPred(in.data(), count_rows, count_colls));
 
-    std::vector<float> out(count_rows);
-    std::vector<float> X0(count_rows, 0.0f);
-    std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
+  std::vector<float> out(count_rows);
+  std::vector<float> X0(count_rows, 0.0f);
+  std::vector<float> B = kholin_k_iterative_methods_Seidel_seq::gen_vector(count_rows);
 
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
-    taskDataSeq->inputs_count.emplace_back(count_rows);
-    taskDataSeq->inputs_count.emplace_back(count_colls);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
-    taskDataSeq->outputs_count.emplace_back(count_rows);
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(&epsilon));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(X0.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(B.data()));
+  taskDataSeq->inputs_count.emplace_back(count_rows);
+  taskDataSeq->inputs_count.emplace_back(count_colls);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(count_rows);
 
-    kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-    ASSERT_EQ(testTaskSequential.validation(), false);
-  }
-}
+  kholin_k_iterative_methods_Seidel_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), false);
+}  //

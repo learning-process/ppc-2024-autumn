@@ -53,8 +53,12 @@ float kholin_k_iterative_methods_Seidel_seq::gen_float_value() {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::uniform_real_distribution<float> coeff(-100, 100);
+  float c = 0.0f;
+  do {
+    c = coeff(gen);
+  } while (c >= -1.0f && c <= 1.0f);
 
-  return coeff(gen);
+  return c;
 }
 
 std::vector<float> kholin_k_iterative_methods_Seidel_seq::gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls) {
@@ -158,8 +162,7 @@ bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::IsQuadro(size_t 
   return num_rows == num_colls;
 }
 
-bool kholin_k_iterative_methods_Seidel_seq::TestTaskSequential::CheckDiagPred(float matrix[], size_t num_rows,
-                                                                              size_t num_colls) {
+bool kholin_k_iterative_methods_Seidel_seq::CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls) {
   size_t rows = num_rows;
   size_t colls = num_colls;
   float abs_diag_element = 0.0f;

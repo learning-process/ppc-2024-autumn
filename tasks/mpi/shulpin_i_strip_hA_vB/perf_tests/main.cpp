@@ -26,7 +26,7 @@ std::vector<int> get_RND_matrix(int row, int col) {
 }
 }  // namespace shulpin_strip_scheme_A_B
 
-TEST(shulpin_strip_scheme_A_B, pipeline_run) {
+TEST(shulpin_strip_scheme_A_B_MPI, pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
@@ -110,7 +110,7 @@ TEST(shulpin_strip_scheme_A_B, pipeline_run) {
   }
 }
 
-TEST(shulpin_strip_scheme_A_B, task_run) {
+TEST(shulpin_strip_scheme_A_B_MPI, task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
