@@ -38,8 +38,6 @@ static void test_sobel(std::vector<uint8_t> &&in, const std::vector<uint8_t> &re
   std::vector<uint8_t> out(in.size());
   test_sobel_io(std::move(in), width, height, out);
 
-  dumpv("out", out);
-
   ASSERT_EQ(out, ref);
 }
 
