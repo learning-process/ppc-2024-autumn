@@ -175,18 +175,61 @@ TEST(milovankin_m_component_labeling_mpi, input_single_row) {
   std::vector<uint8_t> img = {1, 1, 0, 1, 1, 0};
   std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 0};
   std::vector<std::vector<size_t>> groups = {
-      {0, 1},
-      {3, 4}
+    {0, 1},
+    {3, 4}
   };
   milovankin_m_component_labeling_mpi::run_test_mpi(img, 1, 6, expected, groups);
 }
+
 TEST(milovankin_m_component_labeling_mpi, input_single_col) {
   std::vector<uint8_t> img = {1, 1, 0, 1, 1, 0};
   std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 0};
   std::vector<std::vector<size_t>> groups = {
-      {0, 1},
-      {3, 4}
+    {0, 1},
+    {3, 4}
   };
   milovankin_m_component_labeling_mpi::run_test_mpi(img, 6, 1, expected, groups);
 }
+
+TEST(milovankin_m_component_labeling_mpi, input_empty_vector) {
+  std::vector<uint8_t> img = {};
+  std::vector<uint32_t> expected = {};
+  std::vector<std::vector<size_t>> groups = {
+    {}
+  };
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 0, 0, expected, groups);
+}
+
+TEST(milovankin_m_component_labeling_mpi, input_zero_image) {
+  std::vector<uint8_t> img = {
+    0,0,0,0,0,0,
+    0,0,0,0,0,0,
+    0,0,0,0,0,0
+  };
+  std::vector<uint32_t> expected = {
+    0,0,0,0,0,0,
+    0,0,0,0,0,0,
+    0,0,0,0,0,0
+  };
+  std::vector<std::vector<size_t>> groups = {
+    {}
+  };
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 3, 6, expected, groups);
+}
+
+TEST(milovankin_m_component_labeling_mpi, input_ones_image) {
+  std::vector<uint8_t> img = {
+    1,1,1,1,1,1,
+    1,1,1,1,1,1
+  };
+  std::vector<uint32_t> expected = {
+    1,1,1,1,1,1,
+    1,1,1,1,1,1
+  };
+  std::vector<std::vector<size_t>> groups = {
+    {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+  };
+  milovankin_m_component_labeling_mpi::run_test_mpi(img, 2, 6, expected, groups);
+}
+
 // clang-format on

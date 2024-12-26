@@ -116,9 +116,44 @@ TEST(milovankin_m_component_labeling_seq, input_single_row) {
   std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 2};
   milovankin_m_component_labeling_seq::run_test_seq(img, 1, 6, expected);
 }
+
 TEST(milovankin_m_component_labeling_seq, input_single_col) {
   std::vector<uint8_t> img = {1, 1, 0, 1, 1, 1};
   std::vector<uint32_t> expected = {1, 1, 0, 2, 2, 2};
   milovankin_m_component_labeling_seq::run_test_seq(img, 6, 1, expected);
+}
+
+TEST(milovankin_m_component_labeling_mpi, input_empty_vector) {
+  std::vector<uint8_t> img = {};
+  std::vector<uint32_t> expected = {};
+
+  milovankin_m_component_labeling_seq::run_test_seq(img, 0, 0, expected);
+}
+
+TEST(milovankin_m_component_labeling_mpi, input_zero_image) {
+  std::vector<uint8_t> img = {
+    0,0,0,0,0,0,
+    0,0,0,0,0,0,
+    0,0,0,0,0,0
+  };
+  std::vector<uint32_t> expected = {
+    0,0,0,0,0,0,
+    0,0,0,0,0,0,
+    0,0,0,0,0,0
+  };
+  milovankin_m_component_labeling_seq::run_test_seq(img, 3, 6, expected);
+}
+
+TEST(milovankin_m_component_labeling_mpi, input_ones_image) {
+  std::vector<uint8_t> img = {
+    1,1,1,1,1,1,
+    1,1,1,1,1,1
+  };
+  std::vector<uint32_t> expected = {
+    1,1,1,1,1,1,
+    1,1,1,1,1,1
+  };
+
+  milovankin_m_component_labeling_seq::run_test_seq(img, 2, 6, expected);
 }
 // clang-format on
