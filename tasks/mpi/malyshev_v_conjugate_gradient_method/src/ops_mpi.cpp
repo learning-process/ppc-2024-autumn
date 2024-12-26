@@ -5,7 +5,7 @@
 #include <cmath>
 #include <vector>
 
-bool malyshev_conjugate_gradient_method::TestTaskSequential::pre_processing() {
+bool malyshev_v_conjugate_gradient_method::TestTaskSequential::pre_processing() {
   internal_order_test();
 
   uint32_t size = taskData->inputs_count[0];
@@ -26,7 +26,7 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::pre_processing() {
   return true;
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskSequential::validation() {
+bool malyshev_v_conjugate_gradient_method::TestTaskSequential::validation() {
   internal_order_test();
 
   uint32_t size = taskData->inputs_count[0];
@@ -38,7 +38,7 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::validation() {
   return taskData->outputs_count[0] == taskData->inputs_count[0];
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
+bool malyshev_v_conjugate_gradient_method::TestTaskSequential::run() {
   internal_order_test();
 
   uint32_t size = matrix_.size();
@@ -104,7 +104,7 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::run() {
   return true;
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskSequential::post_processing() {
+bool malyshev_v_conjugate_gradient_method::TestTaskSequential::post_processing() {
   internal_order_test();
 
   std::copy(result_.begin(), result_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
@@ -112,7 +112,7 @@ bool malyshev_conjugate_gradient_method::TestTaskSequential::post_processing() {
   return true;
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskParallel::pre_processing() {
+bool malyshev_v_conjugate_gradient_method::TestTaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -138,7 +138,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::pre_processing() {
   return true;
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskParallel::validation() {
+bool malyshev_v_conjugate_gradient_method::TestTaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -154,7 +154,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::validation() {
   return true;
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
+bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
   internal_order_test();
 
   broadcast(world, delta_, 0);
@@ -254,7 +254,7 @@ bool malyshev_conjugate_gradient_method::TestTaskParallel::run() {
   return true;
 }
 
-bool malyshev_conjugate_gradient_method::TestTaskParallel::post_processing() {
+bool malyshev_v_conjugate_gradient_method::TestTaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {

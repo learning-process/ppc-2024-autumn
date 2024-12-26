@@ -8,7 +8,7 @@
 
 #include "core/task/include/task.hpp"
 
-namespace malyshev_conjugate_gradient_method {
+namespace malyshev_v_conjugate_gradient_method {
 
 class TestTaskSequential : public ppc::core::Task {
  public:
@@ -41,4 +41,4 @@ class TestTaskParallel : public ppc::core::Task {
   boost::mpi::communicator world;
 };
 
-}  // namespace malyshev_conjugate_gradient_method
+}  // namespace malyshev_v_conjugate_gradient_method
