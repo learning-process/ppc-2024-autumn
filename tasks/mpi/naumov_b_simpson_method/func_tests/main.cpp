@@ -170,3 +170,87 @@ TEST(naumov_b_simpson_method_mpi, quadratic_function_) {
 
   ASSERT_NEAR(result, expected, 1e-5);
 }
+
+TEST(naumov_b_simpson_method_mpi, validation_empty_function) {
+  auto func = nullptr;
+  double lower_bound = 0.0;
+  double upper_bound = 1.0;
+  int num_steps = 3000;
+
+  double expected = 0.0;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(2);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
+  taskData->inputs_count.emplace_back(1);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&expected));
+
+  naumov_b_simpson_method_mpi::TestMPITaskParallel task(taskData, func, lower_bound, upper_bound, num_steps);
+
+  ASSERT_FALSE(task.validation());
+}
+
+TEST(naumov_b_simpson_method_mpi, validation_invalid_bounds) {
+  auto func = [](double x) { return x * x; };
+  double lower_bound = 1.0;
+  double upper_bound = 0.0;
+  int num_steps = 3000;
+
+  double expected = 0.0;
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(2);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
+  taskData->inputs_count.emplace_back(1);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&expected));
+
+  naumov_b_simpson_method_mpi::TestMPITaskParallel task(taskData, func, lower_bound, upper_bound, num_steps);
+
+  ASSERT_FALSE(task.validation());
+}
+
+TEST(naumov_b_simpson_method_mpi, validation_invalid_num_steps) {
+  auto func = [](double x) { return x * x; };
+  double lower_bound = 0.0;
+  double upper_bound = 1.0;
+
+  int num_steps = 3001;
+  double expected = 0.0;
+  std::shared_ptr<ppc::core::TaskData> taskDataOdd = std::make_shared<ppc::core::TaskData>();
+  taskDataOdd->inputs_count.emplace_back(2);
+  taskDataOdd->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
+  taskDataOdd->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
+  taskDataOdd->inputs_count.emplace_back(1);
+  taskDataOdd->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
+  taskDataOdd->outputs_count.emplace_back(1);
+  taskDataOdd->outputs.emplace_back(reinterpret_cast<uint8_t *>(&expected));
+
+  naumov_b_simpson_method_mpi::TestMPITaskParallel taskOdd(taskDataOdd, func, lower_bound, upper_bound, num_steps);
+
+  ASSERT_FALSE(taskOdd.validation());
+}
+
+TEST(naumov_b_simpson_method_mpi, validation_too_few_steps) {
+  auto func = [](double x) { return x * x; };
+  double lower_bound = 0.0;
+  double upper_bound = 1.0;
+  int num_steps = 1;
+  double expected = 0.0;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+  taskData->inputs_count.emplace_back(2);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&lower_bound));
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&upper_bound));
+  taskData->inputs_count.emplace_back(1);
+  taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(&num_steps));
+  taskData->outputs_count.emplace_back(1);
+  taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(&expected));
+
+  naumov_b_simpson_method_mpi::TestMPITaskParallel task(taskData, func, lower_bound, upper_bound, num_steps);
+
+  ASSERT_FALSE(task.validation());
+}
