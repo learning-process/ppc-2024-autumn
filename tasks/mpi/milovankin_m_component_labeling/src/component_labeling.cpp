@@ -22,7 +22,9 @@ namespace milovankin_m_component_labeling_mpi {
 bool ComponentLabelingSeq::validation() {
   internal_order_test();
 
-  return !taskData->inputs.empty() && !taskData->outputs.empty();
+  return !taskData->inputs.empty() && !taskData->outputs.empty() && taskData->inputs_count.size() == 2 &&
+         taskData->outputs_count.size() == 2 && taskData->inputs_count[0] == taskData->outputs_count[0] &&
+         taskData->inputs_count[1] == taskData->outputs_count[1];
 }
 
 bool ComponentLabelingSeq::pre_processing() {
@@ -110,7 +112,9 @@ bool ComponentLabelingSeq::post_processing() {
 
 bool ComponentLabelingPar::validation() {
   internal_order_test();
-  return !taskData->inputs.empty() && !taskData->outputs.empty();
+  return !taskData->inputs.empty() && !taskData->outputs.empty() && taskData->inputs_count.size() == 2 &&
+         taskData->outputs_count.size() == 2 && taskData->inputs_count[0] == taskData->outputs_count[0] &&
+         taskData->inputs_count[1] == taskData->outputs_count[1];
 }
 
 bool ComponentLabelingPar::pre_processing() {
