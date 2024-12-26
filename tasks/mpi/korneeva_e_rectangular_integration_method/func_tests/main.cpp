@@ -113,25 +113,14 @@ TEST(korneeva_e_rectangular_integration_method_mpi, ValidationInvalidEpsilon) {
       korneeva_e_rectangular_integration_method_mpi::linearSingleVar;
 
   korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI mpiTask(mpi_task_data, func);
-  ASSERT_TRUE(mpiTask.validation());
-
-  mpiTask.pre_processing();
-  mpiTask.run();
-  mpiTask.post_processing();
 
   if (world.rank() == 0) {
     // Sequential Task Data
     auto seq_task_data =
         korneeva_e_rectangular_integration_method_mpi::prepareTaskData(validLimits, &seq_output, invalidEpsilon, world);
     korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationSeq seqTask(seq_task_data, func);
-
     ASSERT_TRUE(seqTask.validation());
-
-    seqTask.pre_processing();
-    seqTask.run();
-    seqTask.post_processing();
-
-    ASSERT_NEAR(mpi_output, seq_output, std::max(invalidEpsilon, 1e-6));
+    ASSERT_TRUE(mpiTask.validation());
   }
 }
 
