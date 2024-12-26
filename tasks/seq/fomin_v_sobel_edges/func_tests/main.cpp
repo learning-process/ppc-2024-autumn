@@ -4,7 +4,7 @@
 
 #include "seq/fomin_v_sobel_edges/include/ops_seq.hpp"
 
-TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_4x4) {
+TEST(fomin_v_sobel_edges, Test_Sobel_4x4) {
   // Создание тестового изображения 4x4
   const int width = 4;
   const int height = 4;
@@ -39,7 +39,7 @@ TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_4x4) {
   ASSERT_TRUE(is_output_valid);
 }
 
-TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_8x8) {
+TEST(fomin_v_sobel_edges, Test_Sobel_8x8) {
   const int width = 8;
   const int height = 8;
   std::vector<unsigned char> input_image(width * height, 100);
@@ -74,7 +74,7 @@ TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_8x8) {
   ASSERT_TRUE(is_output_valid);
 }
 
-TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_16x16) {
+TEST(fomin_v_sobel_edges, Test_Sobel_16x16) {
   const int width = 16;
   const int height = 16;
   std::vector<unsigned char> input_image(width * height, 100);
@@ -109,7 +109,7 @@ TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_16x16) {
   ASSERT_TRUE(is_output_valid);
 }
 
-TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_32x32) {
+TEST(fomin_v_sobel_edges, Test_Sobel_32x32) {
   const int width = 32;
   const int height = 32;
   std::vector<unsigned char> input_image(width * height, 100);
@@ -144,7 +144,7 @@ TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_32x32) {
   ASSERT_TRUE(is_output_valid);
 }
 
-TEST(Sequential_Sobel_Edge_Detection, Test_Sobel_64x64) {
+TEST(fomin_v_sobel_edges, Test_Sobel_64x64) {
   const int width = 64;
   const int height = 64;
   std::vector<unsigned char> input_image(width * height, 100);

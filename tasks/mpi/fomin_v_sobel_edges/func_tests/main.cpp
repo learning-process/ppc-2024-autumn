@@ -14,18 +14,21 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection) {
   // Создание тестового изображения
   const int width = 4;
   const int height = 4;
-  global_image = {100, 100, 100, 100, 100, 200, 200, 100, 100, 200, 200, 100, 100, 100, 100, 100};
-
+  global_image.resize(width * height, 100);
+  for (int i = 2; i < 6; ++i) {
+    for (int j = 2; j < 6; ++j) {
+      global_image[i * width + j] = 200;
+    }
+  }
   // Создание TaskData для параллельной версии
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_output_image.resize(width * height, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
+    taskDataPar->inputs_count.emplace_back(global_image.size());
     taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_output_image.data()));
-    taskDataPar->outputs_count.emplace_back(width);
-    taskDataPar->outputs_count.emplace_back(height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_output_image.data()));
+    taskDataPar->outputs_count.emplace_back(global_output_image.size());
   }
 
   // Создание и выполнение параллельной задачи
@@ -39,12 +42,12 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection) {
     // Создание TaskData для последовательной версии
     std::vector<unsigned char> reference_output_image(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataSeq->inputs_count.emplace_back(width);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
+    taskDataSeq->inputs_count.emplace_back(global_image.size());
     taskDataSeq->inputs_count.emplace_back(height);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_output_image.data()));
-    taskDataSeq->outputs_count.emplace_back(width);
-    taskDataSeq->outputs_count.emplace_back(height);
+    taskDataSeq->inputs_count.emplace_back(width);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_output_image.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_output_image.size());
 
     // Создание и выполнение последовательной задачи
     fomin_v_sobel_edges::SobelEdgeDetection sobelEdgeDetection(taskDataSeq);
@@ -76,15 +79,15 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Large_Image) {
   }
 
   // Создание TaskData для параллельной версии
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_output_image.resize(width * height, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
+    taskDataPar->inputs_count.emplace_back(global_image.size());
     taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_output_image.data()));
-    taskDataPar->outputs_count.emplace_back(width);
-    taskDataPar->outputs_count.emplace_back(height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_output_image.data()));
+    taskDataPar->outputs_count.emplace_back(global_output_image.size());
   }
 
   // Создание и выполнение параллельной задачи
@@ -98,12 +101,12 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Large_Image) {
     // Создание TaskData для последовательной версии
     std::vector<unsigned char> reference_output_image(width * height, 0);
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataSeq->inputs_count.emplace_back(width);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
+    taskDataSeq->inputs_count.emplace_back(global_image.size());
     taskDataSeq->inputs_count.emplace_back(height);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(reference_output_image.data()));
-    taskDataSeq->outputs_count.emplace_back(width);
-    taskDataSeq->outputs_count.emplace_back(height);
+    taskDataSeq->inputs_count.emplace_back(width);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(reference_output_image.data()));
+    taskDataSeq->outputs_count.emplace_back(reference_output_image.size());
 
     // Создание и выполнение последовательной задачи
     fomin_v_sobel_edges::SobelEdgeDetection sobelEdgeDetection(taskDataSeq);
@@ -129,13 +132,12 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Empty_Image) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_output_image.resize(width * height, 0);
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_image.data()));
+    taskDataPar->inputs_count.emplace_back(global_image.size());
     taskDataPar->inputs_count.emplace_back(height);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_output_image.data()));
-    taskDataPar->outputs_count.emplace_back(width);
-    taskDataPar->outputs_count.emplace_back(height);
+    taskDataPar->inputs_count.emplace_back(width);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_output_image.data()));
+    taskDataPar->outputs_count.emplace_back(global_output_image.size());
   }
 
   fomin_v_sobel_edges::SobelEdgeDetectionMPI sobelEdgeDetectionMPI(taskDataPar);
