@@ -37,18 +37,18 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   const int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
-  unsigned int d = (height_ - 2) / world.size();
-  unsigned int r = (height_ - 2) % world.size();
+  unsigned int blockSize = (height_ - 2) / world.size();
+  unsigned int reminder = (height_ - 2) % world.size();
 
-  std::vector<unsigned char> local_input((d + 2) * width_);
+  std::vector<unsigned char> local_input((blockSize + 2) * width_);
   if (world.rank() == 0) {
     for (int proc = 1; proc < world.size(); proc++) {
-      int start_row = proc * d + r;
-      world.send(proc, 0, input_image_.data() + start_row * width_, (d + 2) * width_);
+      int start_row = proc * blockSize + reminder;
+      world.send(proc, 0, input_image_.data() + start_row * width_, (blockSize + 2) * width_);
     }
-    local_input.assign(input_image_.begin(), input_image_.begin() + (d + r + 2) * width_);
+    local_input.assign(input_image_.begin(), input_image_.begin() + (blockSize + reminder + 2) * width_);
   } else {
-    world.recv(0, 0, local_input.data(), (d + 2) * width_);
+    world.recv(0, 0, local_input.data(), (blockSize + 2) * width_);
   }
 
   int local_height = local_input.size() / width_;
@@ -75,8 +75,8 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   local_output.erase(local_output.begin(), local_output.begin() + width_);
   local_output.erase(local_output.end() - width_, local_output.end());
 
-  std::vector<int> local_sizes(world.size(), d * width_);
-  local_sizes[0] += r * width_;
+  std::vector<int> local_sizes(world.size(), blockSize * width_);
+  local_sizes[0] += reminder * width_;
 
   gatherv(world, local_output.data(), local_output.size(), output_image_.data(), local_sizes, 0);
 
