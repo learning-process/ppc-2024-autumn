@@ -15,11 +15,16 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection) {
   const int width = 4;
   const int height = 4;
   global_image.resize(width * height, 100);
-  for (int i = 2; i < 6; ++i) {
-    for (int j = 2; j < 6; ++j) {
-      global_image[i * width + j] = 200;
+  for (int i = 0; i < height; ++i) {
+    for (int j = 0; j < width; ++j) {
+      if (i >= 1 && i < height - 1 && j >= 1 && j < width - 1) {
+        global_image[i * width + j] = 200;
+      } else {
+        global_image[i * width + j] = 100;
+      }
     }
   }
+
   // Создание TaskData для параллельной версии
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
@@ -27,6 +32,7 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection) {
     taskDataPar->inputs_count.emplace_back(global_image.size());
     taskDataPar->inputs_count.emplace_back(height);
     taskDataPar->inputs_count.emplace_back(width);
+    global_output_image.resize(width * height, 0);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_output_image.data()));
     taskDataPar->outputs_count.emplace_back(global_output_image.size());
   }
