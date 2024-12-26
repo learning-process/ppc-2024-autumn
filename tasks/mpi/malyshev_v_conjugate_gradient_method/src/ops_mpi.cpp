@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <boost/serialization/vector.hpp>
+#include <cmath>
 #include <vector>
 
 bool malyshev_conjugate_gradient::TestTaskSequential::pre_processing() {
