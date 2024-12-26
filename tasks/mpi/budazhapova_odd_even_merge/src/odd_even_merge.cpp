@@ -95,7 +95,6 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::validation() {
 
 bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   internal_order_test();
-
   std::vector<int> recv_counts(world.size(), 0);
   std::vector<int> displacements(world.size(), 0);
 
@@ -127,7 +126,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
 
   if (world.size() > res_size) {
     if (world.rank() < res_size) {
-      local_res.resize(1);
+      local_res.resize(n_of_send_elements);
       for (int i = start; i < end; i++) {
         for (int j = 0; j < n_of_send_elements; j++) {
           local_res[(i - start) * n_of_send_elements + j] = res[i * n_of_send_elements + j];
@@ -138,15 +137,13 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       return true;
     }
   } else {
-    local_res.resize(end - start);
+    local_res.resize((end - start) * n_of_send_elements);
     for (int i = start; i < end; i++) {
       for (int j = 0; j < n_of_send_elements; j++) {
         local_res[(i - start) * n_of_send_elements + j] = res[i * n_of_send_elements + j];
       }
     }
   }
-
-  budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
 
   for (int phase = 0; phase < world.size(); ++phase) {
     if (phase % 2 == 0) {
