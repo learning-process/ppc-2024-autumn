@@ -161,12 +161,12 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
       i++;
     }
   } else {
-    k = 0;
-    while (k != block_dimension) {
-      world.recv(0, k, local_input_matrix_A.data() + k * block_dimension, block_dimension);
-      world.recv(0, k, local_input_matrix_B.data() + k * block_dimension, block_dimension);
-      k++;
-    }
+    //k = 0;
+    //while (k != block_dimension) {
+      //world.recv(0, k, local_input_matrix_A.data() + k * block_dimension, block_dimension);
+      //world.recv(0, k, local_input_matrix_B.data() + k * block_dimension, block_dimension);
+      //k++;
+    //}
   }
   i = 0;
   while (i != block_dimension) {
