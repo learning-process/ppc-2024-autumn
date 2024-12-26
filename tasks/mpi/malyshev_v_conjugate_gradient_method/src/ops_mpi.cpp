@@ -1,6 +1,6 @@
 #include "mpi/malyshev_v_conjugate_gradient_method/include/ops_mpi.hpp"
 
-#include <boost/mpi/allreduce.hpp>
+#include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <cmath>
 #include <vector>
