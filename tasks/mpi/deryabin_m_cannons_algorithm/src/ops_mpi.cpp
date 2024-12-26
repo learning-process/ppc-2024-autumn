@@ -74,7 +74,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::validati
 
 bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   internal_order_test();
-  unsigned short i = 0;
+  unsigned short i;
   unsigned short j;
   unsigned short k;
   unsigned short dimension;
@@ -82,6 +82,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     if (world.rank() == 0) {
       dimension = (unsigned short)sqrt(input_matrix_A.size());
       output_matrix_C = std::vector<double>(dimension * dimension);
+      i = 0;
       while (i != dimension) {
         j = 0;
         while (j != dimension) {
@@ -121,6 +122,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
                 local_input_matrix_B.begin() + k * block_dimension);
       k++;
     }
+    i = 0;
     while (i != block_rows_columns) {
       j = 0;
       while (j != block_rows_columns) {
@@ -131,48 +133,30 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
               //world.send(i * block_rows_columns + j, k,
                          //input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
                          //block_dimension);
-              world.send(i * block_rows_columns + j, k,
-                         input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                         block_dimension);
             } else {
               if (i * block_rows_columns + j - i < i * block_rows_columns) {
                 //world.send(i * block_rows_columns + j + block_rows_columns - i, k,
                            //input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
                            //block_dimension);
-                world.send(i * block_rows_columns + j + block_rows_columns - i, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
               } else {
                 //world.send(i * block_rows_columns + j - i, k,
                            //input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
                            //block_dimension);
-                world.send(i * block_rows_columns + j - i, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
               }
             }
             if (j == 0) {
               //world.send(i * block_rows_columns + j, k,
                          //input_matrix_B.data() + (i * block_dimension + k) * dimension + j * block_dimension,
                          //block_dimension);
-              world.send(i * block_rows_columns + j, k,
-                         input_matrix_B.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                         block_dimension);
             } else {
               if ((i - j) * block_rows_columns + j < 0) {
                 //world.send((i + block_rows_columns - j) * block_rows_columns + j, k,
                            //input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
                            //block_dimension);
-                world.send((i + block_rows_columns - j) * block_rows_columns + j, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
               } else {
                 //world.send((i - j) * block_rows_columns + j, k,
                            //input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
                            //block_dimension);
-                world.send((i - j) * block_rows_columns + j, k,
-                           input_matrix_A.data() + (i * block_dimension + k) * dimension + j * block_dimension,
-                           block_dimension);
               }
             }
             k++;
@@ -187,8 +171,6 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     while (k != block_dimension) {
       //world.recv(0, k, local_input_matrix_A.data() + k * block_dimension, block_dimension);
       //world.recv(0, k, local_input_matrix_B.data() + k * block_dimension, block_dimension);
-      world.recv(0, k, local_input_matrix_A.data() + k * block_dimension, block_dimension);
-      world.recv(0, k, local_input_matrix_B.data() + k * block_dimension, block_dimension);
       k++;
     }
   }
