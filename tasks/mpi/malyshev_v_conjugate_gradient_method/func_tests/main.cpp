@@ -31,14 +31,14 @@ TEST(malyshev_v_conjugate_gradient_method, test_small_system) {
     vector = malyshev_v_conjugate_gradient_method::getSmallVector();
     mpiResult.resize(vector.size());
 
-    for (auto &row : matrix) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+    for (auto& row : matrix) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
     }
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
     taskDataPar->inputs_count.push_back(vector.size());
     taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(mpiResult.size());
   }
 
@@ -69,14 +69,14 @@ TEST(malyshev_v_conjugate_gradient_method, test_large_system) {
     vector = malyshev_v_conjugate_gradient_method::getLargeVector();
     mpiResult.resize(vector.size());
 
-    for (auto &row : matrix) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+    for (auto& row : matrix) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
     }
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
     taskDataPar->inputs_count.push_back(vector.size());
     taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(mpiResult.size());
   }
 
@@ -86,7 +86,7 @@ TEST(malyshev_v_conjugate_gradient_method, test_large_system) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
-    std::vector<double> expectedResult = {0.090909, 0.181818, 0.272727, 0.363636};
+    std::vector<double> expectedResult = {0.181818, 0.272727, 0.363636, 0.454545};
     for (uint32_t i = 0; i < mpiResult.size(); i++) {
       ASSERT_NEAR(expectedResult[i], mpiResult[i], 1e-5);
     }

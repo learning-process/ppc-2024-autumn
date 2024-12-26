@@ -1,11 +1,13 @@
 #include "mpi/malyshev_v_conjugate_gradient_method/include/ops_mpi.hpp"
 
-#include <algorithm>
-#include <boost/serialization/vector.hpp>
+#include <boost/mpi/all_reduce.hpp>
+#include <boost/mpi/communicator.hpp>
 #include <cmath>
 #include <vector>
 
-bool malyshev_v_conjugate_gradient_method::TestTaskSequential::pre_processing() {
+namespace malyshev_v_conjugate_gradient_method {
+
+bool TestTaskSequential::pre_processing() {
   internal_order_test();
 
   uint32_t size = taskData->inputs_count[0];
@@ -26,7 +28,7 @@ bool malyshev_v_conjugate_gradient_method::TestTaskSequential::pre_processing() 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method::TestTaskSequential::validation() {
+bool TestTaskSequential::validation() {
   internal_order_test();
 
   uint32_t size = taskData->inputs_count[0];
@@ -38,85 +40,70 @@ bool malyshev_v_conjugate_gradient_method::TestTaskSequential::validation() {
   return taskData->outputs_count[0] == taskData->inputs_count[0];
 }
 
-bool malyshev_v_conjugate_gradient_method::TestTaskSequential::run() {
+bool TestTaskSequential::run() {
   internal_order_test();
 
   uint32_t size = matrix_.size();
-  std::vector<double> residual(size);
-  std::vector<double> direction(size);
-  std::vector<double> temp(size);
+  std::vector<double> r(size), p(size), Ap(size);
+  result_.assign(size, 0.0);
 
-  std::fill(result_.begin(), result_.end(), 0.0);
-
+  // Initial residual
   for (uint32_t i = 0; i < size; ++i) {
-    residual[i] = vector_[i];
+    r[i] = vector_[i];
     for (uint32_t j = 0; j < size; ++j) {
-      residual[i] -= matrix_[i][j] * result_[j];
+      r[i] -= matrix_[i][j] * result_[j];
     }
-    direction[i] = residual[i];
   }
 
-  double residual_norm_sq = 0.0;
-  for (uint32_t i = 0; i < size; ++i) {
-    residual_norm_sq += residual[i] * residual[i];
-  }
+  p.assign(r.begin(), r.end());
 
-  const double tolerance = 1e-6;
-  const uint32_t max_iterations = size;
+  double rTr = dot(r, r);
+  double tolerance = 1e-10;
+  uint32_t max_iterations = size;
 
   for (uint32_t iter = 0; iter < max_iterations; ++iter) {
-    std::fill(temp.begin(), temp.end(), 0.0);
+    // Compute Ap
     for (uint32_t i = 0; i < size; ++i) {
+      Ap[i] = 0.0;
       for (uint32_t j = 0; j < size; ++j) {
-        temp[i] += matrix_[i][j] * direction[j];
+        Ap[i] += matrix_[i][j] * p[j];
       }
     }
 
-    double alpha_numerator = 0.0;
+    // Compute alpha
+    double pAp = dot(p, Ap);
+    double alpha = rTr / pAp;
+
+    // Update solution
     for (uint32_t i = 0; i < size; ++i) {
-      alpha_numerator += residual[i] * residual[i];
+      result_[i] += alpha * p[i];
     }
 
-    double alpha_denominator = 0.0;
+    // Update residual
     for (uint32_t i = 0; i < size; ++i) {
-      alpha_denominator += direction[i] * temp[i];
+      r[i] -= alpha * Ap[i];
     }
 
-    if (alpha_denominator == 0.0) {
+    // Check convergence
+    double new_rTr = dot(r, r);
+    if (std::sqrt(new_rTr) < tolerance) {
       break;
     }
 
-    double alpha = alpha_numerator / alpha_denominator;
+    // Compute beta
+    double beta = new_rTr / rTr;
+    rTr = new_rTr;
 
+    // Update search direction
     for (uint32_t i = 0; i < size; ++i) {
-      result_[i] += alpha * direction[i];
-    }
-
-    for (uint32_t i = 0; i < size; ++i) {
-      residual[i] -= alpha * temp[i];
-    }
-
-    double new_residual_norm_sq = 0.0;
-    for (uint32_t i = 0; i < size; ++i) {
-      new_residual_norm_sq += residual[i] * residual[i];
-    }
-
-    if (std::sqrt(new_residual_norm_sq) < tolerance) {
-      break;
-    }
-
-    double beta = new_residual_norm_sq / residual_norm_sq;
-    residual_norm_sq = new_residual_norm_sq;
-
-    for (uint32_t i = 0; i < size; ++i) {
-      direction[i] = residual[i] + beta * direction[i];
+      p[i] = r[i] + beta * p[i];
     }
   }
 
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method::TestTaskSequential::post_processing() {
+bool TestTaskSequential::post_processing() {
   internal_order_test();
 
   std::copy(result_.begin(), result_.end(), reinterpret_cast<double*>(taskData->outputs[0]));
@@ -124,7 +111,15 @@ bool malyshev_v_conjugate_gradient_method::TestTaskSequential::post_processing()
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method::TestTaskParallel::pre_processing() {
+double dot(const std::vector<double>& a, const std::vector<double>& b) {
+  double result = 0.0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    result += a[i] * b[i];
+  }
+  return result;
+}
+
+bool TestTaskParallel::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -150,7 +145,7 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::pre_processing() {
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method::TestTaskParallel::validation() {
+bool TestTaskParallel::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -166,114 +161,74 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::validation() {
   return true;
 }
 
-bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
+bool TestTaskParallel::run() {
   internal_order_test();
 
-  // Broadcasting matrix size and extents from rank 0
-  broadcast(world, delta_, 0);
-  broadcast(world, ext_, 0);
+  uint32_t size = matrix_.size();
+  std::vector<double> r(size), p(size), Ap(size);
+  result_.assign(size, 0.0);
 
-  // Broadcasting full vector to all processes
-  broadcast(world, vector_, 0);
-
-  // Compute local sizes for each process
-  std::vector<int> sizes(world.size(), delta_);
-  for (uint32_t i = 0; i < ext_; i++) {
-    sizes[i]++;  // Distribute extra rows
-  }
-
-  // Scatter rows of the matrix to local_matrix_
-  scatterv(world, matrix_, sizes, local_matrix_.data(), 0);
-
-  uint32_t local_size = local_matrix_.size();
-  std::vector<double> local_residual(local_size);
-  std::vector<double> local_direction(local_size);
-  std::vector<double> local_temp(local_size);
-
-  // Initialize result vector and residual
-  std::fill(local_result_.begin(), local_result_.end(), 0.0);
-
-  // Calculate initial residual and direction
-  for (uint32_t i = 0; i < local_size; ++i) {
-    local_residual[i] = vector_[i];
-    for (uint32_t j = 0; j < vector_.size(); ++j) {
-      local_residual[i] -= local_matrix_[i][j] * local_result_[j];
+  // Initial residual
+  for (uint32_t i = 0; i < size; ++i) {
+    r[i] = vector_[i];
+    for (uint32_t j = 0; j < size; ++j) {
+      r[i] -= matrix_[i][j] * result_[j];
     }
-    local_direction[i] = local_residual[i];
   }
 
-  // Compute initial norm of the residual
-  double local_residual_norm_sq = 0.0;
-  for (uint32_t i = 0; i < local_size; ++i) {
-    local_residual_norm_sq += local_residual[i] * local_residual[i];
-  }
+  p.assign(r.begin(), r.end());
 
-  double global_residual_norm_sq;
-  reduce(world, local_residual_norm_sq, global_residual_norm_sq, std::plus<>(), 0);
-  broadcast(world, global_residual_norm_sq, 0);
+  double rTr = dot(r, r);
+  double tolerance = 1e-10;
+  uint32_t max_iterations = size;
 
-  for (uint32_t iter = 0; iter < vector_.size(); ++iter) {
-    // Reset temp and compute A * direction
-    std::fill(local_temp.begin(), local_temp.end(), 0.0);
-    for (uint32_t i = 0; i < local_size; ++i) {
-      for (uint32_t j = 0; j < vector_.size(); ++j) {
-        local_temp[i] += local_matrix_[i][j] * local_direction[j];
+  for (uint32_t iter = 0; iter < max_iterations; ++iter) {
+    // Compute Ap
+    for (uint32_t i = 0; i < size; ++i) {
+      Ap[i] = 0.0;
+      for (uint32_t j = 0; j < size; ++j) {
+        Ap[i] += matrix_[i][j] * p[j];
       }
     }
 
-    // Compute alpha = (r_k^T * r_k) / (p_k^T * A * p_k)
-    double local_alpha_num = 0.0;
-    for (uint32_t i = 0; i < local_size; ++i) {
-      local_alpha_num += local_direction[i] * local_residual[i];
+    // Compute alpha
+    double pAp = dot(p, Ap);
+    double global_pAp;
+    boost::mpi::all_reduce(world, pAp, global_pAp, std::plus<double>());
+    double alpha = rTr / global_pAp;
+
+    // Update solution
+    for (uint32_t i = 0; i < size; ++i) {
+      result_[i] += alpha * p[i];
     }
 
-    double global_alpha_num, global_alpha_denom = 0.0;
-    reduce(world, local_alpha_num, global_alpha_num, std::plus<>(), 0);
-    for (uint32_t i = 0; i < local_size; ++i) {
-      global_alpha_denom += local_direction[i] * local_temp[i];
-    }
-    reduce(world, global_alpha_denom, global_alpha_denom, std::plus<>(), 0);
-    broadcast(world, global_alpha_num, 0);
-    broadcast(world, global_alpha_denom, 0);
-
-    double alpha = global_alpha_num / global_alpha_denom;
-
-    // Update result and residual
-    for (uint32_t i = 0; i < local_size; ++i) {
-      local_result_[i] += alpha * local_direction[i];
-      local_residual[i] -= alpha * local_temp[i];
+    // Update residual
+    for (uint32_t i = 0; i < size; ++i) {
+      r[i] -= alpha * Ap[i];
     }
 
-    // Compute new residual norm
-    double new_local_residual_norm_sq = 0.0;
-    for (uint32_t i = 0; i < local_size; ++i) {
-      new_local_residual_norm_sq += local_residual[i] * local_residual[i];
-    }
-
-    double new_global_residual_norm_sq;
-    reduce(world, new_local_residual_norm_sq, new_global_residual_norm_sq, std::plus<>(), 0);
-    broadcast(world, new_global_residual_norm_sq, 0);
-
-    if (std::sqrt(new_global_residual_norm_sq) < 1e-6) {
+    // Check convergence
+    double new_rTr = dot(r, r);
+    double global_new_rTr;
+    boost::mpi::all_reduce(world, new_rTr, global_new_rTr, std::plus<double>());
+    if (std::sqrt(global_new_rTr) < tolerance) {
       break;
     }
 
     // Compute beta
-    double beta = new_global_residual_norm_sq / global_residual_norm_sq;
-    global_residual_norm_sq = new_global_residual_norm_sq;
+    double beta = global_new_rTr / rTr;
+    rTr = global_new_rTr;
 
-    // Update direction
-    for (uint32_t i = 0; i < local_size; ++i) {
-      local_direction[i] = local_residual[i] + beta * local_direction[i];
+    // Update search direction
+    for (uint32_t i = 0; i < size; ++i) {
+      p[i] = r[i] + beta * p[i];
     }
   }
 
-  // Gather results from all processes
-  gatherv(world, local_result_, result_.data(), sizes, 0);
-
   return true;
 }
-bool malyshev_v_conjugate_gradient_method::TestTaskParallel::post_processing() {
+
+bool TestTaskParallel::post_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
@@ -282,3 +237,12 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::post_processing() {
 
   return true;
 }
+
+double dot(const std::vector<double>& a, const std::vector<double>& b) {
+  double result = 0.0;
+  for (size_t i = 0; i < a.size(); ++i) {
+    result += a[i] * b[i];
+  }
+  return result;
+}
+}  // namespace malyshev_v_conjugate_gradient_method

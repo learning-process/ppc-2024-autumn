@@ -28,14 +28,14 @@ TEST(malyshev_v_conjugate_gradient_method, test_pipeline_run) {
     vector = malyshev_v_conjugate_gradient_method::getTestVector();
     mpiResult.resize(vector.size());
 
-    for (auto &row : matrix) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+    for (auto& row : matrix) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
     }
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
     taskDataPar->inputs_count.push_back(vector.size());
     taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(mpiResult.size());
   }
 
@@ -73,14 +73,14 @@ TEST(malyshev_v_conjugate_gradient_method, test_task_run) {
     vector = malyshev_v_conjugate_gradient_method::getTestVector();
     mpiResult.resize(vector.size());
 
-    for (auto &row : matrix) {
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(row.data()));
+    for (auto& row : matrix) {
+      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(row.data()));
     }
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vector.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
     taskDataPar->inputs_count.push_back(vector.size());
     taskDataPar->inputs_count.push_back(vector.size());
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(mpiResult.size());
   }
 
