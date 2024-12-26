@@ -7,7 +7,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <numeric>
 #include <utility>
-#include <vector>
+
 #include "core/task/include/task.hpp"
 
 namespace korobeinikov_a_test_task_mpi_lab_03 {
