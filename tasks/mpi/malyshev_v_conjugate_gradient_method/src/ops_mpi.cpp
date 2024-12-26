@@ -169,18 +169,20 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::validation() {
 bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
   internal_order_test();
 
+  // Broadcasting matrix size and extents from rank 0
   broadcast(world, delta_, 0);
   broadcast(world, ext_, 0);
+
+  // Broadcasting full vector to all processes
   broadcast(world, vector_, 0);
 
+  // Compute local sizes for each process
   std::vector<int> sizes(world.size(), delta_);
   for (uint32_t i = 0; i < ext_; i++) {
-    sizes[world.size() - i - 1]++;
+    sizes[i]++;  // Distribute extra rows
   }
 
-  local_matrix_.resize(sizes[world.rank()]);
-  local_result_.resize(sizes[world.rank()]);
-
+  // Scatter rows of the matrix to local_matrix_
   scatterv(world, matrix_, sizes, local_matrix_.data(), 0);
 
   uint32_t local_size = local_matrix_.size();
@@ -188,16 +190,19 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
   std::vector<double> local_direction(local_size);
   std::vector<double> local_temp(local_size);
 
+  // Initialize result vector and residual
   std::fill(local_result_.begin(), local_result_.end(), 0.0);
 
+  // Calculate initial residual and direction
   for (uint32_t i = 0; i < local_size; ++i) {
     local_residual[i] = vector_[i];
-    for (uint32_t j = 0; j < local_size; ++j) {
+    for (uint32_t j = 0; j < vector_.size(); ++j) {
       local_residual[i] -= local_matrix_[i][j] * local_result_[j];
     }
     local_direction[i] = local_residual[i];
   }
 
+  // Compute initial norm of the residual
   double local_residual_norm_sq = 0.0;
   for (uint32_t i = 0; i < local_size; ++i) {
     local_residual_norm_sq += local_residual[i] * local_residual[i];
@@ -207,49 +212,39 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
   reduce(world, local_residual_norm_sq, global_residual_norm_sq, std::plus<>(), 0);
   broadcast(world, global_residual_norm_sq, 0);
 
-  const double tolerance = 1e-6;
-  const uint32_t max_iterations = local_size;
-
-  for (uint32_t iter = 0; iter < max_iterations; ++iter) {
+  for (uint32_t iter = 0; iter < vector_.size(); ++iter) {
+    // Reset temp and compute A * direction
     std::fill(local_temp.begin(), local_temp.end(), 0.0);
     for (uint32_t i = 0; i < local_size; ++i) {
-      for (uint32_t j = 0; j < local_size; ++j) {
+      for (uint32_t j = 0; j < vector_.size(); ++j) {
         local_temp[i] += local_matrix_[i][j] * local_direction[j];
       }
     }
 
-    double local_alpha_numerator = 0.0;
+    // Compute alpha = (r_k^T * r_k) / (p_k^T * A * p_k)
+    double local_alpha_num = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
-      local_alpha_numerator += local_residual[i] * local_residual[i];
+      local_alpha_num += local_direction[i] * local_residual[i];
     }
 
-    double global_alpha_numerator;
-    reduce(world, local_alpha_numerator, global_alpha_numerator, std::plus<>(), 0);
-    broadcast(world, global_alpha_numerator, 0);
-
-    double local_alpha_denominator = 0.0;
+    double global_alpha_num, global_alpha_denom = 0.0;
+    reduce(world, local_alpha_num, global_alpha_num, std::plus<>(), 0);
     for (uint32_t i = 0; i < local_size; ++i) {
-      local_alpha_denominator += local_direction[i] * local_temp[i];
+      global_alpha_denom += local_direction[i] * local_temp[i];
     }
+    reduce(world, global_alpha_denom, global_alpha_denom, std::plus<>(), 0);
+    broadcast(world, global_alpha_num, 0);
+    broadcast(world, global_alpha_denom, 0);
 
-    double global_alpha_denominator;
-    reduce(world, local_alpha_denominator, global_alpha_denominator, std::plus<>(), 0);
-    broadcast(world, global_alpha_denominator, 0);
+    double alpha = global_alpha_num / global_alpha_denom;
 
-    if (global_alpha_denominator == 0.0) {
-      break;
-    }
-
-    double global_alpha = global_alpha_numerator / global_alpha_denominator;
-
+    // Update result and residual
     for (uint32_t i = 0; i < local_size; ++i) {
-      local_result_[i] += global_alpha * local_direction[i];
+      local_result_[i] += alpha * local_direction[i];
+      local_residual[i] -= alpha * local_temp[i];
     }
 
-    for (uint32_t i = 0; i < local_size; ++i) {
-      local_residual[i] -= global_alpha * local_temp[i];
-    }
-
+    // Compute new residual norm
     double new_local_residual_norm_sq = 0.0;
     for (uint32_t i = 0; i < local_size; ++i) {
       new_local_residual_norm_sq += local_residual[i] * local_residual[i];
@@ -259,23 +254,25 @@ bool malyshev_v_conjugate_gradient_method::TestTaskParallel::run() {
     reduce(world, new_local_residual_norm_sq, new_global_residual_norm_sq, std::plus<>(), 0);
     broadcast(world, new_global_residual_norm_sq, 0);
 
-    if (std::sqrt(new_global_residual_norm_sq) < tolerance) {
+    if (std::sqrt(new_global_residual_norm_sq) < 1e-6) {
       break;
     }
 
+    // Compute beta
     double beta = new_global_residual_norm_sq / global_residual_norm_sq;
     global_residual_norm_sq = new_global_residual_norm_sq;
 
+    // Update direction
     for (uint32_t i = 0; i < local_size; ++i) {
       local_direction[i] = local_residual[i] + beta * local_direction[i];
     }
   }
 
+  // Gather results from all processes
   gatherv(world, local_result_, result_.data(), sizes, 0);
 
   return true;
 }
-
 bool malyshev_v_conjugate_gradient_method::TestTaskParallel::post_processing() {
   internal_order_test();
 
