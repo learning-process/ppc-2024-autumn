@@ -139,11 +139,10 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     if (phase % 2 == 0) {
       if (world_rank % 2 == 0 && next_rank < world_size) {
         world.send(next_rank, world_rank, local_res);
-      } else if (world_rank % 2 == 1) {
+      } else if (world_rank % 2 == 1 && world_rank > 0) {
         std::vector<int> received_data;
         world.recv(prev_rank, prev_rank, received_data);
         odd_even_merge(local_res, received_data);
-
         world.send(prev_rank, world_rank, received_data);
       }
       if (world_rank % 2 == 0 && next_rank < world_size) {
@@ -152,7 +151,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     } else {
       if (world_rank % 2 == 1 && next_rank < world_size) {
         world.send(next_rank, world_rank, local_res);
-      } else if (world_rank % 2 == 0) {
+      } else if (world_rank % 2 == 0 && world_rank > 0) {
         std::vector<int> received_data;
         world.recv(prev_rank, prev_rank, received_data);
         odd_even_merge(local_res, received_data);
