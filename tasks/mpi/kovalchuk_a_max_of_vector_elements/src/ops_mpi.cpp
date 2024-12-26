@@ -6,10 +6,11 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <ranges>
 
-bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::pre_processing() {
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::pre_processing() {
   internal_order_test();
-  // Init vectors
+  // Инициализация векторов
   if (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0) {
     input_ = std::vector<std::vector<int>>(taskData->inputs_count[0], std::vector<int>(taskData->inputs_count[1]));
     for (unsigned int i = 0; i < taskData->inputs_count[0]; i++) {
@@ -19,27 +20,22 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::pre_processing()
   } else {
     input_ = std::vector<std::vector<int>>();
   }
-  // Init value for output
+  // Инициализация значения для вывода
   res_ = INT_MIN;
   return true;
 }
 
-bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::validation() {
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::validation() {
   internal_order_test();
-  // Check count elements of output
+  // Проверка количества элементов на выходе
   if (taskData->outputs_count[0] != 1) {
     return false;
   }
-  // Check that all vectors are not empty
-  for (const auto& vec : input_) {
-    if (vec.empty()) {
-      return false;
-    }
-  }
-  return true;
+  // Проверка, что все векторы не пусты
+  return std::ranges::all_of(input_, [](const auto& vec) { return !vec.empty(); });
 }
 
-bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::run() {
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::run() {
   internal_order_test();
   std::vector<int> local_res(input_.size());
   for (unsigned int i = 0; i < input_.size(); i++) {
@@ -49,7 +45,7 @@ bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::run() {
   return true;
 }
 
-bool kovalchuk_a_max_of_vector_elements::TestMPITaskSequential::post_processing() {
+bool kovalchuk_a_max_of_vector_elements_seq::TestSequentialTask::post_processing() {
   internal_order_test();
   reinterpret_cast<int*>(taskData->outputs[0])[0] = res_;
   return true;
