@@ -7,9 +7,11 @@ bool savchenko_m_ribbon_mult_split_a_seq::TestTaskSequential::validation() {
   // columns_B = taskData->inputs_count[2];
   // rows_B = taskData->inputs_count[3];
 
+  bool valid_inputs = (taskData->inputs.size() == 2);
+  bool valid_outputs = (taskData->outputs.size() == 1);
   bool valid_icount = (taskData->inputs_count.size() == 4);
   bool valid_ocount = (taskData->outputs_count.size() == 1);
-  bool valid_io = (valid_icount && valid_ocount);
+  bool valid_io = (valid_inputs && valid_outputs && valid_icount && valid_ocount);
   if (!valid_io) return false;
 
   bool matrix_A_positive_size = (taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0);

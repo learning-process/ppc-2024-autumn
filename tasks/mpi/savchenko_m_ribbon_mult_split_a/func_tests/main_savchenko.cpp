@@ -30,9 +30,10 @@ int getRandomInt(int min, int max) {
 }
 }  // namespace savchenko_m_ribbon_mult_split_a_mpi
 
-TEST(savchenko_m_ribbon_mult_split_a_mpi, test) {
+TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_inputs) {
+  // Create data
   boost::mpi::communicator world;
-  bool test = true;
+
   int size;
   int res_size;
 
@@ -49,9 +50,147 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, test) {
     matrix_B = std::vector<int>(res_size, 0);
     matrix_res = std::vector<int>(res_size, 0);
 
-    ASSERT_TRUE(test);
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
-  ASSERT_TRUE(test);
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_one_inputs) {
+  // Create data
+  boost::mpi::communicator world;
+
+  int size;
+  int res_size;
+
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
+  std::vector<int> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    size = 5;
+    res_size = size * size;
+    matrix_A = std::vector<int>(res_size, 0);
+    matrix_B = std::vector<int>(res_size, 0);
+    matrix_res = std::vector<int>(res_size, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_three_inputs) {
+  // Create data
+  boost::mpi::communicator world;
+
+  int size;
+  int res_size;
+
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
+  std::vector<int> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    size = 5;
+    res_size = size * size;
+    matrix_A = std::vector<int>(res_size, 0);
+    matrix_B = std::vector<int>(res_size, 0);
+    matrix_res = std::vector<int>(res_size, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_outputs) {
+  // Create data
+  boost::mpi::communicator world;
+
+  int size;
+  int res_size;
+
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
+  std::vector<int> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    size = 5;
+    res_size = size * size;
+    matrix_A = std::vector<int>(res_size, 0);
+    matrix_B = std::vector<int>(res_size, 0);
+    matrix_res = std::vector<int>(res_size, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_two_outputs) {
+  // Create data
+  boost::mpi::communicator world;
+
+  int size;
+  int res_size;
+
+  std::vector<int> matrix_A;
+  std::vector<int> matrix_B;
+  std::vector<int> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    size = 5;
+    res_size = size * size;
+    matrix_A = std::vector<int>(res_size, 0);
+    matrix_B = std::vector<int>(res_size, 0);
+    matrix_res = std::vector<int>(res_size, 0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+
+    // Create Task
+    savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_mpi, validation_zero_inputs_count) {

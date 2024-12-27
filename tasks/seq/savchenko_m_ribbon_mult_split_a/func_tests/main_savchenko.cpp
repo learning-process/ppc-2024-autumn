@@ -30,6 +30,171 @@ int getRandomInt(int min, int max) {
 }
 }  // namespace savchenko_m_ribbon_mult_split_a_seq
 
+TEST(savchenko_m_ribbon_mult_split_a_seq, validation_zero_inputs) {
+  // Create data
+
+  const int size = 5;
+  const int columns_A = size;
+  const int rows_A = size;
+  const int columns_B = size;
+  const int rows_B = size;
+  const int res_size = rows_A * columns_B;
+
+  std::vector<int> matrix_A(rows_A * columns_A, 0);
+  std::vector<int> matrix_B(rows_B * columns_B, 0);
+
+  std::vector<int> matrix_res(res_size, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  //// matrix_A
+  taskDataSeq->inputs_count.emplace_back(rows_A);
+  //// matrix_B
+  taskDataSeq->inputs_count.emplace_back(rows_B);
+  //// matrix_res
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(matrix_res.size());
+
+  // Create Task
+  savchenko_m_ribbon_mult_split_a_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_seq, validation_one_inputs) {
+  // Create data
+
+  const int size = 5;
+  const int columns_A = size;
+  const int rows_A = size;
+  const int columns_B = size;
+  const int rows_B = size;
+  const int res_size = rows_A * columns_B;
+
+  std::vector<int> matrix_A(rows_A * columns_A, 0);
+  std::vector<int> matrix_B(rows_B * columns_B, 0);
+
+  std::vector<int> matrix_res(res_size, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  //// matrix_A
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_A);
+  taskDataSeq->inputs_count.emplace_back(rows_A);
+  //// matrix_B
+  taskDataSeq->inputs_count.emplace_back(rows_B);
+  //// matrix_res
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(matrix_res.size());
+
+  // Create Task
+  savchenko_m_ribbon_mult_split_a_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_seq, validation_three_inputs) {
+  // Create data
+
+  const int size = 5;
+  const int columns_A = size;
+  const int rows_A = size;
+  const int columns_B = size;
+  const int rows_B = size;
+  const int res_size = rows_A * columns_B;
+
+  std::vector<int> matrix_A(rows_A * columns_A, 0);
+  std::vector<int> matrix_B(rows_B * columns_B, 0);
+
+  std::vector<int> matrix_res(res_size, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  //// matrix_A
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_A);
+  taskDataSeq->inputs_count.emplace_back(columns_A);
+  taskDataSeq->inputs_count.emplace_back(rows_A);
+  //// matrix_B
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_B);
+  taskDataSeq->inputs_count.emplace_back(rows_B);
+  //// matrix_res
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(matrix_res.size());
+
+  // Create Task
+  savchenko_m_ribbon_mult_split_a_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_seq, validation_zero_outputs) {
+  // Create data
+
+  const int size = 5;
+  const int columns_A = size;
+  const int rows_A = size;
+  const int columns_B = size;
+  const int rows_B = size;
+  const int res_size = rows_A * columns_B;
+
+  std::vector<int> matrix_A(rows_A * columns_A, 0);
+  std::vector<int> matrix_B(rows_B * columns_B, 0);
+
+  std::vector<int> matrix_res(res_size, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  //// matrix_A
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_A);
+  taskDataSeq->inputs_count.emplace_back(rows_A);
+  //// matrix_B
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_B);
+  taskDataSeq->inputs_count.emplace_back(rows_B);
+  //// matrix_res
+  taskDataSeq->outputs_count.emplace_back(matrix_res.size());
+
+  // Create Task
+  savchenko_m_ribbon_mult_split_a_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_ribbon_mult_split_a_seq, validation_two_outputs) {
+  // Create data
+
+  const int size = 5;
+  const int columns_A = size;
+  const int rows_A = size;
+  const int columns_B = size;
+  const int rows_B = size;
+  const int res_size = rows_A * columns_B;
+
+  std::vector<int> matrix_A(rows_A * columns_A, 0);
+  std::vector<int> matrix_B(rows_B * columns_B, 0);
+
+  std::vector<int> matrix_res(res_size, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  //// matrix_A
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_A);
+  taskDataSeq->inputs_count.emplace_back(rows_A);
+  //// matrix_B
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(columns_B);
+  taskDataSeq->inputs_count.emplace_back(rows_B);
+  //// matrix_res
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(matrix_res.size());
+
+  // Create Task
+  savchenko_m_ribbon_mult_split_a_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
 TEST(savchenko_m_ribbon_mult_split_a_seq, validation_zero_inputs_count) {
   // Create data
 
