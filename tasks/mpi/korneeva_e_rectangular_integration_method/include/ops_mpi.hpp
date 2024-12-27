@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <boost/mpi/collectives.hpp>
@@ -13,7 +14,6 @@
 namespace korneeva_e_rectangular_integration_method_mpi {
 
 constexpr double MIN_EPSILON = 1e-6;
-
 using Function = std::function<double(std::vector<double>& args)>;
 
 class RectangularIntegrationSeq : public ppc::core::Task {
@@ -49,11 +49,12 @@ class RectangularIntegrationMPI : public ppc::core::Task {
   Function integrandFunction;
   std::vector<std::pair<double, double>> limits;
 
-  boost::mpi::communicator mpi_comm;
+  boost::mpi::communicator mpi_comm;  // MPI communicator
 };
 
-double calculateIntegral(const Function& func, double epsilon, std::vector<std::pair<double, double>> limits,
-                         std::vector<double> args);
+// Function for sequential integration (recursive)
+double calculateIntegral(const Function& func_, double epsilon_, std::vector<std::pair<double, double>>& limits_,
+                         std::vector<double>& args_);
 
 // class RectangularIntegrationSeq
 bool RectangularIntegrationSeq::pre_processing() {
@@ -147,54 +148,55 @@ bool RectangularIntegrationMPI::run() {
   internal_order_test();
 
   std::vector<double> args;
+  bool continueRefining = true;
 
   broadcast(mpi_comm, limits, 0);
   broadcast(mpi_comm, epsilon, 0);
 
-  double globalRes = 0.0;
-  double prevGlobalRes = 0.0;
-  double localRes = 0.0;
-  int numProcs = mpi_comm.size();
+  int totalProcesses = mpi_comm.size();
+  double globalIntegral = 0.0;
+  double previousGlobalIntegral = 0.0;
+  double localIntegral = 0.0;
 
-  auto [start, end] = limits.front();
-  double step = (end - start) / numProcs;
+  auto [intervalStart, intervalEnd] = limits.front();
+  double intervalStep = (intervalEnd - intervalStart) / totalProcesses;
 
-  double localStart = start + step * mpi_comm.rank();
-  double localEnd = localStart + step;
+  double localStart = intervalStart + intervalStep * mpi_comm.rank();
+  double localEnd = localStart + intervalStep;
 
   limits.erase(limits.begin());
   args.emplace_back(0.0);
 
-  bool refine = true;
-  while (refine) {
-    prevGlobalRes = globalRes;
-    globalRes = 0.0;
-    localRes = 0.0;
+  while (continueRefining) {
+    previousGlobalIntegral = globalIntegral;
+    globalIntegral = 0.0;
+    localIntegral = 0.0;
 
-    int localSegs = numProcs / mpi_comm.size();
-    double segWidth = (localEnd - localStart) / localSegs;
-    args.back() = localStart + segWidth / 2.0;
+    int localSegments = totalProcesses / mpi_comm.size();
+    double segmentWidth = (localEnd - localStart) / localSegments;
+    args.back() = localStart + segmentWidth / 2.0;
 
-    for (int i = 0; i < localSegs; i++) {
+    for (int segment = 0; segment < localSegments; segment++) {
       if (limits.empty()) {
-        localRes += integrandFunction(args) * segWidth;
+        localIntegral += integrandFunction(args) * segmentWidth;
       } else {
-        localRes += calculateIntegral(integrandFunction, epsilon, limits, args) * segWidth;
+        localIntegral += calculateIntegral(integrandFunction, epsilon, limits, args) * segmentWidth;
       }
-      args.back() += segWidth;
+      args.back() += segmentWidth;
     }
 
-    reduce(mpi_comm, localRes, globalRes, std::plus<>(), 0);
+    reduce(mpi_comm, localIntegral, globalIntegral, std::plus<>(), 0);
 
     if (mpi_comm.rank() == 0) {
-      refine = (std::abs(globalRes - prevGlobalRes) * (1.0 / 3.0) > epsilon);
+      continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) * (1.0 / 3.0) > epsilon);
     }
-    broadcast(mpi_comm, refine, 0);
 
-    numProcs *= 2;
+    broadcast(mpi_comm, continueRefining, 0);
+
+    totalProcesses *= 2;
   }
 
-  result = (mpi_comm.rank() == 0) ? globalRes : 0.0;
+  result = (mpi_comm.rank() == 0) ? globalIntegral : 0.0;
   return true;
 }
 
@@ -207,40 +209,40 @@ bool RectangularIntegrationMPI::post_processing() {
 }
 
 // function calculateIntegral()
-double calculateIntegral(const Function& func, double epsilon, std::vector<std::pair<double, double>> limits,
-                         std::vector<double> args) {
+double calculateIntegral(const Function& func_, double epsilon_, std::vector<std::pair<double, double>>& limits_,
+                         std::vector<double>& args_) {
   double integralValue = 0;
-  double prevValue = 0;
+  double previousValue;
   int subdivisions = 2;
-  bool flag = true;
 
-  auto [low, high] = limits.front();
-  limits.erase(limits.begin());
-  args.push_back(0.0);
+  auto [lowerBound, upperBound] = limits_.front();
+  limits_.erase(limits_.begin());
+  args_.emplace_back(0.0);
 
-  while (flag) {
-    prevValue = integralValue;
+  while (true) {
+    previousValue = integralValue;
     integralValue = 0.0;
 
-    double step = (high - low) / subdivisions;
-    args.back() = low + step / 2.0;
+    double segmentWidth = (upperBound - lowerBound) / subdivisions;
+    args_.back() = lowerBound + segmentWidth / 2.0;
 
     for (int i = 0; i < subdivisions; ++i) {
-      if (limits.empty()) {
-        integralValue += func(args) * step;
+      if (limits_.empty()) {
+        integralValue += func_(args_) * segmentWidth;
       } else {
-        integralValue += calculateIntegral(func, epsilon, limits, args) * step;
+        integralValue += calculateIntegral(func_, epsilon_, limits_, args_) * segmentWidth;
       }
-      args.back() += step;
+      args_.back() += segmentWidth;
     }
 
     subdivisions *= 2;
-
-    flag = (std::abs(integralValue - prevValue) * (1.0 / 3.0) > epsilon);
+    if (std::abs(integralValue - previousValue) * (1.0 / 3.0) <= epsilon_) {
+      break;
+    }
   }
 
-  args.pop_back();
-  limits.insert(limits.begin(), {low, high});
+  args_.pop_back();
+  limits_.insert(limits_.begin(), {lowerBound, upperBound});
 
   return integralValue;
 }
