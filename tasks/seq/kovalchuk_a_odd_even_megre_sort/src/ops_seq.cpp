@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-void batcher_merge(std::vector<int>& array, int start, int mid, int end) {
+void batcher_merge(std::vector<int>& array, int start, int end) {
   int n = end - start;
   if (n <= 1) return;
 
@@ -19,8 +19,8 @@ void batcher_merge(std::vector<int>& array, int start, int mid, int end) {
     }
   }
 
-  batcher_merge(even_array, 0, even_array.size() / 2, even_array.size());
-  batcher_merge(odd_array, 0, odd_array.size() / 2, odd_array.size());
+  batcher_merge(even_array, 0, even_array.size());
+  batcher_merge(odd_array, 0, odd_array.size());
 
   std::merge(even_array.begin(), even_array.end(), odd_array.begin(), odd_array.end(), array.begin() + start);
 }
@@ -33,7 +33,7 @@ void batcher_sort(std::vector<int>& array, int start, int end) {
   batcher_sort(array, start, mid);
   batcher_sort(array, mid, end);
 
-  batcher_merge(array, start, mid, end);
+  batcher_merge(array, start, end);
 }
 
 bool kovalchuk_a_odd_even_seq::TestTaskSequential::pre_processing() {
