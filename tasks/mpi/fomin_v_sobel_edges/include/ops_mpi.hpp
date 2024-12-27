@@ -27,9 +27,10 @@ class SobelEdgeDetectionMPI : public ppc::core::Task {
   std::vector<unsigned char> output_image_;
   int height_;
   int width_;
+  std::vector<unsigned char> local_input_;
   std::vector<unsigned char> local_input_image_;
   std::vector<unsigned char> local_output_image_;
-  // boost::mpi::communicator world;
+  boost::mpi::communicator world;
 };
 
 class SobelEdgeDetection : public ppc::core::Task {

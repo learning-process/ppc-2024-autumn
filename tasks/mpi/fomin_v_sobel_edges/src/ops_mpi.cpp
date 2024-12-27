@@ -10,108 +10,94 @@ using namespace std::chrono_literals;
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   internal_order_test();
 
-  width_ = taskData->inputs_count[0];
-  height_ = taskData->inputs_count[1];
-  input_image_.assign(taskData->inputs[0], taskData->inputs[0] + width_ * height_);
-  output_image_.resize(width_ * height_, 0);
+  if (world.rank() == 0) {
+    input_image_ = *reinterpret_cast<std::vector<unsigned char>*>(taskData->inputs[0]);
+    width_ = taskData->inputs_count[0];
+    height_ = taskData->inputs_count[1];
+  }
+
+  int local_height;
+  if (world.rank() == 0) {
+    local_height = height_ / world.size();
+    if (height_ % world.size() != 0) {
+      local_height += 1;
+    }
+  }
+  MPI_Bcast(&width_, 1, MPI_INT, 0, world);
+  MPI_Bcast(&height_, 1, MPI_INT, 0, world);
+
+  MPI_Bcast(&local_height, 1, MPI_INT, 0, world);
+
+  local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
+  output_image_.resize(local_height * width_, 0);
+
+  if (world.rank() == 0) {
+    int disp = 0;
+    for (int proc = 0; proc < world.size(); ++proc) {
+      int proc_local_height = local_height;
+      if (proc == world.size() - 1) {
+        proc_local_height = height_ - (world.size() - 1) * local_height;
+      }
+      if (proc != 0) {
+        world.send(proc, 0, input_image_.data() + disp - width_, width_ * (proc_local_height + 2));
+      } else {
+        world.send(proc, 0, input_image_.data() + disp, width_ * (proc_local_height + 2));
+      }
+      disp += proc_local_height * width_;
+    }
+  } else {
+    world.recv(0, 0, local_input_.data(), width_ * (local_height + 2));
+  }
+
   return true;
 }
-
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::validation() {
   internal_order_test();
-  return taskData->inputs_count.size() == 2 && taskData->outputs_count.size() == 2;
+
+  if (world.rank() == 0) {
+    return taskData->inputs_count.size() == 2 && taskData->outputs_count.size() == 1;
+  }
+  return true;
 }
 
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   internal_order_test();
-  boost::mpi::communicator world;
-
-  int rank = world.rank();
-  int size = world.size();
-
-  if (size == 1) {
-    // Run serial version if only one process
-    fomin_v_sobel_edges::SobelEdgeDetection sobelEdgeDetection(taskData);
-    return sobelEdgeDetection.run();
-  }
 
   const int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
-  int total_processable_rows = height_ - 2;
-  int rows_per_process = total_processable_rows / size;
-  int extra_rows = total_processable_rows % size;
-
-  int start_row = 1 + (rank < extra_rows ? rank * (rows_per_process + 1) : rank * rows_per_process + extra_rows);
-  int end_row = start_row + (rank < extra_rows ? rows_per_process + 1 : rows_per_process);
-
-  std::vector<unsigned char> top_row(width_);
-  std::vector<unsigned char> bottom_row(width_);
-
-  if (rank > 0) {
-    world.recv(rank - 1, 1, top_row);
-  }
-  if (rank < size - 1) {
-    world.recv(rank + 1, 0, bottom_row);
-  }
-
-  if (rank > 0) {
-    std::vector<unsigned char> send_top_row(input_image_.begin() + (start_row - 1) * width_,
-                                            input_image_.begin() + start_row * width_);
-    world.send(rank - 1, 0, send_top_row);
-  }
-  if (rank < size - 1) {
-    std::vector<unsigned char> send_bottom_row(input_image_.begin() + end_row * width_,
-                                               input_image_.begin() + (end_row + 1) * width_);
-    world.send(rank + 1, 1, send_bottom_row);
-  }
-
-  for (int y = start_row; y <= end_row; ++y) {
+  int local_height = local_input_.size() / width_ - 2;  // exclude boundary rows
+  for (int y = 1; y <= local_height; ++y) {
     for (int x = 1; x < width_ - 1; ++x) {
       int sumX = 0;
       int sumY = 0;
-
       for (int i = -1; i <= 1; ++i) {
-        int pixel_row = y + i;
-        if (pixel_row < 0 || pixel_row >= height_) continue;
-
-        unsigned char pixel = input_image_[pixel_row * width_ + x];
-        if (pixel_row < start_row - 1 && rank > 0)
-          pixel = top_row[x];
-        else if (pixel_row > end_row && rank < size - 1)
-          pixel = bottom_row[x];
-
-        sumX += pixel * Gx[i + 1][x - (pixel_row == y ? 0 : (pixel_row == y - 1 ? -1 : 1))];
-        sumY += pixel * Gy[i + 1][x - (pixel_row == y ? 0 : (pixel_row == y - 1 ? -1 : 1))];
+        for (int j = -1; j <= 1; ++j) {
+          int pixel = local_input_[(y + i) * width_ + (x + j)];
+          sumX += pixel * Gx[i + 1][j + 1];
+          sumY += pixel * Gy[i + 1][j + 1];
+        }
       }
-
       int gradient = static_cast<int>(std::sqrt(sumX * sumX + sumY * sumY));
-      output_image_[y * width_ + x] = static_cast<unsigned char>(std::min(gradient, 255));
+      output_image_[(y - 1) * width_ + x] = static_cast<unsigned char>(std::min(gradient, 255));
     }
   }
-
-  if (rank != 0) {
-    std::vector<unsigned char> send_buffer(output_image_.begin() + start_row * width_,
-                                           output_image_.begin() + end_row * width_);
-    world.send(0, 2 + rank, send_buffer);
-  } else {
-    for (int i = 1; i < size; ++i) {
-      int proc_start_row = 1 + (i < extra_rows ? i * (rows_per_process + 1) : i * rows_per_process + extra_rows);
-
-      std::vector<unsigned char> recv_buffer;
-      world.recv(i, 2 + i, recv_buffer);
-      std::copy(recv_buffer.begin(), recv_buffer.end(), output_image_.begin() + proc_start_row * width_);
-    }
-  }
-
   return true;
 }
 
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
   internal_order_test();
 
-  if (taskData->outputs[0] != nullptr) {
-    std::copy(output_image_.begin(), output_image_.end(), taskData->outputs[0]);
+  std::vector<unsigned char> gathered_output;
+  if (world.rank() == 0) {
+    gathered_output.resize(height_ * width_, 0);
+  }
+
+  MPI_Gather(output_image_.data(), output_image_.size(), MPI_UNSIGNED_CHAR, gathered_output.data(),
+             output_image_.size(), MPI_UNSIGNED_CHAR, 0, world);
+
+  if (world.rank() == 0) {
+    *reinterpret_cast<std::vector<unsigned char>*>(taskData->outputs[0]) = gathered_output;
   }
   return true;
 }
