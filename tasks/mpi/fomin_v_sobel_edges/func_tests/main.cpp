@@ -42,7 +42,7 @@ TEST(fomin_v_sobel_edges, KnownValueTest) {
   sobelEdgeDetectionMPI.post_processing();
 
   if (world.rank() == 0) {
-    std::vector<unsigned char> output_image = *reinterpret_cast<std::vector<unsigned char>*>(taskDataPar->outputs[0]);
+    std::vector<unsigned char> output_image(taskDataPar->outputs[0], taskDataPar->outputs[0] + width * height);
 
     for (size_t i = 0; i < expected_output.size(); ++i) {
       EXPECT_EQ(expected_output[i], output_image[i]) << "Mismatch at index " << i;
