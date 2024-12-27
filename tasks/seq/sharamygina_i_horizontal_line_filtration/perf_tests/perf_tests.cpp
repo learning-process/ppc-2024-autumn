@@ -6,7 +6,7 @@
 #include <random>
 
 #include "core/task/include/task.hpp"
-#include "seq/anufriev_d_linear_image/include/ops_seq_anufriev.hpp"
+#include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.h"
 
 using namespace sharamygina_i_horizontal_line_filtration_seq {
   std::vector<unsigned int> GetImage(int rows, int cols) {
