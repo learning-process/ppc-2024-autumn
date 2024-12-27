@@ -1,4 +1,4 @@
-#include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.hpp"
+#include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.h"
 
 bool sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq::pre_processing() {
   internal_order_test();
