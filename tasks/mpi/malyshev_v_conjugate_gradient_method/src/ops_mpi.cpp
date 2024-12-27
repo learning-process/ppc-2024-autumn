@@ -148,6 +148,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
   std::vector<double> x(size, 0.0);
   std::vector<double> r(size, 0.0);
   std::vector<double> p(size, 0.0);
+  std::vector<double> Ap(size, 0.0);
   double rsold = 0.0;
 
   if (world.rank() == 0) {
@@ -161,10 +162,9 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
   broadcast(world, rsold, 0);
 
   for (uint32_t i = 0; i < size; ++i) {
-    std::vector<double> Ap(size, 0.0);
-
     if (world.rank() == 0) {
       for (uint32_t j = 0; j < size; ++j) {
+        Ap[j] = 0.0;
         for (uint32_t k = 0; k < size; ++k) {
           Ap[j] += matrix_[j][k] * p[k];
         }
@@ -173,26 +173,29 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
     broadcast(world, Ap, 0);
 
-    double pAp = 0.0;
-    if (world.rank() == 0) {
-      for (uint32_t j = 0; j < size; ++j) {
-        pAp += p[j] * Ap[j];
-      }
+    double local_pAp = 0.0;
+    for (uint32_t j = 0; j < size; ++j) {
+      local_pAp += p[j] * Ap[j];
     }
 
-    broadcast(world, pAp, 0);
+    double global_pAp = 0.0;
+    reduce(world, local_pAp, global_pAp, std::plus<>(), 0);
 
-    if (pAp == 0.0) {  // Avoid division by zero
-      break;
+    if (world.rank() == 0 && std::abs(global_pAp) < 1e-12) {
+      std::cerr << "Error: Division by near-zero in conjugate gradient. global_pAp = " << global_pAp << std::endl;
+      return false;
     }
 
-    double alpha = rsold / pAp;
+    double alpha = 0.0;
     if (world.rank() == 0) {
+      alpha = rsold / global_pAp;
       for (uint32_t j = 0; j < size; ++j) {
         x[j] += alpha * p[j];
         r[j] -= alpha * Ap[j];
       }
     }
+
+    broadcast(world, r, 0);
 
     double rsnew = 0.0;
     if (world.rank() == 0) {
@@ -213,6 +216,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
       }
     }
 
+    broadcast(world, p, 0);
     rsold = rsnew;
   }
 
@@ -220,7 +224,6 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
     result_ = x;
   }
 
-  world.barrier();
   return true;
 }
 

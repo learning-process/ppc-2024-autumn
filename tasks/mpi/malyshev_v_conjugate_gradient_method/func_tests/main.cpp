@@ -132,6 +132,18 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     ASSERT_TRUE(taskSeq.run());
     ASSERT_TRUE(taskSeq.post_processing());
 
+    std::cerr << "Sequential result:" << std::endl;
+    for (const auto& val : seqResult) {
+      std::cerr << val << " ";
+    }
+    std::cerr << std::endl;
+
+    std::cerr << "MPI result:" << std::endl;
+    for (const auto& val : mpiResult) {
+      std::cerr << val << " ";
+    }
+    std::cerr << std::endl;
+
     for (uint32_t i = 0; i < size; i++) {
       ASSERT_FALSE(std::isnan(seqResult[i]));
       ASSERT_FALSE(std::isnan(mpiResult[i]));
