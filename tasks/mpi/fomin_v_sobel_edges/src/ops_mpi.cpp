@@ -30,21 +30,43 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   MPI_Bcast(&local_height, 1, MPI_INT, 0, world);
 
   local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
-  output_image_.resize(local_height * width_, 0);
 
   if (world.rank() == 0) {
+    // Calculate displacements for each process
     int disp = 0;
     for (int proc = 0; proc < world.size(); ++proc) {
       int proc_local_height = local_height;
       if (proc == world.size() - 1) {
         proc_local_height = height_ - (world.size() - 1) * local_height;
       }
-      const unsigned char* send_ptr = input_image_.data() + disp * width_;
-      world.send(proc, 0, send_ptr, width_ * (proc_local_height + 2));
+      // Prepare data with padding
+      std::vector<unsigned char> send_data((proc_local_height + 2) * width_, 0);
+      if (proc == 0) {
+        // Top padding is the first row
+        std::copy(input_image_.begin(), input_image_.begin() + width_, send_data.begin());
+        std::copy(input_image_.begin() + disp * width_, input_image_.begin() + (disp + proc_local_height) * width_,
+                  send_data.begin() + width_);
+      } else if (proc == world.size() - 1) {
+        // Bottom padding is the last row
+        std::copy(input_image_.begin() + disp * width_, input_image_.begin() + (disp + proc_local_height) * width_,
+                  send_data.begin());
+        std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
+                  send_data.begin() + proc_local_height * width_);
+      } else {
+        // Padding is the rows from neighboring processes
+        std::copy(input_image_.begin() + (disp - 1) * width_, input_image_.begin() + (disp - 1 + 1) * width_,
+                  send_data.begin());
+        std::copy(input_image_.begin() + disp * width_, input_image_.begin() + (disp + proc_local_height) * width_,
+                  send_data.begin() + width_);
+        std::copy(input_image_.begin() + (disp + proc_local_height) * width_,
+                  input_image_.begin() + (disp + proc_local_height + 1) * width_,
+                  send_data.begin() + (proc_local_height + 1) * width_);
+      }
+      world.send(proc, 0, send_data.data(), send_data.size());
       disp += proc_local_height;
     }
   } else {
-    world.recv(0, 0, local_input_.data(), width_ * (local_height + 2));
+    world.recv(0, 0, local_input_.data(), local_input_.size());
   }
 
   return true;
