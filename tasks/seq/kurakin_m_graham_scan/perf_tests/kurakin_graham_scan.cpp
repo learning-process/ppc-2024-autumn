@@ -10,7 +10,7 @@ TEST(kurakin_m_graham_scan_seq, test_pipeline_run) {
   std::vector<double> points;
 
   // Create data
-  count_point = 10000;
+  count_point = 100000;
   points = std::vector<double>(count_point * 2);
 
   points[0] = count_point / 2;
@@ -79,7 +79,7 @@ TEST(kurakin_m_graham_scan_seq, test_task_run) {
   std::vector<double> points;
 
   // Create data
-  count_point = 10000;
+  count_point = 100000;
   points = std::vector<double>(count_point * 2);
 
   points[0] = count_point / 2;
