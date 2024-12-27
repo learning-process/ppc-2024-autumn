@@ -6,6 +6,26 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
+namespace chistov_a_gather_boost_test {
+
+template <typename T>
+std::vector<T> getRandomVector(int size_) {
+  if (size_ < 0) {
+    return std::vector<T>();
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-100, 100);
+
+  std::vector<T> randomVector(size_);
+  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<T>(dist(gen)); });
+
+  return randomVector;
+}
+
+}  // namespace chistov_a_gather_boost_test
+
 TEST(chistov_a_gather_boost, boost_empty_vector_check) {
   boost::mpi::communicator world;
   const int count_size_vector = 100;
@@ -34,7 +54,7 @@ TEST(chistov_a_gather_boost, boost_empty_output_check) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    vector = chistov_a_gather_boost::getRandomVector<int>(count_size_vector);
+    vector = chistov_a_gather_boost_test::getRandomVector<int>(count_size_vector);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vector.data()));
     taskDataPar->inputs_count.emplace_back(vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(gathered_vec.data()));
@@ -54,7 +74,7 @@ TEST(chistov_a_gather_boost, boost_task_check_int) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  local_vector = chistov_a_gather_boost::getRandomVector<int>(count_size_vector);
+  local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 
@@ -85,7 +105,7 @@ TEST(chistov_a_gather_boost, boost_task_check_double) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  local_vector = chistov_a_gather_boost::getRandomVector<double>(count_size_vector);
+  local_vector = chistov_a_gather_boost_test::getRandomVector<double>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 
@@ -116,7 +136,7 @@ TEST(chistov_a_gather_boost, boost_task_check_float) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  local_vector = chistov_a_gather_boost::getRandomVector<float>(count_size_vector);
+  local_vector = chistov_a_gather_boost_test::getRandomVector<float>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 
@@ -147,7 +167,7 @@ TEST(chistov_a_gather_boost, boost_task_check_char) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  local_vector = chistov_a_gather_boost::getRandomVector<char>(count_size_vector);
+  local_vector = chistov_a_gather_boost_test::getRandomVector<char>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 
@@ -243,7 +263,7 @@ TEST(chistov_a_gather_boost, test_count_is_a_powers_of_two_sort) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  local_vector = chistov_a_gather_boost::getRandomVector<int>(count_size_vector);
+  local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 
@@ -274,7 +294,7 @@ TEST(chistov_a_gather_boost, test_count_is_a_prime_number_sort) {
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  local_vector = chistov_a_gather_boost::getRandomVector<int>(count_size_vector);
+  local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count_size_vector);
   taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(local_vector.data()));
   taskDataPar->inputs_count.emplace_back(count_size_vector);
 

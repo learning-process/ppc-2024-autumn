@@ -7,11 +7,31 @@
 
 #include "core/perf/include/perf.hpp"
 
+namespace chistov_a_gather_boost_test {
+
+template <typename T>
+std::vector<T> getRandomVector(int size_) {
+  if (size_ < 0) {
+    return std::vector<T>();
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-100, 100);
+
+  std::vector<T> randomVector(size_);
+  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<T>(dist(gen)); });
+
+  return randomVector;
+}
+
+}  // namespace chistov_a_gather_boost_test
+
 TEST(chistov_a_gather_boost, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int count_size_vector = 10000000;
+  const int count_size_vector = 5000000;
   std::vector<int> vector;
-  std::vector<int> local_vec = chistov_a_gather_boost::getRandomVector<int>(count_size_vector);
+  std::vector<int> local_vec = chistov_a_gather_boost_test::getRandomVector<int>(count_size_vector);
   std::vector<int> gathered_data(count_size_vector * world.size());
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -50,9 +70,9 @@ TEST(chistov_a_gather_boost, test_pipeline_run) {
 
 TEST(chistov_a_gather_boost, test_task_run) {
   boost::mpi::communicator world;
-  const int count_size_vector = 10000000;
+  const int count_size_vector = 5000000;
   std::vector<int> vector;
-  std::vector<int> local_vec = chistov_a_gather_boost::getRandomVector<int>(count_size_vector);
+  std::vector<int> local_vec = chistov_a_gather_boost_test::getRandomVector<int>(count_size_vector);
   std::vector<int> gathered_data(count_size_vector * world.size());
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

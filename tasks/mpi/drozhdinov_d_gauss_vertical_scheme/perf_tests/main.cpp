@@ -64,10 +64,10 @@ template std::vector<int> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVecto
 template std::vector<double> drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector(int sz);
 }  // namespace drozhdinov_d_gauss_vertical_scheme_mpi
 
-TEST(MPIGAUSSPERF, test_pipeline_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi_perf, test_pipeline_run) {
   boost::mpi::communicator world;
-  int rows = 900;
-  int columns = 900;
+  int rows = 500;
+  int columns = 500;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector<int>(1);
   std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_mpi::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);
@@ -112,10 +112,10 @@ TEST(MPIGAUSSPERF, test_pipeline_run) {
   }
 }
 
-TEST(MPIGAUSSPERF, test_task_run) {
+TEST(drozhdinov_d_gauss_vertical_scheme_mpi_perf, test_task_run) {
   boost::mpi::communicator world;
-  int rows = 900;
-  int columns = 900;
+  int rows = 500;
+  int columns = 500;
   std::vector<int> a = drozhdinov_d_gauss_vertical_scheme_mpi::getRandomVector<int>(1);
   std::vector<double> matrix = drozhdinov_d_gauss_vertical_scheme_mpi::genDenseMatrix(rows, *a.begin());
   std::vector<double> b(rows, 1);

@@ -5,13 +5,33 @@
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
 
+namespace chistov_a_gather_boost_test {
+
+template <typename T>
+std::vector<T> getRandomVector(int size_) {
+  if (size_ < 0) {
+    return std::vector<T>();
+  }
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<int> dist(-100, 100);
+
+  std::vector<T> randomVector(size_);
+  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<T>(dist(gen)); });
+
+  return randomVector;
+}
+
+}  // namespace chistov_a_gather_boost_test
+
 TEST(chistov_a_gather_boost, test_empty_vector) {
   boost::mpi::communicator world;
 
   if (world.rank() == 0) {
     std::vector<int> local_vector;
     std::vector<int> gathered_data;
-    local_vector = chistov_a_gather_boost::getRandomVector<int>(0);
+    local_vector = chistov_a_gather_boost_test::getRandomVector<int>(0);
 
     ASSERT_FALSE(chistov_a_gather_boost::gather<int>(world, local_vector, local_vector.size(), gathered_data, 0));
   }
@@ -23,7 +43,7 @@ TEST(chistov_a_gather_boost, test_incorrect_root_process) {
   if (world.rank() == 0) {
     std::vector<int> local_vector;
     std::vector<int> gathered_data;
-    local_vector = chistov_a_gather_boost::getRandomVector<int>(1);
+    local_vector = chistov_a_gather_boost_test::getRandomVector<int>(1);
 
     ASSERT_FALSE(chistov_a_gather_boost::gather<int>(world, local_vector, local_vector.size(), gathered_data, -1));
   }
@@ -43,7 +63,7 @@ TEST(chistov_a_gather_boost, test_empty_task_data) {
 TEST(chistov_a_gather_boost, test_int_gather) {
   boost::mpi::communicator world;
   int count = 2;
-  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
@@ -57,7 +77,7 @@ TEST(chistov_a_gather_boost, test_int_gather) {
 TEST(chistov_a_gather_boost, test_double_gather) {
   boost::mpi::communicator world;
   int count = 2;
-  std::vector<double> local_vector = chistov_a_gather_boost::getRandomVector<double>(count);
+  std::vector<double> local_vector = chistov_a_gather_boost_test::getRandomVector<double>(count);
   std::vector<double> my_gathered_vector;
   std::vector<double> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
@@ -71,7 +91,7 @@ TEST(chistov_a_gather_boost, test_double_gather) {
 TEST(chistov_a_gather_boost, test_float_gather) {
   boost::mpi::communicator world;
   int count = 2;
-  std::vector<float> local_vector = chistov_a_gather_boost::getRandomVector<float>(count);
+  std::vector<float> local_vector = chistov_a_gather_boost_test::getRandomVector<float>(count);
   std::vector<float> my_gathered_vector;
   std::vector<float> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
@@ -85,7 +105,7 @@ TEST(chistov_a_gather_boost, test_float_gather) {
 TEST(chistov_a_gather_boost, test_char_gather) {
   boost::mpi::communicator world;
   int count = 2;
-  std::vector<char> local_vector = chistov_a_gather_boost::getRandomVector<char>(count);
+  std::vector<char> local_vector = chistov_a_gather_boost_test::getRandomVector<char>(count);
   std::vector<char> my_gathered_vector;
   std::vector<char> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
@@ -99,7 +119,7 @@ TEST(chistov_a_gather_boost, test_char_gather) {
 TEST(chistov_a_gather_boost, test_large_size) {
   boost::mpi::communicator world;
   int count = 100000;
-  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
@@ -115,7 +135,7 @@ TEST(chistov_a_gather_boost, test_not_zero_root) {
   if (world.size() == 1) return;
   int count = 5;
   int root = 1;
-  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, root);
@@ -168,7 +188,7 @@ TEST(chistov_a_gather_boost, test_gather_different_values) {
 TEST(chistov_a_gather_boost, test_count_is_a_powers_of_two) {
   boost::mpi::communicator world;
   int count = 1024;
-  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;
   boost::mpi::gather(world, local_vector.data(), count, mpi_gathered_data, 0);
@@ -182,7 +202,7 @@ TEST(chistov_a_gather_boost, test_count_is_a_powers_of_two) {
 TEST(chistov_a_gather_boost, test_count_is_a_prime_number_gather) {
   boost::mpi::communicator world;
   int count = 563;
-  std::vector<int> local_vector = chistov_a_gather_boost::getRandomVector<int>(count);
+  std::vector<int> local_vector = chistov_a_gather_boost_test::getRandomVector<int>(count);
   std::vector<int> my_gathered_vector;
   std::vector<int> mpi_gathered_data;
 
