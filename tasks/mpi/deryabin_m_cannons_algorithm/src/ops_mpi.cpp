@@ -78,7 +78,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   unsigned short j;
   unsigned short k;
   unsigned short dimension;
-  if (world.size() == 1 || world.size() != pow((unsigned short)sqrt(world.size()), 2) || (unsigned short)sqrt(input_matrix_A.size()) % (unsigned short)sqrt(world.size()) != 0) {
+  if (world.size() == 1 || world.size() != pow((unsigned short)sqrt(world.size()), 2) ||
+      (unsigned short)sqrt(input_matrix_A.size()) % (unsigned short)sqrt(world.size()) != 0) {
     if (world.rank() == 0) {
       dimension = (unsigned short)sqrt(input_matrix_A.size());
       output_matrix_C = std::vector<double>(dimension * dimension);
@@ -187,7 +188,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     unsigned short p = 1;
     while (p != block_rows_columns) {
       if (world.rank() % block_rows_columns == 0) {
-        world.send(world.rank() + block_rows_columns - 1, 2, local_input_matrix_A.data(), block_dimension * block_dimension);
+        world.send(world.rank() + block_rows_columns - 1, 2, local_input_matrix_A.data(),
+                   block_dimension * block_dimension);
       } else {
         world.send(world.rank() - 1, 3, local_input_matrix_A.data(), block_dimension * block_dimension);
       }
@@ -196,9 +198,12 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
                    block_dimension * block_dimension);
       } else {
         world.send(world.rank() - block_rows_columns, 5, local_input_matrix_B.data(), block_dimension * block_dimension);
+        world.send(world.rank() - block_rows_columns, 5, local_input_matrix_B.data(),
+                   block_dimension * block_dimension);
       }
       if ((world.rank() + 1) % block_rows_columns == 0) {
-        world.recv(world.rank() - block_rows_columns + 1, 2, local_input_matrix_A.data(), block_dimension * block_dimension);
+        world.recv(world.rank() - block_rows_columns + 1, 2, local_input_matrix_A.data(),
+                   block_dimension * block_dimension);
       } else {
         world.recv(world.rank() + 1, 3, local_input_matrix_A.data(), block_dimension * block_dimension);
       }
@@ -206,7 +211,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 4, local_input_matrix_B.data(),
                    block_dimension * block_dimension);
       } else {
-        world.recv(world.rank() + block_rows_columns, 5, local_input_matrix_B.data(), block_dimension * block_dimension);
+        world.recv(world.rank() + block_rows_columns, 5, local_input_matrix_B.data(),
+                   block_dimension * block_dimension);
       }
       i = 0;
       while (i != block_dimension) {
@@ -231,8 +237,15 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
     } else {
       for (unsigned short proc = 1; proc < world.size(); ++proc) {
         for (unsigned short block_row = 0; block_row < block_dimension; ++block_row) {
-          std::copy(local_output_matrix_C.begin() + block_row * block_dimension, local_output_matrix_C.begin() + (block_row + 1) * block_dimension, output_matrix_C.begin() + ((world.rank() / block_rows_columns) * block_dimension + block_row * dimension + (world.rank() % block_rows_columns) * block_dimension));
-          world.recv(proc, 0, output_matrix_C.data() + ((proc / block_rows_columns) * block_dimension + block_row) * dimension + (proc % block_rows_columns) * block_dimension, block_dimension);
+          std::copy(
+              local_output_matrix_C.begin() + block_row * block_dimension,
+              local_output_matrix_C.begin() + (block_row + 1) * block_dimension,
+              output_matrix_C.begin() + ((world.rank() / block_rows_columns) * block_dimension + block_row * dimension +
+                                         (world.rank() % block_rows_columns) * block_dimension));
+          world.recv(proc, 0,
+                     output_matrix_C.data() + ((proc / block_rows_columns) * block_dimension + block_row) * dimension +
+                         (proc % block_rows_columns) * block_dimension,
+                     block_dimension);
         }
       }
     }
