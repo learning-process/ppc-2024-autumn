@@ -53,10 +53,7 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskSequential::pre_processing() {
 
 bool laganina_e_dejskras_a_mpi::TestMPITaskSequential::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] <= 0) {
-    return false;
-  }
-  return true;
+  return taskData->inputs_count[0] > 0;
 }
 
 bool laganina_e_dejskras_a_mpi::TestMPITaskSequential::run() {
