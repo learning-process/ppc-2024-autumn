@@ -62,7 +62,8 @@ void morozov_e_mult_sparse_matrix::convertToCCS(const std::vector<std::vector<do
   }
   col_pointers[0] = 0;
 }
-double morozov_e_mult_sparse_matrix::scalMultOfVectors(const std::vector<double>& vA, const std::vector<double>& vB) {
+template <typename T>
+T morozov_e_mult_sparse_matrix::scalMultOfVectors(const std::vector<T>& vA, const std::vector<T>& vB) {
   double ans = 0;
   for (size_t i = 0; i < vA.size(); ++i) {
     ans += vA[i] * vB[i];

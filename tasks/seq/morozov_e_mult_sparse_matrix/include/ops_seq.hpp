@@ -6,7 +6,8 @@
 #include "core/task/include/task.hpp"
 
 namespace morozov_e_mult_sparse_matrix {
-double scalMultOfVectors(const std::vector<double> &vA, const std::vector<double> &vB);
+template <typename T>
+T scalMultOfVectors(const std::vector<T> &vA, const std::vector<T> &vB);
 std::pair<std::vector<std::vector<double>>, std::vector<std::vector<double>>> convertToBasicMatrixs(
     const std::vector<double> &dA, const std::vector<int> &row_indA, const std::vector<int> &col_indA,
     const std::vector<double> &dB, const std::vector<int> &row_indB, const std::vector<int> &col_indB, int rowsA,
