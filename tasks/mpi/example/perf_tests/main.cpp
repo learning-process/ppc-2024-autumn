@@ -91,9 +91,48 @@ int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
   boost::mpi::communicator world;
   ::testing::InitGoogleTest(&argc, argv);
-  ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
-  if (world.rank() != 0) {
-    delete listeners.Release(listeners.default_result_printer());
+  auto& listeners = ::testing::UnitTest::GetInstance()->listeners();
+  if (world.rank() != 0 && (argc < 2 || argv[1] != std::string("--full-workers-log"))) {
+    class WorkersTestPrinter : public ::testing::EmptyTestEventListener {
+     public:
+      WorkersTestPrinter(std::unique_ptr<TestEventListener>&& base, int rank) : base_(std::move(base)), rank_(rank) {}
+
+      void OnTestEnd(const ::testing::TestInfo& test_info) override {
+        if (test_info.result()->Passed()) {
+          return;
+        }
+        print_process_rank();
+        base_->OnTestEnd(test_info);
+      }
+
+      void OnTestPartResult(const ::testing::TestPartResult& test_part_result) override {
+        print_process_rank();
+        base_->OnTestPartResult(test_part_result);
+      }
+
+     private:
+      void print_process_rank() const { printf(" [  PROCESS %d  ] ", rank_); }
+
+      std::unique_ptr<TestEventListener> base_;
+      int rank_;
+    };
+    listeners.Append(new WorkersTestPrinter(
+        std::unique_ptr<::testing::TestEventListener>(listeners.Release(listeners.default_result_printer())),
+        world.rank()));
   }
+  struct BufferGarbageDetector : public ::testing::EmptyTestEventListener {
+    void OnTestEnd(const ::testing::TestInfo& test_info) override {
+      world.barrier();
+      if (const auto status = world.iprobe(boost::mpi::any_source, boost::mpi::any_tag)) {
+        fprintf(stderr, "[  PROCESS %d  ] [  FAILED  ] %s.%s: MPI buffer is cluttered, unread message tag is %d\n",
+                world.rank(), test_info.test_suite_name(), test_info.name(), status->tag());
+        exit(2);
+      }
+      world.barrier();
+    }
+
+    boost::mpi::communicator world;
+  };
+  listeners.Append(new BufferGarbageDetector);
   return RUN_ALL_TESTS();
 }

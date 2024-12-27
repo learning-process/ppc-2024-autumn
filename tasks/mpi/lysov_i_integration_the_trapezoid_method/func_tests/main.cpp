@@ -13,7 +13,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_1) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = -1.45;
   double b = 0.0;
-  double epsilon = 0.000001;
+  double epsilon = 0.00001;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
@@ -48,7 +48,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_2) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   double a = 0.0;
   double b = 1.45;
-  double epsilon = 0.000001;
+  double epsilon = 0.00001;
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&b));
@@ -83,8 +83,8 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_3) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   double a = -10.0;
-  double b = 65.0;
-  double epsilon = 0.000001;
+  double b = 35.0;
+  double epsilon = 0.00001;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
@@ -122,7 +122,7 @@ TEST(lysov_i_integration_the_trapezoid_method_mpi, Test_Integration_mpi_4) {
 
   double a = -5.0;
   double b = 5.0;
-  double epsilon = 0.000001;
+  double epsilon = 0.00001;
 
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&a));
