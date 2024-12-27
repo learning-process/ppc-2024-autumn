@@ -45,6 +45,19 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
   double rsold = 0.0;
 
   for (uint32_t i = 0; i < size; ++i) {
+    if (std::isnan(vector_[i])) {
+      std::cerr << "Error: NaN detected in input vector." << std::endl;
+      return false;
+    }
+    for (uint32_t j = 0; j < size; ++j) {
+      if (std::isnan(matrix_[i][j])) {
+        std::cerr << "Error: NaN detected in input matrix." << std::endl;
+        return false;
+      }
+    }
+  }
+
+  for (uint32_t i = 0; i < size; ++i) {
     rsold += r[i] * r[i];
   }
 
@@ -61,8 +74,9 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
       pAp += p[j] * Ap[j];
     }
 
-    if (pAp == 0.0) {  // Avoid division by zero
-      break;
+    if (pAp == 0.0) {
+      std::cerr << "Error: Division by zero in conjugate gradient." << std::endl;
+      return false;
     }
 
     double alpha = rsold / pAp;

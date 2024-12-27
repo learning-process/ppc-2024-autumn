@@ -90,8 +90,8 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     malyshev_conjugate_gradient::TestTaskSequential taskSeq(taskDataSeq);
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixData.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vectorData.data()));
     taskDataSeq->inputs_count.push_back(size);
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
     taskDataSeq->outputs_count.push_back(size);
