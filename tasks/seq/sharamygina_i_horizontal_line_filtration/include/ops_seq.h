@@ -25,5 +25,5 @@ class horizontal_line_filtration_seq : public ppc::core::Task {
   int rows_;
   int cols_;
   unsigned int InputAnotherPixel(const std::vector<unsigned int>& image, int x, int y, int rows, int cols);
-}
+};
 }  // namespace sharamygina_i_horizontal_line_filtration_seq

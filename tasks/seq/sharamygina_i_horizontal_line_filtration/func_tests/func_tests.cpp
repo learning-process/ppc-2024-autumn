@@ -1,3 +1,5 @@
+#include <gtest/gtest.h>
+
 #include <random>
 
 #include "core/task/include/task.hpp"
@@ -44,7 +46,6 @@ TEST(sharamygina_i_horizontal_line_filtration, SampleImageTest) {
   std::vector<unsigned int> received_image;
   std::vector<unsigned int> image = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
   std::vector<unsigned int> expected_image = {0, 0, 0, 0, 0, 6, 7, 0, 0, 10, 11, 0, 0, 0, 0, 0};
-  expected_image = toFiltSeq(*image, rows, cols);
 
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
 
@@ -52,20 +53,20 @@ TEST(sharamygina_i_horizontal_line_filtration, SampleImageTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_image.data()));
   taskData->outputs_count.emplace_back(received_image.size());
 
-  sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi testTask(taskData);
+  sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq testTask(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
   ASSERT_EQ(output.size(), expected.size());
-  for (size_t i = 0; i < output.size(); i++) {
-    ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+  for (size_t i = 0; i < received_image.size(); i++) {
+    ASSERT_EQ(received_image[i], expected_image[i]) << "Difference at i=" << i;
   }
 }
 
 TEST(sharamygina_i_horizontal_line_filtration, BigImageTest) {
-  boost::mpi::communicator world;
+  boost::seq::communicator world;
 
   int rows = 200;
   int cols = 160;
@@ -77,9 +78,9 @@ TEST(sharamygina_i_horizontal_line_filtration, BigImageTest) {
   std::vector<unsigned int> received_image;
   std::vector<unsigned int> image(rows * cols);
   std::vector<unsigned int> expected_image(rows * cols);
-  expected_image = toFiltSeq(*image, rows, cols);
 
   image = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
+  sharamygina_i_horizontal_line_filtration_seq::ToFiltSeq(image, rows, cols, expected_image);
 
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
 
@@ -87,19 +88,19 @@ TEST(sharamygina_i_horizontal_line_filtration, BigImageTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_image.data()));
   taskData->outputs_count.emplace_back(received_image.size());
 
-  sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi testTask(taskData);
+  sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq testTask(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
-  for (size_t i = 0; i < output.size(); i++) {
-    ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+  for (size_t i = 0; i < received_image.size(); i++) {
+    ASSERT_EQ(received_image[i], expected_image[i]) << "Difference at i=" << i;
   }
 }
 
 TEST(sharamygina_i_horizontal_line_filtration, SmallImageTest) {
-  boost::mpi::communicator world;
+  boost::seq::communicator world;
 
   int rows = 5;
   int cols = 4;
@@ -111,9 +112,9 @@ TEST(sharamygina_i_horizontal_line_filtration, SmallImageTest) {
   std::vector<unsigned int> received_image;
   std::vector<unsigned int> image(rows * cols);
   std::vector<unsigned int> expected_image(rows * cols);
-  expected_image = toFiltSeq(*image, rows, cols);
 
   image = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
+  sharamygina_i_horizontal_line_filtration_seq::ToFiltSeq(image, rows, cols, expected_image);
 
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
 
@@ -121,19 +122,19 @@ TEST(sharamygina_i_horizontal_line_filtration, SmallImageTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_image.data()));
   taskData->outputs_count.emplace_back(received_image.size());
 
-  sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi testTask(taskData);
+  sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq testTask(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
-  for (size_t i = 0; i < output.size(); i++) {
-    ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+  for (size_t i = 0; i < received_image.size(); i++) {
+    ASSERT_EQ(received_image[i], expected_image[i]) << "Difference at i=" << i;
   }
 }
 
 TEST(sharamygina_i_horizontal_line_filtration, SquareImageTest) {
-  boost::mpi::communicator world;
+  boost::seq::communicator world;
 
   int rows = 5;
   int cols = 5;
@@ -145,9 +146,9 @@ TEST(sharamygina_i_horizontal_line_filtration, SquareImageTest) {
   std::vector<unsigned int> received_image;
   std::vector<unsigned int> image(rows * cols);
   std::vector<unsigned int> expected_image(rows * cols);
-  expected_image = toFiltSeq(*image, rows, cols);
 
   image = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
+  sharamygina_i_horizontal_line_filtration_seq::ToFiltSeq(image, rows, cols, expected_image);
 
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
 
@@ -155,19 +156,19 @@ TEST(sharamygina_i_horizontal_line_filtration, SquareImageTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_image.data()));
   taskData->outputs_count.emplace_back(received_image.size());
 
-  sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi testTask(taskData);
+  sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq testTask(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
-  for (size_t i = 0; i < output.size(); i++) {
-    ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+  for (size_t i = 0; i < received_image.size(); i++) {
+    ASSERT_EQ(received_image[i], expected_image[i]) << "Difference at i=" << i;
   }
 }
 
 TEST(sharamygina_i_horizontal_line_filtration, HorizontalImageTest) {
-  boost::mpi::communicator world;
+  boost::seq::communicator world;
 
   int rows = 5;
   int cols = 10;
@@ -179,9 +180,9 @@ TEST(sharamygina_i_horizontal_line_filtration, HorizontalImageTest) {
   std::vector<unsigned int> received_image;
   std::vector<unsigned int> image(rows * cols);
   std::vector<unsigned int> expected_image(rows * cols);
-  expected_image = toFiltSeq(*image, rows, cols);
 
   image = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
+  sharamygina_i_horizontal_line_filtration_seq::ToFiltSeq(image, rows, cols, expected_image);
 
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
 
@@ -189,19 +190,19 @@ TEST(sharamygina_i_horizontal_line_filtration, HorizontalImageTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_image.data()));
   taskData->outputs_count.emplace_back(received_image.size());
 
-  sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi testTask(taskData);
+  sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq testTask(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
-  for (size_t i = 0; i < output.size(); i++) {
-    ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+  for (size_t i = 0; i < received_image.size(); i++) {
+    ASSERT_EQ(received_image[i], expected_image[i]) << "Difference at i=" << i;
   }
 }
 
 TEST(sharamygina_i_horizontal_line_filtration, VerticalImageTest) {
-  boost::mpi::communicator world;
+  boost::seq::communicator world;
 
   int rows = 10;
   int cols = 5;
@@ -213,9 +214,9 @@ TEST(sharamygina_i_horizontal_line_filtration, VerticalImageTest) {
   std::vector<unsigned int> received_image;
   std::vector<unsigned int> image(rows * cols);
   std::vector<unsigned int> expected_image(rows * cols);
-  expected_image = toFiltSeq(*image, rows, cols);
 
   image = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
+  sharamygina_i_horizontal_line_filtration_seq::ToFiltSeq(image, rows, cols, expected_image);
 
   taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(image.data()));
 
@@ -223,13 +224,13 @@ TEST(sharamygina_i_horizontal_line_filtration, VerticalImageTest) {
   taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_image.data()));
   taskData->outputs_count.emplace_back(received_image.size());
 
-  sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi testTask(taskData);
+  sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq testTask(taskData);
   ASSERT_TRUE(task->validation());
   ASSERT_TRUE(task->pre_processing());
   ASSERT_TRUE(task->run());
   ASSERT_TRUE(task->post_processing());
 
-  for (size_t i = 0; i < output.size(); i++) {
-    ASSERT_EQ(output[i], expected[i]) << "Difference at i=" << i;
+  for (size_t i = 0; i < received_image.size(); i++) {
+    ASSERT_EQ(received_image[i], expected_image[i]) << "Difference at i=" << i;
   }
 }

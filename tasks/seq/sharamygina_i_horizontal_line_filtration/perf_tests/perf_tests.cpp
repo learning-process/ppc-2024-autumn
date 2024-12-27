@@ -21,12 +21,12 @@ std::vector<unsigned int> GetImage(int rows, int cols) {
 }  // namespace sharamygina_i_horizontal_line_filtration_seq
 
 #define PERF_TEST_SEQ(test_name, rows_const, cols_const, num_runs, perf_method)
-TEST(anufriev_d_linear_image_perf_seq, test_name) {
+TEST(sharamygina_i_horizontal_line_filtration_seq, test_name) {
   int rows = rows_const;
   int cols = cols_const;
   auto taskData = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> input = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
-  std::vector<int> output(rows * cols);
+  std::vector<unsigned int> input = sharamygina_i_horizontal_line_filtration_seq::GetImage(rows, cols);
+  std::vector<unsigned int> output(rows * cols);
   taskData->inputs.push_back(reinterpret_cast<uint8_t*>(input.data()));
   taskData->inputs_count.push_back(rows);
   taskData->inputs_count.push_back(cols);

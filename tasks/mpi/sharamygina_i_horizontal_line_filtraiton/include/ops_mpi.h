@@ -1,11 +1,9 @@
 #pragma once
-#include <gtest/gtest.h>
+#include <gtest\gtest.h>
 
-#include <boost/mpi/collectives.hpp>
-#include <boost/mpi/communicator.hpp>
+#include <boost\mpi.hpp>
 #include <limits>
 #include <memory>
-#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -28,5 +26,5 @@ class horizontal_line_filtration_mpi : public ppc::core::Task {
   int cols_;
   unsigned int InputAnotherPixel(const std::vector<unsigned int>& image, int x, int y, int rows, int cols);
   boost::mpi::communicator world;
-}
+};
 }  // namespace sharamygina_i_horizontal_line_filtration_mpi

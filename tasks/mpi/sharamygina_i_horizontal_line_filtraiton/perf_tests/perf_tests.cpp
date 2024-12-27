@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
-#include <boost/mpi/timer.hpp>
+#include <boost\mpi\timer.hpp>
 #include <random>
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
-#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.h"
+#include "mpi\sharamygina_i_horizontal_line_filtraiton\include\ops_mpi.h"
 
 namespace sharamygina_i_horizontal_line_filtration_mpi {
 std::vector<unsigned int> GetImage(int rows, int cols) {
@@ -25,10 +25,10 @@ TEST(sharamygina_i_horizontal_line_filtration, PerfTest) {
   int rows = (R);
   int cols = (C);
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  std::vector<int> image;
-  std::vector<int> received_image;
+  std::vector<unsigned int> image;
+  std::vector<unsigned int> received_image;
   if (world.rank() == 0) {
-    image = generate_random_image(rows, cols);
+    image = sharamygina_i_horizontal_line_filtration_mpi::GetImage(rows, cols);
     received_image.resize(rows * cols, 0);
     taskData->inputs.push_back(reinterpret_cast<uint8_t *>(image.data()));
     taskData->inputs_count.push_back(rows);
@@ -37,7 +37,7 @@ TEST(sharamygina_i_horizontal_line_filtration, PerfTest) {
     taskData->outputs.push_back(reinterpret_cast<uint8_t *>(received_image.data()));
     taskData->outputs_count.push_back(received_image.size() * sizeof(int));
   }
-  auto task = std::make_shared<anufriev_d_linear_image::SimpleIntMPI>(taskData);
+  auto task = std::make_shared<sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi>(taskData);
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = num_runs;
   boost::mpi::timer current_timer;
