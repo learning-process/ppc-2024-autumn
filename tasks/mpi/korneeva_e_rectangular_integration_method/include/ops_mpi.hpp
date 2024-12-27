@@ -187,7 +187,7 @@ bool RectangularIntegrationMPI::run() {
     reduce(mpi_comm, localIntegral, globalIntegral, std::plus<>(), 0);
 
     if (mpi_comm.rank() == 0) {
-      continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) * (1.0 / 3.0) > epsilon);
+      continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) > epsilon);
     }
     broadcast(mpi_comm, continueRefining, 0);
 
