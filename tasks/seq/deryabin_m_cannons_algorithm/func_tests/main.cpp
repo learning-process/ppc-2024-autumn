@@ -88,7 +88,7 @@ TEST(deryabin_m_cannons_algorithm_seq, test_null_matrix) {
   ASSERT_EQ(in_matrix_B[0], out_matrix_C[0]);
 }
 
-TEST(deryabin_m_jacobi_iterative_method_seq, test_identity_matrix) {
+TEST(deryabin_m_cannons_algorithm_seq, test_identity_matrix) {
   // Create data
   std::vector<double> input_matrix_A{1, 0, 0, 0, 1, 0, 0, 0, 1};
   std::vector<double> input_matrix_B{1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -116,7 +116,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_identity_matrix) {
   ASSERT_EQ(in_matrix_B[0], out_matrix_C[0]);
 }
 
-TEST(deryabin_m_jacobi_iterative_method_seq, test_matrices_of_different_dimensions) {
+TEST(deryabin_m_cannons_algorithm_seq, test_matrices_of_different_dimensions) {
   // Create data
   std::vector<double> input_matrix_A{1, 2, 3, 4, 5, 6, 7, 8, 9};
   std::vector<double> input_matrix_B{1, 2, 3, 4};
@@ -140,7 +140,7 @@ TEST(deryabin_m_jacobi_iterative_method_seq, test_matrices_of_different_dimensio
   ASSERT_EQ(cannons_algorithm_TaskSequential.validation(), false);
 }
 
-TEST(deryabin_m_jacobi_iterative_method_seq, test_non_square_matrices) {
+TEST(deryabin_m_cannons_algorithm_seq, test_non_square_matrices) {
   // Create data
   std::vector<double> input_matrix_A{1, 2, 3, 4, 5};
   std::vector<double> input_matrix_B{1, 2, 3, 4, 5};
