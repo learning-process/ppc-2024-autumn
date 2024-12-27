@@ -10,7 +10,7 @@
 
 using namespace kovalchuk_a_max_of_vector_elements;
 
-std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN) {
+static std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUMGEN) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -20,7 +20,7 @@ std::vector<int> getRandomVector(int sz, int min = MINIMALGEN, int max = MAXIMUM
   return vec;
 }
 
-std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN) {
+static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
     vec[i] = getRandomVector(columns, min, max);
