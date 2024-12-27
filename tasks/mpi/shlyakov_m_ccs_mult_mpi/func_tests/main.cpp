@@ -390,7 +390,6 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_identity) {
 TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
-  int rank = world.rank();
 
   int rows = 500;
   int cols = 500;
@@ -429,7 +428,6 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
 TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_128_128) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
-  int rank = world.rank();
 
   int rows = 128;
   int cols = 128;
