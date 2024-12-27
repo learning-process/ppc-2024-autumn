@@ -45,7 +45,6 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskSequential::pre_processing() {
     }
   }
   row_ptr[v] = edge_index;
-  delete[] matrix_row;
   return true;
 }
 
@@ -114,7 +113,6 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskParallel::run() {
       }
     }
     row_ptr[v] = edge_index;
-    delete[] matrix_row;
   }
 
   boost::mpi::broadcast(world, num_edges, 0);

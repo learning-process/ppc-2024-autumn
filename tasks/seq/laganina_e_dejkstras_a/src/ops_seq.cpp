@@ -33,7 +33,6 @@ bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::pre_processing() {
     }
   }
   row_ptr[v] = edge_index;
-  delete[] matrix_row;
   return true;
 }
 
