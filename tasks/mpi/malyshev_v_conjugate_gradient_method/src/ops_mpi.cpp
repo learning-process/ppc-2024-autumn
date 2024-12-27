@@ -141,11 +141,13 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
   uint32_t size = matrix_.size();
   std::vector<double> x(size, 0.0);
-  std::vector<double> r = vector_;
-  std::vector<double> p = r;
+  std::vector<double> r(size, 0.0);
+  std::vector<double> p(size, 0.0);
   double rsold = 0.0;
 
   if (world.rank() == 0) {
+    r = vector_;
+    p = r;
     for (uint32_t i = 0; i < size; ++i) {
       rsold += r[i] * r[i];
     }
@@ -213,6 +215,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
     result_ = x;
   }
 
+  world.barrier();
   return true;
 }
 
