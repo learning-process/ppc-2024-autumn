@@ -10,11 +10,19 @@ bool khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq::validation
   if (!taskData) {
     return false;
   }
-  if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr) {
+
+  if (taskData->inputs[0] == nullptr && taskData->inputs_count[0] == 0) {
     return false;
   }
-  return taskData->inputs_count[0] > 0 && taskData->inputs_count[1] > 0 &&
-         taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
+  if (taskData->inputs[1] == nullptr && taskData->inputs_count[1] == 0) {
+    return false;
+  }
+
+  if (taskData->outputs[0] == nullptr) {
+    return false;
+  }
+
+  return taskData->inputs_count[0] % taskData->inputs_count[1] == 0;
 }
 
 bool khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq::pre_processing() {
@@ -35,8 +43,8 @@ bool khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq::pre_proces
 bool khovansky_d_ribbon_vertical_scheme_seq::RibbonVerticalSchemeSeq::run() {
   internal_order_test();
 
-  for (int i = 0; i < rows_count; ++i) {
-    for (int j = 0; j < columns_count; ++j) {
+  for (int i = 0; i < rows_count; i++) {
+    for (int j = 0; j < columns_count; j++) {
       goodbye_vector[j] += hello_matrix[i * columns_count + j] * hello_vector[i];
     }
   }

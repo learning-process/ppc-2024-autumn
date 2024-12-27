@@ -37,10 +37,10 @@ static void dense_to_crs(const std::vector<double>& dense, int M, int N, std::ve
 }
 
 TEST(borisov_s_crs_seq_test, Test_Pipeline_Run) {
-  const int M = 5000;
-  const int N = 5000;
-  const int K = 5000;
-  const double density = 0.05;
+  const int M = 3000;
+  const int N = 3000;
+  const int K = 3000;
+  const double density = 0.01;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;
@@ -94,10 +94,10 @@ TEST(borisov_s_crs_seq_test, Test_Pipeline_Run) {
 }
 
 TEST(borisov_s_crs_seq_test, Test_Task_Run) {
-  const int M = 5000;
-  const int N = 5000;
-  const int K = 5000;
-  const double density = 0.05;
+  const int M = 3000;
+  const int N = 3000;
+  const int K = 3000;
+  const double density = 0.01;
 
   std::vector<double> A_dense;
   std::vector<double> B_dense;

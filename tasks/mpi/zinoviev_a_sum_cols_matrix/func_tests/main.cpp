@@ -8,7 +8,9 @@
 
 #include "mpi/zinoviev_a_sum_cols_matrix/include/ops_mpi.hpp"
 
-std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int size) {
+namespace zinoviev_a_sum_cols_matrix_mpi {
+
+std::vector<int> generateRandomVector(int size) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(size);
@@ -18,6 +20,8 @@ std::vector<int> zinoviev_a_sum_cols_matrix_mpi::generateRandomVector(int size) 
   }
   return vec;
 }
+
+}  // namespace zinoviev_a_sum_cols_matrix_mpi
 
 TEST(zinoviev_a_sum_cols_matrix_mpi, EmptyMatrixTest) {
   boost::mpi::communicator world;
