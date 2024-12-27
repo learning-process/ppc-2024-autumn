@@ -9,13 +9,13 @@
 #include "mpi/budazhapova_e_count_freq_character/include/count_freq_character_mpi_header.hpp"
 
 int budazhapova_e_count_freq_character_mpi::counting_freq(std::string str, char symb) {
-  int res = 0;
+  int resalt = 0;
   for (unsigned long i = 0; i < str.length(); i++) {
     if (str[i] == symb) {
-      res++;
+      resalt++;
     }
   }
-  return res;
+  return resalt;
 }
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::pre_processing() {
