@@ -6,120 +6,92 @@
 
 #include "mpi/fomin_v_sobel_edges/include/ops_mpi.hpp"
 
-TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection) {
+TEST(fomin_v_sobel_edges, KnownValueTest) {
   boost::mpi::communicator world;
-  std::vector<unsigned char> global_image;
-  std::vector<unsigned char> global_output_image;
 
-  // Create a test 4x4 image
+  // Создаем тестовое изображение 4x4
   const int width = 4;
   const int height = 4;
-  global_image.resize(width * height, 100);
-  for (int i = 1; i < height - 1; ++i) {
-    for (int j = 1; j < width - 1; ++j) {
-      global_image[i * width + j] = 200;
-    }
-  }
+  std::vector<unsigned char> input_image = {100, 100, 100, 100, 100, 200, 200, 100,
+                                            100, 200, 200, 100, 100, 100, 100, 100};
 
-  // Prepare TaskData for parallel version
+  // Ожидаемый результат после применения Sobel edge detection
+  std::vector<unsigned char> expected_output = {0, 0, 0, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 0, 0, 0};
+
+  // Подготавливаем TaskData для параллельной версии
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs_count.push_back(width);
     taskDataPar->inputs_count.push_back(height);
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(global_image.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(input_image.data()));
     taskDataPar->outputs_count.push_back(width);
     taskDataPar->outputs_count.push_back(height);
-    global_output_image.resize(width * height, 0);
-    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(global_output_image.data()));
+    std::vector<unsigned char> output_image(width * height, 0);
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  } else {
+    taskDataPar->inputs_count.resize(2);
+    taskDataPar->outputs_count.resize(2);
+    taskDataPar->inputs.resize(1, nullptr);
+    taskDataPar->outputs.resize(1, nullptr);
   }
 
-  // Execute parallel Sobel edge detection
   fomin_v_sobel_edges::SobelEdgeDetectionMPI sobelEdgeDetectionMPI(taskDataPar);
-  ASSERT_EQ(sobelEdgeDetectionMPI.validation(), true);
+  ASSERT_TRUE(sobelEdgeDetectionMPI.validation());
   sobelEdgeDetectionMPI.pre_processing();
   sobelEdgeDetectionMPI.run();
   sobelEdgeDetectionMPI.post_processing();
 
   if (world.rank() == 0) {
-    // Prepare TaskData for sequential version
-    std::vector<unsigned char> reference_output_image(width * height, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs_count.push_back(width);
-    taskDataSeq->inputs_count.push_back(height);
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataSeq->outputs_count.push_back(width);
-    taskDataSeq->outputs_count.push_back(height);
-    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_output_image.data()));
+    std::vector<unsigned char> output_image = *reinterpret_cast<std::vector<unsigned char>*>(taskDataPar->outputs[0]);
 
-    // Execute sequential Sobel edge detection
-    fomin_v_sobel_edges::SobelEdgeDetection sobelEdgeDetection(taskDataSeq);
-    ASSERT_EQ(sobelEdgeDetection.validation(), true);
-    sobelEdgeDetection.pre_processing();
-    sobelEdgeDetection.run();
-    sobelEdgeDetection.post_processing();
-
-    // Compare outputs
-    for (size_t i = 0; i < reference_output_image.size(); ++i) {
-      EXPECT_EQ(reference_output_image[i], global_output_image[i]);
+    for (size_t i = 0; i < expected_output.size(); ++i) {
+      EXPECT_EQ(expected_output[i], output_image[i]) << "Mismatch at index " << i;
     }
   }
 }
 
-TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Large_Image) {
+TEST(fomin_v_sobel_edges, KnownValueTest_LargerImage) {
   boost::mpi::communicator world;
-  std::vector<unsigned char> global_image;
 
-  // Create a larger 8x8 test image
-  const int width = 8;
-  const int height = 8;
-  global_image.resize(width * height, 100);
-  for (int i = 2; i < 6; ++i) {
-    for (int j = 2; j < 6; ++j) {
-      global_image[i * width + j] = 200;
-    }
-  }
-  std::vector<unsigned char> global_output_image(global_image.size(), 0);
+  // Создаем тестовое изображение 6x6
+  const int width = 6;
+  const int height = 6;
+  std::vector<unsigned char> input_image = {100, 100, 100, 100, 100, 100, 100, 200, 200, 200, 200, 100,
+                                            100, 200, 255, 255, 200, 100, 100, 200, 255, 255, 200, 100,
+                                            100, 200, 200, 200, 200, 100, 100, 100, 100, 100, 100, 100};
 
-  // Prepare TaskData for parallel version
+  // Ожидаемый результат
+  std::vector<unsigned char> expected_output = {0, 0,   0,   0,   0,   0, 0, 255, 255, 255, 255, 0,
+                                                0, 255, 255, 255, 255, 0, 0, 255, 255, 255, 255, 0,
+                                                0, 255, 255, 255, 255, 0, 0, 0,   0,   0,   0,   0};
+
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
     taskDataPar->inputs_count.push_back(width);
     taskDataPar->inputs_count.push_back(height);
-    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(global_image.data()));
+    taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(input_image.data()));
     taskDataPar->outputs_count.push_back(width);
     taskDataPar->outputs_count.push_back(height);
-    global_output_image.resize(width * height, 0);
-    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(global_output_image.data()));
+    std::vector<unsigned char> output_image(width * height, 0);
+    taskDataPar->outputs.push_back(reinterpret_cast<uint8_t*>(output_image.data()));
+  } else {
+    taskDataPar->inputs_count.resize(2);
+    taskDataPar->outputs_count.resize(2);
+    taskDataPar->inputs.resize(1, nullptr);
+    taskDataPar->outputs.resize(1, nullptr);
   }
 
-  // Execute parallel Sobel edge detection
   fomin_v_sobel_edges::SobelEdgeDetectionMPI sobelEdgeDetectionMPI(taskDataPar);
-  ASSERT_EQ(sobelEdgeDetectionMPI.validation(), true);
+  ASSERT_TRUE(sobelEdgeDetectionMPI.validation());
   sobelEdgeDetectionMPI.pre_processing();
   sobelEdgeDetectionMPI.run();
   sobelEdgeDetectionMPI.post_processing();
 
   if (world.rank() == 0) {
-    // Prepare TaskData for sequential version
-    std::vector<unsigned char> reference_output_image(width * height, 0);
-    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-    taskDataSeq->inputs_count.push_back(width);
-    taskDataSeq->inputs_count.push_back(height);
-    taskDataSeq->inputs.push_back(reinterpret_cast<uint8_t*>(global_image.data()));
-    taskDataSeq->outputs_count.push_back(width);
-    taskDataSeq->outputs_count.push_back(height);
-    taskDataSeq->outputs.push_back(reinterpret_cast<uint8_t*>(reference_output_image.data()));
+    std::vector<unsigned char> output_image = *reinterpret_cast<std::vector<unsigned char>*>(taskDataPar->outputs[0]);
 
-    // Execute sequential Sobel edge detection
-    fomin_v_sobel_edges::SobelEdgeDetection sobelEdgeDetection(taskDataSeq);
-    ASSERT_EQ(sobelEdgeDetection.validation(), true);
-    sobelEdgeDetection.pre_processing();
-    sobelEdgeDetection.run();
-    sobelEdgeDetection.post_processing();
-
-    // Compare outputs
-    for (size_t i = 0; i < reference_output_image.size(); ++i) {
-      EXPECT_EQ(reference_output_image[i], global_output_image[i]);
+    for (size_t i = 0; i < expected_output.size(); ++i) {
+      EXPECT_EQ(expected_output[i], output_image[i]) << "Mismatch at index " << i;
     }
   }
 }
