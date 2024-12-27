@@ -26,6 +26,24 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInputCount) {
   ASSERT_FALSE(test.validation());
 }
 
+TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInputCountNotPow2) {
+  int size = 10;
+  std::vector<int> res(size, 0);
+  std::vector<int> input = {2, 1, 0, 3, 9, 7, 2, 6, 4, 8};
+  std::vector<int> expected_res = {0, 1, 2, 2, 3, 4, 6, 7, 8, 9};
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+
+  taskDataSeq->inputs_count.emplace_back(size);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(input.data()));
+  taskDataSeq->outputs_count.emplace_back(size);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(res.data()));
+
+  Sdobnov_V_mergesort_Betcher_seq::MergesortBetcherSeq test(taskDataSeq);
+
+  ASSERT_FALSE(test.validation());
+}
+
 TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInput) {
   int size = 10;
   std::vector<int> res(size, 0);
