@@ -1,4 +1,4 @@
-#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.hpp"
+#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.h"
 
 bool sharamygina_i_horizontal_line_filtration_mpi::horizontal_line_filtration_mpi::pre_processing() {
   internal_order_test();

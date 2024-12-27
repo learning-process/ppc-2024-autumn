@@ -5,18 +5,18 @@
 
 #include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
-#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.hpp"
+#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.h"
 
-using namespace sharamygina_i_horizontal_line_filtration_mpi {
-  std::vector<unsigned int> GetImage(int rows, int cols) {
-    std::vector<unsigned int> temporaryIm(rows * cols);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
-    for (int i = 0; i < rows; i++)
-      for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
-    return temporaryIm;
-  }
+namespace sharamygina_i_horizontal_line_filtration_mpi {
+std::vector<unsigned int> GetImage(int rows, int cols) {
+  std::vector<unsigned int> temporaryIm(rows * cols);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
+  return temporaryIm;
+}
 }  // namespace sharamygina_i_horizontal_line_filtration_mpi
 
 #define PERF_TEST_IMAGE(test_name, R, C, num_runs, perf_method)

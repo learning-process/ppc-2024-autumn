@@ -1,23 +1,22 @@
-#include "core/perf/include/perf.hpp"
-
 #include <gtest/gtest.h>
 
 #include <chrono>
 #include <random>
 
+#include "core/perf/include/perf.hpp"
 #include "core/task/include/task.hpp"
 #include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.h"
 
-using namespace sharamygina_i_horizontal_line_filtration_seq {
-  std::vector<unsigned int> GetImage(int rows, int cols) {
-    std::vector<unsigned int> temporaryIm(rows * cols);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
-    for (int i = 0; i < rows; i++)
-      for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
-    return temporaryIm;
-  }
+namespace sharamygina_i_horizontal_line_filtration_seq {
+std::vector<unsigned int> GetImage(int rows, int cols) {
+  std::vector<unsigned int> temporaryIm(rows * cols);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
+  return temporaryIm;
+}
 
 }  // namespace sharamygina_i_horizontal_line_filtration_seq
 

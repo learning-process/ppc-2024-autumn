@@ -3,33 +3,33 @@
 #include "core/task/include/task.hpp"
 #include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.h"
 
-using namespace sharamygina_i_horizontal_line_filtration_seq {
-  static void ToFiltSeq(const std::vector<int>& input, int rows, int cols, std::vector<int>& output) {
-    const int kernel[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
-    output.assign(rows * cols, 0);
+namespace sharamygina_i_horizontal_line_filtration_seq {
+static void ToFiltSeq(const std::vector<int>& input, int rows, int cols, std::vector<int>& output) {
+  const int kernel[3][3] = {{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+  output.assign(rows * cols, 0);
 
-    for (int r = 1; r < rows - 1; ++r) {
-      for (int c = 1; c < cols - 1; ++c) {
-        int sum = 0;
-        for (int kr = -1; kr <= 1; ++kr) {
-          for (int kc = -1; kc <= 1; ++kc) {
-            sum += input[(r + kr) * cols + (c + kc)] * kernel[kr + 1][kc + 1];
-          }
+  for (int r = 1; r < rows - 1; ++r) {
+    for (int c = 1; c < cols - 1; ++c) {
+      int sum = 0;
+      for (int kr = -1; kr <= 1; ++kr) {
+        for (int kc = -1; kc <= 1; ++kc) {
+          sum += input[(r + kr) * cols + (c + kc)] * kernel[kr + 1][kc + 1];
         }
-        output[r * cols + c] = sum / 16;
       }
+      output[r * cols + c] = sum / 16;
     }
   }
+}
 
-  std::vector<unsigned int> GetImage(int rows, int cols) {
-    std::vector<unsigned int> temporaryIm(rows * cols);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
-    for (int i = 0; i < rows; i++)
-      for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
-    return temporaryIm;
-  }
+std::vector<unsigned int> GetImage(int rows, int cols) {
+  std::vector<unsigned int> temporaryIm(rows * cols);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
+  return temporaryIm;
+}
 
 }  // namespace sharamygina_i_horizontal_line_filtration_seq
 

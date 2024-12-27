@@ -17,11 +17,10 @@ bool sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_se
 bool sharamygina_i_horizontal_line_filtration_seq::horizontal_line_filtration_seq::validation() {
   internal_order_test();
 
-    if (!taskData || taskData->inputs.size() < 9 || taskData->inputs_count.size() < 2 || taskData->outputs.empty() ||
-        taskData->outputs_count.empty()) {
-      return false;
-    }
-  
+  if (!taskData || taskData->inputs.size() < 9 || taskData->inputs_count.size() < 2 || taskData->outputs.empty() ||
+      taskData->outputs_count.empty()) {
+    return false;
+  }
 
   int exp_size = taskData->inputs_count[0] * taskData->inputs_count[1];
   if (taskData->inputs_count[0] < 3 || taskData->inputs_count[1] < 3 || taskData->inputs_count[0] < world.size() ||

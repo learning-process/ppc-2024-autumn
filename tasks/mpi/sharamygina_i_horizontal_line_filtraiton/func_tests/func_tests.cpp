@@ -4,40 +4,40 @@
 #include <boost/mpi/environment.hpp>
 #include <vector>
 
-#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.hpp"
+#include "mpi/sharamygina_i_horizontal_line_filtration/include/ops_mpi.h"
 
-using namespace sharamygina_i_horizontal_line_filtration_mpi {
-  std::vector<unsigned int> GetImage(int rows, int cols) {
-    std::vector<unsigned int> temporaryIm(rows * cols);
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
-    for (int i = 0; i < rows; i++)
-      for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
-    return temporaryIm;
-  }
+namespace sharamygina_i_horizontal_line_filtration_mpi {
+std::vector<unsigned int> GetImage(int rows, int cols) {
+  std::vector<unsigned int> temporaryIm(rows * cols);
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dist(0, std::numeric_limits<unsigned int>::max());
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < cols; j++) temporaryIm[i * cols + j] = dist(gen);
+  return temporaryIm;
+}
 
-  std::vector<unsigned int> toFiltSeq(const std::vector<unsigned int>& image, int rows, int cols) {  // seq
-    std::vector<unsigned int> final_image(rows * cols);
-    unsigned int gauss[3][3]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
-    for (int i = 0; i < rows; i++)
-      for (int j = 0; j < cols; j++) {
-        unsigned int sum = 0;
-        for (int i = 0; i < 3; i++)
-          for (int j = 0; j < 3; j++) {
-            int tX = x + i - 1, tY = y + j - 1;
-            if (tX < 0 || tX > rows_ - 1) tX = x;
-            if (tY < 0 || tY > cols_ - 1) tY = y;
-            if (tX * cols + tY >= cols * rows) {
-              tX = x;
-              tY = y;
-            }
-            sum += static_cast<unsigned int>(image[tX * cols + tY] * (gauss[i][j]));
+std::vector<unsigned int> toFiltSeq(const std::vector<unsigned int>& image, int rows, int cols) {  // seq
+  std::vector<unsigned int> final_image(rows * cols);
+  unsigned int gauss[3][3]{{1, 2, 1}, {2, 4, 2}, {1, 2, 1}};
+  for (int i = 0; i < rows; i++)
+    for (int j = 0; j < cols; j++) {
+      unsigned int sum = 0;
+      for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++) {
+          int tX = x + i - 1, tY = y + j - 1;
+          if (tX < 0 || tX > rows_ - 1) tX = x;
+          if (tY < 0 || tY > cols_ - 1) tY = y;
+          if (tX * cols + tY >= cols * rows) {
+            tX = x;
+            tY = y;
           }
-        final_image[i * cols + j] = sum / 16;
-      }
-    return final_image;
-  }
+          sum += static_cast<unsigned int>(image[tX * cols + tY] * (gauss[i][j]));
+        }
+      final_image[i * cols + j] = sum / 16;
+    }
+  return final_image;
+}
 
 }  // namespace sharamygina_i_horizontal_line_filtration_mpi
 
