@@ -23,7 +23,7 @@ std::vector<int> generate_random_vector(int size, int minValue, int maxValue) {
 }
 }  // namespace budazhapova_betcher_odd_even_merge_mpi
 
-/* TEST(budazhapova_betcher_odd_even_merge_mpi, ordinary_test) {
+TEST(budazhapova_betcher_odd_even_merge_mpi, ordinary_test) {
   boost::mpi::communicator world;
   std::vector<int> input_vector = {34, 12, 5, 78, 23, 45, 67, 89, 10, 2, 56, 43};
   std::vector<int> out(12, 0);
@@ -127,7 +127,7 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test_2) {
     ASSERT_EQ(out, out_seq);
   }
 }
-*/
+
 TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test_3) {
   boost::mpi::communicator world;
   std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generate_random_vector(100, 5, 100);
@@ -141,21 +141,10 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test_3) {
     taskDataPar->inputs_count.emplace_back(input_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
   }
-  std ::cout << " PROC: " world.size() << " /n";
   budazhapova_betcher_odd_even_merge_mpi::MergeParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
   testMpiTaskParallel.pre_processing();
-  std ::cout << " res: "
-             << " /n";
-  for (size_t i = 0; i < res.size(); i++) {
-    std ::cout << " ustal: " << res[i] << " /n";
-  }
   testMpiTaskParallel.run();
-  std ::cout << " res mpi: " << " /n";
-  for (size_t i = 0; i < res.size(); i++)
-  {
-    std ::cout << " ustal: " << res[i] << " /n";
-  }
   testMpiTaskParallel.post_processing();
 
   if (world.rank() == 0) {
@@ -167,22 +156,13 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test_3) {
     budazhapova_betcher_odd_even_merge_mpi::MergeSequential testTaskSequential(taskDataSeq);
     ASSERT_EQ(testTaskSequential.validation(), true);
     testTaskSequential.pre_processing();
-    std ::cout << " res: "
-               << " /n";
-    for (size_t i = 0; i < res.size(); i++) {
-      std ::cout << " ustal: " << res[i] << " /n";
-    }
     testTaskSequential.run();
-    std ::cout << " res seq: "<< " /n";
-    for (size_t i = 0; i < res.size(); i++) {
-      std ::cout << " ustal: " << res[i] << " /n";
-    }
     testTaskSequential.post_processing();
 
     ASSERT_EQ(out, out_seq);
   }
 }
-/*
+
 TEST(budazhapova_betcher_odd_even_merge_mpi, validation_test) {
   boost::mpi::communicator world;
   std::vector<int> input_vector = {};
@@ -198,4 +178,4 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, validation_test) {
     budazhapova_betcher_odd_even_merge_mpi::MergeParallel testMpiTaskParallel(taskDataPar);
     ASSERT_EQ(testMpiTaskParallel.validation(), false);
   }
-}*/
+}
