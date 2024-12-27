@@ -45,7 +45,8 @@ TEST(leontev_n_image_enhancement_mpi, test_pipeline_run) {
     taskEmplacement(taskDataPar, in_vec, out_vec_par);
   }
 
-  auto MPIImgEnhancementParallel = std::make_shared<leontev_n_image_enhancement_mpi::MPIImgEnhancementParallel>(taskDataPar);
+  auto MPIImgEnhancementParallel =
+      std::make_shared<leontev_n_image_enhancement_mpi::MPIImgEnhancementParallel>(taskDataPar);
   ASSERT_EQ(MPIImgEnhancementParallel->validation(), true);
   MPIImgEnhancementParallel->pre_processing();
   MPIImgEnhancementParallel->run();
@@ -100,7 +101,8 @@ TEST(leontev_n_image_enhancement_mpi, test_task_run) {
     taskEmplacement(taskDataPar, in_vec, out_vec_par);
   }
 
-  auto MPIImgEnhancementParallel = std::make_shared<leontev_n_image_enhancement_mpi::MPIImgEnhancementParallel>(taskDataPar);
+  auto MPIImgEnhancementParallel =
+      std::make_shared<leontev_n_image_enhancement_mpi::MPIImgEnhancementParallel>(taskDataPar);
   ASSERT_EQ(MPIImgEnhancementParallel->validation(), true);
   MPIImgEnhancementParallel->pre_processing();
   MPIImgEnhancementParallel->run();

@@ -161,11 +161,11 @@ bool leontev_n_image_enhancement_mpi::MPIImgEnhancementParallel::run() {
   int local_Imax = 0;
   std::vector<int> local_I(local_pixels);
   for (int i = 0; i < local_pixels; i++) {
-    int R = local_input[3*i];
-    int G = local_input[3*i + 1];
-    int B = local_input[3*i + 2];
+    int r = local_input[3 * i];
+    int g = local_input[3 * i + 1];
+    int b = local_input[3 * i + 2];
 
-    local_I[i] = (R + G + B) / 3;
+    local_I[i] = (r + g + b) / 3;
     local_Imin = std::min(local_Imin, local_I[i]);
     local_Imax = std::max(local_Imax, local_I[i]);
   }

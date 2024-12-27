@@ -25,7 +25,8 @@ TEST(leontev_n_image_enhancement_seq, test_pipeline_run) {
   std::vector<int> res_exp_out(count_size_vector, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  auto imgEnhancementSequential = std::make_shared<leontev_n_image_enhancement_seq::ImgEnhancementSequential>(taskDataSeq);
+  auto imgEnhancementSequential =
+      std::make_shared<leontev_n_image_enhancement_seq::ImgEnhancementSequential>(taskDataSeq);
   taskEmplacement(taskDataSeq, in_vec, out_vec);
 
   // Create Perf attributes
@@ -58,7 +59,8 @@ TEST(leontev_n_image_enhancement_seq, test_task_run) {
   std::vector<int> res_exp_out(count_size_vector, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  auto imgEnhancementSequential = std::make_shared<leontev_n_image_enhancement_seq::ImgEnhancementSequential>(taskDataSeq);
+  auto imgEnhancementSequential =
+      std::make_shared<leontev_n_image_enhancement_seq::ImgEnhancementSequential>(taskDataSeq);
   taskEmplacement(taskDataSeq, in_vec, out_vec);
 
   // Create Perf attributes
