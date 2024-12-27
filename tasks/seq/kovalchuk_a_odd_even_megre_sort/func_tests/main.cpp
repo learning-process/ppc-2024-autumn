@@ -1,7 +1,8 @@
 #include <gtest/gtest.h>
-#include <vector>
+
 #include <algorithm>
 #include <random>
+#include <vector>
 
 #include "seq/kovalchuk_a_odd_even_megre_sort/include/ops_seq.hpp"
 
