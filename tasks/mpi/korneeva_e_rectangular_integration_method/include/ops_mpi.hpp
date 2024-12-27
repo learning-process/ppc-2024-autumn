@@ -200,7 +200,6 @@ bool RectangularIntegrationMPI::run() {
   return true;
 }
 
-
 bool RectangularIntegrationMPI::post_processing() {
   internal_order_test();
   if (mpi_comm.rank() == 0) {
