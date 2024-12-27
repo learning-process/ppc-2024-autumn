@@ -127,7 +127,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
               displacements.data(), MPI_UNSIGNED_CHAR, 0, world);
 
   if (world.rank() == 0) {
-    *reinterpret_cast<std::vector<unsigned char>*>(taskData->outputs[0]) = gathered_output;
+    std::copy(gathered_output.begin(), gathered_output.end(), taskData->outputs[0]);
   }
   return true;
 }
@@ -177,6 +177,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
 bool fomin_v_sobel_edges::SobelEdgeDetection::post_processing() {
   internal_order_test();
 
-  *reinterpret_cast<std::vector<unsigned char>*>(taskData->outputs[0]) = output_image_;
+  std::copy(output_image_.begin(), output_image_.end(), taskData->outputs[0]);
   return true;
 }
