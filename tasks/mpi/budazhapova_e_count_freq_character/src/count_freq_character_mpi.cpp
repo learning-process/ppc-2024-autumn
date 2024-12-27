@@ -46,31 +46,11 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskSequential::post_process
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
   int world_rank = world.rank();
-  int delta = 0;
-
-  if (world_rank == 0) {
-    delta = taskData->inputs_count[0] % world.size() == 0 ? taskData->inputs_count[0] / world.size()
-                                                          : taskData->inputs_count[0] / world.size() + 1;
-    symb = *reinterpret_cast<char*>(taskData->inputs[1]);
-  }
-
-  boost::mpi::broadcast(world, delta, 0);
-  boost::mpi::broadcast(world, symb, 0);
 
   if (world_rank == 0) {
     input_ = std::string(reinterpret_cast<char*>(taskData->inputs[0]), taskData->inputs_count[0]);
-    for (int proc = 1; proc < world.size(); proc++) {
-      world.send(proc, 0, input_.data() + proc * delta, delta);
-    }
+    symb = *reinterpret_cast<char*>(taskData->inputs[1]);
   }
-  local_input_.resize(delta);
-  if (world_rank == 0) {
-    local_input_ = std::string(input_.begin(), input_.begin() + delta);
-  } else {
-    world.recv(0, 0, local_input_.data(), delta);
-  }
-  local_res = 0;
-  res = 0;
   return true;
 }
 
@@ -84,6 +64,27 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::validation() {
 
 bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::run() {
   internal_order_test();
+  int world_rank = world.rank();
+  int delta = 0;
+  if (world_rank == 0) {
+    delta = taskData->inputs_count[0] % world.size() == 0 ? taskData->inputs_count[0] / world.size()
+                                                          : taskData->inputs_count[0] / world.size() + 1;
+  }
+
+  boost::mpi::broadcast(world, delta, 0);
+  boost::mpi::broadcast(world, symb, 0);
+
+  if (world_rank == 0) {
+    for (int proc = 1; proc < world.size(); proc++) {
+      world.send(proc, 0, input_.data() + proc * delta, delta);
+    }
+  }
+  local_input_.resize(delta);
+  if (world_rank == 0) {
+    local_input_ = std::string(input_.begin(), input_.begin() + delta);
+  } else {
+    world.recv(0, 0, local_input_.data(), delta);
+  }
   local_res = counting_freq(local_input_, symb);
   boost::mpi::reduce(world, local_res, res, std::plus<>(), 0);
   return true;
