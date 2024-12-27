@@ -103,7 +103,6 @@ TEST(fomin_v_sobel_edges, Test_Sobel_Edge_Detection_Empty_Image) {
   const int height = 0;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   taskDataPar->inputs_count.push_back(width);
   taskDataPar->inputs_count.push_back(height);
   taskDataPar->inputs.push_back(reinterpret_cast<uint8_t*>(global_image.data()));
