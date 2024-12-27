@@ -21,7 +21,8 @@ static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int 
   return vec;
 }
 
-static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN, int max = MAXIMUMGEN) {
+static std::vector<std::vector<int>> getRandomMatrix(int rows, int columns, int min = MINIMALGEN,
+                                                     int max = MAXIMUMGEN) {
   std::vector<std::vector<int>> vec(rows);
   for (int i = 0; i < rows; i++) {
     vec[i] = getRandomVector(columns, min, max);
