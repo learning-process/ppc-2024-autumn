@@ -32,7 +32,7 @@ TEST(sequential_vladimirova_j_gather, test_pipeline_run) {
   std::vector<int> global_vector;
   std::vector<int> out(1, 0);
 
-  int d_end_count = 500;
+  int d_end_count = 5000;
   int noDEnd = 0;
   for (int j = 0; j < d_end_count; j++) {
     std::vector<int> some_dead_end;
@@ -66,6 +66,10 @@ TEST(sequential_vladimirova_j_gather, test_pipeline_run) {
   // Create Task
   auto testTaskSequential = std::make_shared<vladimirova_j_gather_seq::TestTaskSequential>(taskDataSeq);
 
+  ASSERT_EQ(testTaskSequential->validation(), true);
+  testTaskSequential->pre_processing();
+  testTaskSequential->run();
+  testTaskSequential->post_processing();
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 1000;
@@ -91,7 +95,7 @@ TEST(sequential_vladimirova_j_gather, test_task_run) {
   std::vector<int> global_vector;
   std::vector<int> out(1, 0);
 
-  int d_end_count = 900;
+  int d_end_count = 5000;
   int noDEnd = 0;
   for (int j = 0; j < d_end_count; j++) {
     std::vector<int> some_dead_end;
@@ -124,7 +128,10 @@ TEST(sequential_vladimirova_j_gather, test_task_run) {
 
   // Create Task
   auto testTaskSequential = std::make_shared<vladimirova_j_gather_seq::TestTaskSequential>(taskDataSeq);
-
+  ASSERT_EQ(testTaskSequential->validation(), true);
+  testTaskSequential->pre_processing();
+  testTaskSequential->run();
+  testTaskSequential->post_processing();
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -140,7 +147,7 @@ TEST(sequential_vladimirova_j_gather, test_task_run) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
   ASSERT_EQ((noDEnd >= (int)taskDataSeq->outputs_count[0]), 1);
 }

@@ -24,8 +24,8 @@ std::vector<int> getRandomVal(size_t col, size_t row, size_t n) {
 }  // namespace mpi_vladimirova_j_jarvis_method_seq
 
 TEST(sequential_vladimirova_j_jarvis_method_perf_test, test_pipeline_run) {
-  const int count = 70 * 5;
-  const int sz = 5000;
+  const int count = 6000;
+  const int sz = 15000;
   // Create data
   std::vector<int> in = mpi_vladimirova_j_jarvis_method_seq::getRandomVal(sz, sz, count / 2);
   std::vector<int> out(count, 0);
@@ -41,6 +41,11 @@ TEST(sequential_vladimirova_j_jarvis_method_perf_test, test_pipeline_run) {
   // Create Task
   auto testTaskSequential = std::make_shared<vladimirova_j_jarvis_method_seq::TestTaskSequential>(taskDataSeq);
 
+  ASSERT_EQ(testTaskSequential->validation(), true);
+
+  testTaskSequential->pre_processing();
+  testTaskSequential->run();
+  testTaskSequential->post_processing();
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -62,8 +67,8 @@ TEST(sequential_vladimirova_j_jarvis_method_perf_test, test_pipeline_run) {
 }
 
 TEST(sequential_vladimirova_j_jarvis_method_perf_test, test_task_run) {
-  const int count = 2 * 700;
-  const int sz = 20000;
+  const int count = 6000;
+  const int sz = 15000;
   // Create data
   std::vector<int> in = mpi_vladimirova_j_jarvis_method_seq::getRandomVal(sz, sz, count / 2);
   std::vector<int> out(count, 0);
@@ -78,6 +83,11 @@ TEST(sequential_vladimirova_j_jarvis_method_perf_test, test_task_run) {
 
   // Create Task
   auto testTaskSequential = std::make_shared<vladimirova_j_jarvis_method_seq::TestTaskSequential>(taskDataSeq);
+  ASSERT_EQ(testTaskSequential->validation(), true);
+
+  testTaskSequential->pre_processing();
+  testTaskSequential->run();
+  testTaskSequential->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

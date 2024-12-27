@@ -35,7 +35,7 @@ TEST(vladimirova_j_gather_mpi, test_pipeline_run) {
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int d_end_count = 500;
+  int d_end_count = 5000;
   int noDEnd = 0;
   if (world.rank() == 0) {
     for (int j = 0; j < d_end_count; j++) {
@@ -68,7 +68,9 @@ TEST(vladimirova_j_gather_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<vladimirova_j_gather_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  }
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -97,7 +99,7 @@ TEST(vladimirova_j_gather_mpi, test_task_run) {
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int d_end_count = 900;
+  int d_end_count = 5000;
   int noDEnd = 0;
   if (world.rank() == 0) {
     for (int j = 0; j < d_end_count; j++) {
@@ -130,7 +132,9 @@ TEST(vladimirova_j_gather_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<vladimirova_j_gather_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  if (world.rank() == 0) {
+    ASSERT_EQ(testMpiTaskParallel->validation(), true);
+  }
   testMpiTaskParallel->pre_processing();
   testMpiTaskParallel->run();
   testMpiTaskParallel->post_processing();
@@ -146,7 +150,7 @@ TEST(vladimirova_j_gather_mpi, test_task_run) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ((noDEnd >= (int)taskDataPar->outputs_count[0]), 1);
@@ -159,7 +163,7 @@ TEST(vladimirova_j_not_my_gather_mpi, test_pipeline_run_not_my_gather) {
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int d_end_count = 500;
+  int d_end_count = 5000;
   int noDEnd = 0;
   if (world.rank() == 0) {
     for (int j = 0; j < d_end_count; j++) {
@@ -221,7 +225,7 @@ TEST(vladimirova_j_not_my_gather_mpi, test_task_run_not_my_gather) {
   std::vector<int32_t> global_sum(1, 0);
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int d_end_count = 900;
+  int d_end_count = 5000;
   int noDEnd = 0;
   if (world.rank() == 0) {
     for (int j = 0; j < d_end_count; j++) {
@@ -270,7 +274,7 @@ TEST(vladimirova_j_not_my_gather_mpi, test_task_run_not_my_gather) {
 
   // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
-  perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  perfAnalyzer->task_run(perfAttr, perfResults);
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
     ASSERT_EQ((noDEnd >= (int)taskDataPar->outputs_count[0]), 1);
