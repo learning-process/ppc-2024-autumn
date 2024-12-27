@@ -27,6 +27,46 @@ std::vector<int> generateGraph(int V, int E) {
   return graph;
 }
 }  // namespace generateGraph
+TEST(kapustin_dijkstras_algorithm_mpi, random_graph_with_large_data_input) {
+  boost::mpi::communicator world;
+  const int V = 1000;
+  const int E = 2000;
+  std::vector<int> graph = generateGraph::generateGraph(V, E);
+  std::vector<int> resSEQ(V, 0);
+  std::vector<int> resMPI(V, 0);
+
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
+  taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(V));
+  taskDataPar->inputs_count.emplace_back(static_cast<uint32_t>(E));
+  taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(resMPI.data()));
+  taskDataPar->outputs_count.emplace_back(resMPI.size());
+  kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmMPI testMpiTaskParallel(taskDataPar);
+
+  ASSERT_EQ(testMpiTaskParallel.validation(), true);
+
+  testMpiTaskParallel.pre_processing();
+
+  testMpiTaskParallel.run();
+
+  testMpiTaskParallel.post_processing();
+
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(graph.data()));
+  taskDataSeq->inputs_count.emplace_back(static_cast<uint32_t>(V));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(resSEQ.data()));
+  taskDataSeq->outputs_count.emplace_back(resSEQ.size());
+
+  kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ testMpiTaskSequential(taskDataSeq);
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
+  testMpiTaskSequential.pre_processing();
+  testMpiTaskSequential.run();
+  testMpiTaskSequential.post_processing();
+
+  if (world.rank() == 0) {
+    ASSERT_EQ(resMPI, resSEQ);
+  }
+}
 TEST(kapustin_dijkstras_algorithm_mpi, random_graph) {
   boost::mpi::communicator world;
   const int V = 5;
@@ -58,7 +98,7 @@ TEST(kapustin_dijkstras_algorithm_mpi, random_graph) {
   taskDataSeq->outputs_count.emplace_back(resSEQ.size());
 
   kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ testMpiTaskSequential(taskDataSeq);
-  ASSERT_TRUE(testMpiTaskSequential.validation());
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
@@ -100,7 +140,7 @@ TEST(kapustin_dijkstras_algorithm_mpi, eq_seq_mpi) {
   taskDataSeq->outputs_count.emplace_back(resSEQ.size());
 
   kapustin_dijkstras_algorithm_mpi::DijkstrasAlgorithmSEQ testMpiTaskSequential(taskDataSeq);
-  ASSERT_TRUE(testMpiTaskSequential.validation());
+  ASSERT_EQ(testMpiTaskSequential.validation(), true);
   testMpiTaskSequential.pre_processing();
   testMpiTaskSequential.run();
   testMpiTaskSequential.post_processing();
