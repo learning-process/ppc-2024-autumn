@@ -1,3 +1,4 @@
+
 #include "mpi/komshina_d_grid_torus_topology/include/ops_mpi.hpp"
 
 #include <algorithm>
@@ -94,3 +95,4 @@ std::vector<int> komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::
 
   return {left, right, up, down};
 }
+

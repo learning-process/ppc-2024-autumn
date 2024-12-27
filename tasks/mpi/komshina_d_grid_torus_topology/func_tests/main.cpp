@@ -1,4 +1,3 @@
-
 #include <gtest/gtest.h>
 
 #include <boost/mpi/communicator.hpp>
@@ -275,4 +274,3 @@ TEST(komshina_d_grid_torus_topology_mpi, TestNonSquareProcessCount) {
     ASSERT_FALSE(task.run()) << "The run method should fail because the number of processes is not a complete square";
   }
 }
-

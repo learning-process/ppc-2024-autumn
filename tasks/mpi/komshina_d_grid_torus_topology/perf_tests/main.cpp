@@ -76,7 +76,6 @@ TEST(komshina_d_grid_torus_topology_mpi_perf_test, test_task_run) {
 
   auto gridTorusTask = std::make_shared<komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel>(taskDataPar);
 
-
   if (world.size() == 1) {
     ASSERT_EQ(gridTorusTask->validation(), false);
   } else {
