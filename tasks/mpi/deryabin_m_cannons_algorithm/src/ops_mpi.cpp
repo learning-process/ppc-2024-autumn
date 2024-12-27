@@ -237,6 +237,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         for (unsigned short row = 0; row < block_dimension; ++row) {
           std::copy(local_output_matrix_C.begin() + row * block_dimension, local_output_matrix_C.begin() + (row + 1) * block_dimension, output_matrix_C.begin() + ((world.rank() / block_rows_columns) * block_dimension + row * dimension + (world.rank() % block_rows_columns) * block_dimension));
           world.recv(proc, 0, output_matrix_C.data() + ((proc / block_rows_columns) * block_dimension + row) * dimension + (proc % block_rows_columns) * block_dimension, block_dimension);
+        }
       }
     }
   }
