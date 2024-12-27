@@ -14,7 +14,8 @@ int RadixBatcherMergesortParallel::get_number_digit_capacity(bigint num) {
 }
 
 void RadixBatcherMergesortParallel::sort(vector<bigint>& arr) {
-  vector<bigint> pos, neg;
+  vector<bigint> pos;
+  vector<bigint> neg;
 
   for (const auto& num : arr) {
     (num >= 0 ? pos : neg).push_back(abs(num));
@@ -110,7 +111,8 @@ vector<bigint> RadixBatcherMergesortParallel::merge(const vector<bigint>& arr1, 
   vector<bigint> merged;
   merged.reserve(arr1.size() + arr2.size());
 
-  size_t i = 0, j = 0;
+  size_t i = 0;
+  size_t j = 0;
 
   while (i < arr1.size() && j < arr2.size()) {
     if (arr1[i] <= arr2[j]) {
@@ -236,7 +238,8 @@ int RadixBatcherMergesortSequential::get_number_digit_capacity(bigint num) {
 }
 
 void RadixBatcherMergesortSequential::sort(vector<bigint>& arr) {
-  vector<bigint> pos, neg;
+  vector<bigint> pos;
+  vector<bigint> neg;
 
   for (const auto& num : arr) {
     (num >= 0 ? pos : neg).push_back(abs(num));

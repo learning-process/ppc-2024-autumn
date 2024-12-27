@@ -34,13 +34,13 @@ class RadixBatcherMergesortParallel : public ppc::core::Task {
   vector<bigint> array;  // input unsorted numbers array
   int n = 0;             // array size
 
-  vector<bigint> merge(const vector<bigint>& arr1, const vector<bigint>& arr2);
-  void compare_and_swap(vector<int>& data, int i, int j);
+  static vector<bigint> merge(const vector<bigint>& arr1, const vector<bigint>& arr2);
+  static void compare_and_swap(vector<int>& data, int i, int j);
   void odd_even_merge(vector<int>& data, int low, int high);
 
   void radix_sort(vector<bigint>& arr, bool invert);
-  void counting_sort(vector<bigint>& arr, bigint digit_place);
-  int get_number_digit_capacity(bigint num);
+  static void counting_sort(vector<bigint>& arr, bigint digit_place);
+  static int get_number_digit_capacity(bigint num);
 };
 
 class RadixBatcherMergesortSequential : public ppc::core::Task {
@@ -60,8 +60,8 @@ class RadixBatcherMergesortSequential : public ppc::core::Task {
   int n = 0;
 
   void radix_sort(vector<bigint>& arr, bool invert);
-  void counting_sort(vector<bigint>& arr, bigint digit_place);
-  int get_number_digit_capacity(bigint num);
+  static void counting_sort(vector<bigint>& arr, bigint digit_place);
+  static int get_number_digit_capacity(bigint num);
 };
 
 }  // namespace belov_a_radix_batcher_mergesort_mpi

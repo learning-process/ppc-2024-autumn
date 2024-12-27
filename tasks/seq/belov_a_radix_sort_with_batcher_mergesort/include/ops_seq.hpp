@@ -32,8 +32,8 @@ class RadixBatcherMergesortSequential : public ppc::core::Task {
   int n = 0;             // array size
 
   void radix_sort(vector<bigint>& arr, bool invert);
-  void counting_sort(vector<bigint>& arr, bigint digit_place);
-  int get_number_digit_capacity(bigint num);
+  static void counting_sort(vector<bigint>& arr, bigint digit_place);
+  static int get_number_digit_capacity(bigint num);
 };
 
 }  // namespace belov_a_radix_batcher_mergesort_seq

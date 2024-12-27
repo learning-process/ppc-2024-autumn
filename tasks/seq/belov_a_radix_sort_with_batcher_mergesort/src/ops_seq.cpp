@@ -8,7 +8,8 @@ int RadixBatcherMergesortSequential::get_number_digit_capacity(bigint num) {
 }
 
 void RadixBatcherMergesortSequential::sort(vector<bigint>& arr) {
-  vector<bigint> pos, neg;
+  vector<bigint> pos;
+  vector<bigint> neg;
 
   for (const auto& num : arr) {
     (num >= 0 ? pos : neg).push_back(abs(num));
