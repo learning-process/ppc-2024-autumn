@@ -9,7 +9,7 @@ TEST(laganina_e_dejskras_a, test_pipeline_run) {
   int v_ = 1000;
 
   // Create data
-  std::vector<int> graph(v_*v_,0);
+  std::vector<int> graph(v_ * v_, 0);
   for (int i = 0; i < v_ - 1; i++) {
     for (int j = 1; j < v_; j++) {
       graph[i * v_ + j] = 1;
@@ -82,7 +82,6 @@ TEST(laganina_e_dejskras_a, test_task_run) {
 
   // Create Task
   auto testTaskSequential = std::make_shared<laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq>(taskDataSeq);
-
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

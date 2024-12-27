@@ -4,46 +4,43 @@
 #include <vector>
 
 bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::pre_processing() {
-    internal_order_test();
-    v = taskData->inputs_count[0];
-    int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-   
-    int* matrix_row = new int[v*v];
-    for ( int i=0; i < v * v; i++) {
-      matrix_row[i] = ptr[i];
+  internal_order_test();
+  v = static_cast<int>(taskData->inputs_count[0]);
+  int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
+
+  int* matrix_row = new int[v * v];
+  for (int i = 0; i < v * v; i++) {
+    matrix_row[i] = ptr[i];
+  }
+
+  int num_edges = 0;
+  for (int i = 0; i < v * v; i++) {
+    if (matrix_row[i] != 0) {
+      num_edges++;
     }
-  
-    int num_edges = 0;
-    for ( int i = 0; i < v * v; i++) {
-        if (matrix_row[i] != 0) {
-            num_edges++;
-        }
+  }
+  row_ptr.resize(v + 1, 0);
+  col_ind.resize(num_edges);
+  data.resize(num_edges);
+  int edge_index = 0;
+  for (int i = 0; i < v; i++) {
+    row_ptr[i] = edge_index;
+    for (int j = 0; j < v; j++) {
+      if (matrix_row[i * v + j] != 0) {
+        col_ind[edge_index] = j;
+        data[edge_index] = matrix_row[i * v + j];
+        edge_index++;
+      }
     }
-    row_ptr.resize(v + 1, 0);
-    col_ind.resize(num_edges);
-    data.resize(num_edges);
-    int edge_index = 0;
-    for ( int i = 0; i < v; i++) {
-        row_ptr[i] = edge_index;
-        for ( int j = 0; j <v; j++) {
-            if (matrix_row[i * v + j] != 0) {
-                col_ind[edge_index] = j;
-                data[edge_index] = matrix_row[i * v + j];
-                edge_index++;
-            }
-        }
-    }
-    row_ptr[v] = edge_index;
-    delete[] matrix_row;
-    return true;
+  }
+  row_ptr[v] = edge_index;
+  delete[] matrix_row;
+  return true;
 }
 
 bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::validation() {
   internal_order_test();
-  if (taskData->inputs_count[0] <= 0) {
-        return false;
-  }
-  return true;
+  return taskData->inputs_count[0] > 0;
 }
 
 bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::run() {
@@ -53,11 +50,11 @@ bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::run() {
 }
 
 bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::post_processing() {
-    internal_order_test();
-    for (int i = 0; i < v; i++) {
-        reinterpret_cast<int*>(taskData->outputs[0])[i] = distances[i];
-    }
-    return true;
+  internal_order_test();
+  for (int i = 0; i < v; i++) {
+    reinterpret_cast<int*>(taskData->outputs[0])[i] = distances[i];
+  }
+  return true;
 }
 
 void laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::dijkstra(int start_vertex, const std::vector<int>& row_ptr,
@@ -72,8 +69,7 @@ void laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::dijkstra(int start_
   std::vector<bool> visited(v, false);
 
   // Priority queue for storing pairs (distance, vertex)
-  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>>
-      priority_queue;
+  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> priority_queue;
   priority_queue.emplace(0, start_vertex);  // Use start_vertex instead of 0
 
   while (!priority_queue.empty()) {

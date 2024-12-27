@@ -1,8 +1,8 @@
 #include "mpi/laganina_e_dejkstras_a/include/ops_mpi.hpp"
-#include <boost/mpi/communicator.hpp>
 
-#include <vector>
+#include <boost/mpi/communicator.hpp>
 #include <queue>
+#include <vector>
 
 int laganina_e_dejskras_a_mpi::minDistanceVertex(const std::vector<int>& dist, const std::vector<int>& marker) {
   int minvalue = INT_MAX;
@@ -18,7 +18,7 @@ int laganina_e_dejskras_a_mpi::minDistanceVertex(const std::vector<int>& dist, c
 
 bool laganina_e_dejskras_a_mpi::TestMPITaskSequential::pre_processing() {
   internal_order_test();
-  v = taskData->inputs_count[0];
+  v = static_cast<int>(taskData->inputs_count[0]);
   int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
   int* matrix_row = new int[v * v];
@@ -47,6 +47,7 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskSequential::pre_processing() {
     }
   }
   row_ptr[v] = edge_index;
+  delete[] matrix_row;
   return true;
 }
 
@@ -80,9 +81,7 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskParallel::pre_processing() {
 bool laganina_e_dejskras_a_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
   if (world.rank() == 0) {
-    if (taskData->inputs_count[0] <= 0) {
-      return false;
-    }
+    return taskData->inputs_count[0] > 0;
   }
   return true;
 }
@@ -93,7 +92,7 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskParallel::run() {
   int num_edges;
 
   if (world.rank() == 0) {
-    v = taskData->inputs_count[0];
+    v = static_cast<int>(taskData->inputs_count[0]);
     int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
 
     int* matrix_row = new int[v * v];
@@ -146,8 +145,8 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskParallel::run() {
   boost::mpi::broadcast(world, data.data(), static_cast<int>(data.size()), 0);
 
   if (world.rank() == 0) {
-    laganina_e_dejskras_a_mpi::TestMPITaskSequential::get_children_with_weights(0, row_ptr, col_ind, data,
-                                                                                neighbor, weight);
+    laganina_e_dejskras_a_mpi::TestMPITaskSequential::get_children_with_weights(0, row_ptr, col_ind, data, neighbor,
+                                                                                weight);
     if (world.size() >= static_cast<int>(neighbor.size())) {
       max_rank = static_cast<int>(neighbor.size()) - 1;
       delta = 1;
@@ -182,8 +181,7 @@ bool laganina_e_dejskras_a_mpi::TestMPITaskParallel::run() {
       world.send(rank, 0, weight.data() + i, delta);
       rank++;
     }
-  } 
-  else {
+  } else {
     if (world.rank() == max_rank) {
       local_neighbor.resize(last);
       local_weight.resize(last);
@@ -267,7 +265,7 @@ void laganina_e_dejskras_a_mpi::TestMPITaskSequential::dijkstra(int start_vertex
   std::vector<bool> visited(v, false);
 
   // Priority queue for storing pairs (distance, vertex)
-  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>>
+  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>>
       priority_queue;
   priority_queue.emplace(0, start_vertex);  // Use start_vertex instead of 0
 
