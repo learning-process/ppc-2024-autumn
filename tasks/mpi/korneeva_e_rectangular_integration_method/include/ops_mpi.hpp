@@ -212,7 +212,7 @@ bool RectangularIntegrationMPI::post_processing() {
 double calculateIntegral(const Function& func_, double epsilon_, std::vector<std::pair<double, double>>& limits_,
                          std::vector<double>& args_) {
   double integralValue = 0;
-  double prevValue;
+  double prevValue = 0;
   int subdivisions = 2;
   bool flag = true;
 
