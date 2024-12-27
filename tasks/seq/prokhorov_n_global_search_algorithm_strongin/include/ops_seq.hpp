@@ -26,7 +26,7 @@ class TestTaskSequential : public ppc::core::Task {
 
   std::function<double(double)> f;
 
-  double stronginAlgorithm(double a_, double b_, double epsilon_);
+  double stronginAlgorithm();
 };
 
 }  // namespace prokhorov_n_global_search_algorithm_strongin_seq

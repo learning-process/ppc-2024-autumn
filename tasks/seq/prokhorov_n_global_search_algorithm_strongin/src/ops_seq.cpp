@@ -31,7 +31,7 @@ bool prokhorov_n_global_search_algorithm_strongin_seq::TestTaskSequential::valid
 bool prokhorov_n_global_search_algorithm_strongin_seq::TestTaskSequential::run() {
   internal_order_test();
 
-  result = stronginAlgorithm(a, b, epsilon);
+  result = stronginAlgorithm();
   std::this_thread::sleep_for(20ms);
   return true;
 }
@@ -43,8 +43,7 @@ bool prokhorov_n_global_search_algorithm_strongin_seq::TestTaskSequential::post_
   return true;
 }
 
-double prokhorov_n_global_search_algorithm_strongin_seq::TestTaskSequential::stronginAlgorithm(double a_, double b_,
-                                                                                               double epsilon_) {
+double prokhorov_n_global_search_algorithm_strongin_seq::TestTaskSequential::stronginAlgorithm() {
   double x_min = a;
   double f_min = f(x_min);
 

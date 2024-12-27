@@ -4,17 +4,11 @@
 #include <algorithm>
 #include <functional>
 #include <limits>
-#include <random>
-#include <string>
-#include <thread>
 #include <vector>
-
-using namespace std::chrono_literals;
 
 namespace prokhorov_n_global_search_algorithm_strongin_mpi {
 
-double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::stronginAlgorithm(double a_, double b_,
-                                                                                                  double epsilon_) {
+double stronginAlgorithmImpl(double& a, double& b, double epsilon, const std::function<double(double)>& f) {
   double x_min = a;
   double f_min = f(x_min);
 
@@ -41,6 +35,10 @@ double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::
   }
 
   return x_min;
+}
+
+double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::stronginAlgorithm() {
+  return stronginAlgorithmImpl(a, b, epsilon, f);
 }
 
 bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::pre_processing() {
@@ -66,7 +64,7 @@ bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::va
 bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::run() {
   internal_order_test();
 
-  result = stronginAlgorithm(a, b, epsilon);
+  result = stronginAlgorithm();
   return true;
 }
 
@@ -77,38 +75,11 @@ bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskSequential::po
   return true;
 }
 
-double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::stronginAlgorithm(double a_, double b_,
-                                                                                                double epsilon_) {
-  double x_min = a;
-  double f_min = f(x_min);
-
-  while ((b - a) > epsilon) {
-    double x1 = a + (b - a) / 3.0;
-    double x2 = b - (b - a) / 3.0;
-
-    double f1 = f(x1);
-    double f2 = f(x2);
-
-    if (f1 < f2) {
-      b = x2;
-      if (f1 < f_min) {
-        f_min = f1;
-        x_min = x1;
-      }
-    } else {
-      a = x1;
-      if (f2 < f_min) {
-        f_min = f2;
-        x_min = x2;
-      }
-    }
-  }
-
-  return x_min;
+double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::stronginAlgorithm() {
+  return stronginAlgorithmImpl(a, b, epsilon, f);
 }
 
-double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::stronginAlgorithmParallel(
-    double a_, double b_, double epsilon_) {
+double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::stronginAlgorithmParallel() {
   double global_min = std::numeric_limits<double>::max();
   double global_x_min = a;
 
@@ -180,20 +151,17 @@ bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::pre_
 bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::validation() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    return taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == 1 && taskData->inputs_count[2] == 1 &&
-           taskData->outputs_count[0] == 1;
-  }
-  return true;
+  return taskData->inputs_count[0] == 1 && taskData->inputs_count[1] == 1 && taskData->inputs_count[2] == 1 &&
+         taskData->outputs_count[0] == 1;
 }
 
 bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::run() {
   internal_order_test();
 
   if (world.size() == 1) {
-    result = stronginAlgorithm(a, b, epsilon);
+    result = stronginAlgorithm();
   } else {
-    result = stronginAlgorithmParallel(a, b, epsilon);
+    result = stronginAlgorithmParallel();
   }
 
   return true;

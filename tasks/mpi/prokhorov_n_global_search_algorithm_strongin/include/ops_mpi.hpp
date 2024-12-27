@@ -6,8 +6,6 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
 #include <memory>
-#include <numeric>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -31,7 +29,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
   std::function<double(double)> f;
 
-  double stronginAlgorithm(double a_, double b_, double epsilon_);
+  double stronginAlgorithm();
 };
 
 class TestMPITaskParallel : public ppc::core::Task {
@@ -51,8 +49,8 @@ class TestMPITaskParallel : public ppc::core::Task {
   std::function<double(double)> f;
   boost::mpi::communicator world;
 
-  double stronginAlgorithm(double a, double b, double epsilon);
-  double stronginAlgorithmParallel(double a_, double b_, double epsilon_);
+  double stronginAlgorithm();
+  double stronginAlgorithmParallel();
 };
 
 }  // namespace prokhorov_n_global_search_algorithm_strongin_mpi
