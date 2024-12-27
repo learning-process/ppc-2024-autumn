@@ -38,6 +38,7 @@ class MergeParallel : public ppc::core::Task {
  private:
   std::vector<int> res;
   std::vector<int> local_res;
+  std::vector<int> fin_res;
   int n_el = 0;
 
   boost::mpi::communicator world;

@@ -100,26 +100,28 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::validation() {
 
 bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   internal_order_test();
+  int world_size = world.size();
+  int world_rank = world.rank();
 
   boost::mpi::broadcast(world, res, 0);
 
-  int world_size = world.size();
-  int world_rank = world.rank();
   int res_size = static_cast<int>(res.size());
-
   int n_of_send_elements = res_size / world_size;
   int n_of_extra_elements = res_size % world_size;
+
   std::vector<int> extra_elements;
   if (world_rank == 0) {
     extra_elements.resize(n_of_extra_elements);
+
     for (size_t i = res.size() - res_size % world_size; i < res.size(); i++) {
       extra_elements[i] = res[i];
     }
   }
+
   int start = world_rank * n_of_send_elements;
   int end = start + n_of_send_elements;
 
-  local_res.resize(n_of_send_elements);
+  local_res.resize(end - start);
   for (int i = start; i < end; i++) {
     local_res[i - start] = res[i];
   }
@@ -134,7 +136,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       } else if (world_rank % 2 == 1) {
         std::vector<int> received_data;
         world.recv(prev_rank, prev_rank, received_data);
-        odd_even_merge(local_res, received_data);
+        odd_even_merge(received_data, local_res);
         world.send(prev_rank, world_rank, received_data);
       }
       if (world_rank % 2 == 0 && next_rank < world_size) {
@@ -146,7 +148,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       } else if (world_rank % 2 == 0 && world_rank > 0) {
         std::vector<int> received_data;
         world.recv(prev_rank, prev_rank, received_data);
-        odd_even_merge(local_res, received_data);
+        odd_even_merge(received_data, local_res);
         world.send(prev_rank, world_rank, received_data);
       }
       if (world_rank % 2 == 1 && next_rank < world_size) {
@@ -161,7 +163,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     odd_even_merge(res, extra_elements);
     res.insert(res.end(), extra_elements.begin(), extra_elements.end());
   }
-
+  std::cout.flush();
   return true;
 }
 
