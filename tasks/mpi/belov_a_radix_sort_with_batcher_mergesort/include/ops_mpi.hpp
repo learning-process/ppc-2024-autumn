@@ -53,7 +53,7 @@ class RadixBatcherMergesortSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void sort(vector<bigint>& arr);
+  static void sort(vector<bigint>& arr);
 
  private:
   vector<bigint> array;
