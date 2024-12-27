@@ -112,7 +112,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   std::vector<int> extra_elements;
   if (world_rank == 0) {
     extra_elements.resize(n_of_extra_elements);
-    for (int i = res.size() - res_size % world_size; i < res.size(); i++) {
+    for (size_t i = res.size() - res_size % world_size; i < res.size(); i++) {
       extra_elements[i] = res[i];
     }
   }
