@@ -6,12 +6,12 @@
 #include "mpi/korneeva_e_rectangular_integration_method/include/ops_mpi.hpp"
 
 namespace korneeva_e_rectangular_integration_method_mpi {
-double test_func(std::vector<double> &args) { return args.at(0); }
+double test_func(std::vector<double> &args) { return args[0]; }
 }  // namespace korneeva_e_rectangular_integration_method_mpi
 
 TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator mpi_comm;
-  std::vector<std::pair<double, double>> limits(10, {-100, 100});
+  std::vector<std::pair<double, double>> limits(10, {-1000, 1000});
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::test_func;
   std::vector<double> output(1);
@@ -46,7 +46,7 @@ TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
 
 TEST(korneeva_e_rectangular_integration_method_mpi, test_task_run) {
   boost::mpi::communicator mpi_comm;
-  std::vector<std::pair<double, double>> limits(10, {-100, 100});
+  std::vector<std::pair<double, double>> limits(10, {-1000, 1000});
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::test_func;
   std::vector<double> output(1);

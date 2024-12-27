@@ -4,11 +4,9 @@
 #include "seq/korneeva_e_rectangular_integration_method/include/ops_seq.hpp"
 
 TEST(korneeva_e_rectangular_integration_method_seq, test_pipeline_run) {
-  std::vector<std::pair<double, double>> limits(3, {-1000000, 1000000});
+  std::vector<std::pair<double, double>> limits(10, {-1000, 1000});
 
-  auto func = [](const std::vector<double> &args) -> double {
-    return args.at(0) + args.at(1) + args.at(2);  // Example function f(x, y, z) = x + y + z
-  };
+  auto func = [](const std::vector<double> &args) -> double { return args[0]; };
 
   double out;
 
@@ -42,11 +40,9 @@ TEST(korneeva_e_rectangular_integration_method_seq, test_pipeline_run) {
 }
 
 TEST(korneeva_e_rectangular_integration_method_seq, test_task_run) {
-  std::vector<std::pair<double, double>> limits(3, {-1000000, 1000000});
+  std::vector<std::pair<double, double>> limits(10, {-1000, 1000});
 
-  auto func = [](const std::vector<double> &args) -> double {
-    return args.at(0) + args.at(1) + args.at(2);  // Example function f(x, y, z) = x + y + z
-  };
+  auto func = [](const std::vector<double> &args) -> double { return args[0]; };
 
   double out;
 
