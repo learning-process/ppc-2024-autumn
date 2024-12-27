@@ -7,11 +7,9 @@
 bool laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::pre_processing() {
   internal_order_test();
   v = static_cast<int>(taskData->inputs_count[0]);
-  int* ptr = reinterpret_cast<int*>(taskData->inputs[0]);
-
-  int* matrix_row = new int[v * v];
+  std::vector<int> matrix_row(v * v, 0);
   for (int i = 0; i < v * v; i++) {
-    matrix_row[i] = ptr[i];
+    matrix_row[i] = reinterpret_cast<int*>(taskData->inputs[0])[i];
   }
 
   int num_edges = 0;
