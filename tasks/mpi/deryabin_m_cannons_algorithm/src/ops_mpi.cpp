@@ -201,10 +201,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.send(world.rank() - 1, 0, local_input_matrix_A.data(), block_dimension);
       }
       if (world.rank() < block_rows_columns) {
-        world.send(world.rank() + block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(),
+        world.send(world.rank() + block_rows_columns * (block_rows_columns - 1), 1, local_input_matrix_B.data(),
                    block_dimension);
       } else {
-        world.send(world.rank() - block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
+        world.send(world.rank() - block_rows_columns, 1, local_input_matrix_B.data(), block_dimension);
       }
       if ((world.rank() + 1) % block_rows_columns == 0) {
         world.recv(world.rank() - block_rows_columns + 1, 0, local_input_matrix_A.data(), block_dimension);
@@ -212,10 +212,10 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.recv(world.rank() + 1, 0, local_input_matrix_A.data(), block_dimension);
       }
       if (world.rank() >= block_rows_columns * (block_rows_columns - 1)) {
-        world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 0, local_input_matrix_B.data(),
+        world.recv(world.rank() - block_rows_columns * (block_rows_columns - 1), 1, local_input_matrix_B.data(),
                    block_dimension);
       } else {
-        world.recv(world.rank() + block_rows_columns, 0, local_input_matrix_B.data(), block_dimension);
+        world.recv(world.rank() + block_rows_columns, 1, local_input_matrix_B.data(), block_dimension);
       }
       i = 0;
       while (i != block_dimension) {
