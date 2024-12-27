@@ -78,7 +78,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
   unsigned short j;
   unsigned short k;
   unsigned short dimension;
-  if (world.size() == 1 || world.size() != pow((unsigned short)sqrt(world.size()), 2) || (unsigned short)sqrt(input_matrix_A.size()) % (unsigned short)sqrt(world.size()) != 0) {
+  if (world.size() == 1 || world.size() != pow((unsigned short)sqrt(world.size()), 2) && (unsigned short)sqrt(input_matrix_A.size()) % (unsigned short)sqrt(world.size()) != 0) {
     if (world.rank() == 0) {
       dimension = (unsigned short)sqrt(input_matrix_A.size());
       output_matrix_C = std::vector<double>(dimension * dimension);
