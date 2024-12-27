@@ -64,6 +64,12 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     randomMatrix = malyshev_conjugate_gradient::generateRandomMatrix(size, min_value, max_value);
     randomVector = malyshev_conjugate_gradient::generateRandomVector(size, min_value, max_value);
 
+    for (uint32_t i = 0; i < size; ++i) {
+      for (uint32_t j = 0; j < size; ++j) {
+        randomMatrix[i][j] /= 1000.0;
+      }
+    }
+
     std::cerr << "Input Matrix:" << std::endl;
     for (const auto& row : randomMatrix) {
       for (const auto& val : row) {
