@@ -10,10 +10,9 @@
 #include "seq/Sdobnov_V_mergesort_Betcher/include/ops_seq.hpp"
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInputCount) {
-  int size = 10;
+  int size = 8;
   std::vector<int> res(size, 0);
-  std::vector<int> input = {2, 1, 0, 3, 9, 7, 2, 6, 4, 8};
-  std::vector<int> expected_res = {0, 1, 2, 2, 3, 4, 6, 7, 8, 9};
+  std::vector<int> input = {2, 1, 0, 3, 2, 6, 4, 8};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -27,10 +26,9 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInputCount) {
 }
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInputCountNotPow2) {
-  int size = 10;
+  int size = 9;
   std::vector<int> res(size, 0);
-  std::vector<int> input = {2, 1, 0, 3, 9, 7, 2, 6, 4, 8};
-  std::vector<int> expected_res = {0, 1, 2, 2, 3, 4, 6, 7, 8, 9};
+  std::vector<int> input = {2, 1, 0, 3, 2, 6, 4, 8, 9};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -45,10 +43,8 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInputCountNotPow2) {
 }
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInput) {
-  int size = 10;
+  int size = 8;
   std::vector<int> res(size, 0);
-  std::vector<int> input = {2, 1, 0, 3, 9, 7, 2, 6, 4, 8};
-  std::vector<int> expected_res = {0, 1, 2, 2, 3, 4, 6, 7, 8, 9};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -62,10 +58,9 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidInput) {
 }
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidOutputCount) {
-  int size = 10;
+  int size = 8;
   std::vector<int> res(size, 0);
-  std::vector<int> input = {2, 1, 0, 3, 9, 7, 2, 6, 4, 8};
-  std::vector<int> expected_res = {0, 1, 2, 2, 3, 4, 6, 7, 8, 9};
+  std::vector<int> input = {2, 1, 0, 3, 2, 6, 4, 8};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
@@ -79,10 +74,9 @@ TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidOutputCount) {
 }
 
 TEST(Sdobnov_V_mergesort_Betcher_seq, InvalidOutput) {
-  int size = 10;
+  int size = 8;
   std::vector<int> res(size, 0);
-  std::vector<int> input = {2, 1, 0, 3, 9, 7, 2, 6, 4, 8};
-  std::vector<int> expected_res = {0, 1, 2, 2, 3, 4, 6, 7, 8, 9};
+  std::vector<int> input = {2, 1, 0, 3, 2, 6, 4, 8};
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
 
