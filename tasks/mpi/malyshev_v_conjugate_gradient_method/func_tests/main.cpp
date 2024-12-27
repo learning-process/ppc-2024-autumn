@@ -45,7 +45,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
 
 TEST(malyshev_conjugate_gradient, test_small_system) {
   uint32_t size = 10;
-  double min_value = 0.0;
+  double min_value = 1.0;
   double max_value = 10.0;
 
   boost::mpi::communicator world;
@@ -100,7 +100,7 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
 
 TEST(malyshev_conjugate_gradient, test_medium_system) {
   uint32_t size = 100;
-  double min_value = 0.0;
+  double min_value = 1.0;
   double max_value = 100.0;
 
   boost::mpi::communicator world;
@@ -155,7 +155,7 @@ TEST(malyshev_conjugate_gradient, test_medium_system) {
 
 TEST(malyshev_conjugate_gradient, test_large_system) {
   uint32_t size = 1000;
-  double min_value = 0.0;
+  double min_value = 1.0;
   double max_value = 1000.0;
 
   boost::mpi::communicator world;

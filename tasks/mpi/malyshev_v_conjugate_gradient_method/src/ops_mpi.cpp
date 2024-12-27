@@ -61,6 +61,10 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
       pAp += p[j] * Ap[j];
     }
 
+    if (pAp == 0.0) {  // Avoid division by zero
+      break;
+    }
+
     double alpha = rsold / pAp;
     for (uint32_t j = 0; j < size; ++j) {
       x[j] += alpha * p[j];
@@ -170,6 +174,10 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
     }
 
     broadcast(world, pAp, 0);
+
+    if (pAp == 0.0) {  // Avoid division by zero
+      break;
+    }
 
     double alpha = rsold / pAp;
     if (world.rank() == 0) {
