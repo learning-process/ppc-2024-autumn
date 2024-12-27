@@ -42,8 +42,7 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::TestTaskSequ
 
 namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq {
 
-void convert_doubles_to_uint64(
-    const std::vector<double>& data_, std::vector<uint64_t>& keys) {
+void convert_doubles_to_uint64(const std::vector<double>& data_, std::vector<uint64_t>& keys) {
   for (size_t i = 0; i < data_.size(); ++i) {
     uint64_t uint64_value;
     std::memcpy(&uint64_value, &data_[i], sizeof(double));
@@ -53,8 +52,7 @@ void convert_doubles_to_uint64(
   }
 }
 
-void convert_uint64_to_doubles(
-    const std::vector<uint64_t>& keys, std::vector<double>& data_) {
+void convert_uint64_to_doubles(const std::vector<uint64_t>& keys, std::vector<double>& data_) {
   for (size_t i = 0; i < keys.size(); ++i) {
     uint64_t uint64_value = keys[i];
 
@@ -63,8 +61,7 @@ void convert_uint64_to_doubles(
   }
 }
 
-void radix_sort_uint64(
-    std::vector<uint64_t>& keys) {
+void radix_sort_uint64(std::vector<uint64_t>& keys) {
   constexpr int BITS = 64;
   constexpr int RADIX = 256;
   std::vector<uint64_t> temp(keys.size());
