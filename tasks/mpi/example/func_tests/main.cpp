@@ -232,6 +232,7 @@ int main(int argc, char** argv) {
   boost::mpi::environment env(argc, argv);
   boost::mpi::communicator world;
   ::testing::InitGoogleTest(&argc, argv);
+  auto& listeners = ::testing::UnitTest::GetInstance()->listeners();
   if (world.rank() != 0 && (argc < 2 || argv[1] != std::string("--full-workers-log"))) {
     class WorkersTestPrinter : public ::testing::EmptyTestEventListener {
      public:
@@ -256,12 +257,23 @@ int main(int argc, char** argv) {
       std::unique_ptr<TestEventListener> base_;
       int rank_;
     };
-
-    ::testing::TestEventListeners& listeners = ::testing::UnitTest::GetInstance()->listeners();
     listeners.Append(new WorkersTestPrinter(
         std::unique_ptr<::testing::TestEventListener>(listeners.Release(listeners.default_result_printer())),
         world.rank()));
   }
+  struct BufferGarbageDetector : public ::testing::EmptyTestEventListener {
+    void OnTestEnd(const ::testing::TestInfo& test_info) override {
+      world.barrier();
+      if (const auto status = world.iprobe(boost::mpi::any_source, boost::mpi::any_tag)) {
+        fprintf(stderr, "[  PROCESS %d  ] [  FAILED  ] %s.%s: MPI buffer is cluttered, unread message tag is %d\n",
+                world.rank(), test_info.test_suite_name(), test_info.name(), status->tag());
+        exit(2);
+      }
+      world.barrier();
+    }
 
+    boost::mpi::communicator world;
+  };
+  listeners.Append(new BufferGarbageDetector);
   return RUN_ALL_TESTS();
 }

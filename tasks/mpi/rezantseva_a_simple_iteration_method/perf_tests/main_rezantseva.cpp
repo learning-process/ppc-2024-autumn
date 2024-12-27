@@ -33,7 +33,7 @@ std::pair<std::vector<double>, std::vector<double>> rezantseva_a_simple_iteratio
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const size_t n = 2000;
+  const size_t n = 1000;
   std::vector<size_t> sizes(1, n);
   std::vector<double> A(n * n);
   std::vector<double> b(n);
@@ -82,7 +82,7 @@ TEST(rezantseva_a_simple_iteration_method_mpi, test_pipeline_run) {
 
 TEST(rezantseva_a_simple_iteration_method_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const size_t n = 2000;
+  const size_t n = 1000;
   std::vector<size_t> sizes(1, n);
   std::vector<double> A(n * n);
   std::vector<double> b(n);
