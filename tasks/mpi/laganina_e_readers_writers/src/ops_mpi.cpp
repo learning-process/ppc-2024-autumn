@@ -1,7 +1,6 @@
 #include "mpi/laganina_e_readers_writers/include/ops_mpi.hpp"
 
-#include <ctime>
-#include <random>
+#include <chrono>
 #include <thread>
 #include <vector>
 
@@ -22,8 +21,8 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::validation() {
   if (world.rank() == 0) {
     return ((!taskData->inputs.empty() && !taskData->outputs.empty()) &&
             (!taskData->inputs_count.empty() && taskData->inputs_count[0] != 0) &&
-            (!taskData->outputs_count.empty() && taskData->outputs_count[0] != 0) && (taskData->outputs.size() > 1));
-    // last condition is condition that we have somewhere to write count_of_writers
+            (!taskData->outputs_count.empty() && taskData->outputs_count[0] != 0)) &&
+           (taskData->outputs.size() > 1);
   }
   return true;
 }
@@ -82,9 +81,9 @@ bool laganina_e_readers_writers_mpi::TestMPITaskParallel::run() {
           reqs.wait();
           reqs = world.isend(id_proc, 2, shared_data.data(), vec_size);
           reqs.wait();
+          std::vector<int> new_data(shared_data.size());
           reqs = world.irecv(id_proc, 2, vec_size);
           reqs.wait();  // waiting for getting size of data
-          std::vector<int> new_data(vec_size);
           reqs = world.irecv(id_proc, 2, new_data.data(), vec_size);
           reqs.wait();  // waiting for getting data
           shared_data = new_data;
