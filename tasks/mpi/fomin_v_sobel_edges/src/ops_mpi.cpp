@@ -21,7 +21,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   int local_height;
   if (world.rank() == 0) {
     local_height = height_ / world.size();
-    if (height_ % world.size() != 0) {
+    if (height_ % world.size() != 0 && world.rank() < height_ % world.size()) {
       local_height += 1;
     }
   }
@@ -32,38 +32,44 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
 
   if (world.rank() == 0) {
-    // Calculate displacements for each process
-    int disp = 0;
     for (int proc = 0; proc < world.size(); ++proc) {
-      int proc_local_height = local_height;
-      if (proc == world.size() - 1) {
-        proc_local_height = height_ - (world.size() - 1) * local_height;
-      }
-      // Prepare data with padding
+      int start_row = proc * height_ / world.size();
+      int end_row = (proc + 1) * height_ / world.size();
+      int proc_local_height = end_row - start_row;
+
       std::vector<unsigned char> send_data((proc_local_height + 2) * width_, 0);
+
       if (proc == 0) {
-        // Top padding is the first row
-        std::copy(input_image_.begin(), input_image_.begin() + width_, send_data.begin());
-        std::copy(input_image_.begin() + disp * width_, input_image_.begin() + (disp + proc_local_height) * width_,
-                  send_data.begin() + width_);
+        std::copy(input_image_.begin() + start_row * width_,
+                  input_image_.begin() + (start_row + proc_local_height) * width_, send_data.begin() + width_);
+        std::copy(input_image_.begin() + start_row * width_,
+                  input_image_.begin() + (start_row + proc_local_height) * width_, send_data.begin());
       } else if (proc == world.size() - 1) {
-        // Bottom padding is the last row
-        std::copy(input_image_.begin() + disp * width_, input_image_.begin() + (disp + proc_local_height) * width_,
+        std::copy(input_image_.begin() + (start_row - 1) * width_, input_image_.begin() + start_row * width_,
                   send_data.begin());
-        std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                  send_data.begin() + proc_local_height * width_);
-      } else {
-        // Padding is the rows from neighboring processes
-        std::copy(input_image_.begin() + (disp - 1) * width_, input_image_.begin() + (disp - 1 + 1) * width_,
-                  send_data.begin());
-        std::copy(input_image_.begin() + disp * width_, input_image_.begin() + (disp + proc_local_height) * width_,
+        std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
                   send_data.begin() + width_);
-        std::copy(input_image_.begin() + (disp + proc_local_height) * width_,
-                  input_image_.begin() + (disp + proc_local_height + 1) * width_,
-                  send_data.begin() + (proc_local_height + 1) * width_);
+        if (end_row < height_) {
+          std::copy(input_image_.begin() + end_row * width_, input_image_.begin() + (end_row + 1) * width_,
+                    send_data.begin() + (proc_local_height + 1) * width_);
+        } else {
+          std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
+                    send_data.begin() + (proc_local_height + 1) * width_);
+        }
+      } else {
+        std::copy(input_image_.begin() + (start_row - 1) * width_, input_image_.begin() + start_row * width_,
+                  send_data.begin());
+        std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
+                  send_data.begin() + width_);
+        if (end_row < height_) {
+          std::copy(input_image_.begin() + end_row * width_, input_image_.begin() + (end_row + 1) * width_,
+                    send_data.begin() + (proc_local_height + 1) * width_);
+        } else {
+          std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
+                    send_data.begin() + (proc_local_height + 1) * width_);
+        }
       }
       world.send(proc, 0, send_data.data(), send_data.size());
-      disp += proc_local_height;
     }
   } else {
     world.recv(0, 0, local_input_.data(), local_input_.size());
@@ -120,17 +126,18 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
   std::vector<int> displacements(world.size());
   std::vector<unsigned char> gathered_output;
 
-  if (world.rank() == 0) {
-    for (int proc = 0; proc < world.size(); ++proc) {
-      int proc_local_height = (height_ + world.size() - 1 - proc) / world.size();
-      sendcounts[proc] = proc_local_height * width_;
-      if (proc == 0) {
-        displacements[proc] = 0;
-      } else {
-        displacements[proc] = displacements[proc - 1] + sendcounts[proc - 1];
-      }
+  gathered_output.resize(height_ * width_, 0);
+
+  for (int proc = 0; proc < world.size(); ++proc) {
+    int start_row = proc * height_ / world.size();
+    int end_row = (proc + 1) * height_ / world.size();
+    int proc_local_height = end_row - start_row;
+    sendcounts[proc] = proc_local_height * width_;
+    if (proc == 0) {
+      displacements[proc] = 0;
+    } else {
+      displacements[proc] = displacements[proc - 1] + sendcounts[proc - 1];
     }
-    gathered_output.resize(height_ * width_, 0);
   }
 
   MPI_Barrier(world);
