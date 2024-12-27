@@ -9,9 +9,9 @@
 
 using namespace kovalchuk_a_odd_even;
 
-std::vector<int> getRandomVector(int sz, int min = -999, int max = 999);
+std::vector<int> getRandomVectorrr(int sz, int min = -999, int max = 999);
 
-std::vector<int> getRandomVector(int sz, int min, int max) {
+std::vector<int> getRandomVectorrr(int sz, int min, int max) {
   std::random_device dev;
   std::mt19937 gen(dev());
   std::vector<int> vec(sz);
@@ -59,7 +59,7 @@ TEST(kovalchuk_a_odd_even, Test_Vector_10) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vector = getRandomVector(count_elements);
+    global_vector = getRandomVectorrr(count_elements);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
     taskDataPar->inputs_count.emplace_back(count_elements);
@@ -90,7 +90,7 @@ TEST(kovalchuk_a_odd_even, Test_Vector_1) {
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   if (world.rank() == 0) {
-    global_vector = getRandomVector(count_elements, 0, 0);
+    global_vector = getRandomVectorrr(count_elements, 0, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
     taskDataPar->inputs_count.emplace_back(count_elements);
