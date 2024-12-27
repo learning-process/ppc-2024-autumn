@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
-#include <boost/mpi/timer.hpp>
+#include <chrono>
 #include <memory>
 #include <vector>
 
