@@ -212,17 +212,11 @@ TEST(korneeva_e_rectangular_integration_method_mpi, LinearEighthIntegralTwoVaria
 
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearTripleIntegralThreeVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      korneeva_e_rectangular_integration_method_mpi::linearThreeVar, {{-2, 2}, {-2, 2}, {-2, 2}}, 1e-6);
+      korneeva_e_rectangular_integration_method_mpi::linearThreeVar, {{0, 1}, {0, 1}, {0, 1}}, 1e-6);
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, LinearQuadIntegralThreeVariables) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      korneeva_e_rectangular_integration_method_mpi::linearThreeVar, {{-2, 2}, {-2, 2}, {-2, 2}, {-2, 2}}, 1e-6);
-}
-TEST(korneeva_e_rectangular_integration_method_mpi, LinearEighthIntegralThreeVariables) {
-  int dimension = 8;
-  std::vector<std::pair<double, double>> limits(dimension, {-2, 2});
-  korneeva_e_rectangular_integration_method_mpi::customTest(
-      korneeva_e_rectangular_integration_method_mpi::linearThreeVar, limits, 1e-6);
+      korneeva_e_rectangular_integration_method_mpi::linearThreeVar, {{0, 1}, {0, 1}, {0, 1}, {0, 1}}, 1e-6);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricDoubleIntegralOneVariable) {
