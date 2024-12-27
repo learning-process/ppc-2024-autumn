@@ -236,7 +236,7 @@ double calculateIntegral(const Function& func, double epsilon, std::vector<std::
 
     subdivisions *= 2;
 
-    flag = (std::abs(integralValue - prevValue) > epsilon);
+    flag = (std::abs(integralValue - prevValue) * (1.0 / 3.0) > epsilon);
   }
 
   args.pop_back();
