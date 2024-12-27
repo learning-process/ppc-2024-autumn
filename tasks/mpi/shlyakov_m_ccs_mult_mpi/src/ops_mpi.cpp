@@ -55,15 +55,10 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
   int size = world.size();
   int rank = world.rank();
 
-  boost::mpi::broadcast(world, A_.values, 0);
-  boost::mpi::broadcast(world, A_.row_indices, 0);
-  boost::mpi::broadcast(world, A_.col_pointers, 0);
+  boost::mpi::broadcast(world, A_, 0);
   boost::mpi::broadcast(world, rows_a, 0);
   boost::mpi::broadcast(world, cols_a, 0);
-
-  boost::mpi::broadcast(world, B_.values, 0);
-  boost::mpi::broadcast(world, B_.row_indices, 0);
-  boost::mpi::broadcast(world, B_.col_pointers, 0);
+  boost::mpi::broadcast(world, B_, 0);
   boost::mpi::broadcast(world, rows_b, 0);
   boost::mpi::broadcast(world, cols_b, 0);
 
@@ -80,29 +75,38 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
       C_subset.row_indices.reserve(A_.values.size() * B_.values.size());
 
       std::vector<double> Cj_map(rows_a, 0.0);
+      int Bj_start;
+      int Bj_end;
+      int k;
+      double Bkj;
+      int Ak_start;
+      int Ak_end;
+      int row;
+      double Aik;
+      double val;
 
       for (int j = 0; j < cols_b; ++j) {
         std::fill(Cj_map.begin(), Cj_map.end(), 0.0);
 
-        int Bj_start = B_.col_pointers[j];
-        int Bj_end = B_.col_pointers[j + 1];
+        Bj_start = B_.col_pointers[j];
+        Bj_end = B_.col_pointers[j + 1];
 
         for (int idx = Bj_start; idx < Bj_end; ++idx) {
-          int k = B_.row_indices[idx];
-          double Bkj = B_.values[idx];
+          k = B_.row_indices[idx];
+          Bkj = B_.values[idx];
 
-          int Ak_start = A_.col_pointers[k];
-          int Ak_end = A_.col_pointers[k + 1];
+          Ak_start = A_.col_pointers[k];
+          Ak_end = A_.col_pointers[k + 1];
 
           for (int a_idx = Ak_start; a_idx < Ak_end; ++a_idx) {
-            int row = A_.row_indices[a_idx];
-            double Aik = A_.values[a_idx];
+            row = A_.row_indices[a_idx];
+            Aik = A_.values[a_idx];
             Cj_map[row] += Aik * Bkj;
           }
         }
 
-        for (int row = 0; row < rows_a; ++row) {
-          double val = Cj_map[row];
+        for (row = 0; row < rows_a; ++row) {
+          val = Cj_map[row];
           if (std::abs(val) > 1e-12) {
             C_subset.row_indices.push_back(row);
             C_subset.values.push_back(val);
@@ -113,8 +117,9 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
       }
 
       result_ = C_subset;
-    } else
+    } else {
       return true;
+    }
     return true;
   }
 
@@ -132,12 +137,15 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
   }
 
   SparseMatrix B_subset;
-  B_subset.col_pointers.reserve(end_col - start_col + 1);
+  int local_cols = end_col - start_col;
+  B_subset.col_pointers.reserve(local_cols + 1);
   B_subset.col_pointers.push_back(0);
 
+  int col_start;
+  int col_end;
   for (int col = start_col; col < end_col; ++col) {
-    int col_start = B_.col_pointers[col];
-    int col_end = B_.col_pointers[col + 1];
+    col_start = B_.col_pointers[col];
+    col_end = B_.col_pointers[col + 1];
 
     B_subset.values.insert(B_subset.values.end(), B_.values.begin() + col_start, B_.values.begin() + col_end);
     B_subset.row_indices.insert(B_subset.row_indices.end(), B_.row_indices.begin() + col_start,
@@ -147,27 +155,37 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
 
   std::vector<double> Cj_map(rows_a, 0.0);
 
-  for (int j = 0; j < (end_col - start_col); ++j) {
+  int Bj_start;
+  int Bj_end;
+  int k;
+  int Bkj;
+  int Ak_start;
+  int Ak_end;
+  int row;
+  double Aik;
+  double val;
+
+  for (int j = 0; j < local_cols; ++j) {
     std::fill(Cj_map.begin(), Cj_map.end(), 0.0);
 
-    int Bj_start = B_subset.col_pointers[j];
-    int Bj_end = B_subset.col_pointers[j + 1];
+    Bj_start = B_subset.col_pointers[j];
+    Bj_end = B_subset.col_pointers[j + 1];
 
     for (int idx = Bj_start; idx < Bj_end; ++idx) {
-      int k = B_subset.row_indices[idx];
-      double Bkj = B_subset.values[idx];
-      int Ak_start = A_.col_pointers[k];
-      int Ak_end = A_.col_pointers[k + 1];
+      k = B_subset.row_indices[idx];
+      Bkj = B_subset.values[idx];
+      Ak_start = A_.col_pointers[k];
+      Ak_end = A_.col_pointers[k + 1];
 
       for (int a_idx = Ak_start; a_idx < Ak_end; ++a_idx) {
-        int row = A_.row_indices[a_idx];
-        double Aik = A_.values[a_idx];
+        row = A_.row_indices[a_idx];
+        Aik = A_.values[a_idx];
         Cj_map[row] += Aik * Bkj;
       }
     }
 
-    for (int row = 0; row < rows_a; ++row) {
-      double val = Cj_map[row];
+    for (row = 0; row < rows_a; ++row) {
+      val = Cj_map[row];
       if (std::abs(val) > 1e-12) {
         C_subset.row_indices.push_back(row);
         C_subset.values.push_back(val);
@@ -190,13 +208,14 @@ bool shlyakov_m_ccs_mult_mpi::TestTaskMPI::run() {
     result_.col_pointers.reserve(cols_b + 1);
     result_.col_pointers.push_back(0);
 
+    int num_cols;
     for (int proc = 0; proc < size; ++proc) {
       SparseMatrix& C_proc = all_C_subsets[proc];
-      int num_cols = C_proc.col_pointers.size() - 1;
+      num_cols = C_proc.col_pointers.size() - 1;
 
       for (int j = 0; j < num_cols; ++j) {
-        int col_start = C_proc.col_pointers[j];
-        int col_end = C_proc.col_pointers[j + 1];
+        col_start = C_proc.col_pointers[j];
+        col_end = C_proc.col_pointers[j + 1];
 
         result_.values.insert(result_.values.end(), C_proc.values.begin() + col_start, C_proc.values.begin() + col_end);
         result_.row_indices.insert(result_.row_indices.end(), C_proc.row_indices.begin() + col_start,
