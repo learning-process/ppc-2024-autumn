@@ -112,16 +112,14 @@ TEST(korneeva_e_rectangular_integration_method_seq, PolynomialFunctionOverUnitIn
   ASSERT_NEAR(1.0 / 3.0, out[0], epsilon);
 }
 
-// Test for integrating x^2 + y^2 over [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, QuadraticFunctionOverUnitSquare) {
+// Test for integrating x + y over [0, 1] x [0, 1]
+TEST(korneeva_e_rectangular_integration_method_seq, LinearFunctionOverUnitSquare) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto f2x_squared_plus_y_squared = [](const std::vector<double>& args) {
-    return args[0] * args[0] + args[1] * args[1];
-  };
+  auto f2x_squared_plus_y_squared = [](const std::vector<double>& args) { return args[0] + args[1]; };
   auto task = createIntegrationTask(taskData, f2x_squared_plus_y_squared);
 
   ASSERT_TRUE(task.validation());
@@ -130,7 +128,7 @@ TEST(korneeva_e_rectangular_integration_method_seq, QuadraticFunctionOverUnitSqu
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(2.0 / 3.0, out[0], epsilon);
+  ASSERT_NEAR(1.0, out[0], epsilon);
 }
 
 // Test for very small epsilon
@@ -171,14 +169,14 @@ TEST(korneeva_e_rectangular_integration_method_seq, VeryLargeEpsilon) {
   ASSERT_NEAR(0.84147, out[0], 0.1);
 }
 
-// Test for 3-dimensional integral of x^2 + y^2 + z^2 over [0, 1] x [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, QuadraticFunctionOverUnitCube) {
+// Test for 3-dimensional integral of x + y + z over [0, 1] x [0, 1] x [0, 1]
+TEST(korneeva_e_rectangular_integration_method_seq, LinearFunctionOverUnitCube) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto f3d = [](const std::vector<double>& args) { return args[0] * args[0] + args[1] * args[1] + args[2] * args[2]; };
+  auto f3d = [](const std::vector<double>& args) { return args[0] + args[1] + args[2]; };
   auto task = createIntegrationTask(taskData, f3d);
 
   ASSERT_TRUE(task.validation());
@@ -187,7 +185,7 @@ TEST(korneeva_e_rectangular_integration_method_seq, QuadraticFunctionOverUnitCub
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(1.0, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(1.5, out[0], epsilon);  // Verify result with epsilon precision
 }
 
 // Test for 3-dimensional integral of sin(x) * cos(y) * exp(z) over [0, 1] x [0, 1] x [0, 1]

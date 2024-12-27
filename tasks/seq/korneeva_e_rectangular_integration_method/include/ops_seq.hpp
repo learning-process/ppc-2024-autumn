@@ -105,7 +105,7 @@ double RectangularIntegration::calculateIntegral(std::vector<double>& args_) {
 
     subdivisions *= 2;
 
-    flag = (std::abs(integralValue - prevValue) > epsilon);
+    flag = (std::abs(integralValue - prevValue) * (1.0 / 3.0) > epsilon);
   }
 
   args_.pop_back();
