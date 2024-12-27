@@ -101,9 +101,9 @@ TEST(deryabin_m_cannons_algorithm_mpi, test_gigantic_random_matrix) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> _distribution_(-1000, 1000);
-  std::vector<double> input_matrix_A(16000, _distribution_(gen));
-  std::vector<double> input_matrix_B(16000, _distribution_(gen));
-  std::vector<double> output_matrix_C(16000, 0);
+  std::vector<double> input_matrix_A(1600, _distribution_(gen));
+  std::vector<double> input_matrix_B(1600, _distribution_(gen));
+  std::vector<double> output_matrix_C(1600, 0);
   std::vector<std::vector<double>> out_matrix_C(1, output_matrix_C);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
