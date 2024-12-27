@@ -102,10 +102,12 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
 }
 
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
-  internal_order_test();
+    internal_order_test();
 
-  std::copy(output_image_.begin(), output_image_.end(), taskData->outputs[0]);
-  return true;
+    if (taskData->outputs[0] != nullptr) {
+        std::copy(output_image_.begin(), output_image_.end(), taskData->outputs[0]);
+    }
+    return true;
 }
 
 bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
