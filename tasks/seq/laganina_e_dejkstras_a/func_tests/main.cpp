@@ -1,7 +1,8 @@
-#include<gtest/gtest.h>
+#include <gtest/gtest.h>
+
+#include <iostream>
 #include <random>
 #include <vector>
-#include <iostream>
 
 #include "seq/laganina_e_dejkstras_a/include/ops_seq.hpp"
 
@@ -77,7 +78,7 @@ TEST(laganina_e_dejkstras_a, Test_5_1) {
 
   // Create data
   std::vector<int> expectResult = {0, 1, 2, 1, 2};
-  std::vector<int> trueResult = {0, 0, 0,0,0};
+  std::vector<int> trueResult = {0, 0, 0, 0, 0};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
@@ -146,7 +147,7 @@ TEST(laganina_e_dejkstras_a, Test_5_2) {
 
   // Create data
   std::vector<int> expectResult = {0, 4, 6, 1, 6};
-  std::vector<int> trueResult = {0, 0, 0,0,0};
+  std::vector<int> trueResult = {0, 0, 0, 0, 0};
 
   // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();

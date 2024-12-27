@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <queue>
 #include <climits>
+#include <queue>
+#include <vector>
 
 #include "core/task/include/task.hpp"
 

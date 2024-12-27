@@ -265,8 +265,7 @@ void laganina_e_dejskras_a_mpi::TestMPITaskSequential::dijkstra(int start_vertex
   std::vector<bool> visited(v, false);
 
   // Priority queue for storing pairs (distance, vertex)
-  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>>
-      priority_queue;
+  std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> priority_queue;
   priority_queue.emplace(0, start_vertex);  // Use start_vertex instead of 0
 
   while (!priority_queue.empty()) {

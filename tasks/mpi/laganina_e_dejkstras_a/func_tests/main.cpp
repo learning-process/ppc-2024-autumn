@@ -4,6 +4,7 @@
 #include <boost/mpi/environment.hpp>
 #include <random>
 #include <vector>
+
 #include "mpi/laganina_e_dejkstras_a/include/ops_mpi.hpp"
 
 namespace laganina_e_dejskras_a_mpi {
@@ -81,7 +82,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_5_1) {
+TEST(laganina_e_dejkstras_a_mpi, Test_5_1) {
   boost::mpi::communicator world;
   int v_ = 5;
   std::vector<int> graph = {0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0};
@@ -109,7 +110,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_4_2) {
+TEST(laganina_e_dejkstras_a_mpi, Test_4_2) {
   boost::mpi::communicator world;
   int v_ = 4;
   std::vector<int> graph = {0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -137,7 +138,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_3_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_3_random) {
   boost::mpi::communicator world;
   int v_ = 3;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
@@ -178,7 +179,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_10_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_10_random) {
   boost::mpi::communicator world;
   int v_ = 10;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
@@ -219,7 +220,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_13_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_13_random) {
   boost::mpi::communicator world;
   int v_ = 13;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
@@ -260,7 +261,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_25_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_25_random) {
   boost::mpi::communicator world;
   int v_ = 25;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
@@ -301,7 +302,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_55_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_55_random) {
   boost::mpi::communicator world;
   int v_ = 55;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
@@ -342,7 +343,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_76_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_76_random) {
   boost::mpi::communicator world;
   int v_ = 76;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
@@ -383,7 +384,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_1) {
   }
 }
 
- TEST(laganina_e_dejkstras_a_mpi, Test_101_random) {
+TEST(laganina_e_dejkstras_a_mpi, Test_101_random) {
   boost::mpi::communicator world;
   int v_ = 101;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
