@@ -27,33 +27,21 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   }
   MPI_Bcast(&width_, 1, MPI_INT, 0, world);
   MPI_Bcast(&height_, 1, MPI_INT, 0, world);
-
   MPI_Bcast(&local_height, 1, MPI_INT, 0, world);
 
   local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
   output_image_.resize(local_height * width_, 0);
-  if (world.rank() == 0) {
-    std::cout << "Rank 0: width = " << width_ << ", height = " << height_ << std::endl;
-  }
 
-  std::cout << "Rank " << world.rank() << ": local_height = " << local_height << std::endl;
   if (world.rank() == 0) {
-    std::cout << "Rank 0: local_input_ size = " << local_input_.size() << std::endl;
-    for (int i = 0; i < 10; ++i) {
-      std::cout << "Rank 0: local_input_[" << i << "] = " << static_cast<int>(local_input_[i]) << std::endl;
-    }
     int disp = 0;
     for (int proc = 0; proc < world.size(); ++proc) {
       int proc_local_height = local_height;
       if (proc == world.size() - 1) {
         proc_local_height = height_ - (world.size() - 1) * local_height;
       }
-      const unsigned char* send_ptr = input_image_.data() + (disp - width_);
-      if (proc == 0) {
-        send_ptr += width_;
-      }
+      const unsigned char* send_ptr = input_image_.data() + disp * width_;
       world.send(proc, 0, send_ptr, width_ * (proc_local_height + 2));
-      disp += proc_local_height * width_;
+      disp += proc_local_height;
     }
   } else {
     world.recv(0, 0, local_input_.data(), width_ * (local_height + 2));
@@ -106,8 +94,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
   internal_order_test();
 
-  internal_order_test();
-
   std::vector<int> sendcounts(world.size());
   std::vector<int> displacements(world.size());
   std::vector<unsigned char> gathered_output;
@@ -124,6 +110,8 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
     }
     gathered_output.resize(height_ * width_, 0);
   }
+
+  MPI_Barrier(world);
 
   MPI_Gatherv(output_image_.data(), output_image_.size(), MPI_UNSIGNED_CHAR, gathered_output.data(), sendcounts.data(),
               displacements.data(), MPI_UNSIGNED_CHAR, 0, world);
