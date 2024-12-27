@@ -228,11 +228,11 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
       p++;
     }
     for (unsigned short row = 0; row < block_dimension; ++row) {
-      boost::mpi::gather(world, local_output_matrix_C.data() + row * block_dimension, block_dimension, output_matrix_C.data() + (((world.rank() / block_rows_columns) * block_dimension + row) * dimension + (world.rank() % block_rows_columns) * block_dimension, 0);
-      //std::copy(
-        //local_output_matrix_C.begin() + row * block_dimension,
-        //local_output_matrix_C.begin() + (row + 1) * block_dimension,
-        //output_matrix_C.begin() + ((world.rank() / block_rows_columns * block_dimension + row) * dimension + world.rank() % block_rows_columns * block_dimension)
+      //boost::mpi::gather(world, local_output_matrix_C.data() + row * block_dimension, block_dimension, output_matrix_C.data() + (((world.rank() / block_rows_columns) * block_dimension + row) * dimension + (world.rank() % block_rows_columns) * block_dimension, 0);
+      std::copy(
+        local_output_matrix_C.begin() + row * block_dimension,
+        local_output_matrix_C.begin() + (row + 1) * block_dimension,
+        output_matrix_C.begin() + (((world.rank() / block_rows_columns) * block_dimension + row) * dimension + (world.rank() % block_rows_columns) * block_dimension)
         );
     }
   }
