@@ -101,33 +101,25 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::validation() {
 bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
   internal_order_test();
 
-  std::vector<int> recv_counts(world.size(), 0);
-  std::vector<int> displacements(world.size(), 0);
-
   boost::mpi::broadcast(world, res, 0);
 
-  int n_of_send_elements;
-  int n_of_proc_with_extra_elements;
-  int start;
-  int end;
   int world_size = world.size();
   int world_rank = world.rank();
   int res_size = static_cast<int>(res.size());
 
-  n_of_send_elements = res_size / world_size;
-  n_of_proc_with_extra_elements = res_size % world_size;
-
-  for (int i = 0; i < world_size; i++) {
-    start = i * n_of_send_elements + std::min(i, n_of_proc_with_extra_elements);
-    end = start + n_of_send_elements + (i < n_of_proc_with_extra_elements ? 1 : 0);
-    recv_counts[i] = end - start;
-    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
+  int n_of_send_elements = res_size / world_size;
+  int n_of_extra_elements = res_size % world_size;
+  std::vector<int> extra_elements;
+  if (world_rank == 0) {
+    extra_elements.resize(n_of_extra_elements);
+    for (int i = res.size() - res_size % world_size; i < res.size(); i++) {
+      extra_elements[i] = res[i];
+    }
   }
+  int start = world_rank * n_of_send_elements;
+  int end = start + n_of_send_elements;
 
-  start = world_rank * n_of_send_elements + std::min(world_rank, n_of_proc_with_extra_elements);
-  end = start + n_of_send_elements + (world_rank < n_of_proc_with_extra_elements ? 1 : 0);
-
-  local_res.resize(end - start);
+  local_res.resize(n_of_send_elements);
   for (int i = start; i < end; i++) {
     local_res[i - start] = res[i];
   }
@@ -162,21 +154,12 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       }
     }
   }
-  for (int i = 0; i < world_size; ++i) {
-    recv_counts[i] = local_res.size();
-    displacements[i] = (i == 0) ? 0 : displacements[i - 1] + recv_counts[i - 1];
-  }
-  boost::mpi::gatherv(world, local_res.data(), local_res.size(), res.data(), recv_counts, displacements, 0);
 
-  if (world.rank() == 0) {
-    std::vector<int> temp_res(res.size());
-    for (int i = 0; i < world_size; ++i) {
-      int offset = displacements[i];
-      for (int j = 0; j < recv_counts[i]; ++j) {
-        temp_res[offset + j] = res[displacements[world_size - 1 - i] + j];
-      }
-    }
-    res = std::move(temp_res);
+  gather(world, local_res.data(), local_res.size(), res, 0);
+
+  if (world_rank == 0) {
+    odd_even_merge(res, extra_elements);
+    res.insert(res.end(), extra_elements.begin(), extra_elements.end());
   }
 
   return true;
