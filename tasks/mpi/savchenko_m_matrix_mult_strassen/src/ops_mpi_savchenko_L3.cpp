@@ -59,8 +59,9 @@ bool savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential::is_power_of_tw
 
 std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential::add_matrices(
     const std::vector<double>& A, const std::vector<double>& B, size_t _size) {
-  std::vector<double> C(_size * _size, 0.0);
-  for (size_t i = 0; i < _size * _size; ++i) {
+  size_t _size_vector = _size * _size;
+  std::vector<double> C(_size_vector, 0.0);
+  for (size_t i = 0; i < _size_vector; ++i) {
     C[i] = A[i] + B[i];
   }
   return C;
@@ -68,8 +69,9 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential:
 
 std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential::sub_matrices(
     const std::vector<double>& A, const std::vector<double>& B, size_t _size) {
-  std::vector<double> C(_size * _size, 0.0);
-  for (size_t i = 0; i < _size * _size; ++i) {
+  size_t _size_vector = _size * _size;
+  std::vector<double> C(_size_vector, 0.0);
+  for (size_t i = 0; i < _size_vector; ++i) {
     C[i] = A[i] - B[i];
   }
   return C;
@@ -102,9 +104,10 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential:
     size = 1;
     while (size < _size) size *= 2;
   }
+  size_t size_vector = size * size;
 
-  std::vector<double> local_A(size * size, 0.0);
-  std::vector<double> local_B(size * size, 0.0);
+  std::vector<double> local_A(size_vector, 0.0);
+  std::vector<double> local_B(size_vector, 0.0);
 
   for (size_t i = 0; i < _size; i++) {
     for (size_t j = 0; j < _size; j++) {
@@ -114,16 +117,17 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential:
   }
 
   size_t size_half = size / 2;
+  size_t size_half_vector = size_half * size_half;
 
-  std::vector<double> A11(size_half * size_half);
-  std::vector<double> A12(size_half * size_half);
-  std::vector<double> A21(size_half * size_half);
-  std::vector<double> A22(size_half * size_half);
+  std::vector<double> A11(size_half_vector, 0.0);
+  std::vector<double> A12(size_half_vector, 0.0);
+  std::vector<double> A21(size_half_vector, 0.0);
+  std::vector<double> A22(size_half_vector, 0.0);
 
-  std::vector<double> B11(size_half * size_half);
-  std::vector<double> B12(size_half * size_half);
-  std::vector<double> B21(size_half * size_half);
-  std::vector<double> B22(size_half * size_half);
+  std::vector<double> B11(size_half_vector, 0.0);
+  std::vector<double> B12(size_half_vector, 0.0);
+  std::vector<double> B21(size_half_vector, 0.0);
+  std::vector<double> B22(size_half_vector, 0.0);
 
   for (size_t i = 0; i < size_half; ++i) {
     for (size_t j = 0; j < size_half; ++j) {
@@ -139,7 +143,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential:
     }
   }
 
-  std::vector<std::vector<double>> M(7, std::vector<double>(size_half * size_half, 0.0));
+  std::vector<std::vector<double>> M(7, std::vector<double>(size_half_vector, 0.0));
 
   M[0] = strassen(add_matrices(A11, A22, size_half), add_matrices(B11, B22, size_half), size_half);
   M[1] = strassen(add_matrices(A21, A22, size_half), B11, size_half);
@@ -149,7 +153,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential:
   M[5] = strassen(sub_matrices(A21, A11, size_half), add_matrices(B11, B12, size_half), size_half);
   M[6] = strassen(sub_matrices(A12, A22, size_half), add_matrices(B21, B22, size_half), size_half);
 
-  std::vector<double> local_C(size * size, 0.0);
+  std::vector<double> local_C(size_vector, 0.0);
 
   for (size_t i = 0; i < size_half; ++i) {
     for (size_t j = 0; j < size_half; ++j) {
@@ -165,7 +169,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential:
     }
   }
 
-  std::vector<double> C(_size * _size);
+  std::vector<double> C(_size * _size, 0.0);
   for (size_t i = 0; i < _size; i++) {
     for (size_t j = 0; j < _size; j++) {
       C[i * _size + j] = local_C[i * size + j];
@@ -237,8 +241,9 @@ bool savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::is_power_of_two(
 
 std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::add_matrices(
     const std::vector<double>& A, const std::vector<double>& B, size_t _size) {
-  std::vector<double> C(_size * _size, 0.0);
-  for (size_t i = 0; i < _size * _size; ++i) {
+  size_t _size_vector = _size * _size;
+  std::vector<double> C(_size_vector, 0.0);
+  for (size_t i = 0; i < _size_vector; ++i) {
     C[i] = A[i] + B[i];
   }
   return C;
@@ -246,8 +251,9 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::a
 
 std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::sub_matrices(
     const std::vector<double>& A, const std::vector<double>& B, size_t _size) {
-  std::vector<double> C(_size * _size, 0.0);
-  for (size_t i = 0; i < _size * _size; ++i) {
+  size_t _size_vector = _size * _size;
+  std::vector<double> C(_size_vector, 0.0);
+  for (size_t i = 0; i < _size_vector; ++i) {
     C[i] = A[i] - B[i];
   }
   return C;
@@ -280,9 +286,10 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
     size = 1;
     while (size < _size) size *= 2;
   }
+  size_t size_vector = size * size;
 
-  std::vector<double> local_A(size * size, 0.0);
-  std::vector<double> local_B(size * size, 0.0);
+  std::vector<double> local_A(size_vector, 0.0);
+  std::vector<double> local_B(size_vector, 0.0);
 
   for (size_t i = 0; i < _size; i++) {
     for (size_t j = 0; j < _size; j++) {
@@ -292,16 +299,17 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
   }
 
   size_t size_half = size / 2;
+  size_t size_half_vector = size_half * size_half;
 
-  std::vector<double> A11(size_half * size_half, 0.0);
-  std::vector<double> A12(size_half * size_half, 0.0);
-  std::vector<double> A21(size_half * size_half, 0.0);
-  std::vector<double> A22(size_half * size_half, 0.0);
+  std::vector<double> A11(size_half_vector, 0.0);
+  std::vector<double> A12(size_half_vector, 0.0);
+  std::vector<double> A21(size_half_vector, 0.0);
+  std::vector<double> A22(size_half_vector, 0.0);
 
-  std::vector<double> B11(size_half * size_half, 0.0);
-  std::vector<double> B12(size_half * size_half, 0.0);
-  std::vector<double> B21(size_half * size_half, 0.0);
-  std::vector<double> B22(size_half * size_half, 0.0);
+  std::vector<double> B11(size_half_vector, 0.0);
+  std::vector<double> B12(size_half_vector, 0.0);
+  std::vector<double> B21(size_half_vector, 0.0);
+  std::vector<double> B22(size_half_vector, 0.0);
 
   for (size_t i = 0; i < size_half; ++i) {
     for (size_t j = 0; j < size_half; ++j) {
@@ -317,7 +325,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
     }
   }
 
-  std::vector<std::vector<double>> M(7, std::vector<double>(size_half * size_half, 0.0));
+  std::vector<std::vector<double>> M(7, std::vector<double>(size_half_vector, 0.0));
 
   M[0] = strassen(add_matrices(A11, A22, size_half), add_matrices(B11, B22, size_half), size_half);
   M[1] = strassen(add_matrices(A21, A22, size_half), B11, size_half);
@@ -327,7 +335,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
   M[5] = strassen(sub_matrices(A21, A11, size_half), add_matrices(B11, B12, size_half), size_half);
   M[6] = strassen(sub_matrices(A12, A22, size_half), add_matrices(B21, B22, size_half), size_half);
 
-  std::vector<double> local_C(size * size, 0.0);
+  std::vector<double> local_C(size_vector, 0.0);
 
   for (size_t i = 0; i < size_half; ++i) {
     for (size_t j = 0; j < size_half; ++j) {
@@ -369,9 +377,10 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
     size = 1;
     while (size < _size) size *= 2;
   }
+  size_t size_vector = size * size;
 
-  std::vector<double> local_A(size * size, 0.0);
-  std::vector<double> local_B(size * size, 0.0);
+  std::vector<double> local_A(size_vector, 0.0);
+  std::vector<double> local_B(size_vector, 0.0);
 
   if (world_rank == 0) {
     for (size_t i = 0; i < _size; ++i) {
@@ -387,16 +396,17 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
   boost::mpi::broadcast(comm, size, 0);
 
   size_t size_half = size / 2;
+  size_t size_half_vector = size_half * size_half;
 
-  std::vector<double> A11(size_half * size_half, 0.0);
-  std::vector<double> A12(size_half * size_half, 0.0);
-  std::vector<double> A21(size_half * size_half, 0.0);
-  std::vector<double> A22(size_half * size_half, 0.0);
+  std::vector<double> A11(size_half_vector, 0.0);
+  std::vector<double> A12(size_half_vector, 0.0);
+  std::vector<double> A21(size_half_vector, 0.0);
+  std::vector<double> A22(size_half_vector, 0.0);
 
-  std::vector<double> B11(size_half * size_half, 0.0);
-  std::vector<double> B12(size_half * size_half, 0.0);
-  std::vector<double> B21(size_half * size_half, 0.0);
-  std::vector<double> B22(size_half * size_half, 0.0);
+  std::vector<double> B11(size_half_vector, 0.0);
+  std::vector<double> B12(size_half_vector, 0.0);
+  std::vector<double> B21(size_half_vector, 0.0);
+  std::vector<double> B22(size_half_vector, 0.0);
 
   for (size_t i = 0; i < size_half; ++i) {
     for (size_t j = 0; j < size_half; ++j) {
@@ -413,7 +423,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
     }
   }
 
-  std::vector<std::vector<double>> M(7, std::vector<double>(size_half * size_half, 0.0));
+  std::vector<std::vector<double>> M(7, std::vector<double>(size_half_vector, 0.0));
 
   for (int task = world_rank; task < 7; task += world_size) {
     if (task == 0) {
@@ -433,26 +443,25 @@ std::vector<double> savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel::s
     }
   }
 
-  std::vector<double> global_M(7 * size_half * size_half, 0.0);
+  std::vector<double> global_M(7 * size_half_vector, 0.0);
   for (size_t i = 0; i < M.size(); ++i) {
-    boost::mpi::reduce(comm, M[i].data(), M[i].size(), global_M.data() + i * size_half * size_half, std::plus(), 0);
+    boost::mpi::reduce(comm, M[i].data(), M[i].size(), global_M.data() + i * size_half_vector, std::plus(), 0);
   }
 
   if (world_rank == 0) {
-    std::vector<double> local_C(size * size, 0.0);
+    std::vector<double> local_C(size_vector, 0.0);
     for (size_t i = 0; i < size_half; ++i) {
       for (size_t j = 0; j < size_half; ++j) {
-        local_C[i * size + j] = global_M[i * size_half + j] + global_M[3 * size_half * size_half + i * size_half + j] -
-                                global_M[4 * size_half * size_half + i * size_half + j] +
-                                global_M[6 * size_half * size_half + i * size_half + j];
-        local_C[i * size + j + size_half] = global_M[2 * size_half * size_half + i * size_half + j] +
-                                            global_M[4 * size_half * size_half + i * size_half + j];
-        local_C[(i + size_half) * size + j] = global_M[1 * size_half * size_half + i * size_half + j] +
-                                              global_M[3 * size_half * size_half + i * size_half + j];
-        local_C[(i + size_half) * size + j + size_half] = global_M[i * size_half + j] -
-                                                          global_M[1 * size_half * size_half + i * size_half + j] +
-                                                          global_M[2 * size_half * size_half + i * size_half + j] +
-                                                          global_M[5 * size_half * size_half + i * size_half + j];
+        local_C[i * size + j] = global_M[i * size_half + j] + global_M[3 * size_half_vector + i * size_half + j] -
+                                global_M[4 * size_half_vector + i * size_half + j] +
+                                global_M[6 * size_half_vector + i * size_half + j];
+        local_C[i * size + j + size_half] =
+            global_M[2 * size_half_vector + i * size_half + j] + global_M[4 * size_half_vector + i * size_half + j];
+        local_C[(i + size_half) * size + j] =
+            global_M[1 * size_half_vector + i * size_half + j] + global_M[3 * size_half_vector + i * size_half + j];
+        local_C[(i + size_half) * size + j + size_half] =
+            global_M[i * size_half + j] - global_M[1 * size_half_vector + i * size_half + j] +
+            global_M[2 * size_half_vector + i * size_half + j] + global_M[5 * size_half_vector + i * size_half + j];
       }
     }
 

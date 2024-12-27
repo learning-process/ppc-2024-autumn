@@ -44,6 +44,151 @@ double getRandomDouble(double min, double max) {
 
 }  // namespace savchenko_m_matrix_mult_strassen_mpi
 
+TEST(savchenko_m_matrix_mult_strassen_mpi, validation_inputs_count_zero) {
+  // Create data
+  boost::mpi::communicator world;
+
+  const size_t size = 2;
+
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    matrix_A = std::vector<double>(size * size, 0.0);
+    matrix_B = std::vector<double>(size * size, 0.0);
+    matrix_res = std::vector<double>(size * size, 0.0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+
+    savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_matrix_mult_strassen_mpi, validation_inputs_count_two) {
+  // Create data
+  boost::mpi::communicator world;
+
+  const size_t size = 2;
+
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    matrix_A = std::vector<double>(size * size, 0.0);
+    matrix_B = std::vector<double>(size * size, 0.0);
+    matrix_res = std::vector<double>(size * size, 0.0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+
+    savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_matrix_mult_strassen_mpi, validation_outputs_count_zero) {
+  // Create data
+  boost::mpi::communicator world;
+
+  const size_t size = 2;
+
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    matrix_A = std::vector<double>(size * size, 0.0);
+    matrix_B = std::vector<double>(size * size, 0.0);
+    matrix_res = std::vector<double>(size * size, 0.0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+
+    savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_matrix_mult_strassen_mpi, validation_outputs_count_two) {
+  // Create data
+  boost::mpi::communicator world;
+
+  const size_t size = 2;
+
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    matrix_A = std::vector<double>(size * size, 0.0);
+    matrix_B = std::vector<double>(size * size, 0.0);
+    matrix_res = std::vector<double>(size * size, 0.0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(size);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(size);
+    taskDataPar->outputs_count.emplace_back(size);
+
+    savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(savchenko_m_matrix_mult_strassen_mpi, validation_matrix_size_zero) {
+  // Create data
+  boost::mpi::communicator world;
+
+  const size_t size = 2;
+
+  std::vector<double> matrix_A;
+  std::vector<double> matrix_B;
+  std::vector<double> matrix_res;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    matrix_A = std::vector<double>(size * size, 0.0);
+    matrix_B = std::vector<double>(size * size, 0.0);
+    matrix_res = std::vector<double>(size * size, 0.0);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+    taskDataPar->inputs_count.emplace_back(0);
+
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+    taskDataPar->outputs_count.emplace_back(0);
+
+    savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
 TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_5x5) {
   // Create data
   boost::mpi::communicator world;
@@ -70,7 +215,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_5x5) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -80,7 +225,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_5x5) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -128,7 +273,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_10x10) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -138,7 +283,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_10x10) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -186,7 +331,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_15x15) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -196,7 +341,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_15x15) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -244,7 +389,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_20x20) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -254,7 +399,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_20x20) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -302,7 +447,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_8x8) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -312,7 +457,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_8x8) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -360,7 +505,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_16x16) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -370,7 +515,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_16x16) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -418,7 +563,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_32x32) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -428,7 +573,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_32x32) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -476,7 +621,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_64x64) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -486,7 +631,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_64x64) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());
@@ -534,7 +679,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_128x128) {
     taskDataPar->inputs_count.emplace_back(size);
 
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
-    taskDataPar->outputs_count.emplace_back(matrix_res.size());
+    taskDataPar->outputs_count.emplace_back(size);
 
     // Refference
     refference = std::vector<double>(size * size, 0.0);
@@ -544,7 +689,7 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, matrixes_128x128) {
     taskDataSeq->inputs_count.emplace_back(size);
 
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-    taskDataSeq->outputs_count.emplace_back(refference.size());
+    taskDataSeq->outputs_count.emplace_back(size);
     // Create Task
     savchenko_m_matrix_mult_strassen_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
     ASSERT_TRUE(testMpiTaskSequential.validation());

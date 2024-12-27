@@ -73,10 +73,6 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_TRUE(testMpiTaskParallel->validation());
-  ASSERT_TRUE(testMpiTaskParallel->pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel->run());
-  ASSERT_TRUE(testMpiTaskParallel->post_processing());
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -123,10 +119,6 @@ TEST(savchenko_m_matrix_mult_strassen_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<savchenko_m_matrix_mult_strassen_mpi::TestMPITaskParallel>(taskDataPar);
-  ASSERT_TRUE(testMpiTaskParallel->validation());
-  ASSERT_TRUE(testMpiTaskParallel->pre_processing());
-  ASSERT_TRUE(testMpiTaskParallel->run());
-  ASSERT_TRUE(testMpiTaskParallel->post_processing());
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();

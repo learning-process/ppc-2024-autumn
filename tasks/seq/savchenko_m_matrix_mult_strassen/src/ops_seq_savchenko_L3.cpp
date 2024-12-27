@@ -55,8 +55,9 @@ bool savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::is_power_of_two(s
 std::vector<double> savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::add_matrices(const std::vector<double>& A,
                                                                                            const std::vector<double>& B,
                                                                                            size_t _size) {
-  std::vector<double> C(_size * _size, 0.0);
-  for (size_t i = 0; i < _size * _size; ++i) {
+  size_t _size_vector = _size * _size;
+  std::vector<double> C(_size_vector, 0.0);
+  for (size_t i = 0; i < _size_vector; ++i) {
     C[i] = A[i] + B[i];
   }
   return C;
@@ -65,8 +66,9 @@ std::vector<double> savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::ad
 std::vector<double> savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::sub_matrices(const std::vector<double>& A,
                                                                                            const std::vector<double>& B,
                                                                                            size_t _size) {
-  std::vector<double> C(_size * _size, 0.0);
-  for (size_t i = 0; i < _size * _size; ++i) {
+  size_t _size_vector = _size * _size;
+  std::vector<double> C(_size_vector, 0.0);
+  for (size_t i = 0; i < _size_vector; ++i) {
     C[i] = A[i] - B[i];
   }
   return C;
@@ -99,9 +101,10 @@ std::vector<double> savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::st
     size = 1;
     while (size < _size) size *= 2;
   }
+  size_t size_vector = size * size;
 
-  std::vector<double> local_A(size * size, 0.0);
-  std::vector<double> local_B(size * size, 0.0);
+  std::vector<double> local_A(size_vector, 0.0);
+  std::vector<double> local_B(size_vector, 0.0);
 
   for (size_t i = 0; i < _size; i++) {
     for (size_t j = 0; j < _size; j++) {
@@ -111,16 +114,17 @@ std::vector<double> savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::st
   }
 
   size_t size_half = size / 2;
+  size_t size_half_vector = size_half * size_half;
 
-  std::vector<double> A11(size_half * size_half);
-  std::vector<double> A12(size_half * size_half);
-  std::vector<double> A21(size_half * size_half);
-  std::vector<double> A22(size_half * size_half);
+  std::vector<double> A11(size_half_vector);
+  std::vector<double> A12(size_half_vector);
+  std::vector<double> A21(size_half_vector);
+  std::vector<double> A22(size_half_vector);
 
-  std::vector<double> B11(size_half * size_half);
-  std::vector<double> B12(size_half * size_half);
-  std::vector<double> B21(size_half * size_half);
-  std::vector<double> B22(size_half * size_half);
+  std::vector<double> B11(size_half_vector);
+  std::vector<double> B12(size_half_vector);
+  std::vector<double> B21(size_half_vector);
+  std::vector<double> B22(size_half_vector);
 
   for (size_t i = 0; i < size_half; ++i) {
     for (size_t j = 0; j < size_half; ++j) {
@@ -136,7 +140,7 @@ std::vector<double> savchenko_m_matrix_mult_strassen_seq::TestTaskSequential::st
     }
   }
 
-  std::vector<std::vector<double>> M(7, std::vector<double>(size_half * size_half, 0.0));
+  std::vector<std::vector<double>> M(7, std::vector<double>(size_half_vector, 0.0));
 
   M[0] = strassen(add_matrices(A11, A22, size_half), add_matrices(B11, B22, size_half), size_half);
   M[1] = strassen(add_matrices(A21, A22, size_half), B11, size_half);

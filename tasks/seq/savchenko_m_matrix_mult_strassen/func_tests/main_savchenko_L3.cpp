@@ -45,6 +45,116 @@ double getRandomDouble(double min, double max) {
 
 }  // namespace savchenko_m_matrix_mult_strassen_seq
 
+TEST(savchenko_m_matrix_mult_strassen_seq, validation_inputs_count_zero) {
+  // Create data
+  const size_t size = 2;
+
+  std::vector<double> matrix_A(size * size, 0.0);
+  std::vector<double> matrix_B(size * size, 0.0);
+  std::vector<double> matrix_res(size * size, 0.0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(size);
+
+  // Create Task
+  savchenko_m_matrix_mult_strassen_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_matrix_mult_strassen_seq, validation_inputs_count_two) {
+  // Create data
+  const size_t size = 2;
+
+  std::vector<double> matrix_A(size * size, 0.0);
+  std::vector<double> matrix_B(size * size, 0.0);
+  std::vector<double> matrix_res(size * size, 0.0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(size);
+  taskDataSeq->inputs_count.emplace_back(size);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(size);
+
+  // Create Task
+  savchenko_m_matrix_mult_strassen_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_matrix_mult_strassen_seq, validation_outputs_count_zero) {
+  // Create data
+  const size_t size = 2;
+
+  std::vector<double> matrix_A(size * size, 0.0);
+  std::vector<double> matrix_B(size * size, 0.0);
+  std::vector<double> matrix_res(size * size, 0.0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(size);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+
+  // Create Task
+  savchenko_m_matrix_mult_strassen_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_matrix_mult_strassen_seq, validation_outputs_count_two) {
+  // Create data
+  const size_t size = 2;
+
+  std::vector<double> matrix_A(size * size, 0.0);
+  std::vector<double> matrix_B(size * size, 0.0);
+  std::vector<double> matrix_res(size * size, 0.0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(size);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(size);
+  taskDataSeq->outputs_count.emplace_back(size);
+
+  // Create Task
+  savchenko_m_matrix_mult_strassen_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
+TEST(savchenko_m_matrix_mult_strassen_seq, validation_matrix_size_zero) {
+  // Create data
+  const size_t size = 2;
+
+  std::vector<double> matrix_A(size * size, 0.0);
+  std::vector<double> matrix_B(size * size, 0.0);
+  std::vector<double> matrix_res(size * size, 0.0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
+  taskDataSeq->inputs_count.emplace_back(0);
+
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_res.data()));
+  taskDataSeq->outputs_count.emplace_back(0);
+
+  // Create Task
+  savchenko_m_matrix_mult_strassen_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  EXPECT_FALSE(testTaskSequential.validation());
+}
+
 TEST(savchenko_m_matrix_mult_strassen_seq, simple_matrix_2x2) {
   const size_t size = 2;
 
