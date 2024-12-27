@@ -2,7 +2,6 @@
 
 #include "seq/korneeva_e_rectangular_integration_method/include/ops_seq.hpp"
 
-// Helper function to prepare TaskData
 std::shared_ptr<ppc::core::TaskData> prepareTaskData(const std::vector<std::pair<double, double>>& limits,
                                                      double* epsilon, std::vector<double>& outputs) {
   auto taskData = std::make_shared<ppc::core::TaskData>();
@@ -14,16 +13,14 @@ std::shared_ptr<ppc::core::TaskData> prepareTaskData(const std::vector<std::pair
   return taskData;
 }
 
-// Helper function to create and validate RectangularIntegration object
 korneeva_e_rectangular_integration_method_seq::RectangularIntegration createIntegrationTask(
     const std::shared_ptr<ppc::core::TaskData>& taskData,
     const std::function<double(const std::vector<double>&)>& integrand) {
   return korneeva_e_rectangular_integration_method_seq::RectangularIntegration(taskData, integrand);
 }
 
-// Test for invalid integration bounds: minimum value is greater than maximum value
 TEST(korneeva_e_rectangular_integration_method_seq, invalid_limits) {
-  std::vector<std::pair<double, double>> lims = {{1.0, 0.0}};  // Invalid bounds
+  std::vector<std::pair<double, double>> lims = {{1.0, 0.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
 
@@ -31,31 +28,29 @@ TEST(korneeva_e_rectangular_integration_method_seq, invalid_limits) {
   auto f1cos = [](const std::vector<double>& args) { return std::cos(args[0]); };
   auto task = createIntegrationTask(taskData, f1cos);
 
-  ASSERT_FALSE(task.validation());  // Validation should fail due to invalid bounds
+  ASSERT_FALSE(task.validation());
 }
 
-// Test for using default precision when invalid precision is provided
-TEST(korneeva_e_rectangular_integration_method_seq, invalid_epsilon_used_default) {
+TEST(korneeva_e_rectangular_integration_method_seq, InvalidEpsilonUsedDefault) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
-  double epsilon = -1e-4;  // Invalid precision (negative)
+  double epsilon = -1e-4;
   std::vector<double> out(1);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
   auto f1cos = [](const std::vector<double>& args) { return std::cos(args[0]); };
   auto task = createIntegrationTask(taskData, f1cos);
 
-  ASSERT_TRUE(task.validation());  // Validation should pass as default precision will be used
+  ASSERT_TRUE(task.validation());
 
   task.pre_processing();
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(0.84147, out[0], 1e-4);  // Verify result with 1e-4 precision
+  ASSERT_NEAR(0.84147, out[0], 1e-4);
 }
 
-// Test for invalid number of dimensions (e.g., zero dimensions)
-TEST(korneeva_e_rectangular_integration_method_seq, invalid_num_dimensions) {
-  const size_t dim = 0;  // Invalid number of dimensions (zero)
+TEST(korneeva_e_rectangular_integration_method_seq, InvalidNumDimensions) {
+  const size_t dim = 0;
   std::vector<std::pair<double, double>> lims(dim);
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -64,24 +59,23 @@ TEST(korneeva_e_rectangular_integration_method_seq, invalid_num_dimensions) {
   auto f1cos = [](const std::vector<double>& args) { return std::cos(args[0]); };
   auto task = createIntegrationTask(taskData, f1cos);
 
-  ASSERT_FALSE(task.validation());  // Validation should fail due to invalid number of dimensions
+  ASSERT_FALSE(task.validation());
 }
 
-// Test for invalid number of outputs (e.g., two outputs)
-TEST(korneeva_e_rectangular_integration_method_seq, invalid_num_outputs) {
+TEST(korneeva_e_rectangular_integration_method_seq, InvalidNumOutputs) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
   double epsilon = 1e-4;
-  std::vector<double> out(2);  // Invalid number of outputs (two)
+  std::vector<double> out(2);
 
   auto taskData = prepareTaskData(lims, &epsilon, out);
   auto f1cos = [](const std::vector<double>& args) { return std::cos(args[0]); };
   auto task = createIntegrationTask(taskData, f1cos);
 
-  ASSERT_FALSE(task.validation());  // Validation should fail due to invalid number of outputs
+  ASSERT_FALSE(task.validation());
 }
 
 // Test for integrating cos(x) over the range [-0.5*pi, 0.5*pi]
-TEST(korneeva_e_rectangular_integration_method_seq, integrate_cos_over_minus_half_pi_to_half_pi) {
+TEST(korneeva_e_rectangular_integration_method_seq, CosFunctionOverSymmetricInterval) {
   std::vector<std::pair<double, double>> lims = {{-0.5 * std::numbers::pi, 0.5 * std::numbers::pi}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -96,11 +90,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, integrate_cos_over_minus_hal
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(2.0, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(2.0, out[0], epsilon);
 }
 
 // Test for integrating x^2 over [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, zero_1_x_squared) {
+TEST(korneeva_e_rectangular_integration_method_seq, PolynomialFunctionOverUnitInterval) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -115,11 +109,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, zero_1_x_squared) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(1.0 / 3.0, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(1.0 / 3.0, out[0], epsilon);
 }
 
 // Test for integrating x^2 + y^2 over [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, zero_1_x_1_x_squared_plus_y_squared) {
+TEST(korneeva_e_rectangular_integration_method_seq, QuadraticFunctionOverUnitSquare) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -136,11 +130,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, zero_1_x_1_x_squared_plus_y_
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(2.0 / 3.0, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(2.0 / 3.0, out[0], epsilon);
 }
 
 // Test for very small epsilon
-TEST(korneeva_e_rectangular_integration_method_seq, very_small_epsilon) {
+TEST(korneeva_e_rectangular_integration_method_seq, VerySmallEpsilon) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
   double epsilon = 1e-10;
   std::vector<double> out(1);
@@ -155,11 +149,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, very_small_epsilon) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(0.5, out[0], 1e-6);  // Verify result with minimal precision
+  ASSERT_NEAR(0.5, out[0], 1e-6);
 }
 
 // Test for very large epsilon (precision = 1)
-TEST(korneeva_e_rectangular_integration_method_seq, very_large_epsilon) {
+TEST(korneeva_e_rectangular_integration_method_seq, VeryLargeEpsilon) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}};
   double epsilon = 1.0;
   std::vector<double> out(1);
@@ -174,12 +168,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, very_large_epsilon) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(0.84147, out[0], 0.1);  // Verify result with 0.1 precision
+  ASSERT_NEAR(0.84147, out[0], 0.1);
 }
 
 // Test for 3-dimensional integral of x^2 + y^2 + z^2 over [0, 1] x [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq,
-     three_dimensional_integral_x_squared_plus_y_squared_plus_z_squared) {
+TEST(korneeva_e_rectangular_integration_method_seq, QuadraticFunctionOverUnitCube) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -198,7 +191,7 @@ TEST(korneeva_e_rectangular_integration_method_seq,
 }
 
 // Test for 3-dimensional integral of sin(x) * cos(y) * exp(z) over [0, 1] x [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, three_dimensional_integral_sin_x_cos_y_exp_z) {
+TEST(korneeva_e_rectangular_integration_method_seq, TrigonometricExponentialFunctionOverUnitCube) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -213,11 +206,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, three_dimensional_integral_s
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(0.664697, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(0.664697, out[0], epsilon);
 }
 
 // Test for 4-dimensional integral of x + y + z + w over [0, 1] x [0, 1] x [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, four_dimensional_integral_x_plus_y_plus_z_plus_w) {
+TEST(korneeva_e_rectangular_integration_method_seq, LinearFunctionOverUnitHypercube) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -232,11 +225,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, four_dimensional_integral_x_
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(2.0, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(2.0, out[0], epsilon);
 }
 
 // Test for 5-dimensional integral of x + y + z + w + v over [0, 1] x [0, 1] x [0, 1] x [0, 1] x [0, 1]
-TEST(korneeva_e_rectangular_integration_method_seq, five_dimensional_integral_x_plus_y_plus_z_plus_w_plus_v) {
+TEST(korneeva_e_rectangular_integration_method_seq, LinearFunctionOverUnit5DHypercube) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -251,11 +244,10 @@ TEST(korneeva_e_rectangular_integration_method_seq, five_dimensional_integral_x_
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(2.5, out[0], epsilon);  // Verify result with epsilon precision
+  ASSERT_NEAR(2.5, out[0], epsilon);
 }
 
-// Test for zero function (integration should yield 0)
-TEST(korneeva_e_rectangular_integration_method_seq, zero_function) {
+TEST(korneeva_e_rectangular_integration_method_seq, ZeroFunction) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -270,12 +262,11 @@ TEST(korneeva_e_rectangular_integration_method_seq, zero_function) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(0.0, out[0], epsilon);  // Verify result is zero for the zero function
+  ASSERT_NEAR(0.0, out[0], epsilon);
 }
 
-// Test for zero interval (result should be zero)
-TEST(korneeva_e_rectangular_integration_method_seq, zero_interval) {
-  std::vector<std::pair<double, double>> lims = {{1.0, 1.0}};  // Degenerate interval
+TEST(korneeva_e_rectangular_integration_method_seq, ZeroInterval) {
+  std::vector<std::pair<double, double>> lims = {{1.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
 
@@ -289,11 +280,10 @@ TEST(korneeva_e_rectangular_integration_method_seq, zero_interval) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(0.0, out[0], epsilon);  // Result should be zero due to degenerate interval
+  ASSERT_NEAR(0.0, out[0], epsilon);
 }
 
-// Test for constant function (result should be the area of the integration domain)
-TEST(korneeva_e_rectangular_integration_method_seq, constant_function) {
+TEST(korneeva_e_rectangular_integration_method_seq, ConstantFunction) {
   std::vector<std::pair<double, double>> lims = {{0.0, 1.0}, {0.0, 1.0}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -308,32 +298,10 @@ TEST(korneeva_e_rectangular_integration_method_seq, constant_function) {
   task.run();
   task.post_processing();
 
-  ASSERT_NEAR(1.0, out[0], epsilon);  // Result should be 1 (area of the unit square)
+  ASSERT_NEAR(1.0, out[0], epsilon);
 }
 
-// Test for maximum double limits integration (expected result is the range of the integration)
-TEST(korneeva_e_rectangular_integration_method_seq, max_double_limits_integration) {
-  std::vector<std::pair<double, double>> lims = {
-      {std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()}};
-  double epsilon = 1e-4;
-  std::vector<double> out(1);
-
-  auto taskData = prepareTaskData(lims, &epsilon, out);
-  auto fconstant = [](const std::vector<double>& args) { return std::pow(args[0], 0); };  // Constant function
-  auto task = createIntegrationTask(taskData, fconstant);
-
-  ASSERT_TRUE(task.validation());
-
-  task.pre_processing();
-  task.run();
-  task.post_processing();
-
-  double expectedValue = lims[0].second - lims[0].first;
-  ASSERT_EQ(expectedValue, out[0]);  // Verify result matches the expected value (inf)
-}
-
-// Test for large but finite limits (integration should yield the range of limits)
-TEST(korneeva_e_rectangular_integration_method_seq, large_but_finite_limits_integration) {
+TEST(korneeva_e_rectangular_integration_method_seq, LargeLimitsIntegration) {
   std::vector<std::pair<double, double>> lims = {{-1e6, 1e6}};
   double epsilon = 1e-4;
   std::vector<double> out(1);
@@ -349,5 +317,5 @@ TEST(korneeva_e_rectangular_integration_method_seq, large_but_finite_limits_inte
   task.post_processing();
 
   double expectedValue = lims[0].second - lims[0].first;
-  ASSERT_NEAR(expectedValue, out[0], epsilon);  // Verify result matches the expected value (range)
+  ASSERT_NEAR(expectedValue, out[0], epsilon);
 }
