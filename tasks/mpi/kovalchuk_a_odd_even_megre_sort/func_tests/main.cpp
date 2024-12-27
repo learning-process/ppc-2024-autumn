@@ -111,3 +111,96 @@ TEST(kovalchuk_a_odd_even, Test_Vector_1) {
     ASSERT_EQ(reference_result, global_result);
   }
 }
+
+TEST(kovalchuk_a_odd_even, Test_Vector_50) {
+  const int count_elements = 50;
+  boost::mpi::communicator world;
+  std::vector<int> global_vector;
+  std::vector<int> global_result(count_elements, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    global_vector = getRandomVectorrr(count_elements);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(count_elements);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  kovalchuk_a_odd_even::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> reference_result = global_vector;
+    std::sort(reference_result.begin(), reference_result.end());
+
+    ASSERT_EQ(reference_result, global_result);
+  }
+}
+
+TEST(kovalchuk_a_odd_even, Test_Vector_20) {
+  const int count_elements = 20;
+  boost::mpi::communicator world;
+  std::vector<int> global_vector;
+  std::vector<int> global_result(count_elements, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    global_vector = getRandomVectorrr(count_elements);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(count_elements);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  kovalchuk_a_odd_even::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> reference_result = global_vector;
+    std::sort(reference_result.begin(), reference_result.end());
+
+    ASSERT_EQ(reference_result, global_result);
+  }
+}
+
+TEST(kovalchuk_a_odd_even, Test_Vector_4) {
+  const int count_elements = 4;
+  boost::mpi::communicator world;
+  std::vector<int> global_vector;
+  std::vector<int> global_result(count_elements, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    global_vector = getRandomVectorrr(count_elements);
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_vector.data()));
+    taskDataPar->inputs_count.emplace_back(count_elements);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(global_result.data()));
+    taskDataPar->outputs_count.emplace_back(global_result.size());
+  }
+
+  kovalchuk_a_odd_even::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
+  ASSERT_TRUE(testMpiTaskParallel.validation());
+  testMpiTaskParallel.pre_processing();
+  testMpiTaskParallel.run();
+  testMpiTaskParallel.post_processing();
+
+  if (world.rank() == 0) {
+    std::vector<int> reference_result = global_vector;
+    std::sort(reference_result.begin(), reference_result.end());
+
+    ASSERT_EQ(reference_result, global_result);
+  }
+}
