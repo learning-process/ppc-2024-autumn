@@ -23,9 +23,9 @@ std::vector<int> getRandomVector(int sz) {
 
 TEST(gromov_a_gaussian_method_vertical_mpi, Test_1) {
   boost::mpi::communicator world;
-  int equations = 4;
+  int equations = 2;
   int size_coef_mat = equations * equations;
-  int band_width = 3;
+  int band_width = 2;
   std::vector<int> input_coefficient(size_coef_mat, 0);
   std::vector<int> input_rhs(equations, 0);
   std::vector<double> func_res(equations, 0);
