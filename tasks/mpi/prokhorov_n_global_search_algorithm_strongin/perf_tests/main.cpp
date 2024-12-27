@@ -9,7 +9,9 @@
 
 TEST(prokhorov_n_global_search_algorithm_strongin_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  std::vector<double> global_a, global_b, global_epsilon;
+  std::vector<double> global_a;
+  std::vector<double> global_b;
+  std::vector<double> global_epsilon;
   std::vector<double> global_result(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -54,7 +56,9 @@ TEST(prokhorov_n_global_search_algorithm_strongin_mpi, test_pipeline_run) {
 
 TEST(prokhorov_n_global_search_algorithm_strongin_mpi, test_task_run) {
   boost::mpi::communicator world;
-  std::vector<double> global_a, global_b, global_epsilon;
+  std::vector<double> global_a;
+  std::vector<double> global_b;
+  std::vector<double> global_epsilon;
   std::vector<double> global_result(1, 0.0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

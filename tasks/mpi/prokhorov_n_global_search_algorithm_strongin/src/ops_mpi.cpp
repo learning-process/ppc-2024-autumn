@@ -114,7 +114,7 @@ double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::st
 
   while ((b - a) > epsilon) {
     double local_min = std::numeric_limits<double>::max();
-    double local_x_min = a;
+    double local_x_min;
 
     double step = (b - a) / world.size();
     double local_a = a + step * world.rank();
