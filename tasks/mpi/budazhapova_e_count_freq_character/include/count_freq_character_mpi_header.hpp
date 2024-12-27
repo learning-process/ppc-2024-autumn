@@ -25,7 +25,7 @@ class TestMPITaskSequential : public ppc::core::Task {
 
  private:
   std::string input_;
-  int res{};
+  int res = 0;
   char symb;
 };
 
@@ -39,7 +39,7 @@ class TestMPITaskParallel : public ppc::core::Task {
 
  private:
   std::string input_, local_input_;
-  int res{}, local_res{};
+  int res = 0, local_res{};
   char symb;
   boost::mpi::communicator world;
 };

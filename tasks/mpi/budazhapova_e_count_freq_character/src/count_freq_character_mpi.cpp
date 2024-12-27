@@ -97,4 +97,3 @@ bool budazhapova_e_count_freq_character_mpi::TestMPITaskParallel::post_processin
   }
   return true;
 }
-// Error: write EPIPE
