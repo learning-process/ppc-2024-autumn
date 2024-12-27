@@ -71,5 +71,5 @@ double prokhorov_n_global_search_algorithm_strongin_seq::TestTaskSequential::str
   }
 
   return x_min;
-
+}
 }  // namespace prokhorov_n_global_search_algorithm_strongin_seq
