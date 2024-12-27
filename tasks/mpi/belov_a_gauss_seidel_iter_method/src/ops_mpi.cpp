@@ -9,6 +9,10 @@ using namespace std;
 
 namespace belov_a_gauss_seidel_mpi {
 
+bool GaussSeidelParallel::ge_double(double a, double b) {
+  return (a - b) > ((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
+}
+
 bool GaussSeidelParallel::pre_processing() {
   internal_order_test();
 
@@ -163,7 +167,7 @@ bool GaussSeidelParallel::run() {
     norm = sqrt(norm);
     x = x_new;
 
-  } while (norm > epsilon);
+  } while (ge_double(norm, epsilon));
 
   return true;
 }
@@ -191,6 +195,10 @@ bool isDiagonallyDominant(const vector<double>& A, int n) {
   }
 
   return true;
+}
+
+bool GaussSeidelSequential::ge_double(double a, double b) {
+  return (a - b) > ((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
 }
 
 bool GaussSeidelSequential::pre_processing() {
@@ -250,7 +258,7 @@ bool GaussSeidelSequential::run() {
     }
     norm = sqrt(norm);
 
-  } while (norm > epsilon);
+  } while (ge_double(norm, epsilon));
 
   return true;
 }

@@ -7,6 +7,7 @@
 #include <boost/mpi/collectives.hpp>
 #include <boost/serialization/vector.hpp>
 #include <cmath>
+#include <limits>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -21,6 +22,8 @@ class GaussSeidelParallel : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
+  static bool ge_double(double a, double b);
 
  private:
   boost::mpi::communicator world;
@@ -41,10 +44,11 @@ class GaussSeidelSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
+  static bool ge_double(double a, double b);
+
  private:
   int n = 0;  // matrix size
   double epsilon{};
-
   std::vector<double> A;  // square matrix of SLAE coeffs
   std::vector<double> b;  // free members vector
   std::vector<double> x;  // vector of initial guess for unknowns

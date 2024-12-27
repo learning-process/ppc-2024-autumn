@@ -2,6 +2,7 @@
 #define OPS_SEQ_HPP
 
 #include <cmath>
+#include <limits>
 #include <memory>
 #include <vector>
 
@@ -17,6 +18,8 @@ class GaussSeidelSequential : public ppc::core::Task {
   bool validation() override;
   bool run() override;
   bool post_processing() override;
+
+  static bool ge_double(double a, double b);
 
  private:
   int n = 0;  // matrix size
