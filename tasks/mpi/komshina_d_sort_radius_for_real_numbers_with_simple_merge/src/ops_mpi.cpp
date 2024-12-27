@@ -108,25 +108,20 @@ bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskP
   bool is_valid = true;
 
   if (world.rank() == 0) {
-    if (taskData->inputs.size() < 2 || taskData->outputs.size() < 1) {
+    if (taskData->inputs.size() < 2 || taskData->outputs.empty()) {
       is_valid = false;
     } else {
-      int input_size = *(reinterpret_cast<int*>(taskData->inputs[0]));
+      int input_size = *reinterpret_cast<int*>(taskData->inputs[0]);
 
       is_valid = (taskData->inputs_count.size() >= 2) && (taskData->inputs_count[0] == 1) &&
-                 (taskData->inputs_count[1] == static_cast<size_t>(input_size)) &&
-                 (taskData->outputs_count.size() >= 1) &&
+                 (taskData->inputs_count[1] == static_cast<size_t>(input_size)) && !taskData->outputs_count.empty() &&
                  (taskData->outputs_count[0] == static_cast<size_t>(input_size));
     }
   }
 
   MPI_Bcast(&is_valid, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
 
-  if (!is_valid) {
-    return false;
-  }
-
-  return true;
+  return is_valid;
 }
 
 bool komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel::run() {
