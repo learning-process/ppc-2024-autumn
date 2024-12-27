@@ -95,4 +95,3 @@ std::vector<int> komshina_d_grid_torus_topology_mpi::GridTorusTopologyParallel::
 
   return {left, right, up, down};
 }
-
