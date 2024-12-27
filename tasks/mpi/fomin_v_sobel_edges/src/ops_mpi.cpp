@@ -94,7 +94,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   } else {
     for (int i = 1; i < size; ++i) {
       int proc_start_row = 1 + (i < extra_rows ? i * (rows_per_process + 1) : i * rows_per_process + extra_rows);
-      int proc_end_row = proc_start_row + (i < extra_rows ? rows_per_process + 1 : rows_per_process);
 
       std::vector<unsigned char> recv_buffer;
       world.recv(i, 2, recv_buffer);
