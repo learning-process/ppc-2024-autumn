@@ -1,7 +1,7 @@
 #include <random>
 
 #include "core/task/include/task.hpp"
-#include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.hpp"
+#include "seq/sharamygina_i_horizontal_line_filtration/include/ops_seq.h"
 
 using namespace sharamygina_i_horizontal_line_filtration_seq {
   static void ToFiltSeq(const std::vector<int>& input, int rows, int cols, std::vector<int>& output) {
