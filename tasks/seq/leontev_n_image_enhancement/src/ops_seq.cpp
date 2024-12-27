@@ -54,12 +54,12 @@ bool leontev_n_image_enhancement_seq::ImgEnhancementSequential::run() {
     image_output = image_input;
     return true;
   }
-  for (int i = 0; i < I.size(); i++) {
+  for (size_t i = 0; i < I.size(); i++) {
     int Inew = ((I[i] - Imin) * 255) / (Imax - Imin);
-    float coeff = static_cast<float>(Inew) / static_cast<float>(I[i]);
-    image_output[3 * i] = std::min(255, static_cast<int>(image_input[3 * i] * coeff));
-    image_output[3 * i + 1] = std::min(255, static_cast<int>(image_input[3 * i + 1] * coeff));
-    image_output[3 * i + 2] = std::min(255, static_cast<int>(image_input[3 * i + 2] * coeff));
+    float scale = static_cast<float>(Inew) / static_cast<float>(I[i]);
+    image_output[3 * i] = std::min(255, static_cast<int>(image_input[3 * i] * scale));
+    image_output[3 * i + 1] = std::min(255, static_cast<int>(image_input[3 * i + 1] * scale));
+    image_output[3 * i + 2] = std::min(255, static_cast<int>(image_input[3 * i + 2] * scale));
   }
   return true;
 }

@@ -61,14 +61,14 @@ bool leontev_n_image_enhancement_mpi::MPIImgEnhancementSequential::run() {
     return true;
   }
 
-  for (int i = 0; i < I.size(); i++) {
+  for (size_t i = 0; i < I.size(); i++) {
     int Inew = ((I[i] - Imin) * 255) / (Imax - Imin);
 
-    float coeff = static_cast<float>(Inew) / static_cast<float>(I[i]);
+    float scale = static_cast<float>(Inew) / static_cast<float>(I[i]);
 
-    image_output[3 * i] = std::min(255, static_cast<int>(image_input[3 * i] * coeff));
-    image_output[3 * i + 1] = std::min(255, static_cast<int>(image_input[3 * i + 1] * coeff));
-    image_output[3 * i + 2] = std::min(255, static_cast<int>(image_input[3 * i + 2] * coeff));
+    image_output[3 * i] = std::min(255, static_cast<int>(image_input[3 * i] * scale));
+    image_output[3 * i + 1] = std::min(255, static_cast<int>(image_input[3 * i + 1] * scale));
+    image_output[3 * i + 2] = std::min(255, static_cast<int>(image_input[3 * i + 2] * scale));
   }
 
   return true;
@@ -185,11 +185,11 @@ bool leontev_n_image_enhancement_mpi::MPIImgEnhancementParallel::run() {
   std::vector<int> local_output(local_pixels * 3);
   for (int i = 0; i < local_pixels; i++) {
     int Inew = ((local_I[i] - global_Imin) * 255) / (global_Imax - global_Imin);
-    float coeff = static_cast<float>(Inew) / static_cast<float>(local_I[i]);
+    float scale = static_cast<float>(Inew) / static_cast<float>(local_I[i]);
 
-    local_output[3 * i] = std::min(255, static_cast<int>(local_input[3 * i] * coeff));
-    local_output[3 * i + 1] = std::min(255, static_cast<int>(local_input[3 * i + 1] * coeff));
-    local_output[3 * i + 2] = std::min(255, static_cast<int>(local_input[3 * i + 2] * coeff));
+    local_output[3 * i] = std::min(255, static_cast<int>(local_input[3 * i] * scale));
+    local_output[3 * i + 1] = std::min(255, static_cast<int>(local_input[3 * i + 1] * scale));
+    local_output[3 * i + 2] = std::min(255, static_cast<int>(local_input[3 * i + 2] * scale));
   }
 
   if (world.rank() == 0) {
