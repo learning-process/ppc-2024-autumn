@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 
 using namespace boost::mpi;
 
-bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
+bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   internal_order_test();
 
   input_image_ = *reinterpret_cast<std::vector<unsigned char>*>(taskData->inputs[0]);
@@ -22,12 +22,12 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
   return true;
 }
 
-bool fomin_v_sobel_edges::SobelEdgeDetection::validation() {
+bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::validation() {
   internal_order_test();
   return taskData->inputs_count.size() == 2 && taskData->outputs_count.size() == 2;
 }
 
-bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
+bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   internal_order_test();
   boost::mpi::communicator world;
 
@@ -87,7 +87,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
     }
   }
 
-  // Сбор результатов на главном процессе
   if (rank != 0) {
     std::vector<unsigned char> send_buffer(output_image_.begin() + start_row * width_,
                                            output_image_.begin() + end_row * width_);
@@ -95,7 +94,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
   } else {
     for (int i = 1; i < size; ++i) {
       int proc_start_row = i * rows_per_process + 1;
-      int proc_end_row = (i == size - 1) ? height_ - 1 : proc_start_row + rows_per_process;
       std::vector<unsigned char> recv_buffer;
       world.recv(i, 2, recv_buffer);
       std::copy(recv_buffer.begin(), recv_buffer.end(), output_image_.begin() + proc_start_row * width_);
@@ -105,7 +103,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetection::run() {
   return true;
 }
 
-bool fomin_v_sobel_edges::SobelEdgeDetection::post_processing() {
+bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
   internal_order_test();
 
   *reinterpret_cast<std::vector<unsigned char>*>(taskData->outputs[0]) = output_image_;
