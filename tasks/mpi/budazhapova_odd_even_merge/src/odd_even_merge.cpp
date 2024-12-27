@@ -126,16 +126,10 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
 
   start = world_rank * n_of_send_elements + std::min(world_rank, n_of_proc_with_extra_elements);
   end = start + n_of_send_elements + (world_rank < n_of_proc_with_extra_elements ? 1 : 0);
-
   local_res.resize(end - start);
   for (int i = start; i < end; i++) {
     local_res[i - start] = res[i];
   }
-  std ::cout << "rank " << world_rank << " loc_res ";
-  for (int i = 0; i < local_res.size(); i++) {
-    std::cout << local_res[i] << " ";
-  }
-  std::cout << "\n";
   for (int phase = 0; phase < world_size; ++phase) {
     int next_rank = world_rank + 1;
     int prev_rank = world_rank - 1;
@@ -143,17 +137,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     if (phase % 2 == 0) {
       if (world_rank % 2 == 0 && next_rank < world_size) {
         world.send(next_rank, world_rank, local_res);
-        std ::cout << "rank " << world_rank << " loc_res ";
-        for (int i = 0; i < local_res.size(); i++) {
-          std::cout << local_res[i] << " ";
-        }
-        std::cout << "\n";
       } else if (world_rank % 2 == 1) {
-        std ::cout << "rank " << world_rank << " loc_res ";
-        for (int i = 0; i < local_res.size(); i++) {
-          std::cout << local_res[i] << " ";
-        }
-        std::cout << "\n";
         std::vector<int> received_data;
         world.recv(prev_rank, prev_rank, received_data);
         odd_even_merge(local_res, received_data);
@@ -165,17 +149,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     } else {
       if (world_rank % 2 == 1 && next_rank < world_size) {
         world.send(next_rank, world_rank, local_res);
-        std ::cout << "rank " << world_rank << " loc_res ";
-        for (int i = 0; i < local_res.size(); i++) {
-          std::cout << local_res[i] << " ";
-        }
-        std::cout << "\n";
       } else if (world_rank % 2 == 0 && world_rank > 0) {
-        std ::cout << "rank " << world_rank << " loc_res ";
-        for (int i = 0; i < local_res.size(); i++) {
-          std::cout << local_res[i] << " ";
-        }
-        std::cout << "\n";
         std::vector<int> received_data;
         world.recv(prev_rank, prev_rank, received_data);
         odd_even_merge(local_res, received_data);
