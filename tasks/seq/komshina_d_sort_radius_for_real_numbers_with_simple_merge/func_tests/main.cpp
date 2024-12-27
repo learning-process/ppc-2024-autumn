@@ -132,3 +132,18 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_negativ
     ASSERT_LE(out[i - 1], out[i]);
   }
 }
+
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq, test_convert_doubles_to_uint64) {
+  std::vector<double> inputData = {1.1, -6.9, 0.42, 0.0, 2.14, -2.13};
+  std::vector<uint64_t> keys(inputData.size(), 0);
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq::convert_doubles_to_uint64(inputData, keys);
+
+  for (size_t i = 0; i < inputData.size(); ++i) {
+    uint64_t expectedKey;
+    std::memcpy(&expectedKey, &inputData[i], sizeof(double));
+    expectedKey = ((expectedKey >> 63) & 1) != 0 ? ~expectedKey : (expectedKey | (1ULL << 63));
+
+    ASSERT_EQ(keys[i], expectedKey) << "Mismatch at index " << i << ": expected " << expectedKey << ", got " << keys[i];
+  }
+}

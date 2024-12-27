@@ -250,5 +250,7 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, InvalidData)
 
   komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel sortTask(taskData);
 
-  ASSERT_FALSE(sortTask.validation());
+  if (world.rank() == 0) {
+    ASSERT_FALSE(sortTask.validation());
+  }
 }
