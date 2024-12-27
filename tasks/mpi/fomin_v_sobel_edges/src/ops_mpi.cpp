@@ -11,9 +11,11 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    input_image_ = *reinterpret_cast<std::vector<unsigned char>*>(taskData->inputs[0]);
     width_ = taskData->inputs_count[0];
     height_ = taskData->inputs_count[1];
+    input_image_.resize(width_ * height_);
+    std::copy(reinterpret_cast<unsigned char*>(taskData->inputs[0]),
+              reinterpret_cast<unsigned char*>(taskData->inputs[0]) + width_ * height_, input_image_.begin());
   }
 
   int local_height;
@@ -46,11 +48,11 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
       if (proc == world.size() - 1) {
         proc_local_height = height_ - (world.size() - 1) * local_height;
       }
-      if (proc != 0) {
-        world.send(proc, 0, input_image_.data() + disp - width_, width_ * (proc_local_height + 2));
-      } else {
-        world.send(proc, 0, input_image_.data() + disp, width_ * (proc_local_height + 2));
+      const unsigned char* send_ptr = input_image_.data() + (disp - width_);
+      if (proc == 0) {
+        send_ptr += width_;
       }
+      world.send(proc, 0, send_ptr, width_ * (proc_local_height + 2));
       disp += proc_local_height * width_;
     }
   } else {
