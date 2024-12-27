@@ -133,23 +133,16 @@ vector<bigint> RadixBatcherMergesortParallel::merge(const vector<bigint>& arr1, 
   return merged;
 }
 
-void RadixBatcherMergesortParallel::compare_and_swap(vector<int>& data, int i, int j) {
-  if (data[i] > data[j]) {
-    std::swap(data[i], data[j]);
+vector<bigint> RadixBatcherMergesortParallel::odd_even_merge(const vector<bigint>& left, const vector<bigint>& right) {
+  vector<bigint> merged(left.size() + right.size());
+  std::merge(left.begin(), left.end(), right.begin(), right.end(), merged.begin());
+
+  for (size_t i = 1; i < merged.size(); i += 2) {
+    if (i + 1 < merged.size() && merged[i] > merged[i + 1]) {
+      std::swap(merged[i], merged[i + 1]);
+    }
   }
-}
-
-void RadixBatcherMergesortParallel::odd_even_merge(vector<int>& data, int low, int high) {
-  int size = high - low + 1;
-  if (size <= 1) return;
-  int mid = size / 2;
-
-  odd_even_merge(data, low, low + mid - 1);
-  odd_even_merge(data, low + mid, high);
-
-  for (int i = low; i + mid <= high; ++i) {
-    compare_and_swap(data, i, i + mid);
-  }
+  return merged;
 }
 
 bool RadixBatcherMergesortParallel::run() {
@@ -192,33 +185,30 @@ bool RadixBatcherMergesortParallel::run() {
 
   sort(local_data);
 
-  for (int step = 0; step < com.size(); ++step) {
-    if ((step + com.rank()) % 2 == 0) {
-      if (com.rank() < com.size() - 1) {
-        vector<bigint> neighbor_data;
-        world.send(world.rank() + 1, 0, local_data);
-        world.recv(world.rank() + 1, 0, neighbor_data);
-        local_data = merge(local_data, neighbor_data);
+  int local_size = rank < n % com_size ? (n / com_size + 1) : (n / com_size);
+  for (int step = 0; step < com_size; ++step) {
+    if ((step + rank) % 2 == 0) {
+      if (rank < com_size - 1) {
+        vector<bigint> neighbor_data(local_size);
+        com.send(rank + 1, 0, local_data);
+        com.recv(rank + 1, 0, neighbor_data);
+
+        vector<bigint> merged = odd_even_merge(local_data, neighbor_data);
+        local_data.assign(merged.begin(), merged.begin() + local_size);
       }
-    } else {
-      if (com.rank() > 0) {
-        vector<bigint> neighbor_data;
-        world.recv(world.rank() - 1, 0, neighbor_data);
-        world.send(world.rank() - 1, 0, local_data);
-        local_data = merge(neighbor_data, local_data);
-      }
+    } else if (rank > 0) {
+      vector<bigint> neighbor_data(local_size);
+      com.recv(rank - 1, 0, neighbor_data);
+      com.send(rank - 1, 0, local_data);
+      vector<bigint> merged = odd_even_merge(neighbor_data, local_data);
+      local_data.assign(merged.end() - local_size, merged.end());
     }
   }
 
   if (com.rank() == 0) {
-    array.clear();
-    array.insert(array.begin(), local_data.begin(), local_data.end());
-    for (int i = 1; i < com.size(); i++) {
-      com.recv(i, 1, local_data);
-      array.insert(array.end(), local_data.begin(), local_data.end());
-    }
+    boost::mpi::gatherv(com, local_data, array.data(), sizes, displ, 0);
   } else {
-    com.send(0, 1, local_data);
+    boost::mpi::gatherv(com, local_data, 0);
   }
 
   return true;
@@ -227,7 +217,7 @@ bool RadixBatcherMergesortParallel::run() {
 bool RadixBatcherMergesortParallel::post_processing() {
   internal_order_test();
   if (world.rank() == 0) {
-    copy(array.begin(), array.begin() + n, reinterpret_cast<bigint*>(taskData->outputs[0]));
+    copy(array.begin(), array.end(), reinterpret_cast<bigint*>(taskData->outputs[0]));
   }
 
   return true;

@@ -27,7 +27,7 @@ class RadixBatcherMergesortParallel : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  void sort(vector<bigint>& arr);
+  static void sort(vector<bigint>& arr);
 
  private:
   boost::mpi::communicator world;
@@ -36,9 +36,9 @@ class RadixBatcherMergesortParallel : public ppc::core::Task {
 
   static vector<bigint> merge(const vector<bigint>& arr1, const vector<bigint>& arr2);
   static void compare_and_swap(vector<int>& data, int i, int j);
-  void odd_even_merge(vector<int>& data, int low, int high);
+  static vector<bigint> odd_even_merge(const vector<bigint>& left, const vector<bigint>& right);
 
-  void radix_sort(vector<bigint>& arr, bool invert);
+  static void radix_sort(vector<bigint>& arr, bool invert);
   static void counting_sort(vector<bigint>& arr, bigint digit_place);
   static int get_number_digit_capacity(bigint num);
 };
@@ -59,7 +59,7 @@ class RadixBatcherMergesortSequential : public ppc::core::Task {
   vector<bigint> array;
   int n = 0;
 
-  void radix_sort(vector<bigint>& arr, bool invert);
+  static void radix_sort(vector<bigint>& arr, bool invert);
   static void counting_sort(vector<bigint>& arr, bigint digit_place);
   static int get_number_digit_capacity(bigint num);
 };

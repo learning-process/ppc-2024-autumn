@@ -31,7 +31,7 @@ class RadixBatcherMergesortSequential : public ppc::core::Task {
   vector<bigint> array;  // input unsorted numbers array
   int n = 0;             // array size
 
-  void radix_sort(vector<bigint>& arr, bool invert);
+  void static radix_sort(vector<bigint>& arr, bool invert);
   static void counting_sort(vector<bigint>& arr, bigint digit_place);
   static int get_number_digit_capacity(bigint num);
 };
