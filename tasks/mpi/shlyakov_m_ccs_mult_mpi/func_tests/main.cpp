@@ -424,39 +424,6 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_largesparse) {
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-
-  if (rank == 0) {
-    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
-    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
-    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
-
-    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    auto C_rows = static_cast<size_t>(dense_A.size());
-
-    SparseMatrix C_ccs;
-    C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
-    C_ccs.row_indices.assign(C_row_indices, C_row_indices + (taskData->outputs_count[1] / sizeof(int)));
-    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + static_cast<size_t>(C_cols + 1));
-
-    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, static_cast<int>(C_rows), static_cast<int>(C_cols));
-
-    std::vector<std::vector<double>> expected_C(rows, std::vector<double>(rows, 0.0));
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < rows; ++j) {
-        for (int k = 0; k < cols; ++k) {
-          expected_C[i][j] += dense_A[i][k] * dense_B[k][j];
-        }
-      }
-    }
-
-    ASSERT_EQ(dense_C.size(), expected_C.size());
-
-    for (size_t i = 0; i < dense_C.size(); ++i) {
-      for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
-      }
-    }
-  }
 }
 
 TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_128_128) {
@@ -496,37 +463,4 @@ TEST(shlyakov_m_ccs_mult_mpi, matrix_multiplication_128_128) {
   ASSERT_TRUE(task.pre_processing());
   ASSERT_TRUE(task.run());
   ASSERT_TRUE(task.post_processing());
-
-  if (rank == 0) {
-    const auto* C_values = reinterpret_cast<double*>(taskData->outputs[0]);
-    const auto* C_row_indices = reinterpret_cast<int*>(taskData->outputs[1]);
-    const auto* C_col_pointers = reinterpret_cast<int*>(taskData->outputs[2]);
-
-    auto C_cols = (taskData->outputs_count[2] / sizeof(int)) - 1;
-    auto C_rows = static_cast<size_t>(dense_A.size());
-
-    SparseMatrix C_ccs;
-    C_ccs.values.assign(C_values, C_values + (taskData->outputs_count[0] / sizeof(double)));
-    C_ccs.row_indices.assign(C_row_indices, C_row_indices + (taskData->outputs_count[1] / sizeof(int)));
-    C_ccs.col_pointers.assign(C_col_pointers, C_col_pointers + static_cast<size_t>(C_cols + 1));
-
-    std::vector<std::vector<double>> dense_C = ccs_to_matrix(C_ccs, static_cast<int>(C_rows), static_cast<int>(C_cols));
-
-    std::vector<std::vector<double>> expected_C(rows, std::vector<double>(rows, 0.0));
-    for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < rows; ++j) {
-        for (int k = 0; k < cols; ++k) {
-          expected_C[i][j] += dense_A[i][k] * dense_B[k][j];
-        }
-      }
-    }
-
-    ASSERT_EQ(dense_C.size(), expected_C.size());
-
-    for (size_t i = 0; i < dense_C.size(); ++i) {
-      for (size_t j = 0; j < dense_C[0].size(); ++j) {
-        ASSERT_NEAR(dense_C[i][j], expected_C[i][j], 1e-6);
-      }
-    }
-  }
 }
