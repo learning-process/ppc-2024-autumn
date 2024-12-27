@@ -12,12 +12,10 @@
 
 namespace korneeva_e_rectangular_integration_method_mpi {
 
-constexpr double MIN_EPSILON = 1e-6;  // Minimum epsilon value for precision
+constexpr double MIN_EPSILON = 1e-6;
 
-// Type definition for the integrand function
 using Function = std::function<double(std::vector<double>& args)>;
 
-/////////// Sequential ///////////
 class RectangularIntegrationSeq : public ppc::core::Task {
  public:
   explicit RectangularIntegrationSeq(std::shared_ptr<ppc::core::TaskData> taskData, Function& func)
@@ -29,14 +27,12 @@ class RectangularIntegrationSeq : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  Function integrandFunction;                     // Function to be integrated
-  std::vector<std::pair<double, double>> limits;  // Limits of integration
-  double result;                                  // Result of the integration
-  double epsilon;                                 // Precision
+  double result;
+  double epsilon;
+  Function integrandFunction;
+  std::vector<std::pair<double, double>> limits;
 };
-/////////////////////////////////////
 
-//////////////// MPI ////////////////
 class RectangularIntegrationMPI : public ppc::core::Task {
  public:
   explicit RectangularIntegrationMPI(std::shared_ptr<ppc::core::TaskData> taskData, Function& func)
@@ -48,20 +44,18 @@ class RectangularIntegrationMPI : public ppc::core::Task {
   bool post_processing() override;
 
  private:
-  Function integrandFunction;                     // Function to be integrated
-  std::vector<std::pair<double, double>> limits;  // Limits of integration
-  double result;                                  // Result of the integration
-  double epsilon;                                 // Precision threshold
+  double result;
+  double epsilon;
+  Function integrandFunction;
+  std::vector<std::pair<double, double>> limits;
 
-  boost::mpi::communicator mpi_comm;  // MPI communicator
+  boost::mpi::communicator mpi_comm;
 };
-/////////////////////////////////////
 
-// Function for sequential integration (recursive)
 double calculateIntegral(const Function& func_, double epsilon_, std::vector<std::pair<double, double>>& limits_,
                          std::vector<double>& args_);
 
-////////// class RectangularIntegrationSeq //////////
+// class RectangularIntegrationSeq
 bool RectangularIntegrationSeq::pre_processing() {
   internal_order_test();
 
@@ -69,7 +63,6 @@ bool RectangularIntegrationSeq::pre_processing() {
   limits.assign(ptrInput, ptrInput + taskData->inputs_count[0]);
   result = 0.0;
 
-  // Set epsilon value
   epsilon = *reinterpret_cast<double*>(taskData->inputs[1]);
   if (epsilon < MIN_EPSILON) {
     epsilon = MIN_EPSILON;
@@ -81,11 +74,9 @@ bool RectangularIntegrationSeq::pre_processing() {
 bool RectangularIntegrationSeq::validation() {
   internal_order_test();
 
-  // Validate input parameters and output
   bool validInput = taskData->inputs_count[0] > 0 && taskData->inputs.size() == 2;
   bool validOutput = taskData->outputs_count[0] == 1 && !taskData->outputs.empty();
 
-  // Validate limits: lower bound must not be greater than upper bound
   size_t numDimensions = taskData->inputs_count[0];
   bool validLimits = true;
   auto* ptrInput = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[0]);
@@ -112,9 +103,8 @@ bool RectangularIntegrationSeq::post_processing() {
   reinterpret_cast<double*>(taskData->outputs[0])[0] = result;
   return true;
 }
-////////////////////////////////////////////////////////
 
-//////////// class RectangularIntegrationMPI ///////////
+// class RectangularIntegrationMPI
 bool RectangularIntegrationMPI::pre_processing() {
   internal_order_test();
 
@@ -122,7 +112,6 @@ bool RectangularIntegrationMPI::pre_processing() {
     auto* ptr = reinterpret_cast<std::pair<double, double>*>(taskData->inputs[0]);
     limits.assign(ptr, ptr + taskData->inputs_count[0]);
 
-    // Set epsilon value
     epsilon = *reinterpret_cast<double*>(taskData->inputs[1]);
     if (epsilon < MIN_EPSILON) {
       epsilon = MIN_EPSILON;
@@ -136,7 +125,6 @@ bool RectangularIntegrationMPI::validation() {
   internal_order_test();
 
   if (mpi_comm.rank() == 0) {
-    // Validate input parameters and output
     bool validInput = (taskData->inputs_count[0] > 0 && taskData->inputs.size() == 2);
     bool validOutput = (taskData->outputs_count[0] == 1 && !taskData->outputs.empty());
 
@@ -160,7 +148,6 @@ bool RectangularIntegrationMPI::run() {
 
   std::vector<double> args;
 
-  // Broadcast limits and epsilon to all processes
   broadcast(mpi_comm, limits, 0);
   broadcast(mpi_comm, epsilon, 0);
 
@@ -169,7 +156,6 @@ bool RectangularIntegrationMPI::run() {
   double localIntegral = 0.0;
   int totalProcesses = mpi_comm.size();
 
-  // Calculate the local interval for each process
   auto [intervalStart, intervalEnd] = limits.front();
   double intervalStep = (intervalEnd - intervalStart) / totalProcesses;
 
@@ -185,7 +171,6 @@ bool RectangularIntegrationMPI::run() {
     globalIntegral = 0.0;
     localIntegral = 0.0;
 
-    // Perform local integration
     int localSegments = totalProcesses / mpi_comm.size();
     double segmentWidth = (localEnd - localStart) / localSegments;
     args.back() = localStart + segmentWidth / 2.0;
@@ -199,19 +184,17 @@ bool RectangularIntegrationMPI::run() {
       args.back() += segmentWidth;
     }
 
-    // Aggregate the results from all processes
     reduce(mpi_comm, localIntegral, globalIntegral, std::plus<>(), 0);
 
     if (mpi_comm.rank() == 0) {
-      // Continue refining until the global integral converges
       continueRefining = (std::abs(globalIntegral - previousGlobalIntegral) * (1.0 / 3.0) > epsilon);
     }
     broadcast(mpi_comm, continueRefining, 0);
 
-    totalProcesses *= 2;  // Double the number of processes for the next refinement
+    totalProcesses *= 2;
   }
 
-  result = (mpi_comm.rank() == 0) ? globalIntegral : 0.0;  // Return result only for root process
+  result = (mpi_comm.rank() == 0) ? globalIntegral : 0.0;
   return true;
 }
 
@@ -222,28 +205,26 @@ bool RectangularIntegrationMPI::post_processing() {
   }
   return true;
 }
-////////////////////////////////////////////////////////
 
-//////////// function calculateIntegral() //////////////
+// function calculateIntegral()
 double calculateIntegral(const Function& func_, double epsilon_, std::vector<std::pair<double, double>>& limits_,
                          std::vector<double>& args_) {
   double integralValue = 0;
   double previousValue;
   int subdivisions = 2;
+  bool flag = true;
 
-  // Extract current limits for integration
   auto [lowerBound, upperBound] = limits_.front();
   limits_.erase(limits_.begin());
   args_.emplace_back(0.0);
 
-  while (true) {
+  while (flag) {
     previousValue = integralValue;
     integralValue = 0.0;
 
     double segmentWidth = (upperBound - lowerBound) / subdivisions;
     args_.back() = lowerBound + segmentWidth / 2.0;
 
-    // Perform integration by subdividing the interval
     for (int i = 0; i < subdivisions; ++i) {
       if (limits_.empty()) {
         integralValue += func_(args_) * segmentWidth;
@@ -253,11 +234,9 @@ double calculateIntegral(const Function& func_, double epsilon_, std::vector<std
       args_.back() += segmentWidth;
     }
 
-    subdivisions *= 2;  // Double the number of subdivisions for the next iteration
-    // Stop when the change in integral is within the specified tolerance
-    if (std::abs(integralValue - previousValue) * (1.0 / 3.0) <= epsilon_) {
-      break;
-    }
+    subdivisions *= 2;
+
+    flag = (std::abs(integralValue - previousValue) > epsilon_);
   }
 
   args_.pop_back();

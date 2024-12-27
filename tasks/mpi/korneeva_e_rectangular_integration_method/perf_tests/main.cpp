@@ -11,13 +11,12 @@ double test_func(std::vector<double> &args) { return args.at(0); }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
   boost::mpi::communicator mpi_comm;
-  std::vector<std::pair<double, double>> limits(10, {-50, 50});
+  std::vector<std::pair<double, double>> limits(10, {-100, 100});
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::test_func;
   std::vector<double> output(1);
   double epsilon = 1e-4;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   if (mpi_comm.rank() == 0) {
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(limits.data()));
@@ -27,20 +26,16 @@ TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
     taskData->outputs_count.emplace_back(output.size());
   }
 
-  // Create Task
   auto testTaskParallel =
       std::make_shared<korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI>(taskData, func);
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
@@ -51,13 +46,12 @@ TEST(korneeva_e_rectangular_integration_method_mpi, test_pipeline_run) {
 
 TEST(korneeva_e_rectangular_integration_method_mpi, test_task_run) {
   boost::mpi::communicator mpi_comm;
-  std::vector<std::pair<double, double>> limits(10, {-50, 50});
+  std::vector<std::pair<double, double>> limits(10, {-100, 100});
   korneeva_e_rectangular_integration_method_mpi::Function func =
       korneeva_e_rectangular_integration_method_mpi::test_func;
   std::vector<double> output(1);
   double epsilon = 1e-4;
 
-  // Create TaskData
   std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
   if (mpi_comm.rank() == 0) {
     taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(limits.data()));
@@ -67,20 +61,16 @@ TEST(korneeva_e_rectangular_integration_method_mpi, test_task_run) {
     taskData->outputs_count.emplace_back(output.size());
   }
 
-  // Create Task
   auto testTaskParallel =
       std::make_shared<korneeva_e_rectangular_integration_method_mpi::RectangularIntegrationMPI>(taskData, func);
 
-  // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
-  // Create and init perf results
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
 
-  // Create Perf analyzer
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 
