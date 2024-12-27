@@ -19,7 +19,7 @@ using Function = std::function<double(std::vector<double>& args)>;
 class RectangularIntegrationSeq : public ppc::core::Task {
  public:
   explicit RectangularIntegrationSeq(std::shared_ptr<ppc::core::TaskData> taskData, Function& func)
-      : Task(std::move(taskData)), integrandFunction(std::move(func)) {}
+      : Task(std::move(taskData)), integrandFunction(func) {}
 
   bool pre_processing() override;
   bool validation() override;
@@ -36,7 +36,7 @@ class RectangularIntegrationSeq : public ppc::core::Task {
 class RectangularIntegrationMPI : public ppc::core::Task {
  public:
   explicit RectangularIntegrationMPI(std::shared_ptr<ppc::core::TaskData> taskData, Function& func)
-      : Task(std::move(taskData)), integrandFunction(std::move(func)) {}
+      : Task(std::move(taskData)), integrandFunction(func) {}
 
   bool pre_processing() override;
   bool validation() override;

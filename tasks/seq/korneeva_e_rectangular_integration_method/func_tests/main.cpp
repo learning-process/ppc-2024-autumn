@@ -15,8 +15,8 @@ std::shared_ptr<ppc::core::TaskData> prepareTaskData(const std::vector<std::pair
 
 korneeva_e_rectangular_integration_method_seq::RectangularIntegration createIntegrationTask(
     const std::shared_ptr<ppc::core::TaskData>& taskData,
-    const std::function<double(const std::vector<double>&)>& integrand) {
-  return korneeva_e_rectangular_integration_method_seq::RectangularIntegration(taskData, integrand);
+    const korneeva_e_rectangular_integration_method_seq::Function& func) {
+  return korneeva_e_rectangular_integration_method_seq::RectangularIntegration(taskData, func);
 }
 
 TEST(korneeva_e_rectangular_integration_method_seq, invalid_limits) {
