@@ -227,3 +227,28 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, ConvertDoubl
     ASSERT_EQ(keys[i], expectedKey) << i << expectedKey << keys[i];
   }
 }
+
+TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, InvalidData) {
+  mpi::communicator world;
+
+  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    int count = 5;
+    std::vector<double> inputData = {10.1, 8.1, 0.2, 1.5};
+    std::vector<double> resData(count, 0.0);
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count));
+    taskData->inputs_count.emplace_back(1);
+
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(inputData.data()));
+    taskData->inputs_count.emplace_back(count);
+
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(resData.data()));
+    taskData->outputs_count.emplace_back(count);
+  }
+
+  komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi::TestMPITaskParallel sortTask(taskData);
+
+  ASSERT_FALSE(sortTask.validation());
+}
