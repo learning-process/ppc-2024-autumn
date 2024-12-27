@@ -13,8 +13,8 @@ using Function = std::function<double(const std::vector<double>& args_)>;
 
 class RectangularIntegration : public ppc::core::Task {
  public:
-  explicit RectangularIntegration(const std::shared_ptr<ppc::core::TaskData>& taskData_, const Function& func)
-      : Task(std::move(taskData_)), integrandFunction(func) {}
+  explicit RectangularIntegration(const std::shared_ptr<ppc::core::TaskData>& taskData_, Function func)
+      : Task(std::move(taskData_)), integrandFunction(std::move(func)) {}
 
   bool pre_processing() override;
   bool validation() override;
