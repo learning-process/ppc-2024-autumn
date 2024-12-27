@@ -55,7 +55,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::validation() {
   internal_order_test();
 
   if (world.rank() == 0) {
-    return taskData->inputs_count.size() == 2 && taskData->outputs_count.size() == 1;
+    return taskData->inputs_count.size() == 2 && taskData->outputs_count.size() == 2;
   }
   return true;
 }
