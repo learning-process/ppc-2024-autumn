@@ -29,6 +29,12 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   int rank = world.rank();
   int size = world.size();
 
+  if (size == 1) {
+    // Run serial version if only one process
+    fomin_v_sobel_edges::SobelEdgeDetection sobelEdgeDetection(taskData);
+    return sobelEdgeDetection.run();
+  }
+
   const int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
@@ -60,23 +66,20 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
     world.send(rank + 1, 1, send_bottom_row);
   }
 
-  for (int y = start_row; y < end_row; ++y) {
+  for (int y = start_row; y <= end_row; ++y) {
     for (int x = 1; x < width_ - 1; ++x) {
       int sumX = 0;
       int sumY = 0;
 
       for (int i = -1; i <= 1; ++i) {
         int pixel_row = y + i;
-        if (pixel_row < start_row - 1) pixel_row = start_row - 1;
-        if (pixel_row > end_row) pixel_row = end_row;
+        if (pixel_row < 0 || pixel_row >= height_) continue;
 
-        unsigned char pixel;
-        if (pixel_row == y - 1 && rank > 0)
+        unsigned char pixel = input_image_[pixel_row * width_ + x];
+        if (pixel_row < start_row - 1 && rank > 0)
           pixel = top_row[x];
-        else if (pixel_row == y + 1 && rank < size - 1)
+        else if (pixel_row > end_row && rank < size - 1)
           pixel = bottom_row[x];
-        else
-          pixel = input_image_[pixel_row * width_ + x];
 
         sumX += pixel * Gx[i + 1][x - (pixel_row == y ? 0 : (pixel_row == y - 1 ? -1 : 1))];
         sumY += pixel * Gy[i + 1][x - (pixel_row == y ? 0 : (pixel_row == y - 1 ? -1 : 1))];
@@ -90,13 +93,13 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   if (rank != 0) {
     std::vector<unsigned char> send_buffer(output_image_.begin() + start_row * width_,
                                            output_image_.begin() + end_row * width_);
-    world.send(0, 2, send_buffer);
+    world.send(0, 2 + rank, send_buffer);
   } else {
     for (int i = 1; i < size; ++i) {
       int proc_start_row = 1 + (i < extra_rows ? i * (rows_per_process + 1) : i * rows_per_process + extra_rows);
 
       std::vector<unsigned char> recv_buffer;
-      world.recv(i, 2, recv_buffer);
+      world.recv(i, 2 + i, recv_buffer);
       std::copy(recv_buffer.begin(), recv_buffer.end(), output_image_.begin() + proc_start_row * width_);
     }
   }
