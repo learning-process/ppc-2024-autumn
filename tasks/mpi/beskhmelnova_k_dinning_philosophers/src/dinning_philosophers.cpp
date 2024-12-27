@@ -25,7 +25,9 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::valida
 template <typename DataType>
 bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() {
   internal_order_test();
-  while (true) {
+  const int iterations = 10;
+  int counter = 0;
+  while (counter <= iterations) {
     think();
     request_forks();
     if (world.rank() < num_philosophers) {
@@ -34,6 +36,7 @@ bool beskhmelnova_k_dining_philosophers::DiningPhilosophersMPI<DataType>::run() 
     release_forks();
     if (check_deadlock()) return false;
     if (check_for_termination()) break;
+    counter++;
   }
   return true;
 }
