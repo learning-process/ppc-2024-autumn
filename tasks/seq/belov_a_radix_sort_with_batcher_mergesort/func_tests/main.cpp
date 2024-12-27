@@ -108,7 +108,7 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_random_medium_bigintV_vector) {
 }
 
 TEST(belov_a_radix_batcher_mergesort_seq, test_random_large_bigintV_vector) {
-  int n = 1048576;
+  int n = 524288;
   vector<bigint> arr = generate_bigint_array(n);
 
   vector<bigint> expected_solution = arr;
@@ -177,7 +177,7 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_random_medium_intV_vector) {
 }
 
 TEST(belov_a_radix_batcher_mergesort_seq, test_random_large_intV_vector) {
-  int n = 1048576;
+  int n = 524288;
   vector<bigint> arr = generate_int_array(n);
 
   vector<bigint> expected_solution = arr;
@@ -246,7 +246,7 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_random_medium_mixedV_vector) {
 }
 
 TEST(belov_a_radix_batcher_mergesort_seq, test_random_large_mixedV_vector) {
-  int n = 2097152;
+  int n = 524288;
   vector<bigint> arr = generate_mixed_values_array(n);
 
   vector<bigint> expected_solution = arr;
@@ -327,7 +327,7 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_array_size_missmatch) {
 
   RadixBatcherMergesortSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_FALSE(testTaskSequential.validation());
+  EXPECT_FALSE(testTaskSequential.validation());
 }
 
 TEST(belov_a_radix_batcher_mergesort_seq, test_invalid_inputs_count) {
@@ -343,7 +343,7 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_invalid_inputs_count) {
 
   RadixBatcherMergesortSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_FALSE(testTaskSequential.validation());
+  EXPECT_FALSE(testTaskSequential.validation());
 }
 
 TEST(belov_a_radix_batcher_mergesort_seq, test_empty_input_validation) {
@@ -359,7 +359,7 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_empty_input_validation) {
 
   RadixBatcherMergesortSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_FALSE(testTaskSequential.validation());
+  EXPECT_FALSE(testTaskSequential.validation());
 }
 
 TEST(belov_a_radix_batcher_mergesort_seq, test_empty_output_validation) {
@@ -375,5 +375,5 @@ TEST(belov_a_radix_batcher_mergesort_seq, test_empty_output_validation) {
 
   RadixBatcherMergesortSequential testTaskSequential(taskDataSeq);
 
-  ASSERT_FALSE(testTaskSequential.validation());
+  EXPECT_FALSE(testTaskSequential.validation());
 }

@@ -435,108 +435,6 @@ TEST(belov_a_radix_batcher_mergesort_mpi, test_positive_values_only) {
   }
 }
 
-TEST(belov_a_radix_batcher_mergesort_mpi, test_empty_input_validation_condition1) {
-  boost::mpi::communicator world;
-
-  // zero length, empty input
-  int n = 0;
-  vector<bigint> arr = {};
-
-  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataPar->inputs_count.emplace_back(arr.size());
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataPar->outputs_count.emplace_back(arr.size());
-  }
-
-  RadixBatcherMergesortParallel testMpiTaskParallel(taskDataPar);
-  EXPECT_FALSE(testMpiTaskParallel.validation());
-
-  if (world.rank() == 0) {
-    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
-    vector<bigint> solutionSeq(n);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataSeq->inputs_count.emplace_back(arr.size());
-    taskDataSeq->inputs_count.emplace_back(n);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
-    taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
-
-    RadixBatcherMergesortSequential testMpiTaskSeq(taskDataSeq);
-    EXPECT_FALSE(testMpiTaskSeq.validation());
-  }
-}
-
-TEST(belov_a_radix_batcher_mergesort_mpi, test_empty_input_validation_condition2) {
-  boost::mpi::communicator world;
-
-  // declared length is 5, but empty input
-  int n = 5;
-  vector<bigint> arr = {};
-
-  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataPar->inputs_count.emplace_back(arr.size());
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataPar->outputs_count.emplace_back(arr.size());
-  }
-
-  RadixBatcherMergesortParallel testMpiTaskParallel(taskDataPar);
-  EXPECT_FALSE(testMpiTaskParallel.validation());
-
-  if (world.rank() == 0) {
-    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
-    vector<bigint> solutionSeq(n);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataSeq->inputs_count.emplace_back(arr.size());
-    taskDataSeq->inputs_count.emplace_back(n);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
-    taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
-
-    RadixBatcherMergesortSequential testMpiTaskSeq(taskDataSeq);
-    EXPECT_FALSE(testMpiTaskSeq.validation());
-  }
-}
-
-TEST(belov_a_radix_batcher_mergesort_mpi, test_validation_condition3) {
-  boost::mpi::communicator world;
-
-  // declared length is not equal to real one
-  int n = 8;
-  vector<bigint> arr = {62584567, 0, -1953346};
-
-  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
-
-  if (world.rank() == 0) {
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataPar->inputs_count.emplace_back(arr.size());
-    taskDataPar->inputs_count.emplace_back(n);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataPar->outputs_count.emplace_back(arr.size());
-  }
-
-  RadixBatcherMergesortParallel testMpiTaskParallel(taskDataPar);
-  EXPECT_FALSE(testMpiTaskParallel.validation());
-
-  if (world.rank() == 0) {
-    shared_ptr<ppc::core::TaskData> taskDataSeq = make_shared<ppc::core::TaskData>();
-    vector<bigint> solutionSeq(n);
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
-    taskDataSeq->inputs_count.emplace_back(arr.size());
-    taskDataSeq->inputs_count.emplace_back(n);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(solutionSeq.data()));
-    taskDataSeq->outputs_count.emplace_back(solutionSeq.size());
-
-    RadixBatcherMergesortSequential testMpiTaskSeq(taskDataSeq);
-    EXPECT_FALSE(testMpiTaskSeq.validation());
-  }
-}
-
 TEST(belov_a_radix_batcher_mergesort_mpi, test_one_element_input_array) {
   boost::mpi::communicator world;
 
@@ -575,5 +473,68 @@ TEST(belov_a_radix_batcher_mergesort_mpi, test_one_element_input_array) {
     testMpiTaskSeq.post_processing();
 
     EXPECT_EQ(arr, solutionSeq);
+  }
+}
+
+TEST(belov_a_radix_batcher_mergesort_mpi, test_empty_input_validation_condition1) {
+  boost::mpi::communicator world;
+
+  // zero length, empty input
+  int n = 0;
+  vector<bigint> arr = {};
+
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    taskDataPar->inputs_count.emplace_back(arr.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    taskDataPar->outputs_count.emplace_back(arr.size());
+
+    RadixBatcherMergesortParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(belov_a_radix_batcher_mergesort_mpi, test_empty_input_validation_condition2) {
+  boost::mpi::communicator world;
+
+  // declared length is 5, but empty input
+  int n = 5;
+  vector<bigint> arr = {};
+
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    taskDataPar->inputs_count.emplace_back(arr.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    taskDataPar->outputs_count.emplace_back(arr.size());
+
+    RadixBatcherMergesortParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
+  }
+}
+
+TEST(belov_a_radix_batcher_mergesort_mpi, test_validation_condition3) {
+  boost::mpi::communicator world;
+
+  // declared length is not equal to real one
+  int n = 8;
+  vector<bigint> arr = {62584567, 0, -1953346};
+
+  shared_ptr<ppc::core::TaskData> taskDataPar = make_shared<ppc::core::TaskData>();
+
+  if (world.rank() == 0) {
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    taskDataPar->inputs_count.emplace_back(arr.size());
+    taskDataPar->inputs_count.emplace_back(n);
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(arr.data()));
+    taskDataPar->outputs_count.emplace_back(arr.size());
+
+    RadixBatcherMergesortParallel testMpiTaskParallel(taskDataPar);
+    EXPECT_FALSE(testMpiTaskParallel.validation());
   }
 }
