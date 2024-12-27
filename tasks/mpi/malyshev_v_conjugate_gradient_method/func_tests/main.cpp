@@ -15,7 +15,7 @@ std::vector<double> generateRandomVector(uint32_t size, double min_value, double
   std::mt19937 gen(dev());
   std::vector<double> data(size);
 
-  for (auto &el : data) {
+  for (auto& el : data) {
     el = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
   }
 
@@ -32,7 +32,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
       data[i][j] =
           min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
       if (i == j) {
-        data[i][j] += size * max_value;
+        data[i][j] += size * size * max_value;
       }
       data[j][i] = data[i][j];
     }
@@ -64,6 +64,20 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     randomMatrix = malyshev_conjugate_gradient::generateRandomMatrix(size, min_value, max_value);
     randomVector = malyshev_conjugate_gradient::generateRandomVector(size, min_value, max_value);
 
+    std::cerr << "Input Matrix:" << std::endl;
+    for (const auto& row : randomMatrix) {
+      for (const auto& val : row) {
+        std::cerr << val << " ";
+      }
+      std::cerr << std::endl;
+    }
+
+    std::cerr << "Input Vector:" << std::endl;
+    for (const auto& val : randomVector) {
+      std::cerr << val << " ";
+    }
+    std::cerr << std::endl;
+
     for (uint32_t i = 0; i < size; ++i) {
       for (uint32_t j = 0; j < size; ++j) {
         matrixData[i * size + j] = randomMatrix[i][j];
@@ -72,10 +86,10 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
 
     std::copy(randomVector.begin(), randomVector.end(), vectorData.begin());
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixData.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vectorData.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixData.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(vectorData.data()));
     taskDataPar->inputs_count.push_back(size);
-    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(size);
   }
 
@@ -101,10 +115,10 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
     malyshev_conjugate_gradient::TestTaskSequential taskSeq(taskDataSeq);
 
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixData.data()));
-    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(vectorData.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(matrixData.data()));
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(vectorData.data()));
     taskDataSeq->inputs_count.push_back(size);
-    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(seqResult.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(seqResult.data()));
     taskDataSeq->outputs_count.push_back(size);
 
     ASSERT_TRUE(taskSeq.validation());
