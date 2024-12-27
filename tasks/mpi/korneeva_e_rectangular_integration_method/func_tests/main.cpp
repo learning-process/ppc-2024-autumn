@@ -231,8 +231,7 @@ TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricDoubleIntegralO
 }
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricTripleIntegralOneVariable) {
   korneeva_e_rectangular_integration_method_mpi::customTest(
-      korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, {{2, 3}, {2, 3}, {2, 3}},
-      1e-4);
+      korneeva_e_rectangular_integration_method_mpi::trigonometricSingleVar, {{2, 3}, {2, 3}, {2, 3}}, 1e-4);
 }
 
 TEST(korneeva_e_rectangular_integration_method_mpi, TrigonometricDoubleIntegralTwoVariables) {
