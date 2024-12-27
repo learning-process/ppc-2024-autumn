@@ -163,7 +163,6 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
     odd_even_merge(res, extra_elements);
     res.insert(res.end(), extra_elements.begin(), extra_elements.end());
   }
-  std::cout.flush();
   return true;
 }
 

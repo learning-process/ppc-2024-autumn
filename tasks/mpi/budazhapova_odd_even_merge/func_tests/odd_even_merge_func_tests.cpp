@@ -35,7 +35,6 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, ordinary_test) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     taskDataPar->inputs_count.emplace_back(input_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataPar->outputs_count.emplace_back(out.size());
   }
   budazhapova_betcher_odd_even_merge_mpi::MergeParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -48,7 +47,6 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, ordinary_test) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     taskDataSeq->inputs_count.emplace_back(input_vector.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(out_seq.size());
 
     budazhapova_betcher_odd_even_merge_mpi::MergeSequential testTaskSequential(taskDataSeq);
     ASSERT_EQ(testTaskSequential.validation(), true);
@@ -72,7 +70,6 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     taskDataPar->inputs_count.emplace_back(input_vector.size());
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(out.data()));
-    taskDataPar->outputs_count.emplace_back(out.size());
   }
   budazhapova_betcher_odd_even_merge_mpi::MergeParallel testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), true);
@@ -85,7 +82,6 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test) {
     taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_vector.data()));
     taskDataSeq->inputs_count.emplace_back(input_vector.size());
     taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(out_seq.data()));
-    taskDataSeq->outputs_count.emplace_back(out_seq.size());
 
     budazhapova_betcher_odd_even_merge_mpi::MergeSequential testTaskSequential(taskDataSeq);
     ASSERT_EQ(testTaskSequential.validation(), true);
