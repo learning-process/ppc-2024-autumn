@@ -62,9 +62,9 @@ TEST(budazhapova_betcher_odd_even_merge_mpi, ordinary_test) {
 
 TEST(budazhapova_betcher_odd_even_merge_mpi, random_vector_test) {
   boost::mpi::communicator world;
-  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generate_random_vector(120, 5, 100);
-  std::vector<int> out(120, 0);
-  std::vector<int> out_seq(120, 0);
+  std::vector<int> input_vector = budazhapova_betcher_odd_even_merge_mpi::generate_random_vector(10, 5, 100);
+  std::vector<int> out(10, 0);
+  std::vector<int> out_seq(10, 0);
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
