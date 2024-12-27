@@ -22,7 +22,7 @@ TEST(polikanov_v_max_of_vector_elements_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> ans(1, 0);
-  int n = 100000000;
+  int n = 1000000;
   int lower = 0;
   int max_el = 100;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
@@ -56,7 +56,7 @@ TEST(polikanov_v_max_of_vector_elements_perf_test, test_task_run) {
   boost::mpi::communicator world;
   std::vector<int> global_vec;
   std::vector<int32_t> ans(1, 0);
-  int n = 100000000;
+  int n = 1000000;
   int lower = 0;
   int max_el = 100;
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();

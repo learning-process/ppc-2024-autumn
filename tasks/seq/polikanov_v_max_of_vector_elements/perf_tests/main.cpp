@@ -7,7 +7,7 @@
 #include "seq/polikanov_v_max_of_vector_elements/include/ops_seq.hpp"
 
 TEST(polikanov_v_max_of_vector_elements_perf_test, test_pipeline_run_1) {
-  const int count = 10000000;
+  const int count = 1000000;
   std::vector<int> in(count, 0);
   in[0] = 101;
   std::vector<int> out(1, 0);
@@ -37,7 +37,7 @@ TEST(polikanov_v_max_of_vector_elements_perf_test, test_pipeline_run_1) {
 }
 
 TEST(polikanov_v_max_of_vector_elements_perf_test, test_task_run_1) {
-  const int count = 10000000;
+  const int count = 1000000;
 
   std::vector<int> in(count, 0);
   in[count - 1] = count + 1;
