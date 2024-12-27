@@ -200,7 +200,7 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         world.send(world.rank() - block_rows_columns, 5, local_input_matrix_B.data(),
                    block_dimension * block_dimension);
       }
-      if ((world.rank() + 1) % block_rows_columns == 0) {
+      if (block_rows_columns != 0 && (world.rank() + 1) % block_rows_columns == 0) {
         world.recv(world.rank() - block_rows_columns + 1, 2, local_input_matrix_A.data(),
                    block_dimension * block_dimension);
       } else {
