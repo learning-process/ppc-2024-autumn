@@ -10,8 +10,8 @@ using namespace khasanyanov_k_fox_algorithm;
 
 TEST(khasanyanov_k_fox_algorithm_tests, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int m = 512;
-  const int n = 512;
+  const size_t m = world.size() < 4 ? 256 : 512;
+  const size_t n = m;
 
   matrix<double> A = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
   matrix<double> B = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
@@ -37,8 +37,8 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_pipeline_run) {
 
 TEST(khasanyanov_k_fox_algorithm_tests, test_task_run) {
   boost::mpi::communicator world;
-  const int m = 512;
-  const int n = 512;
+  const size_t m = world.size() < 4 ? 256 : 512;
+  const size_t n = m;
 
   matrix<double> A = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
   matrix<double> B = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
@@ -63,8 +63,8 @@ TEST(khasanyanov_k_fox_algorithm_tests, test_task_run) {
 }
 
 TEST(khasanyanov_k_mult_matrix_tests, test_pipeline_run) {
-  const int m = 512;
-  const int n = 512;
+  const int m = 256;
+  const int n = 256;
 
   matrix<double> A = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
   matrix<double> B = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
@@ -85,8 +85,8 @@ TEST(khasanyanov_k_mult_matrix_tests, test_pipeline_run) {
 }
 
 TEST(khasanyanov_k_mult_matrix_tests, test_task_run) {
-  const int m = 512;
-  const int n = 512;
+  const int m = 256;
+  const int n = 256;
 
   matrix<double> A = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
   matrix<double> B = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);

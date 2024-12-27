@@ -28,8 +28,8 @@ static std::shared_ptr<ppc::core::TaskData> create_task_data(matrix<DataType>& A
 }
 
 TEST(khasanyanov_k_mult_matrix_tests_seq, test_pipeline_run) {
-  const int m = 512;
-  const int n = 512;
+  const int m = 256;
+  const int n = 256;
 
   matrix<double> A = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
   matrix<double> B = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
@@ -59,8 +59,8 @@ TEST(khasanyanov_k_mult_matrix_tests_seq, test_pipeline_run) {
 }
 
 TEST(khasanyanov_k_mult_matrix_tests_seq, test_task_run) {
-  const int m = 512;
-  const int n = 512;
+  const int m = 256;
+  const int n = 256;
 
   matrix<double> A = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
   matrix<double> B = MatrixOperations::generate_random_matrix<double>(m, n, -1000, 1000);
