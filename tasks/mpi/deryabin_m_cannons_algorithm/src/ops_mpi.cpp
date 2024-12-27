@@ -193,8 +193,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
       }
       i++;
     }
-    //unsigned short p = 0;
-    //while (p != block_rows_columns) {
+    unsigned short p = 1;
+    while (p != block_rows_columns) {
       if (world.rank() % block_rows_columns == 0) {
         world.send(world.rank() + block_rows_columns - 1, 2, local_input_matrix_A.data(), block_dimension * block_dimension);
       } else {
@@ -231,8 +231,8 @@ bool deryabin_m_cannons_algorithm_mpi::CannonsAlgorithmMPITaskParallel::run() {
         }
         i++;
       }
-      //p++;
-    //}
+      p++;
+    }
     boost::mpi::gather(world, local_output_matrix_C.data(), block_dimension * block_dimension, output_matrix_C, 0);
   }
   return true;
