@@ -91,7 +91,7 @@ void laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::dijkstra(int start_
     int end = row_ptr[current_vertex + 1];
     for (int i = start; i < end; ++i) {
       int neighbor_vertex = col_ind[i];
-      int weight = data[i]; 
+      int weight = data[i];
       int new_distance = current_distance + weight;
 
       // If a shorter distance is found, update it
