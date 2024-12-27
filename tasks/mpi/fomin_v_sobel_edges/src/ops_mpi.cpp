@@ -10,8 +10,6 @@ using namespace std::chrono_literals;
 #include <cmath>
 #include <vector>
 
-using namespace boost::mpi;
-
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   internal_order_test();
 
