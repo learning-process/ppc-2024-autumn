@@ -81,7 +81,6 @@ TEST(savchenko_m_ribbon_mult_split_a_seq, test_pipeline_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  //ASSERT_EQ(refference, matrix_res);
 }
 
 TEST(savchenko_m_ribbon_mult_split_a_seq, test_task_run) {
@@ -134,5 +133,4 @@ TEST(savchenko_m_ribbon_mult_split_a_seq, test_task_run) {
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testTaskSequential);
   perfAnalyzer->task_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
-  //ASSERT_EQ(refference, matrix_res);
 }

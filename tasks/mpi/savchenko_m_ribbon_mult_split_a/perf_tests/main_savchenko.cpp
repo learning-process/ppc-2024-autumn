@@ -66,10 +66,10 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, test_pipeline_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel>(taskDataPar);
-  //testMpiTaskParallel->validation();
-  //testMpiTaskParallel->pre_processing();
-  //testMpiTaskParallel->run();
-  //testMpiTaskParallel->post_processing();
+  // testMpiTaskParallel->validation();
+  // testMpiTaskParallel->pre_processing();
+  // testMpiTaskParallel->run();
+  // testMpiTaskParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -87,32 +87,6 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, test_pipeline_run) {
   // Create refference and comparison
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-
-  //  // Create data
-  //  std::vector<int> refference(matrix_res.size(), 0);
-
-  //  // Create TaskData
-  //  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  //  //// matrix_A
-  //  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  //// matrix_B
-  //  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  //// refference
-  //  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-  //  taskDataSeq->outputs_count.emplace_back(refference.size());
-
-  //  // Create Task
-  //  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-  //  testMpiTaskSequential.validation();
-  //  testMpiTaskSequential.pre_processing();
-  //  testMpiTaskSequential.run();
-  //  testMpiTaskSequential.post_processing();
-
-  //  ASSERT_EQ(refference, matrix_res);
   }
 }
 
@@ -151,10 +125,10 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, test_task_run) {
   }
 
   auto testMpiTaskParallel = std::make_shared<savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskParallel>(taskDataPar);
-  //testMpiTaskParallel->validation();
-  //testMpiTaskParallel->pre_processing();
-  //testMpiTaskParallel->run();
-  //testMpiTaskParallel->post_processing();
+  // testMpiTaskParallel->validation();
+  // testMpiTaskParallel->pre_processing();
+  // testMpiTaskParallel->run();
+  // testMpiTaskParallel->post_processing();
 
   // Create Perf attributes
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
@@ -172,31 +146,5 @@ TEST(savchenko_m_ribbon_mult_split_a_mpi, test_task_run) {
   //// Create refference and comparison
   if (world.rank() == 0) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-
-  //  // Create data
-  //  std::vector<int> refference(matrix_res.size(), 0);
-
-  //  // Create TaskData
-  //  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-  //  //// matrix_A
-  //  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_A.data()));
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  //// matrix_B
-  //  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix_B.data()));
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  taskDataSeq->inputs_count.emplace_back(size);
-  //  //// refference
-  //  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(refference.data()));
-  //  taskDataSeq->outputs_count.emplace_back(refference.size());
-
-  //  // Create Task
-  //  savchenko_m_ribbon_mult_split_a_mpi::TestMPITaskSequential testMpiTaskSequential(taskDataSeq);
-  //  ASSERT_TRUE(testMpiTaskSequential.validation());
-  //  testMpiTaskSequential.pre_processing();
-  //  testMpiTaskSequential.run();
-  //  testMpiTaskSequential.post_processing();
-
-  //  ASSERT_EQ(refference, matrix_res);
   }
 }
