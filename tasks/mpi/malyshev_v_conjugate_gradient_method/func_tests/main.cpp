@@ -85,6 +85,17 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
   ASSERT_TRUE(taskMPI.post_processing());
 
   if (world.rank() == 0) {
+    std::vector<double> matrixData(size * size);
+    std::vector<double> vectorData(size);
+
+    for (uint32_t i = 0; i < size; ++i) {
+      for (uint32_t j = 0; j < size; ++j) {
+        matrixData[i * size + j] = randomMatrix[i][j];
+      }
+    }
+
+    std::copy(randomVector.begin(), randomVector.end(), vectorData.begin());
+
     std::vector<double> seqResult(size);
 
     std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
