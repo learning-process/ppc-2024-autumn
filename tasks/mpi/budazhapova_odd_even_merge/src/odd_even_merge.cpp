@@ -147,6 +147,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       }
       if (world_rank % 2 == 0 && next_rank < world_size) {
         world.recv(next_rank, next_rank, local_res);
+        budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
       }
     } else {
       if (world_rank % 2 == 1 && next_rank < world_size) {
@@ -159,6 +160,7 @@ bool budazhapova_betcher_odd_even_merge_mpi::MergeParallel::run() {
       }
       if (world_rank % 2 == 1 && next_rank < world_size) {
         world.recv(next_rank, next_rank, local_res);
+        budazhapova_betcher_odd_even_merge_mpi::radix_sort(local_res);
       }
     }
   }
