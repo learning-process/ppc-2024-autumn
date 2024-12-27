@@ -32,7 +32,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
       data[i][j] =
           min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
       if (i == j) {
-        data[i][j] += size * max_value;  // Ensure diagonal dominance for positive definiteness
+        data[i][j] += size * max_value;
       }
       data[j][i] = data[i][j];
     }
@@ -45,7 +45,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
 
 TEST(malyshev_conjugate_gradient, test_small_system) {
   uint32_t size = 10;
-  double min_value = 1.0;  // Ensure positive values
+  double min_value = 1.0;
   double max_value = 10.0;
 
   boost::mpi::communicator world;
@@ -57,12 +57,23 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
   malyshev_conjugate_gradient::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
-    randomMatrix = malyshev_conjugate_gradient::generateRandomMatrix(size, min_value, max_value);
-    randomVector = malyshev_conjugate_gradient::generateRandomVector(size, min_value, max_value);
+    std::vector<double> matrixData(size * size);
+    std::vector<double> vectorData(size);
     mpiResult.resize(size);
 
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomMatrix.data()));
-    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
+    randomMatrix = malyshev_conjugate_gradient::generateRandomMatrix(size, min_value, max_value);
+    randomVector = malyshev_conjugate_gradient::generateRandomVector(size, min_value, max_value);
+
+    for (uint32_t i = 0; i < size; ++i) {
+      for (uint32_t j = 0; j < size; ++j) {
+        matrixData[i * size + j] = randomMatrix[i][j];
+      }
+    }
+
+    std::copy(randomVector.begin(), randomVector.end(), vectorData.begin());
+
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrixData.data()));
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(vectorData.data()));
     taskDataPar->inputs_count.push_back(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(size);
@@ -97,5 +108,5 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     }
   }
 
-  world.barrier();  // Ensure all processes reach this point before finalizing
+  world.barrier();
 }

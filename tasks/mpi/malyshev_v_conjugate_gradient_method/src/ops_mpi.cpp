@@ -110,11 +110,15 @@ bool malyshev_conjugate_gradient::TestTaskParallel::pre_processing() {
     vector_.resize(size);
     result_.resize(size);
 
-    auto* data = reinterpret_cast<double*>(taskData->inputs[0]);
-    std::copy(data, data + size * size, matrix_[0].data());
+    auto* matrixData = reinterpret_cast<double*>(taskData->inputs[0]);
+    for (uint32_t i = 0; i < size; ++i) {
+      for (uint32_t j = 0; j < size; ++j) {
+        matrix_[i][j] = matrixData[i * size + j];
+      }
+    }
 
-    data = reinterpret_cast<double*>(taskData->inputs[1]);
-    std::copy(data, data + size, vector_.data());
+    auto* vectorData = reinterpret_cast<double*>(taskData->inputs[1]);
+    std::copy(vectorData, vectorData + size, vector_.begin());
   }
 
   return true;
