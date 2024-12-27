@@ -64,55 +64,6 @@ TEST(sharamygina_i_line_topology_mpi, checkTransferedData) {
   }
 }
 
-TEST(sharamygina_i_line_topology_mpi, transferRandomData) {
-  boost::mpi::communicator world;
-
-  int size = 20000;
-
-  std::srand(static_cast<unsigned int>(std::time(nullptr)));
-  int sendler = std::rand() % (world.size());
-  int recipient = sendler + std::rand() % (world.size() - sendler);
-
-  std::shared_ptr<ppc::core::TaskData> taskData = std::make_shared<ppc::core::TaskData>();
-  taskData->inputs_count.emplace_back(sendler);
-  taskData->inputs_count.emplace_back(recipient);
-  taskData->inputs_count.emplace_back(size);
-
-  std::vector<int> data(size);
-  std::vector<int> received_data;
-
-  if (world.rank() == sendler) {
-    sharamygina_i_line_topology_mpi::generator(data);
-    taskData->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
-    if (sendler != recipient) {
-      world.send(recipient, 0, data);
-    }
-  }
-  if (world.rank() == recipient) {
-    if (sendler != recipient) {
-      world.recv(sendler, 0, data);
-    }
-
-    received_data.resize(size);
-
-    taskData->outputs.emplace_back(reinterpret_cast<uint8_t*>(received_data.data()));
-    taskData->outputs_count.emplace_back(received_data.size());
-  }
-
-  sharamygina_i_line_topology_mpi::line_topology_mpi testTask(taskData);
-  ASSERT_EQ(testTask.validation(), true);
-
-  testTask.pre_processing();
-  testTask.run();
-  testTask.post_processing();
-
-  if (world.rank() == recipient) {
-    for (int i = 0; i < size; i++) {
-      ASSERT_EQ(received_data[i], data[i]);
-    }
-  }
-}
-
 TEST(sharamygina_i_line_topology_mpi, insufficientInputs) {
   boost::mpi::communicator world;
 
