@@ -38,7 +38,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::validation() {
 bool malyshev_conjugate_gradient::TestTaskSequential::run() {
   internal_order_test();
 
-  uint32_t size = matrix_.size();
+  uint32_t size = vector_.size();
   std::vector<double> x(size, 0.0);
   std::vector<double> r = vector_;
   std::vector<double> p = r;
@@ -48,14 +48,14 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
     rsold += r[i] * r[i];
   }
 
-  const uint32_t maxIterations = 10;
+  const uint32_t maxIterations = 1000;
   uint32_t iteration = 0;
 
   for (iteration = 0; iteration < maxIterations; ++iteration) {
     std::vector<double> Ap(size, 0.0);
     for (uint32_t j = 0; j < size; ++j) {
       for (uint32_t k = 0; k < size; ++k) {
-        Ap[j] += matrix_[j][k] * p[k];
+        Ap[j] += matrix_[j * size + k] * p[k];
       }
     }
 
@@ -66,7 +66,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
 
     if (std::abs(pAp) < 1e-12) {
       std::cerr << "Error: Division by near-zero in conjugate gradient. pAp = " << pAp << std::endl;
-      break;
+      return false;
     }
 
     double alpha = rsold / pAp;
@@ -80,10 +80,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
       rsnew += r[j] * r[j];
     }
 
-    std::cerr << "Iteration " << iteration << ": Residual norm = " << sqrt(rsnew) << std::endl;
-
     if (sqrt(rsnew) < 1e-6) {
-      std::cerr << "Converged after " << iteration + 1 << " iterations." << std::endl;
       break;
     }
 
@@ -95,7 +92,8 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
   }
 
   if (iteration == maxIterations) {
-    std::cerr << "Max iterations reached. Exiting." << std::endl;
+    std::cerr << "Conjugate gradient method did not converge within the maximum number of iterations." << std::endl;
+    return false;
   }
 
   result_ = x;
@@ -112,40 +110,29 @@ bool malyshev_conjugate_gradient::TestTaskSequential::post_processing() {
 }
 
 bool malyshev_conjugate_gradient::TestTaskParallel::pre_processing() {
-  internal_order_test();
+  double det = 1.0;
+  for (uint32_t i = 0; i < vector_.size(); ++i) {
+    det *= matrix_[i * vector_.size() + i];
+  }
 
-  if (world.rank() == 0) {
-    uint32_t size = taskData->inputs_count[0];
-
-    matrix_.resize(size, std::vector<double>(size));
-    vector_.resize(size);
-    result_.resize(size);
-
-    auto* matrixData = reinterpret_cast<double*>(taskData->inputs[0]);
-    for (uint32_t i = 0; i < size; ++i) {
-      for (uint32_t j = 0; j < size; ++j) {
-        matrix_[i][j] = matrixData[i * size + j];
-      }
-    }
-
-    auto* vectorData = reinterpret_cast<double*>(taskData->inputs[1]);
-    std::copy(vectorData, vectorData + size, vector_.begin());
+  if (std::abs(det) < 1e-12) {
+    std::cerr << "Matrix is singular or near-singular. No unique solution." << std::endl;
+    return false;
   }
 
   return true;
 }
 
 bool malyshev_conjugate_gradient::TestTaskParallel::validation() {
-  internal_order_test();
+  if (matrix_.empty() || vector_.empty()) {
+    std::cerr << "Error: Matrix or vector is empty." << std::endl;
+    return false;
+  }
 
-  if (world.rank() == 0) {
-    uint32_t size = taskData->inputs_count[0];
-
-    if (taskData->inputs.size() != 2 || taskData->inputs_count.empty()) {
-      return false;
-    }
-
-    return taskData->outputs_count[0] == size;
+  uint32_t size = vector_.size();
+  if (matrix_.size() != size * size) {
+    std::cerr << "Error: Matrix size does not match vector size." << std::endl;
+    return false;
   }
 
   return true;
@@ -154,7 +141,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::validation() {
 bool malyshev_conjugate_gradient::TestTaskParallel::run() {
   internal_order_test();
 
-  uint32_t size = matrix_.size();
+  uint32_t size = vector_.size();
   std::vector<double> x(size, 0.0);
   std::vector<double> r(size, 0.0);
   std::vector<double> p(size, 0.0);
@@ -176,10 +163,11 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
   for (iteration = 0; iteration < maxIterations; ++iteration) {
     if (world.rank() == 0) {
+      // Вычисление Ap
       for (uint32_t j = 0; j < size; ++j) {
         Ap[j] = 0.0;
         for (uint32_t k = 0; k < size; ++k) {
-          Ap[j] += matrix_[j][k] * p[k];
+          Ap[j] += matrix_[j * size + k] * p[k];
         }
       }
     }
@@ -193,11 +181,6 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
     double global_pAp = 0.0;
     reduce(world, local_pAp, global_pAp, std::plus<>(), 0);
-
-    if (world.rank() == 0) {
-      std::cerr << "Iteration " << iteration << ": local_pAp = " << local_pAp << ", global_pAp = " << global_pAp
-                << std::endl;
-    }
 
     if (world.rank() == 0 && std::abs(global_pAp) < 1e-12) {
       std::cerr << "Error: Division by near-zero in conjugate gradient. global_pAp = " << global_pAp << std::endl;
@@ -226,7 +209,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
     if (sqrt(rsnew) < 1e-6) {
       if (world.rank() == 0) {
-        std::cerr << "Converged after " << iteration + 1 << " iterations." << std::endl;
+        result_ = x;
       }
       break;
     }
@@ -252,11 +235,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
     return false;
   }
 
-  if (world.rank() == 0) {
-    result_ = x;
-  }
-
-  return true;
+  return iteration < maxIterations;
 }
 
 bool malyshev_conjugate_gradient::TestTaskParallel::post_processing() {
