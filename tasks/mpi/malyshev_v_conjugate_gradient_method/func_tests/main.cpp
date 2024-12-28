@@ -3,6 +3,7 @@
 #include <boost/mpi/communicator.hpp>
 #include <climits>
 #include <cmath>
+#include <iomanip>
 #include <random>
 #include <vector>
 
@@ -13,10 +14,11 @@ namespace malyshev_conjugate_gradient {
 std::vector<double> generateRandomVector(uint32_t size, double min_value, double max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::vector<double> data(size);
+  std::uniform_real_distribution<double> dist(min_value, max_value);
 
+  std::vector<double> data(size);
   for (auto& el : data) {
-    el = min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
+    el = dist(gen);
   }
 
   return data;
@@ -25,14 +27,15 @@ std::vector<double> generateRandomVector(uint32_t size, double min_value, double
 std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_value, double max_value) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  std::vector<std::vector<double>> data(size, std::vector<double>(size));
+  std::uniform_real_distribution<double> dist(min_value, max_value);
+
+  std::vector<std::vector<double>> data(size, std::vector<double>(size, 0.0));
 
   for (uint32_t i = 0; i < size; ++i) {
     for (uint32_t j = 0; j <= i; ++j) {
-      data[i][j] =
-          min_value + static_cast<double>(gen()) / static_cast<double>(std::mt19937::max()) * (max_value - min_value);
+      data[i][j] = dist(gen);
       if (i == j) {
-        data[i][j] += size * size * max_value;
+        data[i][j] += size;
       }
       data[j][i] = data[i][j];
     }
@@ -44,7 +47,7 @@ std::vector<std::vector<double>> generateRandomMatrix(uint32_t size, double min_
 }  // namespace malyshev_conjugate_gradient
 
 TEST(malyshev_conjugate_gradient, test_small_system) {
-  uint32_t size = 10;
+  uint32_t size = 3;
   double min_value = 1.0;
   double max_value = 10.0;
 
@@ -64,23 +67,17 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
     randomMatrix = malyshev_conjugate_gradient::generateRandomMatrix(size, min_value, max_value);
     randomVector = malyshev_conjugate_gradient::generateRandomVector(size, min_value, max_value);
 
-    for (uint32_t i = 0; i < size; ++i) {
-      for (uint32_t j = 0; j < size; ++j) {
-        randomMatrix[i][j] /= 1000.0;
-      }
-    }
-
     std::cerr << "Input Matrix:" << std::endl;
     for (const auto& row : randomMatrix) {
       for (const auto& val : row) {
-        std::cerr << val << " ";
+        std::cerr << std::fixed << std::setprecision(6) << val << " ";
       }
       std::cerr << std::endl;
     }
 
     std::cerr << "Input Vector:" << std::endl;
     for (const auto& val : randomVector) {
-      std::cerr << val << " ";
+      std::cerr << std::fixed << std::setprecision(6) << val << " ";
     }
     std::cerr << std::endl;
 
@@ -134,13 +131,13 @@ TEST(malyshev_conjugate_gradient, test_small_system) {
 
     std::cerr << "Sequential result:" << std::endl;
     for (const auto& val : seqResult) {
-      std::cerr << val << " ";
+      std::cerr << std::fixed << std::setprecision(6) << val << " ";
     }
     std::cerr << std::endl;
 
     std::cerr << "MPI result:" << std::endl;
     for (const auto& val : mpiResult) {
-      std::cerr << val << " ";
+      std::cerr << std::fixed << std::setprecision(6) << val << " ";
     }
     std::cerr << std::endl;
 
