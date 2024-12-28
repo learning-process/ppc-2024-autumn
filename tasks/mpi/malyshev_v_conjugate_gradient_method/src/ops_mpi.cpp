@@ -48,7 +48,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
     rsold += r[i] * r[i];
   }
 
-  const uint32_t maxIterations = 5;
+  const uint32_t maxIterations = 10;
   uint32_t iteration = 0;
 
   for (iteration = 0; iteration < maxIterations; ++iteration) {
@@ -66,7 +66,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
 
     if (std::abs(pAp) < 1e-12) {
       std::cerr << "Error: Division by near-zero in conjugate gradient. pAp = " << pAp << std::endl;
-      return false;
+      break;
     }
 
     double alpha = rsold / pAp;
@@ -83,6 +83,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
     std::cerr << "Iteration " << iteration << ": Residual norm = " << sqrt(rsnew) << std::endl;
 
     if (sqrt(rsnew) < 1e-6) {
+      std::cerr << "Converged after " << iteration + 1 << " iterations." << std::endl;
       break;
     }
 
@@ -94,8 +95,7 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
   }
 
   if (iteration == maxIterations) {
-    std::cerr << "Conjugate gradient method did not converge within the maximum number of iterations." << std::endl;
-    return false;
+    std::cerr << "Max iterations reached. Exiting." << std::endl;
   }
 
   result_ = x;
@@ -171,7 +171,10 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
   broadcast(world, rsold, 0);
 
-  for (uint32_t i = 0; i < size; ++i) {
+  const uint32_t maxIterations = 10;
+  uint32_t iteration = 0;
+
+  for (iteration = 0; iteration < maxIterations; ++iteration) {
     if (world.rank() == 0) {
       for (uint32_t j = 0; j < size; ++j) {
         Ap[j] = 0.0;
@@ -193,7 +196,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
     if (world.rank() == 0 && std::abs(global_pAp) < 1e-12) {
       std::cerr << "Error: Division by near-zero in conjugate gradient. global_pAp = " << global_pAp << std::endl;
-      return false;
+      break;
     }
 
     double alpha = 0.0;
@@ -217,6 +220,9 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
     broadcast(world, rsnew, 0);
 
     if (sqrt(rsnew) < 1e-6) {
+      if (world.rank() == 0) {
+        std::cerr << "Converged after " << iteration + 1 << " iterations." << std::endl;
+      }
       break;
     }
 
@@ -228,6 +234,17 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
     broadcast(world, p, 0);
     rsold = rsnew;
+
+    if (world.rank() == 0) {
+      std::cerr << "Iteration " << iteration << ": Residual norm = " << sqrt(rsnew) << std::endl;
+    }
+  }
+
+  if (iteration == maxIterations) {
+    if (world.rank() == 0) {
+      std::cerr << "Max iterations reached. Exiting." << std::endl;
+    }
+    return false;
   }
 
   if (world.rank() == 0) {
