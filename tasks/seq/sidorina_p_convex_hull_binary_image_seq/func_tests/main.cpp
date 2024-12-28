@@ -6,6 +6,7 @@
 
 #include "seq/sidorina_p_convex_hull_binary_image_seq/include/ops_seq.hpp"
 
+namespace sidorina_p_convex_hull_binary_image_seq {
 std::vector<int> gen(int width, int height) {
   std::vector<int> image(width * height);
   for (int i = 0; i < width * height; ++i) {
@@ -14,6 +15,7 @@ std::vector<int> gen(int width, int height) {
 
   return image;
 }
+}  // namespace sidorina_p_convex_hull_binary_image_seq
 
 using Params = std::tuple<int, int, std::vector<int>, std::vector<int>>;
 
