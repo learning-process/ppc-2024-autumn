@@ -317,3 +317,22 @@ TEST(korneeva_e_rectangular_integration_method_seq, LargeLimitsIntegration) {
   double expectedValue = lims[0].second - lims[0].first;
   ASSERT_NEAR(expectedValue, out[0], epsilon);
 }
+
+TEST(korneeva_e_rectangular_integration_method_seq, SmallRange) {
+  std::vector<std::pair<double, double>> lims = {{0.0000001, 0.0000002}};
+  double epsilon = 1e-4;
+  std::vector<double> out(1);
+
+  auto taskData = prepareTaskData(lims, &epsilon, out);
+  auto f1x = [](const std::vector<double>& args) { return args[0]; };
+  auto task = createIntegrationTask(taskData, f1x);
+
+  ASSERT_TRUE(task.validation());
+
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+
+  double expected_value = 0.00000015;
+  ASSERT_NEAR(expected_value, out[0], epsilon);
+}
