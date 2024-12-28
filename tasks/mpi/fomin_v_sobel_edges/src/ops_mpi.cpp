@@ -113,23 +113,21 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
   int local_height = local_input_.size() / width_ - 2;  // exclude boundary rows
-  for (int y = 1; y <= local_height; ++y) {
-    for (int x = 1; x < width_ - 1; ++x) {
+  output_image_.resize(local_height * width_, 0);       // Ensure output_image_ has correct size
+
+  for (int y = 0; y < local_height; ++y) {  // Process all rows
+    for (int x = 0; x < width_; ++x) {      // Process all columns
       int sumX = 0;
       int sumY = 0;
       for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
-          int pixel = local_input_[(y + i) * width_ + (x + j)];
+          int pixel = local_input_[(y + i + 1) * width_ + (x + j + 1)];  // Access with padding
           sumX += pixel * Gx[i + 1][j + 1];
           sumY += pixel * Gy[i + 1][j + 1];
         }
       }
       int gradient = static_cast<int>(std::sqrt(sumX * sumX + sumY * sumY));
-      output_image_[(y - 1) * width_ + x] = static_cast<unsigned char>(std::min(gradient, 255));
-      if (y == 1 && x == 1) {  // Print for a few specific pixels
-        std::cout << "Rank " << world.rank() << ": Calculated gradient at (y,x) = (" << y << "," << x
-                  << ") = " << static_cast<int>(output_image_[(y - 1) * width_ + x]) << std::endl;
-      }
+      output_image_[y * width_ + x] = static_cast<unsigned char>(std::min(gradient, 255));
     }
   }
   return true;
