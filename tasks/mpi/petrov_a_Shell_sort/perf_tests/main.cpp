@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <random>
 #include <algorithm>
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
@@ -9,41 +10,46 @@
 #include "core/perf/include/perf.hpp"
 #include "mpi/petrov_a_Shell_sort/include/ops_mpi.hpp"
 
-TEST(petrov_a_Shell_sort_mpi, test_pipeline_run) {
-  boost::mpi::environment env;
-  boost::mpi::communicator world;
+std::vector<int> generate_random_vector(int n, int min_val = -100, int max_val = 100,
+                                        unsigned seed = std::random_device{}()) {
+  std::mt19937 gen(seed);
+  std::uniform_int_distribution<int> dist(min_val, max_val);
 
-  int vector_size = 50000;
-  std::vector<int> data(vector_size);
+  std::vector<int> vec(n);
+  std::generate(vec.begin(), vec.end(), [&]() { return dist(gen); });
+  return vec;
+}
+
+TEST(petrov_a_Shell_sort_mpi, pipeline_run) {
+  boost::mpi::communicator world;
+  int size = 7000000;
+  std::vector<int> data;
   std::vector<int> result_data;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
-  taskDataPar->inputs_count.emplace_back(1);
-
   if (world.rank() == 0) {
-    int current = vector_size;
-    std::generate(data.begin(), data.end(), [&current]() { return current--; });
-
+    data = generate_random_vector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
     taskDataPar->inputs_count.emplace_back(data.size());
-
-    result_data.resize(vector_size);
+    result_data.resize(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
     taskDataPar->outputs_count.emplace_back(result_data.size());
   }
 
   auto taskParallel = std::make_shared<petrov_a_Shell_sort_mpi::TestTaskMPI>(taskDataPar);
 
+  ASSERT_TRUE(taskParallel->validation());
+  taskParallel->pre_processing();
+  taskParallel->run();
+  taskParallel->post_processing();
+
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
-
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
-
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
 
   if (world.rank() == 0) {
@@ -53,38 +59,36 @@ TEST(petrov_a_Shell_sort_mpi, test_pipeline_run) {
   }
 }
 
-TEST(petrov_a_Shell_sort_mpi, test_task_run) {
-  boost::mpi::environment env;
+TEST(petrov_a_Shell_sort_mpi, task_run) {
   boost::mpi::communicator world;
-
-  int vector_size = 50000;
-  std::vector<int> data(vector_size);
+  int size = 7000000;
+  std::vector<int> data;
   std::vector<int> result_data;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&vector_size));
-  taskDataPar->inputs_count.emplace_back(1);
-
   if (world.rank() == 0) {
-    int current = vector_size;
-    std::generate(data.begin(), data.end(), [&current]() { return current--; });
+    data = generate_random_vector(size);
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(data.data()));
     taskDataPar->inputs_count.emplace_back(data.size());
-
-    result_data.resize(vector_size);
+    result_data.resize(size);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(result_data.data()));
     taskDataPar->outputs_count.emplace_back(result_data.size());
   }
 
   auto taskParallel = std::make_shared<petrov_a_Shell_sort_mpi::TestTaskMPI>(taskDataPar);
 
+  ASSERT_TRUE(taskParallel->validation());
+  taskParallel->pre_processing();
+  taskParallel->run();
+  taskParallel->post_processing();
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
   const boost::mpi::timer current_timer;
   perfAttr->current_timer = [&] { return current_timer.elapsed(); };
 
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
+
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskParallel);
   perfAnalyzer->task_run(perfAttr, perfResults);
 

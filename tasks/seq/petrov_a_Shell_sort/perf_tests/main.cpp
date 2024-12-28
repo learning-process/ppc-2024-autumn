@@ -9,7 +9,7 @@
 #include "seq/petrov_a_Shell_sort/include/ops_seq.hpp"
 
 TEST(petrov_a_Shell_sort_seq, test_pipeline_run) {
-  int vector_size = 10000;
+  int vector_size = 6000000;
   std::vector<int> data(vector_size);
   int current = vector_size;
   std::generate(data.begin(), data.end(), [&current]() { return current--; });
@@ -35,13 +35,14 @@ TEST(petrov_a_Shell_sort_seq, test_pipeline_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
   std::sort(data.begin(), data.end());
 
   EXPECT_EQ(data, result_data);
 }
 
 TEST(petrov_a_Shell_sort_seq, test_task_run) {
-  int vector_size = 10000;
+  int vector_size = 6000000;
   std::vector<int> data(vector_size);
   std::generate(data.begin(), data.end(), []() { return (rand() % 1000) - 500; });
   std::vector<int> result_data(vector_size);
@@ -66,6 +67,7 @@ TEST(petrov_a_Shell_sort_seq, test_task_run) {
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(taskSequential);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
+  ppc::core::Perf::print_perf_statistic(perfResults);
   std::sort(data.begin(), data.end());
   EXPECT_EQ(data, result_data);
 }
