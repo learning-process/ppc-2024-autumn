@@ -231,12 +231,11 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_mismatched_dime
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
-  int temp = 0;
-
   if (world.size() < 5 || world.rank() >= 4) {
-    global_res.resize(temp, 0);
-    global_A.resize(100, 0);
-    global_B.resize(3, 0);
+
+    global_A.resize(25 * 4, 0);
+
+    global_B.resize(3 * 1, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(global_A.data()));
     taskDataPar->inputs_count.emplace_back(25);
@@ -251,11 +250,8 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_mismatched_dime
   }
 
   auto taskParallel = std::make_shared<MPIMatrixMultiplicationTask>(taskDataPar);
-  if ((world.rank() == 0 && world.size() < 5) || (world.rank() >= 4)) {
-    EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(taskParallel->validation());
-  }
+
+  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_result) {
