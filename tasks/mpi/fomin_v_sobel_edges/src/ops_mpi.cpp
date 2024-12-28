@@ -80,7 +80,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
                     send_data.begin() + (proc_local_height + 1) * width_);
         } else {
           std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                    send_data.begin() + (proc_local_height + 1) * width_);
+                     send_data.begin() + (proc_local_height + 1) * width_);
         }
         // Send data to process
         world.send(proc, 0, send_data.data(), send_data.size());
