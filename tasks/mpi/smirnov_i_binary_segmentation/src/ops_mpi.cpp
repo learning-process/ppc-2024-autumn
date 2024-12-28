@@ -402,7 +402,7 @@ bool smirnov_i_binary_segmentation::TestMPITaskParallel::run() {
   int px_B;
   int px_C;
   int px_D;
-  int mark = 2 + rank * (sendcounts[0] + 5);
+  int mark = 2 + rank * (sendcounts[0]) * 2;
   // D B
   // C A
   // direct local pass
