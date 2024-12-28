@@ -47,7 +47,6 @@ TEST(malyshev_lent_horizontal, test_pipeline_run) {
   std::vector<int32_t> mpiResult;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  malyshev_lent_horizontal::TestTaskParallel taskMPI(taskDataPar);
 
   if (world.rank() == 0) {
     randomMatrix = malyshev_lent_horizontal::generateRandomMatrix(rows, cols);
@@ -60,6 +59,7 @@ TEST(malyshev_lent_horizontal, test_pipeline_run) {
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(randomVector.data()));
     taskDataPar->inputs_count.push_back(rows);
+    taskDataPar->inputs_count.push_back(cols);
     taskDataPar->inputs_count.push_back(cols);
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(mpiResult.data()));
     taskDataPar->outputs_count.push_back(rows);

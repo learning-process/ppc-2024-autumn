@@ -95,23 +95,19 @@ bool malyshev_lent_horizontal::TestTaskParallel::pre_processing() {
 bool malyshev_lent_horizontal::TestTaskParallel::validation() {
   internal_order_test();
 
-  if (world.rank() == 0) {
-    uint32_t rows = taskData->inputs_count[0];
-    uint32_t cols = taskData->inputs_count[1];
-    uint32_t vector_size = taskData->inputs_count[2];
+  uint32_t rows = taskData->inputs_count[0];
+  uint32_t cols = taskData->inputs_count[1];
+  uint32_t vector_size = taskData->inputs_count[1];
 
-    if (taskData->inputs.size() != rows + 1 || taskData->inputs_count.size() < 3) {
-      return false;
-    }
-
-    if (cols != vector_size) {
-      return false;
-    }
-
-    return taskData->outputs_count[0] == taskData->inputs_count[0];
+  if (taskData->inputs.size() != rows + 1 || taskData->inputs_count.size() < 3) {
+    return false;
   }
 
-  return true;
+  if (cols != vector_size) {
+    return false;
+  }
+
+  return taskData->outputs_count[0] == rows;
 }
 
 bool malyshev_lent_horizontal::TestTaskParallel::run() {
@@ -126,10 +122,11 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
     sizes[world.size() - i - 1]++;
   }
 
-  local_matrix_.resize(sizes[world.rank()]);
-  local_result_.resize(sizes[world.rank()]);
+  uint32_t local_rows = sizes[world.rank()];
+  local_matrix_.resize(local_rows, std::vector<int32_t>(vector_.size()));
+  local_result_.resize(local_rows);
 
-  scatterv(world, matrix_, sizes, local_matrix_.data(), 0);
+  scatterv(world, matrix_, sizes, local_matrix_, 0);
 
   for (uint32_t i = 0; i < local_matrix_.size(); i++) {
     local_result_[i] = 0;
