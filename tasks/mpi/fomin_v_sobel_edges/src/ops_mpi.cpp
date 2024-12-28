@@ -35,7 +35,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
     for (int proc = 0; proc < world.size(); ++proc) {
       int proc_local_height = base_height + (proc < extra ? 1 : 0);
       int start_row = base_height * proc + std::min(proc, extra);
-      
 
       // Prepare send_data with padding
       std::vector<unsigned char> send_data((proc_local_height + 2) * (width_ + 2), 0);
@@ -66,6 +65,12 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
                   send_data.begin() + (proc_local_height + 1) * (width_ + 2) + 1);
       }
 
+      // Set padding columns to replicate edge columns
+      for (int row = 0; row < proc_local_height + 2; ++row) {
+        send_data[row * (width_ + 2)] = send_data[row * (width_ + 2) + 1];                    // left padding
+        send_data[row * (width_ + 2) + width_ + 1] = send_data[row * (width_ + 2) + width_];  // right padding
+      }
+
       if (proc == 0) {
         // Handle rank 0's data locally
         std::copy(send_data.begin(), send_data.end(), local_input_.begin());
@@ -81,6 +86,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
 
   return true;
 }
+
 bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::validation() {
   internal_order_test();
 
