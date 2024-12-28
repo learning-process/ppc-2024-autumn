@@ -51,15 +51,6 @@ struct TMatrix {
 
   void read(const T* src) { data.assign(src, src + n * n); }
 
-  friend std::ostream& operator<<(std::ostream& os, const TMatrix& m) {
-    os << "M(" << m.n << "," << m.n << "): [";
-    for (const auto& e : m.data) {
-      os << e << ' ';
-    }
-    os << ']';
-    return os;
-  }
-
   static TMatrix create(size_t n, std::initializer_list<T> intl = {}) {
     TMatrix mat = {n, std::vector<T>(intl)};
     mat.data.resize(n * n);
