@@ -34,17 +34,13 @@ void template_test(const std::vector<int>& input_data) {
 
   auto taskSequential = std::make_shared<TestTaskSequential>(taskData);
 
-  if (taskSequential->validation()) {
-    if (taskSequential->pre_processing()) {
-      taskSequential->run();
-      taskSequential->post_processing();
-    } else {
-      return;
-    }
+  ASSERT_TRUE(taskSequential->validation());
+  taskSequential->pre_processing();
+  taskSequential->run();
+  taskSequential->post_processing();
 
-    std::sort(data.begin(), data.end());
-    EXPECT_EQ(data, result_data);
-  }
+  std::sort(data.begin(), data.end());
+  EXPECT_EQ(data, result_data);
 }
 
 }  // namespace petrov_a_Shell_sort_seq

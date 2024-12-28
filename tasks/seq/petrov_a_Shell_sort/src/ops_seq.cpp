@@ -18,7 +18,7 @@ bool TestTaskSequential::validation() {
   if (taskData->inputs.empty() || taskData->inputs_count.empty()) {
     return false;
   }
-  if (!taskData->outputs.empty() && !taskData->outputs_count.empty()) {
+  if (taskData->outputs.empty() || taskData->outputs_count.empty()) {
     return false;
   }
 
