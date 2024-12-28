@@ -76,7 +76,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, cant_mult_matrix_wrong_sizes) {
   MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0 && world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
     delete[] result;
@@ -118,7 +118,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_invalid_siz
   MPIMatrixMultiplicationTask testMpiTaskParallel(taskDataPar);
   ASSERT_EQ(testMpiTaskParallel.validation(), false);
 
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0 && world.size() < 5 || world.rank() >= 4) {
     delete[] A;
     delete[] B;
     delete[] result;
@@ -193,7 +193,6 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, initialization_with_empty_inputs)
     taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t *>(global_res.data()));
     taskDataPar->outputs_count.emplace_back(global_res.size());
   }
-
 }
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_partial_inputs) {
@@ -220,7 +219,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_partial_inputs)
   }
 
   auto taskParallel = std::make_shared<MPIMatrixMultiplicationTask>(taskDataPar);
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0 && world.size() < 5 || world.rank() >= 4) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
     EXPECT_TRUE(taskParallel->validation());
@@ -255,7 +254,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_mismatched_dime
   }
 
   auto taskParallel = std::make_shared<MPIMatrixMultiplicationTask>(taskDataPar);
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0 && world.size() < 5 || world.rank() >= 4) {
     EXPECT_FALSE(taskParallel->validation());
   } else {
     EXPECT_TRUE(taskParallel->validation());
@@ -309,7 +308,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_multiplication_correct_res
   ASSERT_NO_THROW(testMpiTaskParallel.run());
   ASSERT_NO_THROW(testMpiTaskParallel.post_processing());
 
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0 && world.size() < 5 || world.rank() >= 4) {
     if (world.rank() == 0) {
       for (int i = 0; i < rows_A * cols_B; ++i) {
         ASSERT_NEAR(expected_result[i], result[i], 1e-6) << "Mismatch at index " << i;
@@ -365,7 +364,7 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, matrix_large_sizes) {
   ASSERT_NO_THROW(testMpiTaskParallel.run());
   ASSERT_NO_THROW(testMpiTaskParallel.post_processing());
 
-  if (world.size() < 5 || world.rank() >= 4) {
+  if (world.rank() == 0 && world.size() < 5 || world.rank() >= 4) {
     if (world.rank() == 0) {
       for (int i = 0; i < rows_A * cols_B; ++i) {
         ASSERT_NEAR(expected_result[i], result[i], 1e-6) << "Mismatch at index " << i;

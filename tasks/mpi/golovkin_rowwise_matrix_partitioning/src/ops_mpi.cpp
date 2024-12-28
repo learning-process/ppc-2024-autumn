@@ -123,12 +123,17 @@ bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::run() {
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::post_processing() {
   internal_order_test();
-  if (world.size() < 5 && world.rank() >= 4) {
+
+  int rank;
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  if (rank == 0) {
     if (result != nullptr) {
       std::memcpy(reinterpret_cast<double*>(taskData->outputs[0]), result, rows_A * cols_B * sizeof(double));
     } else {
       return false;
     }
   }
+
   return true;
 }
