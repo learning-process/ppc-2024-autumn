@@ -24,21 +24,27 @@ class TestTaskSequential : public ppc::core::Task {
   std::vector<int32_t> result_;
 };
 
-class TestTaskParallel : public ppc::core::Task {
+class TestTaskParallel {
+ private:
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> taskData;
+
+  uint32_t delta_;
+  uint32_t ext_;
+  std::vector<std::vector<int32_t>> matrix_, local_matrix_;
+  std::vector<int32_t> vector_, result_, local_result_;
+  std::vector<int32_t> flat_matrix_;
+
  public:
-  explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
-  bool post_processing() override;
+  explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData) : taskData(std::move(taskData)) {}
+
+  bool validation();
+  bool pre_processing();
+  bool run();
+  bool post_processing();
 
  private:
-  std::vector<std::vector<int32_t>> matrix_, local_matrix_;
-  std::vector<int32_t> vector_, local_result_;
-  std::vector<int32_t> result_;
-  uint32_t delta_, ext_;
-
-  boost::mpi::communicator world;
+  void internal_order_test() {}
 };
 
 }  // namespace malyshev_lent_horizontal

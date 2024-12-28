@@ -65,6 +65,24 @@ bool malyshev_lent_horizontal::TestTaskSequential::post_processing() {
   return true;
 }
 
+bool malyshev_lent_horizontal::TestTaskParallel::validation() {
+  internal_order_test();
+
+  uint32_t rows = taskData->inputs_count[0];
+  uint32_t cols = taskData->inputs_count[1];
+  uint32_t vector_size = taskData->inputs_count[2];
+
+  if (taskData->inputs.size() != rows + 1 || taskData->inputs_count.size() < 3) {
+    return false;
+  }
+
+  if (cols != vector_size) {
+    return false;
+  }
+
+  return taskData->outputs_count[0] == rows;
+}
+
 bool malyshev_lent_horizontal::TestTaskParallel::pre_processing() {
   internal_order_test();
 
@@ -92,24 +110,6 @@ bool malyshev_lent_horizontal::TestTaskParallel::pre_processing() {
   return true;
 }
 
-bool malyshev_lent_horizontal::TestTaskParallel::validation() {
-  internal_order_test();
-
-  uint32_t rows = taskData->inputs_count[0];
-  uint32_t cols = taskData->inputs_count[1];
-  uint32_t vector_size = taskData->inputs_count[1];
-
-  if (taskData->inputs.size() != rows + 1 || taskData->inputs_count.size() < 3) {
-    return false;
-  }
-
-  if (cols != vector_size) {
-    return false;
-  }
-
-  return taskData->outputs_count[0] == rows;
-}
-
 bool malyshev_lent_horizontal::TestTaskParallel::run() {
   internal_order_test();
 
@@ -124,13 +124,13 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
     }
   }
 
-  std::vector<int> sendcounts(world.size(), delta_ * vector_.size());
-  for (int i = 0; i < ext_; ++i) {
+  std::vector<int32_t> sendcounts(world.size(), delta_ * vector_.size());
+  for (uint32_t i = 0; i < ext_; ++i) {
     sendcounts[world.size() - i - 1] += vector_.size();
   }
 
-  std::vector<int> displs(world.size(), 0);
-  for (int i = 1; i < displs.size(); ++i) {
+  std::vector<int32_t> displs(world.size(), 0);
+  for (size_t i = 1; i < displs.size(); ++i) {
     displs[i] = displs[i - 1] + sendcounts[i - 1];
   }
 
@@ -153,7 +153,7 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
     }
   }
 
-  std::vector<int> recvcounts = sendcounts;
+  std::vector<int32_t> recvcounts = sendcounts;
   gatherv(world, local_result_, result_.data(), recvcounts, displs, 0);
 
   return true;
