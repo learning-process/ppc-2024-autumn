@@ -219,11 +219,8 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_partial_inputs)
   }
 
   auto taskParallel = std::make_shared<MPIMatrixMultiplicationTask>(taskDataPar);
-  if ((world.rank() == 0 && world.size() < 5) || (world.rank() >= 4)) {
-    EXPECT_FALSE(taskParallel->validation());
-  } else {
-    EXPECT_TRUE(taskParallel->validation());
-  }
+
+  EXPECT_FALSE(taskParallel->validation());
 }
 
 TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_mismatched_dimensions) {

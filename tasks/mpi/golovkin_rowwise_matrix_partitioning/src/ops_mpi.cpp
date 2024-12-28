@@ -7,18 +7,21 @@
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::validation() {
   internal_order_test();
 
-  bool is_valid = true;
+  bool local_valid = true;
   if (world.size() < 5 || world.rank() >= 4) {
     rows_A = taskData->inputs_count[0];
     cols_A = taskData->inputs_count[1];
     rows_B = taskData->inputs_count[2];
     cols_B = taskData->inputs_count[3];
     if (cols_A != rows_B || rows_A <= 0 || cols_A <= 0 || rows_B <= 0 || cols_B <= 0) {
-      is_valid = false;
+      local_valid = false;
     }
   }
-  MPI_Bcast(&is_valid, 1, MPI_C_BOOL, 0, MPI_COMM_WORLD);
-  return is_valid;
+
+  bool global_valid;
+  MPI_Allreduce(&local_valid, &global_valid, 1, MPI_C_BOOL, MPI_LAND, MPI_COMM_WORLD);
+
+  return global_valid;
 }
 
 bool golovkin_rowwise_matrix_partitioning::MPIMatrixMultiplicationTask::pre_processing() {
