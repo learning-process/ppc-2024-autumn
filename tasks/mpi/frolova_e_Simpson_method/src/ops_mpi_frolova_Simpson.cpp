@@ -217,6 +217,7 @@ bool frolova_e_Simpson_method_mpi::SimpsonmethodParallel::run() {
     }
   }
   broadcast(world, localdivisions, 0);
+  broadcast(world, limits, 0);
 
   if (world.rank() == 0) {
     size_t size = world.size();
