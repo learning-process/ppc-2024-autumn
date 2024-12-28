@@ -26,7 +26,7 @@ std::vector<int> generate_random_vector(size_t n, int min_val = -1000, int max_v
 TEST(korablev_v_quick_sort_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const size_t vector_size = 10000;
+  const size_t vector_size = 999999;
   auto random_vector = korablev_v_quick_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
   std::vector<size_t> in_size(1, vector_size);
@@ -67,7 +67,7 @@ TEST(korablev_v_quick_sort_mpi, test_pipeline_run) {
 TEST(korablev_v_quick_sort_mpi, test_task_run) {
   boost::mpi::communicator world;
 
-  const size_t vector_size = 10000;
+  const size_t vector_size = 999999;
   auto random_vector = korablev_v_quick_sort_simple_merge_mpi::generate_random_vector(vector_size);
 
   std::vector<size_t> in_size(1, vector_size);
