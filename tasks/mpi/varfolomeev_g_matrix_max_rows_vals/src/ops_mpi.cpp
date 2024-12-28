@@ -86,20 +86,8 @@ bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::validation() {
 bool varfolomeev_g_matrix_max_rows_vals_mpi::MaxInRowsParallel::run() {
   internal_order_test();
   if (size_m == 0 || size_n == 0) {
-    return true;  // do nothing for an empty matrix
-  }
-  if (world.size() == 1) {
-    if (size_m == 0 || size_n == 0) {
-      res_vec = std::vector<int>(0);  // empty res
-      return true;
-    }
-    // If there is only one process, we run a sequential version.
-    std::vector<int> local_maxes(size_m);
-    for (int i = 0; i < size_m; ++i) {
-      local_maxes[i] = *std::max_element(mtr.begin() + i * size_n, mtr.begin() + (i + 1) * size_n);
-    }
-    res_vec = local_maxes;
-    return true;
+    res_vec = std::vector<int>(0);  // empty res
+    return true;                    // do nothing for an empty matrix
   }
 
   if (world.rank() == 0) {  // root process
