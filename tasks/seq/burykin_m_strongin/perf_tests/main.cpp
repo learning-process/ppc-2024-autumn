@@ -7,9 +7,9 @@
 
 TEST(Burykin_M_Strongin_Perf, Strongin_Method_Pipeline_Run) {
   // Создаем данные
-  double x0 = -400.0;
-  double x1 = 410.0;
-  double epsilon = 0.001;
+  double x0 = 0.0;
+  double x1 = 10000000.0;
+  double epsilon = 0.000000001;
   std::vector<double> out(1, 0.0);
 
   // Создаем TaskData
@@ -57,9 +57,9 @@ TEST(Burykin_M_Strongin_Perf, Strongin_Method_Pipeline_Run) {
 
 TEST(Burykin_M_Strongin_Perf, Strongin_Method_Task_Run) {
   // Создаем данные
-  double x0 = -400.0;
-  double x1 = 410.0;
-  double epsilon = 0.001;
+  double x0 = 0.0;
+  double x1 = 10000000.0;
+  double epsilon = 0.000000001;
   std::vector<double> out(1, 0.0);
 
   // Создаем TaskData

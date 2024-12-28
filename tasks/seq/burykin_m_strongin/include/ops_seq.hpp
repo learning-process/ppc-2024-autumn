@@ -11,8 +11,6 @@
 
 namespace burykin_m_strongin {
 
-std::vector<int> getRandomVector(int sz);
-
 class StronginSequential : public ppc::core::Task {
  public:
   explicit StronginSequential(std::shared_ptr<ppc::core::TaskData> taskData_, std::function<double(double)> f_)
