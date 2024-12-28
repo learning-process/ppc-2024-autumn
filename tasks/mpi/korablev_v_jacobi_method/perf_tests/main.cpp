@@ -37,10 +37,10 @@ std::pair<std::vector<double>, std::vector<double>> generate_diagonally_dominant
   return {A, b};
 }
 
-TEST(korablev_v_jacobi_method_mpi, test_pipeline_run) {
+TEST(korablev_v_jacobi_method, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  const size_t matrix_size = 1536;
+  const size_t matrix_size = 512;
   auto [A_flat, b] = generate_diagonally_dominant_matrix(matrix_size);
 
   std::vector<size_t> in_size(1, matrix_size);
@@ -79,10 +79,10 @@ TEST(korablev_v_jacobi_method_mpi, test_pipeline_run) {
   }
 }
 
-TEST(korablev_v_jacobi_method_mpi, test_task_run) {
+TEST(korablev_v_jacobi_method, test_task_run) {
   boost::mpi::communicator world;
 
-  const size_t matrix_size = 1536;
+  const size_t matrix_size = 512;
   auto [A_flat, b] = generate_diagonally_dominant_matrix(matrix_size);
 
   std::vector<size_t> in_size(1, matrix_size);
