@@ -126,6 +126,7 @@ std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int widt
   }
 
   std::vector<std::vector<Point>> result;
+  result.resize(components.size());
   for (const auto& [label, points] : components) {
     result.emplace_back(points);
   }
