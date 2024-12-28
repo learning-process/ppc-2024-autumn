@@ -2,8 +2,22 @@
 
 #include <boost/mpi/communicator.hpp>
 #include <boost/mpi/environment.hpp>
+#include <random>
 
 #include "mpi/Sadikov_I_Gauss_Linear_Filtration/include/ops_mpi.h"
+
+namespace Sadikov_I_Gauss_Linear_Filtration {
+std::vector<Point<double>> getRandomVector(int sz) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  std::vector<Point<double>> vec(sz);
+  for (int i = 0; i < sz; i++) {
+    vec[i] =
+        Point(static_cast<double>(gen() % 255), static_cast<double>(gen() % 255), static_cast<double>(gen() % 255));
+  }
+  return vec;
+}
+}  // namespace Sadikov_I_Gauss_Linear_Filtration
 
 TEST(Sadikov_I_Gauss_Linear_Filtration, check_validation) {
   boost::mpi::communicator world;
@@ -293,4 +307,87 @@ TEST(Sadikov_I_Gauss_Linear_Filtration, check_empty_image) {
   task.pre_processing();
   task.run();
   task.post_processing();
+}
+
+TEST(Sadikov_I_Gauss_Linear_Filtration, check_random_image) {
+  boost::mpi::communicator world;
+  std::vector<Point<double>> in = Sadikov_I_Gauss_Linear_Filtration::getRandomVector(64);
+  std::vector<int> in_index{8, 8};
+  std::vector<Point<double>> out(64);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskData->outputs_count.emplace_back(out.size());
+  }
+  Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  if (world.rank() == 0) {
+    std::vector<Point<double>> outSeq(64);
+    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskDataSeq->inputs_count.emplace_back(in_index[0]);
+    taskDataSeq->inputs_count.emplace_back(in_index[1]);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outSeq.data()));
+    taskDataSeq->outputs_count.emplace_back(out.size());
+    Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationSeq taskSeq(taskDataSeq);
+    taskSeq.validation();
+    taskSeq.pre_processing();
+    taskSeq.run();
+    taskSeq.post_processing();
+    bool flag = true;
+    std::cout << std::endl;
+    for (size_t i = 0; i < out.size(); ++i) {
+      if (out[i] != outSeq[i]) {
+        flag = false;
+      }
+    }
+    ASSERT_EQ(flag, true);
+  }
+}
+
+TEST(Sadikov_I_Gauss_Linear_Filtration, check_random_image2) {
+  boost::mpi::communicator world;
+  std::vector<Point<double>> in = Sadikov_I_Gauss_Linear_Filtration::getRandomVector(99);
+  std::vector<int> in_index{9, 11};
+  std::vector<Point<double>> out(99);
+  auto taskData = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskData->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskData->inputs_count.emplace_back(in_index[0]);
+    taskData->inputs_count.emplace_back(in_index[1]);
+    taskData->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+    taskData->outputs_count.emplace_back(out.size());
+  }
+  Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI task(taskData);
+  ASSERT_EQ(task.validation(), true);
+  task.pre_processing();
+  task.run();
+  task.post_processing();
+  if (world.rank() == 0) {
+    std::vector<Point<double>> outSeq(99);
+    auto taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+    taskDataSeq->inputs_count.emplace_back(in_index[0]);
+    taskDataSeq->inputs_count.emplace_back(in_index[1]);
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(outSeq.data()));
+    taskDataSeq->outputs_count.emplace_back(out.size());
+    Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationSeq taskSeq(taskDataSeq);
+    taskSeq.validation();
+    taskSeq.pre_processing();
+    taskSeq.run();
+    taskSeq.post_processing();
+    bool flag = true;
+    for (size_t i = 0; i < out.size(); ++i) {
+      if (out[i] != outSeq[i]) {
+        flag = false;
+      }
+    }
+    ASSERT_EQ(flag, true);
+  }
 }

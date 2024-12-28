@@ -131,7 +131,7 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::pre_processing() {
           m_sizes[i] = m_minColumnsCount * m_rowsCount;
           m_columns -= m_minColumnsCount;
           if (m_columns < m_minColumnsCount) {
-            m_sizes.back() += m_columns * m_rowsCount;
+            m_sizes[i] += m_columns * m_rowsCount;
             break;
           }
         }
@@ -139,8 +139,8 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::pre_processing() {
     }
     m_gaussMatrix.reserve(9);
     m_outMatrix = std::vector<Point<double>>(m_columnsCount * m_rowsCount);
-    CalculateGaussMatrix();
   }
+  CalculateGaussMatrix();
   return true;
 }
 
@@ -150,8 +150,6 @@ bool Sadikov_I_Gauss_Linear_Filtration::LinearFiltrationMPI::run() {
   broadcast(world, m_columnsCount, 0);
   broadcast(world, m_rowsCount, 0);
   broadcast(world, m_pixelsMatrix, 0);
-  broadcast(world, m_gaussMatrix, 0);
-  // restart tests comment
   if (world.rank() < static_cast<int>(m_sizes.size())) {
     m_intermediateRes.resize(m_sizes[world.rank()]);
     int position = 0;
