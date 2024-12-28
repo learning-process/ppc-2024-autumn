@@ -27,8 +27,8 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   int extra = height_ % world.size();
   int local_height = base_height + (world.rank() < extra ? 1 : 0);
 
-  // Resize local_input_ with padding (top and bottom)
-  local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
+  // Resize local_input_ with padding (top, bottom, left, right)
+  local_input_.resize((local_height + 2) * (width_ + 2), 0);  // +2 for padding rows and columns
 
   if (world.rank() == 0) {
     // Prepare and send data to each process
@@ -38,29 +38,32 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
       int end_row = start_row + proc_local_height;
 
       // Prepare send_data with padding
-      std::vector<unsigned char> send_data((proc_local_height + 2) * width_, 0);
+      std::vector<unsigned char> send_data((proc_local_height + 2) * (width_ + 2), 0);
 
       // Top padding: previous row or first row
       if (proc == 0) {
-        std::copy(input_image_.begin(), input_image_.begin() + width_, send_data.begin());
+        std::copy(input_image_.begin(), input_image_.begin() + width_, send_data.begin() + width_ + 1);
       } else {
         int prev_end_row = base_height * proc + std::min(proc, extra);
         std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
-                  send_data.begin());
+                  send_data.begin() + width_ + 1);
       }
 
       // Main data
-      std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
-                send_data.begin() + width_);
+      for (int y = 0; y < proc_local_height; ++y) {
+        std::copy(input_image_.begin() + (start_row + y) * width_,
+                  input_image_.begin() + (start_row + y) * width_ + width_,
+                  send_data.begin() + (y + 1) * (width_ + 2) + 1);
+      }
 
       // Bottom padding: next row or last row
       if (proc + 1 < world.size()) {
         int next_start_row = base_height * (proc + 1) + std::min(proc + 1, extra);
         std::copy(input_image_.begin() + next_start_row * width_, input_image_.begin() + (next_start_row + 1) * width_,
-                  send_data.begin() + (proc_local_height + 1) * width_);
+                  send_data.begin() + (proc_local_height + 1) * (width_ + 2) + 1);
       } else {
         std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                  send_data.begin() + (proc_local_height + 1) * width_);
+                  send_data.begin() + (proc_local_height + 1) * (width_ + 2) + 1);
       }
 
       if (proc == 0) {
