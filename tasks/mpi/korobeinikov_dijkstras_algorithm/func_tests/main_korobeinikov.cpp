@@ -19,7 +19,27 @@ std::vector<int> getRandomVector(int sz, int size_cols) {
   return vec;
 }
 
+void getRandomGraph(int sz, int count_edges, std::vector<int> &val, std::vector<int> &col, std::vector<int> &ri) {
+  std::random_device dev;
+  std::mt19937 gen(dev());
+  for (int i = 0; i < count_edges; i++) {
+    val[i] = gen() % 10;
+    col[i] = gen() % sz;
+  }
+  ri[0] = 0;
+  ri[sz] = count_edges;
+  std::vector<int> tmp(sz - 1);
+  for (int i = 0; i < sz - 1; i++) {
+    tmp[i] = col[i] = gen() % count_edges;
+  }
+  std::sort(tmp.begin(), tmp.end());
+  for (int i = 1; i < sz; i++) {
+    ri[i] = tmp[i - 1];
+  }
+}
+
 }  // namespace korobeinikov_a_test_task_mpi_lab_03
+
 
 TEST(korobeinikov_dijkstras_algorithm_mpi, Test_1_const_numbers) {
   boost::mpi::communicator world;
@@ -100,12 +120,12 @@ TEST(korobeinikov_dijkstras_algorithm_mpi, Test_1_const_numbers) {
 TEST(korobeinikov_dijkstras_algorithm_mpi, Test_2_random_numbers) {
   boost::mpi::communicator world;
   // Create data
-  std::vector<int> values(7);
-  std::vector<int> col(7);
-  std::vector<int> RowIndex = {0, 3, 4, 5, 7, 7};
-
   int size = 5;
   int sv = 0;
+
+  std::vector<int> values(7);
+  std::vector<int> col(7);
+  std::vector<int> RowIndex(size + 1);
 
   std::vector<int> out(size, 0);
 
@@ -113,8 +133,7 @@ TEST(korobeinikov_dijkstras_algorithm_mpi, Test_2_random_numbers) {
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    values = korobeinikov_a_test_task_mpi_lab_03::getRandomVector(7, size);
-    col = korobeinikov_a_test_task_mpi_lab_03::getRandomVector(7, size);
+    korobeinikov_a_test_task_mpi_lab_03::getRandomGraph(5, 7, values, col, RowIndex);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(values.data()));
     taskDataPar->inputs_count.emplace_back(values.size());
