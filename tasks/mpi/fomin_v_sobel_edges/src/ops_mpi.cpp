@@ -18,13 +18,6 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
               reinterpret_cast<unsigned char*>(taskData->inputs[0]) + width_ * height_, input_image_.begin());
   }
 
-  int local_height;
-  if (world.rank() == 0) {
-    int base_height = height_ / world.size();
-    int extra = height_ % world.size();
-    local_height = base_height + (world.rank() < extra ? 1 : 0);
-  }
-
   // Broadcast width and height to all processes
   MPI_Bcast(&width_, 1, MPI_INT, 0, world);
   MPI_Bcast(&height_, 1, MPI_INT, 0, world);
@@ -32,9 +25,9 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   // Calculate local_height for each process
   int base_height = height_ / world.size();
   int extra = height_ % world.size();
-  local_height = base_height + (world.rank() < extra ? 1 : 0);
+  int local_height = base_height + (world.rank() < extra ? 1 : 0);
 
-  // Resize local_input_ with padding
+  // Resize local_input_ with padding (top and bottom)
   local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
 
   if (world.rank() == 0) {
@@ -44,44 +37,36 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
       int start_row = base_height * proc + std::min(proc, extra);
       int end_row = start_row + proc_local_height;
 
+      // Prepare send_data with padding
       std::vector<unsigned char> send_data((proc_local_height + 2) * width_, 0);
+
+      // Top padding: previous row or first row
+      if (proc == 0) {
+        std::copy(input_image_.begin(), input_image_.begin() + width_, send_data.begin());
+      } else {
+        int prev_end_row = base_height * proc + std::min(proc, extra);
+        std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
+                  send_data.begin());
+      }
+
+      // Main data
+      std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
+                send_data.begin() + width_);
+
+      // Bottom padding: next row or last row
+      if (proc + 1 < world.size()) {
+        int next_start_row = base_height * (proc + 1) + std::min(proc + 1, extra);
+        std::copy(input_image_.begin() + next_start_row * width_, input_image_.begin() + (next_start_row + 1) * width_,
+                  send_data.begin() + (proc_local_height + 1) * width_);
+      } else {
+        std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
+                  send_data.begin() + (proc_local_height + 1) * width_);
+      }
 
       if (proc == 0) {
         // Handle rank 0's data locally
-        // Top padding is the first row
-        std::copy(input_image_.begin(), input_image_.begin() + width_, local_input_.begin());
-        // Main data
-        std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
-                  local_input_.begin() + width_);
-        // Bottom padding is the next block's first row
-        if (proc + 1 < world.size()) {
-          int next_start_row = base_height * (proc + 1) + std::min(proc + 1, extra);
-          std::copy(input_image_.begin() + next_start_row * width_,
-                    input_image_.begin() + (next_start_row + 1) * width_,
-                    local_input_.begin() + (proc_local_height + 1) * width_);
-        } else {
-          std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                    local_input_.begin() + (proc_local_height + 1) * width_);
-        }
+        std::copy(send_data.begin(), send_data.end(), local_input_.begin());
       } else {
-        // Prepare send_data for other processes
-        int prev_end_row = base_height * proc + std::min(proc, extra);
-        // Top padding is the previous block's last row
-        std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
-                  send_data.begin());
-        // Main data
-        std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
-                  send_data.begin() + width_);
-        // Bottom padding is the next block's first row or the last row
-        if (proc + 1 < world.size()) {
-          int next_start_row = base_height * (proc + 1) + std::min(proc + 1, extra);
-          std::copy(input_image_.begin() + next_start_row * width_,
-                    input_image_.begin() + (next_start_row + 1) * width_,
-                    send_data.begin() + (proc_local_height + 1) * width_);
-        } else {
-          std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                     send_data.begin() + (proc_local_height + 1) * width_);
-        }
         // Send data to process
         world.send(proc, 0, send_data.data(), send_data.size());
       }
