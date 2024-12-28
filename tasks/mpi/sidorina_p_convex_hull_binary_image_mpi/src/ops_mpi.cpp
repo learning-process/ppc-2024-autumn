@@ -115,23 +115,21 @@ std::vector<std::vector<Point>> labeling(const std::vector<int>& image, int widt
   mark_contours(label_image, width, height, 1);
   mark_contours(label_image, width, height, 2);
 
-  std::unordered_map<int, std::list<Point>> components;
+  std::unordered_map<int, std::vector<Point>> components;
 
   for (int i = 0; i < height; i++) {
     for (int j = 0; j < width; j++) {
       if (image[i * width + j] == 0) continue;
-
-      int component_label = image[i * width + j];
-
-      auto& comp = components[component_label];
-      comp.push_back({j, i});
+      int label = label_image[i * width + j];
+      components[label].push_back({j, i});
     }
   }
+
   std::vector<std::vector<Point>> result;
-  result.reserve(components.size());
   for (const auto& [label, points] : components) {
-    result.emplace_back(points.begin(), points.end());
+    result.emplace_back(points);
   }
+
   return result;
 }
 
@@ -219,19 +217,19 @@ bool ConvexHullBinImgMpi::pre_processing() {
 bool ConvexHullBinImgMpi::run() {
   internal_order_test();
 
-  std::vector<std::vector<Point>> local_components;
-
   int c_size = components.size();
   int w_size = world.size();
   int count = c_size / w_size;
   int rem = c_size % w_size;
 
+  std::vector<std::vector<Point>> local_components;
+
   if (world.rank() == 0) {
     int tmp = 0;
-    for (int i = 1; i < w_size; i++) {
+    for (int i = 1; i < world.size(); i++) {
       int c_send = count + count_rem(rem, i);
       world.send(i, 0, &c_send, 1);
-      for (int j = 0; j < c_send; j++) world.send(j, 1, conv_vec(components[tmp + j]));
+      for (int j = 0; j < c_send; j++) world.send(i, 1, conv_vec(components[tmp + j]));
       tmp += c_send;
     }
 
@@ -249,7 +247,9 @@ bool ConvexHullBinImgMpi::run() {
   }
 
   std::vector<Point> h_local;
-  for (const auto& component : local_components) {
+  const size_t num_components = local_components.size();
+  for (size_t i = 0; i < num_components; i++) {
+    const auto& component = local_components[i];
     auto hull = jarvis(component);
     std::copy(hull.begin(), hull.end(), std::back_inserter(h_local));
   }
@@ -257,14 +257,15 @@ bool ConvexHullBinImgMpi::run() {
   if (world.rank() == 0) {
     std::vector<Point> h_merged;
     h_merged.insert(h_merged.end(), h_local.begin(), h_local.end());
-    for (int proc = 1; proc < world.size(); ++proc) {
+    for (int i = 1; i < world.size(); i++) {
       std::vector<int> h_ints;
-      world.recv(proc, 2, h_ints);
+      world.recv(i, 2, h_ints);
       auto hull = conv_point(h_ints);
-      h_merged.insert(h_merged.end(), hull.begin(), hull.end());
+      std::copy(hull.begin(), hull.end(), std::back_inserter(h_merged));
     }
 
     image = bin_img(jarvis(h_merged), width, height);
+
   } else {
     std::vector<int> h_i_local = conv_vec(h_local);
     world.send(0, 2, h_i_local);
