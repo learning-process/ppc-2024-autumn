@@ -13,7 +13,7 @@ TEST(petrov_a_Shell_sort_mpi, test_pipeline_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  int vector_size = 10000;
+  int vector_size = 50000000;
   std::vector<int> data(vector_size);
   std::vector<int> result_data;
 
@@ -57,7 +57,7 @@ TEST(petrov_a_Shell_sort_mpi, test_task_run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
-  int vector_size = 10000;
+  int vector_size = 50000000;
   std::vector<int> data(vector_size);
   std::vector<int> result_data;
 
