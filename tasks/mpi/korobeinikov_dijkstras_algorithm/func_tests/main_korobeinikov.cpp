@@ -40,7 +40,6 @@ void getRandomGraph(int sz, int count_edges, std::vector<int> &val, std::vector<
 
 }  // namespace korobeinikov_a_test_task_mpi_lab_03
 
-
 TEST(korobeinikov_dijkstras_algorithm_mpi, Test_1_const_numbers) {
   boost::mpi::communicator world;
   // Create data
