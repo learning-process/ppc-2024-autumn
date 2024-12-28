@@ -105,3 +105,22 @@ TEST(pikarychev_i_gauss3_vertical_mpi, PrewittY_2x3) { g3x3t(2, 3, {-1, -1, -1, 
 TEST(pikarychev_i_gauss3_vertical_mpi, PrewittY_3x2) { g3x3t(3, 2, {-1, -1, -1, 0, 0, 0, 1, 1, 1}); }
 TEST(pikarychev_i_gauss3_vertical_mpi, PrewittY_7x41) { g3x3t(7, 41, {-1, -1, -1, 0, 0, 0, 1, 1, 1}); }
 TEST(pikarychev_i_gauss3_vertical_mpi, PrewittY_63x31) { g3x3t(63, 31, {-1, -1, -1, 0, 0, 0, 1, 1, 1}); }
+
+TEST(pikarychev_i_gauss3_vertical_mpi, Gauss_1x1) {
+  g3x3t(1, 1, {1. / 16., 1. / 8., 1. / 16., 1. / 8., 1. / 4., 1. / 8., 1. / 16., 1. / 8., 1. / 16.});
+}
+TEST(pikarychev_i_gauss3_vertical_mpi, Gauss_2x2) {
+  g3x3t(2, 2, {1. / 16., 1. / 8., 1. / 16., 1. / 8., 1. / 4., 1. / 8., 1. / 16., 1. / 8., 1. / 16.});
+}
+TEST(pikarychev_i_gauss3_vertical_mpi, Gauss_2x3) {
+  g3x3t(2, 3, {1. / 16., 1. / 8., 1. / 16., 1. / 8., 1. / 4., 1. / 8., 1. / 16., 1. / 8., 1. / 16.});
+}
+TEST(pikarychev_i_gauss3_vertical_mpi, Gauss_3x2) {
+  g3x3t(3, 2, {1. / 16., 1. / 8., 1. / 16., 1. / 8., 1. / 4., 1. / 8., 1. / 16., 1. / 8., 1. / 16.});
+}
+TEST(pikarychev_i_gauss3_vertical_mpi, Gauss_7x41) {
+  g3x3t(7, 41, {1. / 16., 1. / 8., 1. / 16., 1. / 8., 1. / 4., 1. / 8., 1. / 16., 1. / 8., 1. / 16.});
+}
+TEST(pikarychev_i_gauss3_vertical_mpi, Gauss_63x31) {
+  g3x3t(63, 31, {1. / 16., 1. / 8., 1. / 16., 1. / 8., 1. / 4., 1. / 8., 1. / 16., 1. / 8., 1. / 16.});
+}
