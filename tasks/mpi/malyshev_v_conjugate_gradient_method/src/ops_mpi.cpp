@@ -111,8 +111,10 @@ bool malyshev_conjugate_gradient::TestTaskSequential::post_processing() {
 
 bool malyshev_conjugate_gradient::TestTaskParallel::pre_processing() {
   double det = 1.0;
-  for (uint32_t i = 0; i < vector_.size(); ++i) {
-    det *= matrix_[i * vector_.size() + i];
+  uint32_t size = vector_.size();
+
+  for (uint32_t i = 0; i < size; ++i) {
+    det *= matrix_[i * size + i];
   }
 
   if (std::abs(det) < 1e-12) {
@@ -163,7 +165,6 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
   for (iteration = 0; iteration < maxIterations; ++iteration) {
     if (world.rank() == 0) {
-      // Вычисление Ap
       for (uint32_t j = 0; j < size; ++j) {
         Ap[j] = 0.0;
         for (uint32_t k = 0; k < size; ++k) {
