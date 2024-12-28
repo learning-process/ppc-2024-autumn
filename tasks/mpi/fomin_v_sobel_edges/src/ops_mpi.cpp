@@ -22,21 +22,23 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   if (world.rank() == 0) {
     int base_height = height_ / world.size();
     int extra = height_ % world.size();
-    if (world.rank() < extra) {
-      local_height = base_height + 1;
-    } else {
-      local_height = base_height;
-    }
+    local_height = base_height + (world.rank() < extra ? 1 : 0);
   }
+
+  // Broadcast width and height to all processes
   MPI_Bcast(&width_, 1, MPI_INT, 0, world);
   MPI_Bcast(&height_, 1, MPI_INT, 0, world);
-  MPI_Bcast(&local_height, 1, MPI_INT, 0, world);
 
+  // Calculate local_height for each process
+  int base_height = height_ / world.size();
+  int extra = height_ % world.size();
+  local_height = base_height + (world.rank() < extra ? 1 : 0);
+
+  // Resize local_input_ with padding
   local_input_.resize((local_height + 2) * width_, 0);  // +2 for boundary rows
 
   if (world.rank() == 0) {
-    int base_height = height_ / world.size();
-    int extra = height_ % world.size();
+    // Prepare and send data to each process
     for (int proc = 0; proc < world.size(); ++proc) {
       int proc_local_height = base_height + (proc < extra ? 1 : 0);
       int start_row = base_height * proc + std::min(proc, extra);
@@ -62,36 +64,30 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
                     local_input_.begin() + (proc_local_height + 1) * width_);
         }
       } else {
-        // Send data to other processes
-        if (proc == world.size() - 1) {
-          // Top padding is the previous block's last row
-          int prev_end_row = base_height * proc + std::min(proc, extra);
-          std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
-                    send_data.begin());
-          // Main data
-          std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
-                    send_data.begin() + width_);
-          // Bottom padding is the last row
-          std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                    send_data.begin() + (proc_local_height + 1) * width_);
-        } else {
-          // Top padding is the previous block's last row
-          int prev_end_row = base_height * proc + std::min(proc, extra);
-          std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
-                    send_data.begin());
-          // Main data
-          std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
-                    send_data.begin() + width_);
-          // Bottom padding is the next block's first row
+        // Prepare send_data for other processes
+        int prev_end_row = base_height * proc + std::min(proc, extra);
+        // Top padding is the previous block's last row
+        std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
+                  send_data.begin());
+        // Main data
+        std::copy(input_image_.begin() + start_row * width_, input_image_.begin() + end_row * width_,
+                  send_data.begin() + width_);
+        // Bottom padding is the next block's first row or the last row
+        if (proc + 1 < world.size()) {
           int next_start_row = base_height * (proc + 1) + std::min(proc + 1, extra);
           std::copy(input_image_.begin() + next_start_row * width_,
                     input_image_.begin() + (next_start_row + 1) * width_,
                     send_data.begin() + (proc_local_height + 1) * width_);
+        } else {
+          std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
+                    send_data.begin() + (proc_local_height + 1) * width_);
         }
+        // Send data to process
         world.send(proc, 0, send_data.data(), send_data.size());
       }
     }
   } else {
+    // Receive data from rank 0
     world.recv(0, 0, local_input_.data(), local_input_.size());
   }
 
