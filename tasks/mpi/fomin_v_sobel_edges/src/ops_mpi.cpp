@@ -145,11 +145,13 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
               displacements.data(), MPI_UNSIGNED_CHAR, 0, world);
 
   if (world.rank() == 0) {
+    // Set first and last rows to 0
+    std::fill(gathered_output.begin(), gathered_output.begin() + width_, 0);
+    std::fill(gathered_output.end() - width_, gathered_output.end(), 0);
     std::copy(gathered_output.begin(), gathered_output.end(), taskData->outputs[0]);
   }
   return true;
 }
-
 bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
   internal_order_test();
 
