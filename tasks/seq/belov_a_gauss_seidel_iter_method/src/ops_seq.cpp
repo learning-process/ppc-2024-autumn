@@ -21,7 +21,7 @@ bool isDiagonallyDominant(const vector<double>& A, int n) {
 }
 
 bool GaussSeidelSequential::ge_double(double a, double b) {
-  return (a - b) > ((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
+  return (a - b) >= -((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
 }
 
 bool GaussSeidelSequential::pre_processing() {

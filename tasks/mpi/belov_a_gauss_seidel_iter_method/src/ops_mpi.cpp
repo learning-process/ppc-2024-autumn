@@ -10,7 +10,7 @@ using namespace std;
 namespace belov_a_gauss_seidel_mpi {
 
 bool GaussSeidelParallel::ge_double(double a, double b) {
-  return (a - b) > ((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
+  return (a - b) >= -((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
 }
 
 bool GaussSeidelParallel::pre_processing() {
@@ -91,13 +91,6 @@ vector<vector<double>> calculate_rows_per_process(const vector<double>& matrix, 
   }
 
   return result;
-}
-
-int size_for_proc(size_t input_size, int world_size, int num_proc) {
-  int size = input_size / world_size;
-  int rem = input_size % world_size;
-
-  return num_proc < rem ? size + 1 : size;
 }
 
 bool GaussSeidelParallel::run() {
@@ -198,7 +191,7 @@ bool isDiagonallyDominant(const vector<double>& A, int n) {
 }
 
 bool GaussSeidelSequential::ge_double(double a, double b) {
-  return (a - b) > ((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
+  return (a - b) >= -((fabs(a) < fabs(b) ? fabs(b) : fabs(a)) * std::numeric_limits<double>::epsilon());
 }
 
 bool GaussSeidelSequential::pre_processing() {

@@ -264,7 +264,7 @@ TEST(belov_a_gauss_seidel_seq, test_invalid_inputs_count) {
   ASSERT_FALSE(testTaskSequential.validation());
 }
 
-TEST(belov_a_gauss_seidel_seq, Test_SmallSystem_NonDiagonalDominant) {
+TEST(belov_a_gauss_seidel_seq, test_small_system_non_diagonal_dominant) {
   const int n = 3;
   double epsilon = 1e-6;
 
@@ -284,4 +284,34 @@ TEST(belov_a_gauss_seidel_seq, Test_SmallSystem_NonDiagonalDominant) {
   GaussSeidelSequential testTaskSequential(taskDataSeq);
 
   ASSERT_FALSE(testTaskSequential.validation());
+}
+
+TEST(belov_a_gauss_seidel_seq, test_ge_double_equal_numbers) {
+  double a = 1.0;
+  double b = 1.0;
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_seq, test_ge_double_small_difference) {
+  double a = 1.0;
+  double b = 1.0 + std::numeric_limits<double>::epsilon();
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_seq, test_ge_double_large_difference) {
+  double a = 10.0;
+  double b = 5.0;
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_seq, test_ge_double_negative_numbers) {
+  double a = -1.0;
+  double b = -1.0 - std::numeric_limits<double>::epsilon();
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_seq, test_ge_double_zero_numbers) {
+  double a = 0.0;
+  double b = 0.0;
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
 }

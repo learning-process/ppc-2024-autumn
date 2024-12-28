@@ -586,3 +586,63 @@ TEST(belov_a_gauss_seidel_mpi, Test_No_Diagonal_Dominance) {
     EXPECT_FALSE(testMpiTaskParallel.validation());
   }
 }
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_mpi_small_difference) {
+  double a = 1.0;
+  double b = 1.0 + std::numeric_limits<double>::epsilon();
+  EXPECT_TRUE(GaussSeidelParallel::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_mpi_large_difference) {
+  double a = 1.0;
+  double b = 2.0;
+  EXPECT_FALSE(GaussSeidelParallel::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_mpi_negative_numbers) {
+  double a = -1.0;
+  double b = -1.0000001;
+  EXPECT_TRUE(GaussSeidelParallel::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_mpi_zero_numbers) {
+  double a = 0.0;
+  double b = 0.0;
+  EXPECT_TRUE(GaussSeidelParallel::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_mpi_mixed_sign_numbers) {
+  double a = -1.0;
+  double b = 1.0;
+  EXPECT_FALSE(GaussSeidelParallel::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_seq_equal_numbers) {
+  double a = 1.0;
+  double b = 1.0;
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_seq_small_difference) {
+  double a = 1.0;
+  double b = 1.0 + std::numeric_limits<double>::epsilon();
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_seq_large_difference) {
+  double a = 10.0;
+  double b = 5.0;
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_seq_negative_numbers) {
+  double a = -1.0;
+  double b = -1.0 - std::numeric_limits<double>::epsilon();
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
+
+TEST(belov_a_gauss_seidel_mpi, Test_ge_double_seq_zero_numbers) {
+  double a = 0.0;
+  double b = 0.0;
+  EXPECT_TRUE(GaussSeidelSequential::ge_double(a, b));
+}
