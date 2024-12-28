@@ -194,9 +194,14 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
     double global_pAp = 0.0;
     reduce(world, local_pAp, global_pAp, std::plus<>(), 0);
 
+    if (world.rank() == 0) {
+      std::cerr << "Iteration " << iteration << ": local_pAp = " << local_pAp << ", global_pAp = " << global_pAp
+                << std::endl;
+    }
+
     if (world.rank() == 0 && std::abs(global_pAp) < 1e-12) {
       std::cerr << "Error: Division by near-zero in conjugate gradient. global_pAp = " << global_pAp << std::endl;
-      break;
+      return false;
     }
 
     double alpha = 0.0;
