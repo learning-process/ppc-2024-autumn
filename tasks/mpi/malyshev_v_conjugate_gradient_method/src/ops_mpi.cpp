@@ -48,7 +48,10 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
     rsold += r[i] * r[i];
   }
 
-  for (uint32_t i = 0; i < size; ++i) {
+  const uint32_t maxIterations = 5;
+  uint32_t iteration = 0;
+
+  for (iteration = 0; iteration < maxIterations; ++iteration) {
     std::vector<double> Ap(size, 0.0);
     for (uint32_t j = 0; j < size; ++j) {
       for (uint32_t k = 0; k < size; ++k) {
@@ -77,6 +80,8 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
       rsnew += r[j] * r[j];
     }
 
+    std::cerr << "Iteration " << iteration << ": Residual norm = " << sqrt(rsnew) << std::endl;
+
     if (sqrt(rsnew) < 1e-6) {
       break;
     }
@@ -86,6 +91,11 @@ bool malyshev_conjugate_gradient::TestTaskSequential::run() {
     }
 
     rsold = rsnew;
+  }
+
+  if (iteration == maxIterations) {
+    std::cerr << "Conjugate gradient method did not converge within the maximum number of iterations." << std::endl;
+    return false;
   }
 
   result_ = x;
