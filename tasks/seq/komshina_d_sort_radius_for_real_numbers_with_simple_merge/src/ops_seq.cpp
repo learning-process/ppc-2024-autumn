@@ -84,4 +84,4 @@ void radix_sort_uint64(std::vector<uint64_t>& keys) {
     keys.swap(temp);
   }
 }
-}  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seq
+}  // namespace komshina_d_sort_radius_for_real_numbers_with_simple_merge_seô

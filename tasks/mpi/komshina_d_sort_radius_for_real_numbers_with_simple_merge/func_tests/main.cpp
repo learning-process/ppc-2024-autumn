@@ -23,7 +23,6 @@ TEST(komshina_d_sort_radius_for_real_numbers_with_simple_merge_mpi, SimpleData) 
   std::vector<double> resPar(count, 0.0);
   std::vector<double> resSeq(count, 0.0);
 
-
   if (world.rank() == 0) {
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(&count));
     taskDataPar->inputs_count.emplace_back(1);
