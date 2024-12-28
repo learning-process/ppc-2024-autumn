@@ -15,6 +15,7 @@
 namespace kholin_k_iterative_methods_Seidel_seq {
 std::vector<float> gen_matrix_with_diag_pred(size_t num_rows, size_t num_colls);
 bool IsDiagPred(std::vector<float> row_coeffs, size_t num_colls, size_t start_index, size_t index);
+bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
 std::vector<float> gen_vector(size_t sz);
 float gen_float_value();
 
@@ -37,7 +38,6 @@ class TestTaskSequential : public ppc::core::Task {
   float epsilon;
   size_t n_rows;
   size_t n_colls;
-  static bool CheckDiagPred(float matrix[], size_t num_rows, size_t num_colls);
   static bool IsQuadro(size_t num_rows, size_t num_colls);
   void iteration_perfomance();
   float d();

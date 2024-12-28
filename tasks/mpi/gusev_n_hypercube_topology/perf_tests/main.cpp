@@ -21,18 +21,20 @@ TEST(gusev_n_hypercube_topology_mpi, run_pipeline) {
 
   gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
-
+  task.pre_processing();
+  task.run();
+  task.post_processing();
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  perfAttr->num_running = 10;
-
+  perfAttr->num_running = 100;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
   ppc::core::Perf perfAnalyzer(std::make_shared<gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel>(task_data));
-
-  for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
-    perfAnalyzer.pipeline_run(perfAttr, perfResults);
-  }
-
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  perfAnalyzer.pipeline_run(perfAttr, perfResults);
+  // for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
+  //   perfAnalyzer.pipeline_run(perfAttr, perfResults);
+  // }
+  if (world.rank() == 0) ppc::core::Perf::print_perf_statistic(perfResults);
 }
 
 TEST(gusev_n_hypercube_topology_mpi, run_task) {
@@ -49,16 +51,15 @@ TEST(gusev_n_hypercube_topology_mpi, run_task) {
 
   gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel task(task_data);
   ASSERT_TRUE(task.validation());
-
+  task.pre_processing();
+  task.run();
+  task.post_processing();
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   auto perfResults = std::make_shared<ppc::core::PerfResults>();
-  perfAttr->num_running = 10;
-
+  perfAttr->num_running = 100;
+  const boost::mpi::timer current_timer;
+  perfAttr->current_timer = [&] { return current_timer.elapsed(); };
   ppc::core::Perf perfAnalyzer(std::make_shared<gusev_n_hypercube_topology_mpi::HypercubeTopologyParallel>(task_data));
-
-  for (uint64_t i = 0; i < perfAttr->num_running; ++i) {
-    perfAnalyzer.task_run(perfAttr, perfResults);
-  }
-
-  ppc::core::Perf::print_perf_statistic(perfResults);
+  perfAnalyzer.task_run(perfAttr, perfResults);
+  if (world.rank() == 0) ppc::core::Perf::print_perf_statistic(perfResults);
 }
