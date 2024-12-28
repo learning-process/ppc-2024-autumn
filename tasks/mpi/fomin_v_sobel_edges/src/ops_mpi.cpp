@@ -35,7 +35,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
     for (int proc = 0; proc < world.size(); ++proc) {
       int proc_local_height = base_height + (proc < extra ? 1 : 0);
       int start_row = base_height * proc + std::min(proc, extra);
-      int end_row = start_row + proc_local_height;
+      
 
       // Prepare send_data with padding
       std::vector<unsigned char> send_data((proc_local_height + 2) * (width_ + 2), 0);
