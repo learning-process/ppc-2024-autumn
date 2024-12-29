@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include <numeric>
-#include <vector>
 
 #include "seq/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_seq.hpp"
 
@@ -33,6 +32,28 @@ TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_for_matrix_with
 
   // Create data
   std::vector<double> in = {1};
+  std::vector<double> out;
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(in.data()));
+  taskDataSeq->inputs_count.emplace_back(in.size());
+  taskDataSeq->inputs_count.emplace_back(cols);
+  taskDataSeq->inputs_count.emplace_back(rows);
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
+  taskDataSeq->outputs_count.emplace_back(out.size());
+
+  // Create Task
+  sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential testTaskSequential(taskDataSeq);
+  ASSERT_FALSE(testTaskSequential.validation());
+}
+
+TEST(sozonov_i_gaussian_method_horizontal_strip_scheme_seq, test_for_matrix_with_one_column) {
+  const int cols = 1;
+  const int rows = 3;
+
+  // Create data
+  std::vector<double> in = {1, 2, 3};
   std::vector<double> out;
 
   // Create TaskData

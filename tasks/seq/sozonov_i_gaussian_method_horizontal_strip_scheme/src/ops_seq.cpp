@@ -1,11 +1,7 @@
 #include "seq/sozonov_i_gaussian_method_horizontal_strip_scheme/include/ops_seq.hpp"
 
-#include <thread>
-
-using namespace std::chrono_literals;
-
 int sozonov_i_gaussian_method_horizontal_strip_scheme_seq::extended_matrix_rank(int n, int m, std::vector<double> a) {
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
 
   int rank = m;
   for (int i = 0; i < m; ++i) {
@@ -30,7 +26,7 @@ int sozonov_i_gaussian_method_horizontal_strip_scheme_seq::extended_matrix_rank(
 }
 
 int sozonov_i_gaussian_method_horizontal_strip_scheme_seq::determinant(int n, int m, std::vector<double> a) {
-  const double EPS = 1e-6;
+  const double EPS = 1e-3;
   double det = 1;
 
   for (int i = 0; i < m; ++i) {
@@ -85,7 +81,7 @@ bool sozonov_i_gaussian_method_horizontal_strip_scheme_seq::TestTaskSequential::
   rows = taskData->inputs_count[2];
 
   // Check matrix for a single solution
-  return taskData->inputs_count[0] > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
+  return taskData->inputs_count[0] > 1 && cols > 1 && rows == cols - 1 && determinant(cols, rows, matrix) != 0 &&
          extended_matrix_rank(cols, rows, matrix) == rows;
 }
 
