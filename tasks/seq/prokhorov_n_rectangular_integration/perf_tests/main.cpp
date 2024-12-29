@@ -1,6 +1,10 @@
 #define _USE_MATH_DEFINES
 #include <gtest/gtest.h>
 
+#include <chrono>
+#include <cmath>
+#include <functional>
+#include <memory>
 #include <vector>
 
 #include "core/perf/include/perf.hpp"
@@ -41,6 +45,7 @@ TEST(prokhorov_n_rectangular_integration, test_perf_integration_x_squared) {
   const double expected_result = 1.0 / 3.0;
   ASSERT_NEAR(out[0], expected_result, 1e-3);
 }
+
 TEST(prokhorov_n_rectangular_integration, test_perf_integration_sin_x) {
   const double lower_bound = 0.0;
   const double upper_bound = M_PI;
@@ -56,7 +61,7 @@ TEST(prokhorov_n_rectangular_integration, test_perf_integration_sin_x) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto testTaskSequential = std::make_shared<prokhorov_n_rectangular_integration::TestTaskSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return std::sin(x); });
+  testTaskSequential->set_function([](double x) { return sin(x); });
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -76,6 +81,7 @@ TEST(prokhorov_n_rectangular_integration, test_perf_integration_sin_x) {
   const double expected_result = 2.0;
   ASSERT_NEAR(out[0], expected_result, 1e-3);
 }
+
 TEST(prokhorov_n_rectangular_integration, test_perf_integration_exp_x) {
   const double lower_bound = 0.0;
   const double upper_bound = 1.0;
@@ -91,7 +97,7 @@ TEST(prokhorov_n_rectangular_integration, test_perf_integration_exp_x) {
   taskDataSeq->outputs_count.emplace_back(out.size());
 
   auto testTaskSequential = std::make_shared<prokhorov_n_rectangular_integration::TestTaskSequential>(taskDataSeq);
-  testTaskSequential->set_function([](double x) { return std::exp(x); });
+  testTaskSequential->set_function([](double x) { return exp(x); });
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -108,9 +114,10 @@ TEST(prokhorov_n_rectangular_integration, test_perf_integration_exp_x) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  const double expected_result = std::exp(1.0) - 1.0;
+  const double expected_result = exp(1.0) - 1.0;
   ASSERT_NEAR(out[0], expected_result, 1e-3);
 }
+
 TEST(prokhorov_n_rectangular_integration, test_perf_integration_one_over_x) {
   const double lower_bound = 1.0;
   const double upper_bound = 10.0;
@@ -143,6 +150,6 @@ TEST(prokhorov_n_rectangular_integration, test_perf_integration_one_over_x) {
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
   ppc::core::Perf::print_perf_statistic(perfResults);
 
-  const double expected_result = std::log(10.0);
+  const double expected_result = log(10.0);
   ASSERT_NEAR(out[0], expected_result, 1e-3);
 }
