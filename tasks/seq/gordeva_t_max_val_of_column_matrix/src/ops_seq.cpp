@@ -56,4 +56,5 @@ bool gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::post_processing
   std::copy(res_.begin(), res_.end(), output_matr);
   return true;
 }
+
 }  // namespace gordeva_t_max_val_of_column_matrix_seq
