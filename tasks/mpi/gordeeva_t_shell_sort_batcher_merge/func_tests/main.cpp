@@ -12,7 +12,6 @@ std::vector<int> rand_vec(int size, int down = -100, int upp = 100) {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> dis(down, upp);
-
   std::vector<int> v(size);
   for (auto &number : v) {
     number = dis(gen);
