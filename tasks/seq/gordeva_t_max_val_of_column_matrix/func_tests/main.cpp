@@ -1,3 +1,4 @@
+
 #include <gtest/gtest.h>
 
 #include <climits>
@@ -5,26 +6,7 @@
 
 #include "seq/gordeva_t_max_val_of_column_matrix/include/ops_seq.hpp"
 
-std::vector<int> rand_vec_seq_1(int size, int down, int upp) {
-  std::vector<int> v(size);
-  for (auto &number : v) number = down + (std::rand() % (upp - down + 1));
-  return v;
-}
-
-std::vector<std::vector<int>> rand_matr_seq_1(int rows, int cols) {
-  std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
-
-  for (int i = 0; i < rows; ++i) {
-    matr[i] = rand_vec_seq_1(cols, 0, 200);
-  }
-  for (int j = 0; j < cols; ++j) {
-    int row_rand = std::rand() % rows;
-    matr[row_rand][j] = 10;
-  }
-  return matr;
-}
-
-TEST(gordeva_t_max_val_of_column_matrix_seq, Empty_Input) {
+TEST(gordeva_t_max_val_of_column_matrix_seq, IsEmptyInput) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
   ASSERT_FALSE(testTaskSequential.validation());
@@ -49,8 +31,8 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_500_columns_with_random)
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matrix = rand_matr_seq_1(rows, cols);
-
+  std::vector<std::vector<int>> matrix =
+      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -81,8 +63,8 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_500_1000_columns_with_ra
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matrix = rand_matr_seq_1(rows, cols);
-
+  std::vector<std::vector<int>> matrix =
+      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -113,8 +95,8 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_1000_3000_columns_with_r
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
-  std::vector<std::vector<int>> matrix = rand_matr_seq_1(rows, cols);
-
+  std::vector<std::vector<int>> matrix =
+      gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential::rand_matr(rows, cols);
   for (auto &i : matrix) taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(i.data()));
   taskDataSeq->inputs_count.emplace_back(rows);
   taskDataSeq->inputs_count.emplace_back(cols);
@@ -139,7 +121,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_1000_3000_columns_with_r
   }
 }
 
-TEST(gordeva_t_max_val_of_column_matrix_seq, Incorrect_Input) {
+TEST(gordeva_t_max_val_of_column_matrix_seq, Incorrect_val_size_of_input) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
 
