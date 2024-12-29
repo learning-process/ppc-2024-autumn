@@ -8,7 +8,10 @@
 
 TEST(gordeeva_t_sleeping_barber_mpi, Test_Validation1) {
   boost::mpi::communicator world;
-
+  int i = 0;
+  int j = 0;
+  int k = 0;
+  
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
   gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
