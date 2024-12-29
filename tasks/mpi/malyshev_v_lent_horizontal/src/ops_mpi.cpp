@@ -138,7 +138,7 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
   local_matrix_.resize(local_rows, std::vector<int32_t>(vector_.size()));
   std::vector<int32_t> flat_local_matrix(local_rows * vector_.size());
 
-  scatterv(world, flat_matrix_, sendcounts, displs, flat_local_matrix, 0);
+  scatterv(world, flat_matrix_.data(), sendcounts, displs, flat_local_matrix.data(), 0);
 
   for (uint32_t i = 0; i < local_rows; ++i) {
     std::copy(flat_local_matrix.begin() + i * vector_.size(), flat_local_matrix.begin() + (i + 1) * vector_.size(),
@@ -154,7 +154,7 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
   }
 
   std::vector<int32_t> recvcounts = sendcounts;
-  gatherv(world, local_result_, result_.data(), recvcounts, displs, 0);
+  gatherv(world, local_result_.data(), recvcounts, displs, result_.data(), 0);
 
   return true;
 }
