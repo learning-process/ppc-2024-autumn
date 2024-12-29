@@ -8,7 +8,7 @@
 TEST(mpi_beskhmelnova_k_jarvis_march_perf_test, test_pipeline_run) {
   boost::mpi::communicator world;
 
-  int num_points = 1000;
+  int num_points = 500000;
   std::vector<double> x;
   std::vector<double> y;
 
@@ -89,7 +89,7 @@ TEST(mpi_beskhmelnova_k_jarvis_march_perf_test, test_pipeline_run) {
 TEST(mpi_beskhmelnova_k_jarvis_march_perf_test, test_task_run) {
   boost::mpi::communicator world;
 
-  int num_points = 1000;
+  int num_points = 500000;
   std::vector<double> x;
   std::vector<double> y;
 
