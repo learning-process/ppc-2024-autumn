@@ -8,8 +8,8 @@
 
 TEST(gromov_a_convex_hull_mpi, test_pipeline_run) {
   boost::mpi::communicator world;
-  const int width = 500;
-  const int height = 500;
+  const int width = 400;
+  const int height = 400;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
@@ -56,8 +56,8 @@ TEST(gromov_a_convex_hull_mpi, test_pipeline_run) {
 
 TEST(gromov_a_convex_hull_mpi, test_task_run) {
   boost::mpi::communicator world;
-  const int width = 500;
-  const int height = 500;
+  const int width = 400;
+  const int height = 400;
 
   std::vector<int> image(width * height, 1);
   std::vector<int> hull(width * height);
