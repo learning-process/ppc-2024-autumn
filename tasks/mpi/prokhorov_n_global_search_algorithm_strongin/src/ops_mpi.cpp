@@ -110,6 +110,8 @@ double prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::st
     gather(world, local_min, all_mins, 0);
     gather(world, local_x_min, all_x_mins, 0);
 
+    world.barrier();
+
     if (world.rank() == 0) {
       for (int i = 0; i < world.size(); ++i) {
         if (all_mins[i] < global_min) {
@@ -133,14 +135,28 @@ bool prokhorov_n_global_search_algorithm_strongin_mpi::TestMPITaskParallel::pre_
   internal_order_test();
 
   if (world.rank() == 0) {
-    a = reinterpret_cast<double*>(taskData->inputs[0])[0];
-    b = reinterpret_cast<double*>(taskData->inputs[1])[0];
-    epsilon = reinterpret_cast<double*>(taskData->inputs[2])[0];
+    if (taskData->inputs.empty() || taskData->inputs.size() < 3) {
+      throw std::runtime_error("Not enough input data.");
+    }
+
+    if (taskData->inputs[0] == nullptr || taskData->inputs[1] == nullptr || taskData->inputs[2] == nullptr) {
+      throw std::runtime_error("Input data is null.");
+    }
+
+    a = *reinterpret_cast<double*>(taskData->inputs[0]);
+    b = *reinterpret_cast<double*>(taskData->inputs[1]);
+    epsilon = *reinterpret_cast<double*>(taskData->inputs[2]);
   }
 
   broadcast(world, a, 0);
   broadcast(world, b, 0);
   broadcast(world, epsilon, 0);
+
+  if (world.rank() != 0) {
+    if (a == 0.0 && b == 0.0 && epsilon == 0.0) {
+      throw std::runtime_error("Data was not broadcasted correctly.");
+    }
+  }
 
   f = [](double x) { return x * x; };
 

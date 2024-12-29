@@ -21,6 +21,10 @@ TEST(prokhorov_n_global_search_algorithm_strongin_mpi, test_strongin_algorithm_q
     global_b = {10.0};
     global_epsilon = {0.001};
 
+    if (global_a.empty() || global_b.empty() || global_epsilon.empty()) {
+      throw std::runtime_error("Input data is empty.");
+    }
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_a.data()));
     taskDataPar->inputs_count.emplace_back(global_a.size());
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(global_b.data()));
