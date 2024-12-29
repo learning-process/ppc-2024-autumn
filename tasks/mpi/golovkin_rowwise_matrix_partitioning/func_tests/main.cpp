@@ -232,7 +232,6 @@ TEST(golovkin_rowwise_matrix_partitioning_mpi, invalid_task_with_mismatched_dime
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
 
   if (world.size() < 5 || world.rank() >= 4) {
-
     global_A.resize(25 * 4, 0);
 
     global_B.resize(3 * 1, 0);
