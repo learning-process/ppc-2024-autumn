@@ -13,7 +13,7 @@ std::vector<int> getRandomgraph(int v) {
   std::vector<int> graph(v * v);
   std::mt19937 engine;
   for (int i = 0; i < v; i++) {
-    for (int j = 0; j <= i; j++) {
+    for (int j = 0; j <= v; j++) {
       if (i == j) {
         graph[i * v + j] = 0;
         continue;
@@ -22,7 +22,7 @@ std::vector<int> getRandomgraph(int v) {
       if (tmp1 < 0) {
         tmp1 *= -1;
       }
-      graph[j * v + i] = graph[i * v + j] = tmp1;
+      graph[i * v + j] = tmp1;
     }
   }
   return graph;
