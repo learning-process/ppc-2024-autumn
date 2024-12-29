@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "seq/laganina_e_dejkstras_a/include/ops_seq.hpp"
 

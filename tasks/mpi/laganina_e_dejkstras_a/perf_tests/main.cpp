@@ -1,9 +1,4 @@
 #include <gtest/gtest.h>
-
-#include <boost/mpi/communicator.hpp>
-#include <boost/mpi/environment.hpp>
-#include <vector>
-
 #include "core/perf/include/perf.hpp"
 #include "mpi/laganina_e_dejkstras_a/include/ops_mpi.hpp"
 

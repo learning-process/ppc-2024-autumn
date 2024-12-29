@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <iostream>
 #include <random>
-#include <vector>
 
 #include "seq/laganina_e_dejkstras_a/include/ops_seq.hpp"
 
