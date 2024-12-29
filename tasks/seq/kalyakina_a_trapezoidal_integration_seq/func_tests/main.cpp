@@ -169,8 +169,8 @@ TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_functionality_random_limit
 TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_functionality_intervals) {
   std::vector<unsigned int> count(1, 3);
   std::vector<std::pair<double, double>> limits = {{0.0, 3.0}, {0.0, 4.0}, {0.0, 5.0}};
-  std::vector<unsigned int> intervals = {GetRandomIntegerData(40, 60), GetRandomIntegerData(40, 60),
-                                         GetRandomIntegerData(40, 60)};
+  std::vector<unsigned int> intervals = {GetRandomIntegerData(40, 50), GetRandomIntegerData(40, 50),
+                                         GetRandomIntegerData(40, 50)};
 
   TestOfFunction(function3, count, limits, intervals, pow(3 - 0, 2) * pow(4 - 0, 2) * pow(5 - 0, 2));
 }
@@ -179,8 +179,8 @@ TEST(kalyakina_a_trapezoidal_integration_seq, Test_of_functionality_limits_and_i
   std::vector<unsigned int> count(1, 3);
   std::vector<std::pair<double, double>> limits = {GetRandomLimit(0.0, 1.0), GetRandomLimit(0.0, 1.0),
                                                    GetRandomLimit(0.0, 1.0)};
-  std::vector<unsigned int> intervals = {GetRandomIntegerData(40, 60), GetRandomIntegerData(40, 60),
-                                         GetRandomIntegerData(40, 60)};
+  std::vector<unsigned int> intervals = {GetRandomIntegerData(40, 50), GetRandomIntegerData(40, 50),
+                                         GetRandomIntegerData(40, 50)};
 
   TestOfFunction(function3, count, limits, intervals,
                  (pow(limits[0].second, 2) - pow(limits[0].first, 2)) *
