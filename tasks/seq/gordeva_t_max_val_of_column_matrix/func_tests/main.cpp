@@ -108,6 +108,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_500_1000_columns_with_ra
   }
 }
 
+// 1
 TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_1000_3000_columns_with_random) {
   const int rows = 1000;
   const int cols = 3000;
@@ -140,6 +141,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Max_val_of_1000_3000_columns_with_r
   }
 }
 
+// 2
 TEST(gordeva_t_max_val_of_column_matrix_seq, Incorrect_Input) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
@@ -154,6 +156,7 @@ TEST(gordeva_t_max_val_of_column_matrix_seq, Incorrect_Input) {
   delete[] reinterpret_cast<int *>(taskDataSeq->inputs[0]);
 }
 
+// 3
 TEST(gordeva_t_max_val_of_column_matrix_seq, Incorrect_val_of_output) {
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   gordeva_t_max_val_of_column_matrix_seq::TestTaskSequential testTaskSequential(taskDataSeq);
