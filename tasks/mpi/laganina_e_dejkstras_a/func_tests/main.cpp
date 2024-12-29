@@ -181,7 +181,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_3_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_10_random) {
   boost::mpi::communicator world;
   int v_ = 10;
-  int e_ = 5;
+  int e_ = 30;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
@@ -223,7 +223,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_10_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_13_random) {
   boost::mpi::communicator world;
   int v_ = 13;
-  int e_ = 5;
+  int e_ = 60;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
@@ -265,7 +265,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_13_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_25_random) {
   boost::mpi::communicator world;
   int v_ = 25;
-  int e_ = 5;
+  int e_ = 101;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
@@ -307,7 +307,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_25_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_55_random) {
   boost::mpi::communicator world;
   int v_ = 55;
-  int e_ = 10;
+  int e_ = 127;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
@@ -349,7 +349,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_55_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_76_random) {
   boost::mpi::communicator world;
   int v_ = 76;
-  int e_ = 20;
+  int e_ = 343;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
@@ -391,7 +391,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_76_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_101_random) {
   boost::mpi::communicator world;
   int v_ = 101;
-  int e_ = 50;
+  int e_ = 55;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
@@ -432,7 +432,7 @@ TEST(laganina_e_dejkstras_a_mpi, Test_101_random) {
 TEST(laganina_e_dejkstras_a_mpi, Test_128_random) {
   boost::mpi::communicator world;
   int v_ = 128;
-  int e_ = 56;
+  int e_ = 666;
   std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_, e_);
   for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
     graph[k] = 0;
