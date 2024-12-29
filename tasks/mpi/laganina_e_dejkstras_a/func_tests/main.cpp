@@ -470,4 +470,3 @@ TEST(laganina_e_dejkstras_a_mpi, Test_128_random) {
     ASSERT_EQ(expectResult, trueResult);
   }
 }
-}
