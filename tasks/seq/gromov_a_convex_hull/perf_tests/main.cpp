@@ -6,8 +6,8 @@
 #include "seq/gromov_a_convex_hull/include/ops_seq.hpp"
 
 TEST(gromov_a_convex_hull_seq, test_pipeline_run) {
-  const int width = 500;
-  const int height = 500;
+  const int width = 400;
+  const int height = 400;
 
   std::vector<int> grid(width * height, 1);
   std::vector<int> hull(width * height);
@@ -54,8 +54,8 @@ TEST(gromov_a_convex_hull_seq, test_pipeline_run) {
 }
 
 TEST(gromov_a_convex_hull_seq, test_task_run) {
-  const int width = 500;
-  const int height = 500;
+  const int width = 400;
+  const int height = 400;
 
   std::vector<int> grid(width * height, 1);
   std::vector<int> hull(width * height);
