@@ -4,40 +4,47 @@
 
 #include <boost/mpi/collectives.hpp>
 #include <boost/mpi/communicator.hpp>
+#include <boost/mpi.hpp>
+#include <cmath>
+#include <iostream>
 #include <vector>
 
 #include "core/task/include/task.hpp"
 
 namespace malyshev_conjugate_gradient {
 
-class TestTaskSequential : public ppc::core::Task {
+class TestTaskParallel {
  public:
-  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
+  explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData)
+      : world(boost::mpi::communicator()), task_data_(taskData) {}
+
+  bool run();
+  bool pre_processing();
+  bool validation();
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<double>> matrix_;
+  boost::mpi::communicator world;
+  std::shared_ptr<ppc::core::TaskData> task_data_;
+  std::vector<double> matrix_;
   std::vector<double> vector_;
   std::vector<double> result_;
 };
 
-class TestTaskParallel : public ppc::core::Task {
+class TestTaskSequential {
  public:
-  explicit TestTaskParallel(std::shared_ptr<ppc::core::TaskData> taskData_) : Task(std::move(taskData_)) {}
-  bool pre_processing() override;
-  bool validation() override;
-  bool run() override;
+  explicit TestTaskSequential(std::shared_ptr<ppc::core::TaskData> taskData) : task_data_(taskData) {}
+
+  bool run();
+  bool pre_processing();
+  bool validation();
   bool post_processing() override;
 
  private:
-  std::vector<std::vector<double>> matrix_;
+  std::shared_ptr<ppc::core::TaskData> task_data_;
+  std::vector<double> matrix_;
   std::vector<double> vector_;
   std::vector<double> result_;
-
-  boost::mpi::communicator world;
 };
 
 }  // namespace malyshev_conjugate_gradient

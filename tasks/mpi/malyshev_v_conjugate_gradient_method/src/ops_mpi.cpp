@@ -109,37 +109,6 @@ bool malyshev_conjugate_gradient::TestTaskSequential::post_processing() {
   return true;
 }
 
-bool malyshev_conjugate_gradient::TestTaskParallel::pre_processing() {
-  double det = 1.0;
-  uint32_t size = vector_.size();
-
-  for (uint32_t i = 0; i < size; ++i) {
-    det *= matrix_[i * size + i];
-  }
-
-  if (std::abs(det) < 1e-12) {
-    std::cerr << "Matrix is singular or near-singular. No unique solution." << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
-bool malyshev_conjugate_gradient::TestTaskParallel::validation() {
-  if (matrix_.empty() || vector_.empty()) {
-    std::cerr << "Error: Matrix or vector is empty." << std::endl;
-    return false;
-  }
-
-  uint32_t size = vector_.size();
-  if (matrix_.size() != size * size) {
-    std::cerr << "Error: Matrix size does not match vector size." << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
 bool malyshev_conjugate_gradient::TestTaskParallel::run() {
   internal_order_test();
 
@@ -160,7 +129,7 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
 
   broadcast(world, rsold, 0);
 
-  const uint32_t maxIterations = 10;
+  const uint32_t maxIterations = 1000;
   uint32_t iteration = 0;
 
   for (iteration = 0; iteration < maxIterations; ++iteration) {
@@ -237,6 +206,37 @@ bool malyshev_conjugate_gradient::TestTaskParallel::run() {
   }
 
   return iteration < maxIterations;
+}
+
+bool malyshev_conjugate_gradient::TestTaskParallel::pre_processing() {
+  double det = 1.0;
+  uint32_t size = vector_.size();
+
+  for (uint32_t i = 0; i < size; ++i) {
+    det *= matrix_[i * size + i];
+  }
+
+  if (std::abs(det) < 1e-12) {
+    std::cerr << "Matrix is singular or near-singular. No unique solution." << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+bool malyshev_conjugate_gradient::TestTaskParallel::validation() {
+  if (matrix_.empty() || vector_.empty()) {
+    std::cerr << "Error: Matrix or vector is empty." << std::endl;
+    return false;
+  }
+
+  uint32_t size = vector_.size();
+  if (matrix_.size() != size * size) {
+    std::cerr << "Error: Matrix size does not match vector size." << std::endl;
+    return false;
+  }
+
+  return true;
 }
 
 bool malyshev_conjugate_gradient::TestTaskParallel::post_processing() {
