@@ -60,7 +60,6 @@ TEST(gordeeva_t_sleeping_barber_mpi, Test_End_To_End1) {
   taskDataPar->inputs_count.emplace_back(max_waiting_chairs);
   taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(&global_res));
   taskDataPar->outputs_count.emplace_back(sizeof(global_res));
-
   gordeeva_t_sleeping_barber_mpi::TestMPITaskParallel testMpiTaskParallel(taskDataPar);
 
   if (world.size() < 3) {
