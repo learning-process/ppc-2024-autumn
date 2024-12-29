@@ -418,43 +418,44 @@ TEST(laganina_e_dejkstras_a_mpi, Test_101_random) {
     testTaskSequential.post_processing();
     ASSERT_EQ(expectResult, trueResult);
   }
-  TEST(laganina_e_dejkstras_a_mpi, Test_128_random) {
-    boost::mpi::communicator world;
-    int v_ = 128;
-    std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
-    for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
-      graph[k] = 0;
-    }
-
-    // Create data
-    std::vector<int> expectResult(v_, 0);
-    std::vector<int> trueResult(v_, 0);
-
-    // Create TaskData
-    std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-    if (world.rank() == 0) {
-      taskDataPar->inputs_count.emplace_back(v_);
-      taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-      taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(trueResult.data()));
-      taskDataPar->outputs_count.emplace_back(trueResult.size());
-    }
-    // Create Task
-    laganina_e_dejskras_a_mpi::TestMPITaskParallel testTaskParallel(taskDataPar);
-    ASSERT_EQ(testTaskParallel.validation(), true);
-    testTaskParallel.pre_processing();
-    testTaskParallel.run();
-    testTaskParallel.post_processing();
-    if (world.rank() == 0) {
-      std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
-      taskDataSeq->inputs_count.emplace_back(v_);
-      taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
-      taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expectResult.data()));
-      taskDataSeq->outputs_count.emplace_back(expectResult.size());
-      laganina_e_dejskras_a_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
-      ASSERT_EQ(testTaskSequential.validation(), true);
-      testTaskSequential.pre_processing();
-      testTaskSequential.run();
-      testTaskSequential.post_processing();
-      ASSERT_EQ(expectResult, trueResult);
-    }
+}
+TEST(laganina_e_dejkstras_a_mpi, Test_128_random) {
+  boost::mpi::communicator world;
+  int v_ = 128;
+  std::vector<int> graph = laganina_e_dejskras_a_mpi::getRandomgraph(v_);
+  for (int k = 0; k < v_ * v_; k += (v_ + 1)) {
+    graph[k] = 0;
   }
+
+  // Create data
+  std::vector<int> expectResult(v_, 0);
+  std::vector<int> trueResult(v_, 0);
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
+  if (world.rank() == 0) {
+    taskDataPar->inputs_count.emplace_back(v_);
+    taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+    taskDataPar->outputs.emplace_back(reinterpret_cast<uint8_t*>(trueResult.data()));
+    taskDataPar->outputs_count.emplace_back(trueResult.size());
+  }
+  // Create Task
+  laganina_e_dejskras_a_mpi::TestMPITaskParallel testTaskParallel(taskDataPar);
+  ASSERT_EQ(testTaskParallel.validation(), true);
+  testTaskParallel.pre_processing();
+  testTaskParallel.run();
+  testTaskParallel.post_processing();
+  if (world.rank() == 0) {
+    std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+    taskDataSeq->inputs_count.emplace_back(v_);
+    taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+    taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(expectResult.data()));
+    taskDataSeq->outputs_count.emplace_back(expectResult.size());
+    laganina_e_dejskras_a_mpi::TestMPITaskSequential testTaskSequential(taskDataSeq);
+    ASSERT_EQ(testTaskSequential.validation(), true);
+    testTaskSequential.pre_processing();
+    testTaskSequential.run();
+    testTaskSequential.post_processing();
+    ASSERT_EQ(expectResult, trueResult);
+  }
+}
