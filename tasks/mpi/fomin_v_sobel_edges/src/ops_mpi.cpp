@@ -28,7 +28,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   this->local_height = base_height + (world.rank() < extra ? 1 : 0);
 
   // Resize local_input_ with padding (top, bottom, left, right)
-  local_input_.resize((local_height + 2) * (width_ + 2), 0);  // +2 for padding rows and columns
+  this->local_input_.resize((this->local_height + 2) * (this->width_ + 2), 0);  // +2 for padding rows and columns
 
   if (world.rank() == 0) {
     // Prepare and send data to each process
@@ -37,18 +37,28 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
       int start_row = base_height * proc + std::min(proc, extra);
 
       // Prepare send_data with padding set to zero
-      std::vector<unsigned char> send_data((proc_local_height + 2) * (width_ + 2), 0);
+      std::vector<unsigned char> send_data((proc_local_height + 2) * (this->width_ + 2), 0);
+
+      // Set padding rows to zero
+      std::fill(send_data.begin(), send_data.begin() + (this->width_ + 2), 0);  // Top padding
+      std::fill(send_data.end() - (this->width_ + 2), send_data.end(), 0);      // Bottom padding
+
+      // Set padding columns to zero
+      for (int row = 0; row < proc_local_height + 2; ++row) {
+        send_data[row * (this->width_ + 2)] = 0;                     // Left padding
+        send_data[row * (this->width_ + 2) + this->width_ + 1] = 0;  // Right padding
+      }
 
       // Main data
       for (int y = 0; y < proc_local_height; ++y) {
-        std::copy(input_image_.begin() + (start_row + y) * width_,
-                  input_image_.begin() + (start_row + y) * width_ + width_,
-                  send_data.begin() + (y + 1) * (width_ + 2) + 1);
+        std::copy(input_image_.begin() + (start_row + y) * this->width_,
+                  input_image_.begin() + (start_row + y) * this->width_ + this->width_,
+                  send_data.begin() + (y + 1) * (this->width_ + 2) + 1);
       }
 
       if (proc == 0) {
         // Handle rank 0's data locally
-        std::copy(send_data.begin(), send_data.end(), local_input_.begin());
+        std::copy(send_data.begin(), send_data.end(), this->local_input_.begin());
       } else {
         // Send data to process
         world.send(proc, 0, send_data.data(), send_data.size());
@@ -56,7 +66,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
     }
   } else {
     // Receive data from rank 0
-    world.recv(0, 0, local_input_.data(), local_input_.size());
+    world.recv(0, 0, this->local_input_.data(), this->local_input_.size());
   }
 
   return true;
@@ -81,19 +91,21 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   const int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
+  this->output_image_.resize(this->local_height * (this->width_ - 2), 0);
+
   for (int y = 0; y < this->local_height; ++y) {
-    for (int x = 1; x < width_ - 1; ++x) {
+    for (int x = 1; x < this->width_ - 1; ++x) {
       int sumX = 0;
       int sumY = 0;
       for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
-          int pixel = local_input_[(y + i + 1) * (width_ + 2) + (x + j + 1)];
+          int pixel = this->local_input_[(y + i + 1) * (this->width_ + 2) + (x + j + 1)];
           sumX += pixel * Gx[i + 1][j + 1];
           sumY += pixel * Gy[i + 1][j + 1];
         }
       }
       int gradient = static_cast<int>(std::sqrt(sumX * sumX + sumY * sumY));
-      output_image_[y * width_ + (x - 1)] = static_cast<unsigned char>(std::min(gradient, 255));
+      this->output_image_[y * (this->width_ - 2) + (x - 1)] = static_cast<unsigned char>(std::min(gradient, 255));
     }
   }
   return true;
@@ -106,13 +118,13 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
   std::vector<int> displacements(world.size());
   std::vector<unsigned char> gathered_output;
 
-  gathered_output.resize(height_ * width_, 0);
+  gathered_output.resize(height_ * (width_ - 2), 0);
 
   int base_height = height_ / world.size();
   int extra = height_ % world.size();
   for (int proc = 0; proc < world.size(); ++proc) {
     int proc_local_height = base_height + (proc < extra ? 1 : 0);
-    sendcounts[proc] = proc_local_height * width_;
+    sendcounts[proc] = proc_local_height * (width_ - 2);
     if (proc == 0) {
       displacements[proc] = 0;
     } else {
@@ -122,17 +134,18 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
 
   MPI_Barrier(world);
 
-  MPI_Gatherv(output_image_.data(), output_image_.size(), MPI_UNSIGNED_CHAR, gathered_output.data(), sendcounts.data(),
-              displacements.data(), MPI_UNSIGNED_CHAR, 0, world);
+  MPI_Gatherv(this->output_image_.data(), this->output_image_.size(), MPI_UNSIGNED_CHAR, gathered_output.data(),
+              sendcounts.data(), displacements.data(), MPI_UNSIGNED_CHAR, 0, world);
 
   if (world.rank() == 0) {
     // Set first and last rows to zero
-    std::fill(gathered_output.begin(), gathered_output.begin() + width_, 0);
-    std::fill(gathered_output.end() - width_, gathered_output.end(), 0);
+    std::fill(gathered_output.begin(), gathered_output.begin() + (width_ - 2), 0);
+    std::fill(gathered_output.end() - (width_ - 2), gathered_output.end(), 0);
     std::copy(gathered_output.begin(), gathered_output.end(), taskData->outputs[0]);
   }
   return true;
 }
+
 bool fomin_v_sobel_edges::SobelEdgeDetection::pre_processing() {
   internal_order_test();
 
