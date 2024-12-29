@@ -124,12 +124,12 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
     }
   }
 
-  std::vector<int32_t> sendcounts(world.size(), delta_ * vector_.size());
+  std::vector<int> sendcounts(world.size(), delta_ * vector_.size());
   for (uint32_t i = 0; i < ext_; ++i) {
     sendcounts[world.size() - i - 1] += vector_.size();
   }
 
-  std::vector<int32_t> displs(world.size(), 0);
+  std::vector<int> displs(world.size(), 0);
   for (size_t i = 1; i < displs.size(); ++i) {
     displs[i] = displs[i - 1] + sendcounts[i - 1];
   }
@@ -153,8 +153,8 @@ bool malyshev_lent_horizontal::TestTaskParallel::run() {
     }
   }
 
-  std::vector<int32_t> recvcounts = sendcounts;
-  gatherv(world, local_result_.data(), recvcounts, displs, result_.data(), 0);
+  std::vector<int> recvcounts = sendcounts;
+  gatherv(world, local_result_.data(), local_result_.size(), result_, recvcounts, displs, 0);
 
   return true;
 }
