@@ -1,4 +1,5 @@
 #include "seq/laganina_e_dejkstras_a/include/ops_seq.hpp"
+
 #include <thread>
 
 static void laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq::dijkstra(int start_vertex,
