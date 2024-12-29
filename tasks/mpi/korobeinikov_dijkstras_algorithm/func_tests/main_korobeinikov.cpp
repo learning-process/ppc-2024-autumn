@@ -30,7 +30,7 @@ void getRandomGraph(int sz, int count_edges, std::vector<int> &val, std::vector<
   ri[sz] = count_edges;
   std::vector<int> tmp(sz - 1);
   for (int i = 0; i < sz - 1; i++) {
-    tmp[i] = col[i] = gen() % count_edges;
+    tmp[i] = gen() % count_edges;
   }
   std::sort(tmp.begin(), tmp.end());
   for (int i = 1; i < sz; i++) {
