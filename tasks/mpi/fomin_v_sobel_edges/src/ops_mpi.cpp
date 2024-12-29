@@ -25,7 +25,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
   // Calculate local_height for each process
   int base_height = height_ / world.size();
   int extra = height_ % world.size();
-  int local_height = base_height + (world.rank() < extra ? 1 : 0);
+  this->local_height = base_height + (world.rank() < extra ? 1 : 0);
 
   // Resize local_input_ with padding (top, bottom, left, right)
   local_input_.resize((local_height + 2) * (width_ + 2), 0);  // +2 for padding rows and columns
@@ -36,39 +36,14 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::pre_processing() {
       int proc_local_height = base_height + (proc < extra ? 1 : 0);
       int start_row = base_height * proc + std::min(proc, extra);
 
-      // Prepare send_data with padding
+      // Prepare send_data with padding set to zero
       std::vector<unsigned char> send_data((proc_local_height + 2) * (width_ + 2), 0);
-
-      // Top padding: previous row or first row
-      if (proc == 0) {
-        std::copy(input_image_.begin(), input_image_.begin() + width_, send_data.begin() + width_ + 1);
-      } else {
-        int prev_end_row = base_height * proc + std::min(proc, extra);
-        std::copy(input_image_.begin() + (prev_end_row - 1) * width_, input_image_.begin() + prev_end_row * width_,
-                  send_data.begin() + width_ + 1);
-      }
 
       // Main data
       for (int y = 0; y < proc_local_height; ++y) {
         std::copy(input_image_.begin() + (start_row + y) * width_,
                   input_image_.begin() + (start_row + y) * width_ + width_,
                   send_data.begin() + (y + 1) * (width_ + 2) + 1);
-      }
-
-      // Bottom padding: next row or last row
-      if (proc + 1 < world.size()) {
-        int next_start_row = base_height * (proc + 1) + std::min(proc + 1, extra);
-        std::copy(input_image_.begin() + next_start_row * width_, input_image_.begin() + (next_start_row + 1) * width_,
-                  send_data.begin() + (proc_local_height + 1) * (width_ + 2) + 1);
-      } else {
-        std::copy(input_image_.begin() + (height_ - 1) * width_, input_image_.begin() + height_ * width_,
-                  send_data.begin() + (proc_local_height + 1) * (width_ + 2) + 1);
-      }
-
-      // Set padding columns to replicate edge columns
-      for (int row = 0; row < proc_local_height + 2; ++row) {
-        send_data[row * (width_ + 2)] = send_data[row * (width_ + 2) + 1];                    // left padding
-        send_data[row * (width_ + 2) + width_ + 1] = send_data[row * (width_ + 2) + width_];  // right padding
       }
 
       if (proc == 0) {
@@ -106,22 +81,19 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::run() {
   const int Gx[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
   const int Gy[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
-  int local_height = local_input_.size() / width_ - 2;  // exclude boundary rows
-  output_image_.resize(local_height * width_, 0);       // Ensure output_image_ has correct size
-
-  for (int y = 0; y < local_height; ++y) {  // Process all rows
-    for (int x = 0; x < width_; ++x) {      // Process all columns
+  for (int y = 0; y < this->local_height; ++y) {
+    for (int x = 1; x < width_ - 1; ++x) {
       int sumX = 0;
       int sumY = 0;
       for (int i = -1; i <= 1; ++i) {
         for (int j = -1; j <= 1; ++j) {
-          int pixel = local_input_[(y + i + 1) * width_ + (x + j + 1)];  // Access with padding
+          int pixel = local_input_[(y + i + 1) * (width_ + 2) + (x + j + 1)];
           sumX += pixel * Gx[i + 1][j + 1];
           sumY += pixel * Gy[i + 1][j + 1];
         }
       }
       int gradient = static_cast<int>(std::sqrt(sumX * sumX + sumY * sumY));
-      output_image_[y * width_ + x] = static_cast<unsigned char>(std::min(gradient, 255));
+      output_image_[y * width_ + (x - 1)] = static_cast<unsigned char>(std::min(gradient, 255));
     }
   }
   return true;
@@ -154,7 +126,7 @@ bool fomin_v_sobel_edges::SobelEdgeDetectionMPI::post_processing() {
               displacements.data(), MPI_UNSIGNED_CHAR, 0, world);
 
   if (world.rank() == 0) {
-    // Set first and last rows to 0
+    // Set first and last rows to zero
     std::fill(gathered_output.begin(), gathered_output.begin() + width_, 0);
     std::fill(gathered_output.end() - width_, gathered_output.end(), 0);
     std::copy(gathered_output.begin(), gathered_output.end(), taskData->outputs[0]);
