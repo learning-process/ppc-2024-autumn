@@ -29,18 +29,14 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_Pipeline_Run) {
 
     input_vector.resize(columns_count);
     input_matrix.resize(rows_count * columns_count);
+    output_vector.resize(columns_count, 0);
 
-    for (int j = 0; j < rows_count; ++j) {
-      for (int i = 0; i < columns_count; ++i) {
-        input_matrix[j * columns_count + i] = (rand() % 1001) - 500;
+    for (int i = 0; i < rows_count * columns_count; i++) {
+      input_matrix[i] = (rand() % 1000) - 500;
+      if (i < rows_count) {
+        input_vector[i] = (rand() % 1000) - 500;
       }
     }
-
-    for (int i = 0; i < rows_count; ++i) {
-      input_vector[i] = (rand() % 1000) - 500;
-    }
-
-    output_vector.resize(columns_count, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
     taskDataPar->inputs_count.emplace_back(input_matrix.size());
@@ -85,14 +81,10 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_Pipeline_Run) {
     auto taskSequential =
         std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq>(taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    taskSequential->run();
-    taskSequential->post_processing();
-
-    ASSERT_EQ(output_vector.size(), seq_result.size());
-    for (size_t i = 0; i < output_vector.size(); ++i) {
-      ASSERT_EQ(output_vector[i], seq_result[i]);
-    }
+    ASSERT_TRUE(taskSequential->pre_processing());
+    ASSERT_TRUE(taskSequential->run());
+    ASSERT_TRUE(taskSequential->post_processing());
+    ASSERT_EQ(output_vector, seq_result);
   }
 }
 
@@ -100,32 +92,28 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_Task_Run) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
 
+  int rows_count;
+  int columns_count;
   std::vector<int> input_matrix;
   std::vector<int> input_vector;
   std::vector<int> output_vector;
 
   std::shared_ptr<ppc::core::TaskData> taskDataPar = std::make_shared<ppc::core::TaskData>();
-  int rows_count;
-  int columns_count;
 
   if (world.rank() == 0) {
-    rows_count = 8000;
-    columns_count = 8000;
+    rows_count = 8192;
+    columns_count = 8192;
 
     input_matrix.resize(rows_count * columns_count);
     input_vector.resize(columns_count);
+    output_vector.resize(columns_count, 0);
 
-    for (int j = 0; j < rows_count; ++j) {
-      for (int i = 0; i < columns_count; ++i) {
-        input_matrix[j * columns_count + i] = (rand() % 1001) - 500;
+    for (int i = 0; i < rows_count * columns_count; i++) {
+      input_matrix[i] = (rand() % 1000) - 500;
+      if (i < rows_count) {
+        input_vector[i] = (rand() % 1000) - 500;
       }
     }
-
-    for (int i = 0; i < rows_count; ++i) {
-      input_vector[i] = (rand() % 1000) - 500;
-    }
-
-    output_vector.resize(columns_count, 0);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t*>(input_matrix.data()));
     taskDataPar->inputs_count.emplace_back(input_matrix.size());
@@ -137,9 +125,9 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_Task_Run) {
 
   auto taskParallel = std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeMPI>(taskDataPar);
   ASSERT_TRUE(taskParallel->validation());
-  taskParallel->pre_processing();
-  taskParallel->run();
-  taskParallel->post_processing();
+  ASSERT_TRUE(taskParallel->pre_processing());
+  ASSERT_TRUE(taskParallel->run());
+  ASSERT_TRUE(taskParallel->post_processing());
 
   auto perfAttr = std::make_shared<ppc::core::PerfAttr>();
   perfAttr->num_running = 10;
@@ -167,13 +155,9 @@ TEST(khovansky_d_ribbon_vertical_scheme_mpi, Performance_Task_Run) {
     auto taskSequential =
         std::make_shared<khovansky_d_ribbon_vertical_scheme_mpi::RibbonVerticalSchemeSeq>(taskDataSeq);
     ASSERT_TRUE(taskSequential->validation());
-    taskSequential->pre_processing();
-    taskSequential->run();
-    taskSequential->post_processing();
-
-    ASSERT_EQ(output_vector.size(), seq_result.size());
-    for (size_t i = 0; i < output_vector.size(); ++i) {
-      ASSERT_EQ(output_vector[i], seq_result[i]);
-    }
+    ASSERT_TRUE(taskSequential->pre_processing());
+    ASSERT_TRUE(taskSequential->run());
+    ASSERT_TRUE(taskSequential->post_processing());
+    ASSERT_EQ(output_vector, seq_result);
   }
 }

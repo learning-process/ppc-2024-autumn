@@ -14,23 +14,6 @@
 #include "core/task/include/task.hpp"
 
 namespace chistov_a_gather_boost {
-
-template <typename T>
-std::vector<T> getRandomVector(int size_) {
-  if (size_ < 0) {
-    return std::vector<T>();
-  }
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> dist(-100, 100);
-
-  std::vector<T> randomVector(size_);
-  std::generate(randomVector.begin(), randomVector.end(), [&]() { return static_cast<T>(dist(gen)); });
-
-  return randomVector;
-}
-
 template <typename T>
 class Gather : public ppc::core::Task {
  public:

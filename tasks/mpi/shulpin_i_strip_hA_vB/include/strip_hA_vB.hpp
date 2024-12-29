@@ -14,7 +14,6 @@
 #include "core/task/include/task.hpp"
 
 namespace shulpin_strip_scheme_A_B {
-
 void calculate_seq(int rows_a, int cols_a, int cols_b, std::vector<int> A_seq, std::vector<int> B_seq,
                    std::vector<int>& C_seq);
 void calculate_mpi(int rows_a, int cols_a, int cols_b, std::vector<int> A_mpi, std::vector<int> B_mpi,
@@ -56,7 +55,8 @@ class Matrix_hA_vB_par : public ppc::core::Task {
   std::vector<int> mpi_A;
   std::vector<int> mpi_B;
   std::vector<int> mpi_result;
-
+  std::vector<int> size;
+  std::vector<int> displ;
   boost::mpi::communicator world;
 };
 
