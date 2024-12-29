@@ -181,3 +181,26 @@ TEST(laganina_e_dejkstras_a, Test_v_less_1) {
   laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
+TEST(laganina_e_dejkstras_a, Test_random_linear) {
+  int v_ = 5;
+  std::vector<int> graph = {0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 5, 0, 2, 0, 0, 0, 2, 0, 7, 0, 0, 0, 7, 0};
+
+  // Create data
+  std::vector<int> expectResult = {0, 3, 8, 10, 17};
+  std::vector<int> trueResult = {0, 0, 0, 0, 0};
+
+  // Create TaskData
+  std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
+  taskDataSeq->inputs_count.emplace_back(v_);
+  taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t*>(graph.data()));
+  taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t*>(trueResult.data()));
+  taskDataSeq->outputs_count.emplace_back(trueResult.size());
+
+  // Create Task
+  laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq testTaskSequential(taskDataSeq);
+  ASSERT_EQ(testTaskSequential.validation(), true);
+  testTaskSequential.pre_processing();
+  testTaskSequential.run();
+  testTaskSequential.post_processing();
+  ASSERT_EQ(expectResult, trueResult);
+}
