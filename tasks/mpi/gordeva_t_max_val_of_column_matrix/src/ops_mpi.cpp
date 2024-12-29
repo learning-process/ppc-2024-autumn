@@ -59,26 +59,6 @@ bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::post_process
   return true;
 }
 
-std::vector<int> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::rand_vec(int s, int down, int upp) {
-  std::vector<int> v(s);
-  for (auto& i : v) i = down + (std::rand() % (upp - down + 1));
-  return v;
-}
-
-std::vector<std::vector<int>> gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskSequential::rand_matr(int rows,
-                                                                                                       int cols) {
-  std::vector<std::vector<int>> matr(rows, std::vector<int>(cols));
-
-  for (int i = 0; i < rows; ++i) {
-    matr[i] = rand_vec(cols, -200, 200);
-  }
-  for (int j = 0; j < cols; ++j) {
-    int row_rand = std::rand() % rows;
-    matr[row_rand][j] = 10;
-  }
-  return matr;
-}
-
 bool gordeva_t_max_val_of_column_matrix_mpi::TestMPITaskParallel::pre_processing() {
   internal_order_test();
 
