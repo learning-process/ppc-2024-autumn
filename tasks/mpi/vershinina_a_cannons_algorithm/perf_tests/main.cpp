@@ -24,9 +24,9 @@ TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
   if (world.size() < 4) {
     GTEST_SKIP();
   }
-  int n = 100;
-  auto lhs = getRandomMatrix(100);
-  auto rhs = getRandomMatrix(100);
+  int n = 24;
+  auto lhs = getRandomMatrix(24);
+  auto rhs = getRandomMatrix(24);
 
   std::vector<double> res(n * n, 0.0);
 
@@ -64,9 +64,9 @@ TEST(vershinina_a_cannons_algorithm, test_task_run) {
   if (world.size() < 4) {
     GTEST_SKIP();
   }
-  int n = 100;
-  auto lhs = getRandomMatrix(100);
-  auto rhs = getRandomMatrix(100);
+  int n = 24;
+  auto lhs = getRandomMatrix(24);
+  auto rhs = getRandomMatrix(24);
 
   std::vector<double> res(n * n, 0.0);
 

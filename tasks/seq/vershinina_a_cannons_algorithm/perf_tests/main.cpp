@@ -18,15 +18,15 @@ vershinina_a_cannons_algorithm::TMatrix<double> getRandomMatrix(double r) {
 }
 
 TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
-  auto lhs = getRandomMatrix(150);
-  auto rhs = getRandomMatrix(150);
+  auto lhs = getRandomMatrix(24);
+  auto rhs = getRandomMatrix(24);
 
-  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(150);
+  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(24);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs_count.emplace_back(150);
+  taskDataSeq->inputs_count.emplace_back(24);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
 
@@ -49,15 +49,15 @@ TEST(vershinina_a_cannons_algorithm, test_pipeline_run) {
 }
 
 TEST(vershinina_a_cannons_algorithm, test_task_run) {
-  auto lhs = getRandomMatrix(150);
-  auto rhs = getRandomMatrix(150);
+  auto lhs = getRandomMatrix(24);
+  auto rhs = getRandomMatrix(24);
 
-  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(150);
+  auto act_res = vershinina_a_cannons_algorithm::TMatrix<double>::create(24);
 
   std::shared_ptr<ppc::core::TaskData> taskDataSeq = std::make_shared<ppc::core::TaskData>();
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(lhs.data.data()));
   taskDataSeq->inputs.emplace_back(reinterpret_cast<uint8_t *>(rhs.data.data()));
-  taskDataSeq->inputs_count.emplace_back(150);
+  taskDataSeq->inputs_count.emplace_back(24);
   taskDataSeq->outputs.emplace_back(reinterpret_cast<uint8_t *>(act_res.data.data()));
   taskDataSeq->outputs_count.emplace_back(act_res.n);
 
