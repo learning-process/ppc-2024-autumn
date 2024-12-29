@@ -21,9 +21,6 @@ class TestMPITaskSequential : public ppc::core::Task {
   bool run() override;
   bool post_processing() override;
 
-  static std::vector<int> rand_vec(int s, int down = -100, int upp = 100);
-  static std::vector<std::vector<int>> rand_matr(int rows, int cols);
-
  private:
   std::vector<std::vector<int>> input_;
   std::vector<int> res;

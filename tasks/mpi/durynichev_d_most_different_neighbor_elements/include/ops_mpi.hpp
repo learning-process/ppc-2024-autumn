@@ -64,7 +64,7 @@ class TestMPITaskParallel : public ppc::core::Task {
  private:
   boost::mpi::communicator world;
   std::vector<int> input, chunk;
-  int chunkStart = 0;
+  size_t chunkStart = 0;
   ChunkResult result{};
 };
 
