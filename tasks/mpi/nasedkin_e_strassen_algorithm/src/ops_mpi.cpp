@@ -17,9 +17,11 @@ bool StrassenAlgorithmSEQ::pre_processing() {
   auto* inputsA = reinterpret_cast<double*>(taskData->inputs[0]);
   auto* inputsB = reinterpret_cast<double*>(taskData->inputs[1]);
   matrixSize = static_cast<size_t>(std::sqrt(taskData->inputs_count[0]));
-  inputMatrixA.assign(inputsA, inputsA + matrixSize * matrixSize);
-  inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
-  outputMatrix.resize(matrixSize * matrixSize, 0.0);
+  size_t newSize = nextPowerOfTwo(matrixSize);
+  inputMatrixA = padMatrix(std::vector<double>(inputsA, inputsA + matrixSize * matrixSize), matrixSize, newSize);
+  inputMatrixB = padMatrix(std::vector<double>(inputsB, inputsB + matrixSize * matrixSize), matrixSize, newSize);
+  outputMatrix.resize(newSize * newSize, 0.0);
+  matrixSize = newSize;
   return true;
 }
 
@@ -46,7 +48,12 @@ bool StrassenAlgorithmSEQ::run() {
 bool StrassenAlgorithmSEQ::post_processing() {
   internal_order_test();
   auto* outputs = reinterpret_cast<double*>(taskData->outputs[0]);
-  std::copy(outputMatrix.begin(), outputMatrix.end(), outputs);
+  auto originalSize = static_cast<size_t>(std::sqrt(taskData->outputs_count[0]));
+  for (size_t i = 0; i < originalSize; ++i) {
+    for (size_t j = 0; j < originalSize; ++j) {
+      outputs[i * originalSize + j] = outputMatrix[i * matrixSize + j];
+    }
+  }
   return true;
 }
 
@@ -67,10 +74,22 @@ bool StrassenAlgorithmMPI::pre_processing() {
       return false;
     }
 
-    inputMatrixA.assign(inputsA, inputsA + matrixSize * matrixSize);
-    inputMatrixB.assign(inputsB, inputsB + matrixSize * matrixSize);
+    size_t newSize = nextPowerOfTwo(matrixSize);
+    inputMatrixA = padMatrix(std::vector<double>(inputsA, inputsA + matrixSize * matrixSize), matrixSize, newSize);
+    inputMatrixB = padMatrix(std::vector<double>(inputsB, inputsB + matrixSize * matrixSize), matrixSize, newSize);
+    outputMatrix.resize(newSize * newSize, 0.0);
+    matrixSize = newSize;
+  }
+
+  boost::mpi::broadcast(world, matrixSize, 0);
+  if (rank != 0) {
+    inputMatrixA.resize(matrixSize * matrixSize);
+    inputMatrixB.resize(matrixSize * matrixSize);
     outputMatrix.resize(matrixSize * matrixSize, 0.0);
   }
+  boost::mpi::broadcast(world, inputMatrixA, 0);
+  boost::mpi::broadcast(world, inputMatrixB, 0);
+
   return true;
 }
 
@@ -93,9 +112,6 @@ bool StrassenAlgorithmMPI::validation() {
 
 bool StrassenAlgorithmMPI::run() {
   internal_order_test();
-  boost::mpi::broadcast(world, inputMatrixA, 0);
-  boost::mpi::broadcast(world, inputMatrixB, 0);
-  boost::mpi::broadcast(world, matrixSize, 0);
   outputMatrix = strassen_multiply(inputMatrixA, inputMatrixB, matrixSize);
   return true;
 }
@@ -105,7 +121,12 @@ bool StrassenAlgorithmMPI::post_processing() {
   int rank = world.rank();
   if (rank == 0) {
     auto* outputs = reinterpret_cast<double*>(taskData->outputs[0]);
-    std::copy(outputMatrix.begin(), outputMatrix.end(), outputs);
+    auto originalSize = static_cast<size_t>(std::sqrt(taskData->outputs_count[0]));
+    for (size_t i = 0; i < originalSize; ++i) {
+      for (size_t j = 0; j < originalSize; ++j) {
+        outputs[i * originalSize + j] = outputMatrix[i * matrixSize + j];
+      }
+    }
   }
   return true;
 }
@@ -125,6 +146,24 @@ std::vector<double> matrix_subtract(const std::vector<double>& matrixA, const st
     result[i] = matrixA[i] - matrixB[i];
   }
   return result;
+}
+
+size_t nextPowerOfTwo(size_t n) {
+  size_t power = 1;
+  while (power < n) {
+    power *= 2;
+  }
+  return power;
+}
+
+std::vector<double> padMatrix(const std::vector<double>& matrix, size_t originalSize, size_t newSize) {
+  std::vector<double> padded(newSize * newSize, 0.0);
+  for (size_t i = 0; i < originalSize; ++i) {
+    for (size_t j = 0; j < originalSize; ++j) {
+      padded[i * newSize + j] = matrix[i * originalSize + j];
+    }
+  }
+  return padded;
 }
 
 std::vector<double> strassen_recursive(const std::vector<double>& matrixA, const std::vector<double>& matrixB,
@@ -265,7 +304,6 @@ std::vector<double> StrassenAlgorithmSEQ::strassen_multiply_seq(const std::vecto
     }
   }
   return result;
-  return {};
 }
 
 std::vector<double> StrassenAlgorithmMPI::strassen_multiply(const std::vector<double>& matrixA,

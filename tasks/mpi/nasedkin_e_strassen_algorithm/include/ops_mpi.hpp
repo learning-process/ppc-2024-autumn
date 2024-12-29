@@ -56,4 +56,6 @@ std::vector<double> strassen_recursive(const std::vector<double>& matrixA, const
 std::vector<double> matrix_add(const std::vector<double>& matrixA, const std::vector<double>& matrixB, size_t size);
 std::vector<double> matrix_subtract(const std::vector<double>& matrixA, const std::vector<double>& matrixB,
                                     size_t size);
+size_t nextPowerOfTwo(size_t n);
+std::vector<double> padMatrix(const std::vector<double>& matrix, size_t originalSize, size_t newSize);
 }  // namespace nasedkin_e_strassen_algorithm
