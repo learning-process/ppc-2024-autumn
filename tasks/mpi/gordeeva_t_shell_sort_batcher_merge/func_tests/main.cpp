@@ -23,7 +23,6 @@ std::vector<int> rand_vec(int size, int down = -100, int upp = 100) {
 TEST(gordeeva_t_shell_sort_batcher_merge_mpi, Shell_sort_with_fixed) {
   boost::mpi::environment env;
   boost::mpi::communicator world;
-
   const int size = 10;
   std::vector<int> input_vec = {3, 4, 7, 1, 8, 9, 5, 2, 6, 0};
   std::vector<int> result_parallel(size);
