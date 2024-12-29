@@ -29,9 +29,9 @@ TEST(fomin_v_generalized_scatter, test_task_run) {
   taskData->outputs_count.emplace_back(local_output.size());
 
   auto testParallel = std::make_shared<fomin_v_generalized_scatter::GeneralizedScatterTestParallel>(taskData);
-  ASSERT_EQ(testParallel->validation(), true);
+  ASSERT_TRUE(testParallel->validation());
   testParallel->pre_processing();
-  testParallel->run();
+  ASSERT_TRUE(testParallel->run());
   testParallel->post_processing();
 
   // Create Perf attributes
@@ -92,9 +92,9 @@ TEST(fomin_v_generalized_scatter, test_pipeline_run) {
   taskData->outputs_count.emplace_back(local_output.size());
 
   auto testParallel = std::make_shared<fomin_v_generalized_scatter::GeneralizedScatterTestParallel>(taskData);
-  ASSERT_EQ(testParallel->validation(), true);
+  ASSERT_TRUE(testParallel->validation());
   testParallel->pre_processing();
-  testParallel->run();
+  ASSERT_TRUE(testParallel->run());
   testParallel->post_processing();
 
   // Create Perf attributes
