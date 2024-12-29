@@ -181,7 +181,7 @@ TEST(laganina_e_dejkstras_a, Test_v_less_1) {
   laganina_e_dejkstras_a_Seq::laganina_e_dejkstras_a_Seq testTaskSequential(taskDataSeq);
   ASSERT_EQ(testTaskSequential.validation(), false);
 }
-TEST(laganina_e_dejkstras_a, Test_random_linear) {
+TEST(laganina_e_dejkstras_a, Test_linear) {
   int v_ = 5;
   std::vector<int> graph = {0, 3, 0, 0, 0, 3, 0, 5, 0, 0, 0, 5, 0, 2, 0, 0, 0, 2, 0, 7, 0, 0, 0, 7, 0};
 
