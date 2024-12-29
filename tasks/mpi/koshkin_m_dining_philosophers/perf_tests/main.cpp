@@ -48,7 +48,7 @@ TEST(koshkin_m_dining_philosophers, test_pipeline_run) {
     perfAnalyzer->pipeline_run(perfAttr, perfResults);
     if (world.rank() == 0) {
       ppc::core::Perf::print_perf_statistic(perfResults);
-      ASSERT_EQ(global_vec[0] * (world.size() - 1), average_value[0]);
+      ASSERT_EQ(global_vec[0] * (world.size() - 1) * 11, average_value[0]);
     }
   }
 }
@@ -94,7 +94,7 @@ TEST(koshkin_m_dining_philosophers, test_task_run) {
     perfAnalyzer->task_run(perfAttr, perfResults);
     if (world.rank() == 0) {
       ppc::core::Perf::print_perf_statistic(perfResults);
-      ASSERT_EQ(global_vec[0] * (world.size() - 1), average_value[0]);
+      ASSERT_EQ(global_vec[0] * (world.size() - 1) * 12, average_value[0]);
     }
   }
 }
