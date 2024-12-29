@@ -14,6 +14,33 @@ using namespace golovkin_rowwise_matrix_partitioning;
 using ppc::core::Perf;
 using ppc::core::TaskData;
 
+namespace golovkin_rowwise_matrix_partitioning {
+
+void get_random_matrix(double *matr, int rows, int cols) {
+  if (rows <= 0 || cols <= 0) {
+    throw std::logic_error("wrong matrix size");
+  }
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < cols; j++) {
+      matr[i * cols + j] = static_cast<double>(std::rand()) / RAND_MAX;
+    }
+  }
+}
+
+void sequential_matrix_multiplication(const double *A, const double *B, double *C, int rows_A, int cols_A, int cols_B) {
+  for (int i = 0; i < rows_A; ++i) {
+    for (int j = 0; j < cols_B; ++j) {
+      C[i * cols_B + j] = 0.0;
+      for (int k = 0; k < cols_A; ++k) {
+        C[i * cols_B + j] += A[i * cols_A + k] * B[k * cols_B + j];
+      }
+    }
+  }
+}
+
+}  // namespace golovkin_rowwise_matrix_partitioning
+
 TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
   boost::mpi::communicator world;
   double *A = nullptr;
@@ -29,6 +56,9 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
   if (world.size() < 5 || world.rank() >= 4) {
     A = new double[rows_A * cols_A]();
     B = new double[rows_B * cols_B]();
+
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A, cols_A);
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B, cols_B);
 
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B));
@@ -60,13 +90,18 @@ TEST(golovkin_rowwise_matrix_partitioning, test_pipeline_run) {
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.size() < 5 && world.rank() >= 4) {
+
+  if (world.rank() == 0 && world.size() < 5) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto *expected_res = new double[rows_A * cols_B]();
+
+    std::vector<double> expected_res(rows_A * cols_B, 0.0);
+    golovkin_rowwise_matrix_partitioning::sequential_matrix_multiplication(A, B, expected_res.data(), rows_A, cols_A,
+                                                                           cols_B);
+
     for (int i = 0; i < rows_A * cols_B; i++) {
-      ASSERT_NEAR(expected_res[i], result[i], 1e-6);
+      ASSERT_NEAR(expected_res[i], result[i], 1e-6) << "Mismatch at index " << i;
     }
-    delete[] expected_res;
+
     delete[] result;
     delete[] A;
     delete[] B;
@@ -89,6 +124,9 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
     A = new double[rows_A * cols_A]();
     B = new double[rows_B * cols_B]();
 
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(A, rows_A, cols_A);
+    golovkin_rowwise_matrix_partitioning::get_random_matrix(B, rows_B, cols_B);
+
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(A));
     taskDataPar->inputs.emplace_back(reinterpret_cast<uint8_t *>(B));
 
@@ -119,13 +157,18 @@ TEST(golovkin_rowwise_matrix_partitioning, test_task_run) {
 
   auto perfAnalyzer = std::make_shared<ppc::core::Perf>(testMpiTaskParallel);
   perfAnalyzer->pipeline_run(perfAttr, perfResults);
-  if (world.size() < 5 && world.rank() >= 4) {
+
+  if (world.rank() == 0 && world.size() < 5) {
     ppc::core::Perf::print_perf_statistic(perfResults);
-    auto *expected_res = new double[rows_A * cols_B]();
+
+    std::vector<double> expected_res(rows_A * cols_B, 0.0);
+    golovkin_rowwise_matrix_partitioning::sequential_matrix_multiplication(A, B, expected_res.data(), rows_A, cols_A,
+                                                                           cols_B);
+
     for (int i = 0; i < rows_A * cols_B; i++) {
-      ASSERT_NEAR(expected_res[i], result[i], 1e-6);
+      ASSERT_NEAR(expected_res[i], result[i], 1e-6) << "Mismatch at index " << i;
     }
-    delete[] expected_res;
+
     delete[] result;
     delete[] A;
     delete[] B;
